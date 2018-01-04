@@ -1,0 +1,161 @@
+FORMAT: 1A
+
+# Ballot
+
+Customizable anonymous online balloting system with ring signature authentication.
+
+# Group Default
+
+## Check system status [GET /]
+
+## Check system status anonymously [GET /secret]
+
+# Group Organizer
+
+## Create account [POST /register]
+
+## Get credential [POST /login]
+
+## Get profile [GET /profile]
+
+## Change password [POST /changePassword]
+
+## Ballot Collection [/ballots]
+
+### List all ballots [GET]
+
+### Create a new ballot [POST]
+
+## Ballot [/ballots/{bId}]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### View ballot general info [GET]
+
+## Ballot cryptography [/ballots/{bId}/crypto]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### View ballot cryptography info [GET]
+
+## Ballot field collection [/ballots/{bId}/fields]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### List all fields of a ballot [GET]
+
+### Append a new field [POST]
+
+### Replace all fields [PUT]
+
+### Delete all fields [DELETE]
+
+### Finalize field changes [PATCH]
+
+## Ballot field [/ballots/{bId}/fields/{fieldId}]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+    + fieldId: 0 (required, number) - Index of the field
+
+### View field info [GET]
+
+### Insert a new field [POST]
+
+### Update a field [PUT]
+
+### Delete a field [DELETE]
+
+## Voter collection [/ballots/{bId}/voters]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### List all voters [GET]
+
+### Create a new voter [POST]
+
+### Finalize voter changes [PATCH]
+
+## Voter [/ballots/{bId}/voters/{iCode}]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+
+### View voter info [GET]
+
+### Delete a voter [DELETE]
+
+## Ticket collection [/ballots/{bId}/tickets]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### List all tickets [GET]
+
+## Ticket statistics [/ballots/{bId}/statistics]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+
+### List ticket statistics [GET]
+
+# Group Voter
+
+## Anonymously submit a signed ticket [POST /secret/tickets]
+
+## Anonymously query submitted ticket status [GET /secret/tickets/{ticketTraceId}]
+
++ Parameters
+    + ticketTraceId: d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953 (required, string) - Trace ID issued by [POST /tickets].
+
+## Voter [/voters/{iCode}]
+
++ Parameters
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+
+### Show voter info [GET]
+
+### Register as a voter [POST]
+
+## Challenge collection [/voters/{iCode}/challenges]
+
++ Parameters
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+
+### List all challenges [GET]
+
+## Challenge [/voters/{iCode}/challenges/{cId}]
+
++ Parameters
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+    + cId: victor-challenge (required, string) Customizable token; alphanumeric and dash only.
+
+### View challenge detail [GET]
+
+# Group Verifier
+
+## Challenge collection [/ballots/{bId}/voters/{iCode}/challenges]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+
+### List all challenges [GET]
+
+## Challenge [/ballots/{bId}/voters/{iCode}/challenges/{cId}]
+
++ Parameters
+    + bId: 876ef6f5fe7fd8d7 (required, string) - ID of the ballot
+    + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
+    + cId: victor-challenge (required, string) Customizable token; alphanumeric and dash only.
+
+### View challenge detail [GET]
+
+### Submit a challenge [PUT]
+
+### Delete a challenge [DELETE]
