@@ -65,6 +65,7 @@ This API uses HTTP status codes to communicate with the API consumer.
 
 + `200 OK` - Response to a successful GET, PUT, PATCH or DELETE.
 + `201 Created` - Response to a POST that results in a creation.
++ `202 Accepted` - Response to a POST that results in a ongoing creation.
 + `204 No Content` - Response to a successful request that won't be returning a body (like a DELETE request).
 + `400 Bad Request` - Malformed request; form validation errors.
 + `401 Unauthorized` - When no or invalid authentication details are provided.
@@ -117,12 +118,12 @@ This API only returns machine-readable error codes in the field `error`. Please 
 + publicKey: `EIBy/4RYxoeg0pbu...` (string)
 
 ### BallotTicket
-+ t: `whu44u3wVnqnVT78...` (string)
-+ payload (object)
-    + bId: `876ef6f5fe7fd8d7` (string)
-    + result (array[string])
-+ s: `y4V+udaSG4h9YWiH...` (array[string])
-+ c: `qzohcWz1CLLJI2+J...` (array[string])
++ t: `whu44u3wVnqnVT78...` (string, required)
++ payload (object, required)
+    + bId: `876ef6f5fe7fd8d7` (string, required)
+    + result (array[string], required)
++ s: `y4V+udaSG4h9YWiH...` (array[string], required)
++ c: `qzohcWz1CLLJI2+J...` (array[string], required)
 
 ### BallotTicketStat
 + count: 10 (number)
@@ -691,19 +692,112 @@ This endpoint locks voter changes, and turn ballot status from `inviting` to `in
 
 ## Anonymously submit a signed ticket [POST /secret/tickets]
 
-## Anonymously query submitted ticket status [GET /secret/tickets/{ticketTraceId}]
+- If `Accept` header is set to `application/json`, then response `202` or various error codes are expected.
+- If `Accept` header is not set to `application/json`, then response `303` will be given, allowing running in a non-javascript environment.
+
+**Endpoint information**
+
+| Property                  | Value |
+| ------------------------- | ----- |
+| Authentication required   | No    |
+| Anonymity enforced        | Yes   |
+
+**Error codes**
+
+| Code    | Error    | Description                                 |
+| ------- | -------- | ------------------------------------------- |
+| `400`   | `rsmf`   | `payload.result` malformed                  |
+| `404`   | `xbid`   | `payload.bId` non-exist                     |
+| `409`   | `nvtg`   | Ballot status is not `voting`               |
+
++ Request (application/json)
+
+    + Attributes (BallotTicket)
+
++ Response 202 (application/json; charset=utf-8)
+
+    + Attributes
+        + tId: `d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953` (string)
+
++ Request (application/x-www-form-urlencoded)
+
+    + Body
+
+        enc=eyJ0Ijoid2h1NDR1M3dWbnFuVlQ3OA0K...
+
++ Response 303
+
+## Anonymously query submitted ticket status [GET /secret/tickets/{tId}]
+
+- If `Accept` header is set to `application/json`, then response `202`, `204` or various error codes are expected.
+- If `Accept` header is not set to `application/json`, then response `303` will be given, allowing running in a non-javascript environment.
+
+**Endpoint information**
+
+| Property                  | Value |
+| ------------------------- | ----- |
+| Authentication required   | No    |
+| Anonymity enforced        | Yes   |
+
+**Error codes**
+
+| Code    | Error    | Description                                 |
+| ------- | -------- | ------------------------------------------- |
+| `401`   | `xsgn`   | Invalid signature                           |
+| `409`   | `nvtg`   | Ballot status is not `voting`               |
 
 + Parameters
-    + ticketTraceId: d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953 (required, string) - Trace ID issued by [POST /tickets].
+    + tId: d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953 (required, string) - Trace ID issued by [POST /secret/tickets].
+
++ Response 202
+
++ Response 204
+
++ Response 303
 
 ## Voter [/voters/{iCode}]
 
 + Parameters
     + iCode: 20095a930b528883e90228a38d507d9c47e23696e7ba6318e1b81e5811c28952 (required, string) - Invitation code issued by [POST /ballots/{bId}/voters].
 
-### Show voter info [GET]
+### View voter info [GET]
+
+**Endpoint information**
+
+| Property                  | Value |
+| ------------------------- | ----- |
+| Authentication required   | No    |
+| Anonymity enforced        | No    |
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Attributes
+        + bId: `876ef6f5fe7fd8d7` (string)
+        + name: `Bob` (string)
 
 ### Register as a voter [POST]
+
+**Endpoint information**
+
+| Property                  | Value |
+| ------------------------- | ----- |
+| Authentication required   | No    |
+| Anonymity enforced        | No    |
+
+**Error codes**
+
+| Code    | Error    | Description                                 |
+| ------- | -------- | ------------------------------------------- |
+| `400`   | `pkmf`   | Public key malformed                        |
+| `409`   | `rniv`   | Ballot status is not `inviting`             |
+
++ Request (application/json)
+
+    + Attributes
+        + comment: `bob's self explanation` (string)
+        + publicKey: `EIBy/4RYxoeg0pbu...` (string)
+
++ Response 201
 
 ## Challenge collection [/voters/{iCode}/challenges]
 
