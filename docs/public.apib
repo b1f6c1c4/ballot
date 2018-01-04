@@ -334,12 +334,22 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
 ### List all fields of a ballot [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `created`
+- `inviting`
+- `invited`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `pre-voting`
+- `voting`
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -453,12 +463,22 @@ This endpoint locks field changes, and turn ballot status from `invited` to `pre
 
 ### View field info [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `created`
+- `inviting`
+- `invited`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `pre-voting`
+- `voting`
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -546,12 +566,22 @@ This endpoint locks field changes, and turn ballot status from `invited` to `pre
 
 ### List all voters [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `created`
+- `inviting`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `invited`
+- `pre-voting`
+- `voting`
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -618,12 +648,22 @@ This endpoint locks voter changes, and turn ballot status from `inviting` to `in
 
 ### View voter info [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `created`
+- `inviting`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `invited`
+- `pre-voting`
+- `voting`
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -659,12 +699,24 @@ This endpoint locks voter changes, and turn ballot status from `inviting` to `in
 
 ### List all tickets [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `voting`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
+
+**Error codes**
+
+| Code    | Error    | Description                                 |
+| ------- | -------- | ------------------------------------------- |
+| `409`   | `tnfn`   | Ballot status is not `voting` or `finished` |
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -677,12 +729,24 @@ This endpoint locks voter changes, and turn ballot status from `inviting` to `in
 
 ### List ticket statistics [GET]
 
+Authentication **is** required only when ballot status is one of the following:
+- `voting`
+
+Authentication is **not** required only when ballot status is one of the following:
+- `finished`
+
 **Endpoint information**
 
-| Property                  | Value |
-| ------------------------- | ----- |
-| Authentication required   | No    |
-| Anonymity enforced        | No    |
+| Property                  | Value       |
+| ------------------------- | -----       |
+| Authentication required   | *See Above* |
+| Anonymity enforced        | No          |
+
+**Error codes**
+
+| Code    | Error    | Description                                 |
+| ------- | -------- | ------------------------------------------- |
+| `409`   | `tnfn`   | Ballot status is not `voting` or `finished` |
 
 + Response 200 (application/json; charset=utf-8)
 
