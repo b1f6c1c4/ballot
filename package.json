@@ -15,6 +15,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "aglio -i docs/public.apib -s"
+    "start": "aglio -i docs/public.apib -s",
+    "start:cryptor": "aglio -i docs/cryptor.apib -s"
   }
 }
