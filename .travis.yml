@@ -5,10 +5,12 @@ branches:
     - frontend
     - backend
     - cryptor
+    - builder
 
 sudo: required
 
 before_install:
+  - docker --version || true
   - curl -fsSL https://get.docker.com/ | sudo bash
   - docker --version
   - docker pull b1f6c1c4/ballot-builder
