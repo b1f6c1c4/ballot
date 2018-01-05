@@ -10,10 +10,12 @@ RUN \
     && cd boost_1_66_0 \
     && ./bootstrap.sh --prefix=/usr/local
 
+ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:/usr/local/lib"
+
 RUN \
     cd boost_1_66_0 \
     && ./b2 -q -a -sHAVE_ICU=1 --with-test \
-    && ./b2 install \
+    && ./b2 --with-test install \
     && cd .. \
     && rm -rf boost_1_66_0
 
