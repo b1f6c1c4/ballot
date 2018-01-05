@@ -1,0 +1,34 @@
+language: node_js
+
+branches:
+  only:
+    - frontend
+    - backend
+    - cryptor
+    - builder
+
+node_js:
+  - 8
+
+sudo: required
+
+before_install:
+  - docker --version || true
+  - curl -fsSL https://get.docker.com/ | sudo bash
+  - docker --version
+  - npm install --global dredd@4.9.2
+
+script:
+  - yarn test
+  - yarn build
+  - docker build -t b1f6c1c4/ballot-backend .
+
+after_success:
+  - yarn coveralls
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push b1f6c1c4/ballot-backend
+
+cache:
+  yarn: true
+  directories:
+    - node_modules

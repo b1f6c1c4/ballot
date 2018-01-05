@@ -1,0 +1,80 @@
+{
+  "name": "ballot-backend",
+  "version": "1.0.0",
+  "description": "Ballot API.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/b1f6c1c4/ballot"
+  },
+  "engines": {
+    "npm": ">=5.5.1",
+    "node": ">=8.9.3",
+    "yarn": ">=1.3.2"
+  },
+  "author": "b1f6c1c4",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "node tag.js",
+    "start": "cross-env NODE_ENV=development nodemon server",
+    "start:prod": "cross-env NODE_ENV=production node server",
+    "lint": "yarn lint:js",
+    "lint:eslint": "eslint --ignore-path .gitignore",
+    "lint:js": "yarn lint:eslint .",
+    "lint:staged": "lint-staged",
+    "pretest": "yarn test:clean && yarn lint",
+    "test:clean": "rimraf ./coverage",
+    "test": "cross-env NODE_ENV=test jest --coverage && yarn test:api",
+    "test:api": "yarn build && dredd",
+    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "lint-staged": {
+    "*.js": "lint:eslint"
+  },
+  "pre-commit": "lint:staged",
+  "jest": {
+    "collectCoverageFrom": [
+      "server/**/*.js",
+      "!server/**/*.test.js",
+      "!server/index.js",
+      "!server/logger.js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "server"
+    ],
+    "testRegex": "tests/.*\\.test\\.js$"
+  },
+  "nodemonConfig": {
+    "ext": "js"
+  },
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "chalk": "2.3.0",
+    "cors": "2.8.4",
+    "cross-env": "5.1.3",
+    "express": "4.16.2",
+    "ip": "1.1.5",
+    "jsonwebtoken": "8.1.0",
+    "minimist": "1.2.0",
+    "nocache": "2.0.0",
+    "passport": "0.4.0",
+    "passport-jwt": "3.0.1"
+  },
+  "devDependencies": {
+    "coveralls": "3.0.0",
+    "eslint": "4.14.0",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.5.1",
+    "jest-cli": "22.0.4",
+    "lint-staged": "6.0.0",
+    "ngrok": "2.2.24",
+    "nodemon": "1.14.6",
+    "pre-commit": "1.2.2",
+    "rimraf": "2.6.2",
+    "shelljs": "0.7.8"
+  }
+}
