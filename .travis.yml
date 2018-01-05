@@ -1,0 +1,21 @@
+language: cpp
+
+branches:
+  only:
+    - frontend
+    - backend
+    - cryptor
+
+sudo: required
+
+before_install:
+  - curl -fsSL https://get.docker.com/ | sudo bash
+  - docker --version
+  - docker pull b1f6c1c4/ballot-builder
+
+script:
+  - docker build -t b1f6c1c4/ballot-cryptor .
+
+after_success:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push b1f6c1c4/ballot-crypto
