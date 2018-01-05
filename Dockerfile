@@ -49,6 +49,11 @@ RUN \
     && mv json.hpp /usr/local/include
 
 RUN \
+    git clone --depth=1 "https://github.com/gabime/spdlog" \
+    && cp -r spdlog/include/spdlog /usr/local/include \
+    && rm -rf spdlog
+
+RUN \
     apt-get update \
     && apt-get install -y gcovr \
     && rm -rf /var/lib/apt/lists/*
