@@ -7,7 +7,7 @@ COPY . .
 RUN make ci-test
 RUN make all
 
-FROM alpine:latest
+FROM ubuntu:artful
 
 WORKDIR /root/cryptor
 COPY --from=0 /root/cryptor .
