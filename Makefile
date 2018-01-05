@@ -4,7 +4,7 @@ DEPS=$(addsuffix .h, $(TARGETS))
 LIBS=
 CFLAGS=-Wall
 CFLAGSP=$(CFLAGS) -O3
-CFLAGST=$(CFLAGS) -DIS_TEST -g
+CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage
 
 build/%.o: %.cpp $(DEPS)
 	mkdir -p build
@@ -29,7 +29,10 @@ all: build/cryptor
 test: $(addprefix run-, $(TARGETS))
 
 run-%: build/tests/%
-	./$<
+	mkdir -p coverage
+	-./$<
+	-gcov $*.cpp
+	-mv $*.gcda $*.gcno $*.cpp.gcov $*.test.gcda $*.test.gcno coverage
 
 clean:
-	rm -rf build
+	rm -rf build coverage
