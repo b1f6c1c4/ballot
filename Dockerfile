@@ -3,10 +3,6 @@ FROM gcc:7
 MAINTAINER b1f6c1c4, <b1f6c1c4@gmail.com>
 
 RUN \
-    apt-get update \
-    && apt-get install -y python-dev
-
-RUN \
     curl -fsSL "https://downloads.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.66.0%2F&ts=1515136452&use_mirror=phoenixnap" \
         -o boost_1_66_0.tar.bz2 \
     && tar --bzip2 -xf boost_1_66_0.tar.bz2 \
@@ -16,7 +12,7 @@ RUN \
 
 RUN \
     cd boost_1_66_0 \
-    && ./b2 -q -a -sHAVE_ICU=1 \
+    && ./b2 -q -a -sHAVE_ICU=1 --with-test \
     && ./b2 install \
     && cd .. \
     && rm -rf boost_1_66_0
