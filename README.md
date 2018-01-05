@@ -1,5 +1,7 @@
 # Ballot-builder
 
+[![Build Status](https://travis-ci.org/b1f6c1c4/ballot.svg?branch=builder)](https://travis-ci.org/b1f6c1c4/ballot)
+
 The following utils are included:
 
 - gcc 7
