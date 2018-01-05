@@ -2,7 +2,7 @@ CXX=g++
 TARGETS=main
 DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=
-CFLAGS=-Wall -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
+CFLAGS=-Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
 CFLAGSP=$(CFLAGS) -O3
 CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage
 

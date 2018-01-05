@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #ifndef VERSION
 #define VERSION "UNKNOWN"
 #endif

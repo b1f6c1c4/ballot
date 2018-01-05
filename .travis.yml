@@ -26,4 +26,4 @@ after_success:
   - cd built
   - coveralls --exclude tests --exclude-pattern ".*\.h(pp)?" -b . -n
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-  - docker push b1f6c1c4/ballot-crypto
+  - docker push b1f6c1c4/ballot-cryptor
