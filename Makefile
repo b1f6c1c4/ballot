@@ -1,8 +1,8 @@
 CXX=g++
 TARGETS=main
-DEPS=$(addsuffix .h, $(TARGETS))
+DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=
-CFLAGS=-Wall
+CFLAGS=-Wall -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
 CFLAGSP=$(CFLAGS) -O3
 CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage
 
@@ -26,13 +26,23 @@ build/tests/%: tests/%.test.cpp %.cpp $(DEPS)
 
 all: build/cryptor
 
-test: $(addprefix run-, $(TARGETS))
+test: clean-cov $(addprefix run-, $(TARGETS))
+	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s
 
 run-%: build/tests/%
-	mkdir -p coverage
-	-./$<
-	-gcov $*.cpp
-	-mv $*.gcda $*.gcno $*.cpp.gcov $*.test.gcda $*.test.gcno coverage
+	-./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=detailed --report_sink=stdout
 
-clean:
-	rm -rf build coverage
+ci-test: clean-cov $(addprefix ci-run-, $(TARGETS))
+	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s --keep
+
+ci-run-%: build/tests/%
+	./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=detailed --report_sink=stdout
+
+clean: clean-coverage
+	rm -rf build
+
+clean-cov:
+	rm -f *.gcda *.gcov
+
+clean-coverage: clean-cov
+	rm -f *.gcno

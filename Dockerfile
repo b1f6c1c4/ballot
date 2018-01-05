@@ -4,7 +4,7 @@ WORKDIR /root/cryptor
 
 COPY . .
 
-RUN make test
+RUN make ci-test
 RUN make all
 
 FROM alpine:latest

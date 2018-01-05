@@ -1,6 +1,8 @@
 # Artifact
 build
-coverage
+*.gcda
+*.gcno
+*.gcov
 
 # Cruft
 *~
