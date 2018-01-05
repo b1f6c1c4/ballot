@@ -47,3 +47,8 @@ RUN \
     curl -SL "https://raw.githubusercontent.com/nlohmann/json/develop/src/json.hpp" \
         -o json.hpp \
     && mv json.hpp /usr/local/include
+
+RUN \
+    apt-get update \
+    && apt-get install -y gcovr \
+    && rm -rf /var/lib/apt/lists/*
