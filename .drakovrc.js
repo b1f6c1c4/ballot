@@ -1,5 +1,5 @@
 module.exports = {
-  sourceFiles: 'docs/api.apib',
+  sourceFiles: 'docs/public.apib',
   serverPort: 3001,
   autoOptions: true,
   method: [
