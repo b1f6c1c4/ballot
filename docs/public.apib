@@ -757,7 +757,7 @@ Authentication is **not** required only when ballot status is one of the followi
 ## Anonymously submit a signed ticket [POST /secret/tickets]
 
 - If `Accept` header is set to `application/json`, then response `202` or various error codes are expected.
-- If `Accept` header is not set to `application/json`, then response `303` will be given, allowing running in a non-javascript environment.
+- If `Accept` header is set to `text/html`, then `text/html` will be given, allowing running in a non-javascript environment.
 
 **Endpoint information**
 
@@ -776,6 +776,10 @@ Authentication is **not** required only when ballot status is one of the followi
 
 + Request (application/json)
 
+    + Headers
+
+            Accept: application/json
+
     + Attributes (BallotTicket)
 
 + Response 202 (application/json; charset=utf-8)
@@ -785,16 +789,48 @@ Authentication is **not** required only when ballot status is one of the followi
 
 + Request (application/x-www-form-urlencoded)
 
+    + Headers
+
+            Accept: text/html
+
     + Body
 
-        enc=eyJ0Ijoid2h1NDR1M3dWbnFuVlQ3OA0K...
+            enc=eyJ0Ijoid2h1NDR1M3dWbnFuVlQ3OA0K...
 
-+ Response 303
++ Response 202 (text/html)
 
-## Anonymously query submitted ticket status [GET /secret/tickets/{tId}]
+    + Body
+
+            Ticket staged. Your tId is <pre>d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953</pre>
+
++ Response 400 (text/html)
+
+    + Body
+
+            Error occured: <pre>rsmf</pre>
+
++ Response 403 (text/html)
+
+    + Body
+
+            Error occured: <pre>anon</pre>
+
++ Response 404 (text/html)
+
+    + Body
+
+            Error occured: <pre>xbid</pre>
+
++ Response 409 (text/html)
+
+    + Body
+
+            Error occured: <pre>nvtg</pre>
+
+## Anonymously query submitted ticket status [GET /secret/tickets/?tId={tId}]
 
 - If `Accept` header is set to `application/json`, then response `202`, `204` or various error codes are expected.
-- If `Accept` header is not set to `application/json`, then response `303` will be given, allowing running in a non-javascript environment.
+- If `Accept` header is set to `text/html`, then `text/html` will be given, allowing running in a non-javascript environment.
 
 **Endpoint information**
 
@@ -813,11 +849,51 @@ Authentication is **not** required only when ballot status is one of the followi
 + Parameters
     + tId: d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953 (required, string) - Trace ID issued by [POST /secret/tickets].
 
++ Request
+
+    + Headers
+
+            Accept: application/json
+
 + Response 202
 
 + Response 204
 
-+ Response 303
++ Request
+
+    + Headers
+
+            Accept: text/html
+
++ Response 202 (text/html)
+
+    + Body
+
+            Still processing.
+
++ Response 200 (text/html)
+
+    + Body
+
+            Success.
+
++ Response 401 (text/html)
+
+    + Body
+
+            Error occured: <pre>xsgn</pre>
+
++ Response 403 (text/html)
+
+    + Body
+
+            Error occured: <pre>anon</pre>
+
++ Response 409 (text/html)
+
+    + Body
+
+            Error occured: <pre>nvtg</pre>
 
 ## Voter [/voters/{iCode}]
 
