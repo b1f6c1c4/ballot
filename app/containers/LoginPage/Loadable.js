@@ -7,6 +7,6 @@
 import Loadable from 'react-loadable';
 
 export default Loadable({
-  loader: () => import('./index'),
+  loader: () => import(/* webpackChunkName: "LoginPage" */ './index'),
   loading: () => null,
 });

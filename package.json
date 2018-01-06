@@ -198,7 +198,6 @@
     "eslint-plugin-jsx-a11y": "6.0.3",
     "eslint-plugin-react": "7.5.1",
     "eslint-plugin-redux-saga": "0.6.0",
-    "eventsource-polyfill": "0.9.6",
     "exports-loader": "0.6.4",
     "file-loader": "1.1.6",
     "git-revision-webpack-plugin": "2.5.1",

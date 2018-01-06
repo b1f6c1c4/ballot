@@ -18,9 +18,20 @@ const plugins = [
   new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
   new webpack.NoEmitOnErrorsPlugin(),
   new HtmlWebpackPlugin({
+    filename: 'index.html',
+    template: 'app/index.ejs',
+    inject: true,
+    chunks: [
+      'index',
+    ],
+  }),
+  new HtmlWebpackPlugin({
     filename: 'app.html',
     template: 'app/app.ejs',
     inject: true,
+    chunks: [
+      'app',
+    ],
   }),
   new CircularDependencyPlugin({
     exclude: /a\.js|node_modules/, // exclude node_modules
@@ -41,11 +52,16 @@ if (dllPlugin) {
 
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
-  entry: [
-    'eventsource-polyfill', // Necessary for hot reloading with IE
-    'webpack-hot-middleware/client?reload=true',
-    path.join(process.cwd(), 'app/app.js'), // Start with js/app.js
-  ],
+  entry: {
+    index: [
+      'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/index.js'),
+    ],
+    app: [
+      'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/app.js'),
+    ],
+  },
 
   // Don't use hashes in dev mode for better performance
   output: {

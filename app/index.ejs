@@ -1,3 +1,4 @@
+<% var key %>
 <!DOCTYPE html>
 <html lang="en" <% if (htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>>
   <head>
@@ -10,12 +11,25 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
 
-    <link rel="dns-prefetch" href="<%= process.env.API_URL_HOST %>">
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (key in htmlWebpackPlugin.files.chunks) {
+        if (!/index/.test(key)) { %>
+          <link rel="prefetch" href="<%= htmlWebpackPlugin.files.chunks[key].entry %>">
+      <% }
+      }
+    } %>
 
     <title>Ballot</title>
   </head>
   <body>
-    <!-- The app hooks into this div -->
-    <div id="app"></div>
+    <a href="app.html">go</a>
+
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (key in htmlWebpackPlugin.files.chunks) {
+        if (/index/.test(key)) { %>
+          <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"></script>
+      <% }
+      }
+    } %>
   </body>
 </html>
