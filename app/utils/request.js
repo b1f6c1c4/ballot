@@ -1,15 +1,7 @@
 import root from 'window-or-global';
 import 'whatwg-fetch';
 
-export const apiUrl = (raw, host) => {
-  if (!raw) {
-    return '/api';
-  }
-  if (host.includes('try-react-staging')) {
-    return raw.replace('try-react', 'try-react-staging');
-  }
-  return raw;
-};
+export const apiUrl = (raw) => raw || '/api';
 
 export const makeApi = (url) => apiUrl(process.env.API_URL, root.location.hostname) + url;
 

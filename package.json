@@ -24,6 +24,7 @@
     "build:clean": "rimraf ./build",
     "build:dll": "node ./internals/scripts/dependencies.js",
     "start": "cross-env NODE_ENV=development run-p start:wp start:fake",
+    "start:prod": "cross-env NODE_ENV=production run-p start:wp start:fake",
     "start:wp": "cross-env API_URL=http://localhost:3001 node server",
     "start:fake": "drakov",
     "clean": "shjs ./internals/scripts/clean.js",
