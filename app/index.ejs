@@ -19,10 +19,17 @@
       }
     } %>
 
-    <title>Ballot</title>
+    <title data-i18n="index.htmlTitle">Ballot</title>
   </head>
   <body>
-    <a href="app.html">go</a>
+    <h1 data-i18n="index.title"></h1>
+
+    <select id="lng">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+    </select>
+
+    <a href="app.html" data-i18n="index.go"></a>
 
     <% if (!htmlWebpackPlugin.options.inject) {
       for (key in htmlWebpackPlugin.files.chunks) {

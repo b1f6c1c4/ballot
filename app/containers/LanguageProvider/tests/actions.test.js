@@ -1,19 +1,16 @@
-import {
-  changeLocale,
-} from '../actions';
+import * as LANGUAGE_PROVIDER from '../constants';
 
-import {
-  CHANGE_LOCALE,
-} from '../constants';
+import * as languageProviderActions from '../actions';
 
 describe('LanguageProvider actions', () => {
-  describe('Change Local Action', () => {
-    it('has a type of CHANGE_LOCALE', () => {
-      const expected = {
-        type: CHANGE_LOCALE,
-        locale: 'de',
-      };
-      expect(changeLocale('de')).toEqual(expected);
+  // Actions
+  describe('changeLocale action', () => {
+    it('has a type of CHANGE_LOCALE_ACTION', () => {
+      expect(languageProviderActions.changeLocale().type).toEqual(LANGUAGE_PROVIDER.CHANGE_LOCALE_ACTION);
+    });
+
+    it('should forward locale', () => {
+      expect(languageProviderActions.changeLocale('de').locale).toEqual('de');
     });
   });
 });

@@ -1,14 +1,8 @@
-/*
- *
- * LanguageProvider reducer
- *
- */
-
 import { fromJS } from 'immutable';
 import browserLocale from 'browser-locale';
 import { DEFAULT_LOCALE } from 'i18n';
 
-import { CHANGE_LOCALE } from './constants';
+import * as LANGUAGE_PROVIDER from './constants';
 
 function getLocale() {
   let locale = browserLocale();
@@ -22,7 +16,7 @@ function getLocale() {
 
 function languageProviderReducer(state = fromJS({ locale: getLocale() }), action) {
   switch (action.type) {
-    case CHANGE_LOCALE:
+    case LANGUAGE_PROVIDER.CHANGE_LOCALE_ACTION:
       return state
         .set('locale', action.locale);
     default:

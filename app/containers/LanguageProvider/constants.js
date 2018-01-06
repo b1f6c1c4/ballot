@@ -1,7 +1,2 @@
-/*
- *
- * LanguageProvider constants
- *
- */
-
-export const CHANGE_LOCALE = 'app/LanguageToggle/CHANGE_LOCALE';
+// Actions
+export const CHANGE_LOCALE_ACTION = 'LanguageProvider/CHANGE_LOCALE_ACTION';

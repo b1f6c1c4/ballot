@@ -2,21 +2,25 @@
  * This script will extract the internationalization messages from all components
    and package them in the translation json files in the translations file.
  */
+/* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const nodeGlob = require('glob');
-const transform = require('babel-core').transform;
+const { transform } = require('babel-core');
+const { merge, pickBy } = require('lodash');
 
 const animateProgress = require('./helpers/progress');
 const addCheckmark = require('./helpers/checkmark');
 
 const pkg = require('../../package.json');
-const presets = pkg.babel.presets;
+
+const { presets } = pkg.babel;
 const plugins = pkg.babel.plugins || [];
 
 const i18n = require('../../app/i18n');
-import { DEFAULT_LOCALE } from '../../app/i18n';
 
-require('shelljs/global');
+const { ROOT_LOCALE } = require('../../app/i18n');
+
+const { mkdir } = require('shelljs');
 
 // Glob to match all js files except test files
 const FILES_TO_PARSE = 'app/**/!(*.test).js';
@@ -36,8 +40,8 @@ const task = (message) => {
     }
     clearTimeout(progress);
     return addCheckmark(() => newLine());
-  }
-}
+  };
+};
 
 // Wrap async functions below into a promise
 const glob = (pattern) => new Promise((resolve, reject) => {
@@ -92,7 +96,7 @@ for (const locale of locales) {
   }
   ```
 */
-plugins.push(['react-intl'])
+plugins.push(['react-intl']);
 
 const extractFromFile = async (fileName) => {
   try {
@@ -103,10 +107,8 @@ const extractFromFile = async (fileName) => {
       for (const locale of locales) {
         const oldLocaleMapping = oldLocaleMappings[locale][message.id];
         // Merge old translations into the babel extracted instances where react-intl is used
-        const newMsg = ( locale === DEFAULT_LOCALE) ? message.defaultMessage : '';
-        localeMappings[locale][message.id] = (oldLocaleMapping)
-          ? oldLocaleMapping
-          : newMsg;
+        const newMsg = (locale === ROOT_LOCALE) ? message.defaultMessage : '';
+        localeMappings[locale][message.id] = oldLocaleMapping || newMsg;
       }
     }
   } catch (error) {
@@ -117,33 +119,40 @@ const extractFromFile = async (fileName) => {
 (async function main() {
   const memoryTaskDone = task('Storing language files in memory');
   const files = await glob(FILES_TO_PARSE);
-  memoryTaskDone()
+  memoryTaskDone();
 
   const extractTaskDone = task('Run extraction on all files');
   // Run extraction on all files that match the glob on line 16
   await Promise.all(files.map((fileName) => extractFromFile(fileName)));
-  extractTaskDone()
+  extractTaskDone();
+
+  const appendIndexTaskDone = task('Merge /^index\\./ messages');
+  for (const locale of locales) {
+    merge(localeMappings[locale], pickBy(oldLocaleMappings[locale], (v, k) => /^index\./.test(k)));
+  }
+  appendIndexTaskDone();
 
   // Make the directory if it doesn't exist, especially for first run
   mkdir('-p', 'app/translations');
   for (const locale of locales) {
     const translationFileName = `app/translations/${locale}.json`;
 
-    try {
-      const localeTaskDone = task(
-        `Writing translation messages for ${locale} to: ${translationFileName}`
-      );
+    const localeTaskDone = task(
+      `Writing translation messages for ${locale} to: ${translationFileName}`
+    );
 
+    try {
       // Sort the translation JSON file so that git diffing is easier
       // Otherwise the translation messages will jump around every time we extract
-      let messages = {};
-      Object.keys(localeMappings[locale]).sort().forEach(function(key) {
+      const messages = {};
+      Object.keys(localeMappings[locale]).sort().forEach((key) => {
         messages[key] = localeMappings[locale][key];
       });
 
       // Write to file the JSON representation of the translation messages
       const prettified = `${JSON.stringify(messages, null, 2)}\n`;
 
+      // eslint-disable-next-line no-await-in-loop
       await writeFile(translationFileName, prettified);
 
       localeTaskDone();
@@ -155,5 +164,5 @@ const extractFromFile = async (fileName) => {
     }
   }
 
-  process.exit()
+  process.exit();
 }());

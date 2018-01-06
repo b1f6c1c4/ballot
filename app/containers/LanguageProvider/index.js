@@ -1,18 +1,9 @@
-/*
- *
- * LanguageProvider
- *
- * this component connects the redux state language locale to the
- * IntlProvider component and i18n messages (loaded from `app/translations`)
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 import { IntlProvider } from 'react-intl';
-
-import { makeSelectLocale } from './selectors';
 
 export class LanguageProvider extends React.PureComponent {
   render() {
@@ -35,15 +26,10 @@ LanguageProvider.propTypes = {
 };
 
 
-const mapStateToProps = createSelector(
-  makeSelectLocale(),
-  (locale) => ({ locale })
-);
+const mapStateToProps = createStructuredSelector({
+  locale: /* istanbul ignore next */ (state) => state.get('language').get('locale'),
+});
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LanguageProvider);
+export default compose(
+  connect(mapStateToProps, null),
+)(LanguageProvider);
