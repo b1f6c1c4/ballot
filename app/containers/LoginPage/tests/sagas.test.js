@@ -50,7 +50,7 @@ describe('handleLoginRequest Saga', () => {
       ])
       .put(globalActions.updateCredential(token))
       .put(loginPageActions.loginSuccess(response))
-      .put(push('/'))
+      .put(push('/app/'))
       .run();
   });
 

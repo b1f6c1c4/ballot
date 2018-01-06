@@ -1,3 +1,11 @@
 {
-  "index.go": "go en"
+  "app.containers.Global.header": "This is Global container !",
+  "app.containers.HomePage.header": "Welcome!",
+  "app.containers.LoginPage.header": "This is LoginPage container !",
+  "app.containers.NotFoundPage.header": "404 Not Found",
+  "app.containers.NotFoundPage.returnHome": "Click here to return home",
+  "app.containers.StatusPage.header": "This is StatusPage container !",
+  "index.go": "go en",
+  "index.htmlTitle": "Ballot - Customizable anonymous online balloting system",
+  "index.title": "The Ballot Voting System"
 }

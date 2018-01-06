@@ -25,8 +25,8 @@ class HomePage extends React.PureComponent {
     return (
       <div className={classes.content}>
         <FormattedMessage {...messages.header} />
-        <Link to="/login">login</Link>
-        <Link to="/status">check status</Link>
+        <Link to="/app/login">login</Link>
+        <Link to="/app/status">check status</Link>
       </div>
     );
   }

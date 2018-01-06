@@ -27,7 +27,7 @@ export function* handleLoginRequest() {
     } else {
       yield put(globalActions.updateCredential(result.token));
       yield put(loginPageActions.loginSuccess(result));
-      yield put(push('/'));
+      yield put(push('/app/'));
     }
   } catch (err) {
     yield put(loginPageActions.loginFailure(err));

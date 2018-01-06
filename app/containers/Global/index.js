@@ -41,9 +41,9 @@ class Global extends React.PureComponent {
         <Typography>{this.props.isDrawerOpen.toString()}</Typography>
         <Button onClick={this.props.onToggleDrawerOpenAction}>ToggleDrawerOpenAction</Button>
         <ConnectedSwitch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/status" component={StatusPage} />
+          <Route exact path="/app/" component={HomePage} />
+          <Route exact path="/app/login" component={LoginPage} />
+          <Route exact path="/app/status" component={StatusPage} />
           <Route component={NotFoundPage} />
         </ConnectedSwitch>
       </div>

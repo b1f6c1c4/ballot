@@ -25,7 +25,7 @@ class NotFoundPage extends React.PureComponent {
     return (
       <div className={classes.content}>
         <FormattedMessage {...messages.header} />
-        <Link to="/"><FormattedMessage {...messages.returnHome} /></Link>
+        <Link to="/app/"><FormattedMessage {...messages.returnHome} /></Link>
       </div>
     );
   }
