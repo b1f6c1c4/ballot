@@ -1,0 +1,3 @@
+# Ballot-frontend
+
+Ballot website.
