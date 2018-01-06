@@ -1,0 +1,31 @@
+import * as {{ constantCase name }} from './constants';
+
+// Actions
+export function {{ camelCase actionName }}() {
+  return {
+    type: {{ constantCase name }}.{{ constantCase actionName }}_ACTION,
+  };
+}
+{{#if wantSagas}}
+
+// Sagas
+export function {{ camelCase sagaName }}Request() {
+  return {
+    type: {{ constantCase name }}.{{ constantCase sagaName }}_REQUEST,
+  };
+}
+
+export function {{ camelCase sagaName }}Success(result) {
+  return {
+    type: {{ constantCase name }}.{{ constantCase sagaName }}_SUCCESS,
+    result,
+  };
+}
+
+export function {{ camelCase sagaName }}Failure(error) {
+  return {
+    type: {{ constantCase name }}.{{ constantCase sagaName }}_FAILURE,
+    error,
+  };
+}
+{{/if}}

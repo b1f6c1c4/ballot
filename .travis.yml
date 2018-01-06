@@ -1,0 +1,29 @@
+language: node_js
+
+branches:
+  only:
+    - frontend
+    - backend
+
+node_js:
+  - 8
+
+script:
+  - yarn test
+  - yarn build
+
+before_install:
+  - chmod +x ./internals/netlify.sh
+
+notifications:
+  email:
+    on_failure: change
+
+after_success:
+  - yarn coveralls
+  - ./internals/netlify.sh
+
+cache:
+  yarn: true
+  directories:
+    - node_modules

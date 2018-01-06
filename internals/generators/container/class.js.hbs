@@ -1,0 +1,125 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+{{#if wantSelectors}}
+import { createStructuredSelector } from 'reselect';
+{{/if}}
+{{#if wantMessages}}
+import { FormattedMessage } from 'react-intl';
+{{/if}}
+{{#if wantActionsAndReducer}}
+{{#if wantLoadable}}
+import injectReducer from 'utils/injectReducer';
+{{/if}}
+{{/if}}
+{{#if wantSagas}}
+import injectSaga from 'utils/injectSaga';
+{{/if}}
+
+import {
+  withStyles,
+{{#if wantSelectors}}
+  Typography,
+{{/if}}
+{{#if wantActionsAndReducer}}
+  Button,
+{{/if}}
+} from 'material-ui';
+
+{{#if wantMSelectors}}
+import {
+  makeSelect{{ properCase name }}{{ properCase mselectorName }},
+} from './selectors';
+{{/if}}
+{{#if wantActionsAndReducer}}
+import * as {{ camelCase name }}Actions from './actions';
+{{#if wantLoadable}}
+import reducer from './reducer';
+{{/if}}
+{{/if}}
+{{#if wantSagas}}
+import sagas from './sagas';
+{{/if}}
+{{#if wantMessages}}
+import messages from './messages';
+{{/if}}
+
+const styles = (theme) => ({
+  content: {
+    backgroundColor: theme.palette.background.default,
+  },
+});
+
+class {{ properCase name }} extends React.PureComponent {
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.content}>
+{{#if wantMessages}}
+        <FormattedMessage {...messages.header} />
+{{/if}}
+{{#if wantSelectors}}
+        <Typography>{{curly true}}this.props.{{ camelCase selectorName }}{{curly false}}</Typography>
+{{/if}}
+{{#if wantMSelectors}}
+        <Typography>{{curly true}}this.props.{{ camelCase mselectorName }}{{curly false}}</Typography>
+{{/if}}
+{{#if wantActionsAndReducer}}
+        <Button onClick={this.props.on{{ properCase actionName }}Action}>{{ properCase actionName }}Action</Button>
+{{/if}}
+      </div>
+    );
+  }
+}
+
+{{ properCase name }}.propTypes = {
+  classes: PropTypes.object.isRequired,
+{{#if wantSelectors}}
+  {{ camelCase selectorName }}: PropTypes.string.isRequired,
+{{/if}}
+{{#if wantMSelectors}}
+  {{ camelCase mselectorName }}: PropTypes.string.isRequired,
+{{/if}}
+{{#if wantActionsAndReducer}}
+  on{{ properCase actionName }}Action: PropTypes.func.isRequired,
+{{/if}}
+};
+
+{{#if wantActionsAndReducer}}
+export function mapDispatchToProps(dispatch) {
+  return {
+    on{{ properCase actionName }}Action: () => dispatch({{ camelCase name }}Actions.{{ camelCase actionName }}()),
+  };
+}
+
+{{/if}}
+{{#if wantSelectors}}
+const mapStateToProps = createStructuredSelector({
+  {{ camelCase selectorName }}: /* istanbul ignore next */ (state) => state.get('{{ camelCase name }}').get('{{ camelCase selectorName }}').toJS(),
+{{#if wantMSelectors}}
+  {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),
+{{/if}}
+});
+{{/if}}
+
+export const styled{{ properCase name}} = withStyles(styles, { withTheme: true })({{ properCase name}});
+
+export default compose(
+{{#if wantSagas}}
+  injectSaga({ key: '{{ camelCase name }}', saga: sagas }),
+{{/if}}
+{{#if wantActionsAndReducer}}
+{{#if wantLoadable}}
+  injectReducer({ key: '{{ camelCase name }}', reducer }),
+{{/if}}
+  connect(mapStateToProps, mapDispatchToProps),
+{{else}}
+{{#if wantSelectors}}
+  connect(mapStateToProps, null),
+{{else}}
+  connect(null, null),
+{{/if}}
+{{/if}}
+)(styled{{ properCase name }});

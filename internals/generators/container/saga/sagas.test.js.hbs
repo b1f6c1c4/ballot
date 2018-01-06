@@ -1,0 +1,44 @@
+describe('handle{{ properCase sagaName }}Request Saga', () => {
+  const {{ camelCase sagaName }}Data = 'the-{{ camelCase sagaName }}Data';
+  const state = fromJS({
+    {{ camelCase name }}: {
+      {{ camelCase sagaName }}Data,
+    },
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch the {{ camelCase sagaName }}Success action if it requests the credential successfully', () => {
+    const response = {
+      message: 'ok',
+      payload: 'value',
+    };
+
+    return expectSaga(handle{{ properCase sagaName }}Request, api)
+      .withState(state)
+      .call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data)
+      .provide([
+        [matchers.call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data), response],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(response))
+      .run();
+  });
+
+  it('should call the {{ camelCase sagaName }}Failure action if the response errors', () => {
+    const error = new Error('value');
+
+    return expectSaga(handle{{ properCase sagaName }}Request, api)
+      .withState(state)
+      .call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data)
+      .provide([
+        [matchers.call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data), throwError(error)],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))
+      .run();
+  });
+});
