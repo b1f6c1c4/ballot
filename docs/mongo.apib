@@ -1,0 +1,84 @@
+# MongoDB in Ballot
+
+# Data Structures
+
+## Organizer (object)
+
+### Properties
+- \_id (string, required) - Username
+- salt (string, required) - Password salt
+- hash (string, required) - Password hash
+
+## Ballot (object)
+
+### Properties
+- \_id (string, required) - bId
+- owner (string, required) - Organizer's username
+- status (enum, required)
+    - creating (string)
+    - inviting (string)
+    - invited (string)
+    - pre-voting (string)
+    - voting (string)
+    - finished (string)
+- crypto (object, optional)
+    - q (string, required)
+    - g (string, required)
+    - h (string, optional)
+- fields (array[BallotField], required)
+- voters (array[BallotVoter], required)
+
+## BallotField (object)
+
+### Properties
+- prompt (string, required)
+- type (enum, required)
+    - enum (string)
+    - string (string)
+- data (array[string])
+
+## BallotVoter (object)
+
+### Properties
+- \_id (string, required) - iCode
+- name (string, required)
+- comment (string, required)
+- publicKey (string, required)
+
+## SignedTicket (object)
+
+### Properties
+- \_id (string, required) - t
+- payload (object, required)
+    - bId (string, required)
+    - result (array[string], required)
+- s (array[string], required)
+- c (array[string], required)
+
+# Collections
+
+## organizers (array[Organizer])
+
+### Indexes
+
+- \_id - Shard Key
+
+## ballots (array[Ballots])
+
+### Indexes
+
+- \_id - Unique
+- compound index - Shard Key
+    - owner
+    - \_id
+- voters.\_id
+
+## signedTickets (array[SignedTickets])
+
+### Indexes
+
+- \_id - Unique
+- compound index - Shard Key
+    - payload.bId
+    - \_id
+
