@@ -4,6 +4,8 @@ branches:
   only:
     - frontend
     - backend
+    - cryptor
+    - builder
 
 node_js:
   - 8
@@ -14,10 +16,6 @@ script:
 
 before_install:
   - chmod +x ./internals/netlify.sh
-
-notifications:
-  email:
-    on_failure: change
 
 after_success:
   - yarn coveralls
