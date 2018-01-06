@@ -18,7 +18,8 @@ const plugins = [
   new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
   new webpack.NoEmitOnErrorsPlugin(),
   new HtmlWebpackPlugin({
-    template: 'app/index.ejs',
+    filename: 'app.html',
+    template: 'app/app.ejs',
     inject: true,
   }),
   new CircularDependencyPlugin({
