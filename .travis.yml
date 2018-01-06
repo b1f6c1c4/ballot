@@ -16,7 +16,7 @@ before_install:
   - docker --version || true
   - curl -fsSL https://get.docker.com/ | sudo bash
   - docker --version
-  - npm install --global dredd@4.9.2
+  - npm install --global dredd@4.9.2 --no-optional
 
 script:
   - yarn test
