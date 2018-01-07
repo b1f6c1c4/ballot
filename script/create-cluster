@@ -1,0 +1,30 @@
+gcloud container --project "b1f6c1c4-ballot" \
+    clusters create "ballot" \
+    --zone "us-west1-a" \
+    --username "admin" \
+    --cluster-version "1.8.5-gke.0" \
+    --machine-type "f1-micro" \
+    --image-type "COS" \
+    --disk-size "100" \
+    --scopes \
+        "https://www.googleapis.com/auth/compute", \
+        "https://www.googleapis.com/auth/devstorage.read_only", \
+        "https://www.googleapis.com/auth/logging.write", \
+        "https://www.googleapis.com/auth/monitoring", \
+        "https://www.googleapis.com/auth/servicecontrol", \
+        "https://www.googleapis.com/auth/service.management.readonly", \
+        "https://www.googleapis.com/auth/trace.append" \
+    --num-nodes "3" \
+    --network "default" \
+    --enable-cloud-logging \
+    --enable-cloud-monitoring \
+    --subnetwork "default" \
+    --enable-autoscaling \
+    --min-nodes "3" \
+    --max-nodes "3" \
+    --disable-addons HttpLoadBalancing
+
+gcloud container \
+    clusters get-credentials ballot \
+    --zone us-west1-a \
+    --project b1f6c1c4-ballot
