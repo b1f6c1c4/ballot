@@ -1,16 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: NAMESPACE_ID
+  labels:
+    name: backend
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    role: backend
+---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: backend
+  namespace: NAMESPACE_ID
 spec:
   selector:
     matchLabels:
-      app: backend
+      role: backend
   replicas: 2
   template:
     metadata:
       labels:
-        app: backend
+        role: backend
     spec:
       containers:
       - name: ballot-backend
