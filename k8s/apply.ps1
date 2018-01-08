@@ -17,17 +17,50 @@ Function kb-apply-t
     [string]$Namespace = "production",
     [int]$Instance = 1,
     [int]$Size = 10,
-    [string]$Shard = 1,
+    [int]$Shard = 1,
+    [int]$Shards = 2,
     [switch]$Delete = $False
   )
 
-  if (!$Delete)
+  if (Test-Path $File)
   {
-    sed -e "s/NAMESPACE_ID/$Namespace/g; s/INSTANCE/$Instance/g; s/SIZE/$Size/g; s/hardX/hard${Shard}/g" $File | kubectl apply -f -
+    $rawyaml = @(gc $File)
+  }
+  elseif (Test-Path "${File}.yaml")
+  {
+    $rawyaml = @(gc "${File}.yaml")
   }
   else
   {
-    sed -e "s/NAMESPACE_ID/$Namespace/g; s/INSTANCE/$Instance/g; s/SIZE/$Size/g; s/hardX/hard${Shard}/g" $File | kubectl delete -f -
+    throw "File not found: $File";
+  }
+
+  $yaml = New-Object System.Collections.ArrayList($null)
+  $yaml.AddRange($rawyaml)
+
+  For ($i = 0; $i -lt $yaml.Count; $i++)
+  {
+    if ($yaml[$i] -match '.*// EACH_SHARD$')
+    {
+      $str = $yaml[$i] -replace "// EACH_SHARD", ""
+      $yaml.RemoveAt($i)
+      For ($j = $Shards; $j -gt 0; $j--)
+      {
+        $yaml.Insert($i, ($str -replace "hardX", "hard$j"))
+      }
+      $i += $Shards
+    }
+  }
+
+  $yaml = $yaml | sed -e "s/NAMESPACE_ID/$Namespace/g; s/INSTANCE/$Instance/g; s/SIZE/$Size/g; s/hardX/hard${Shard}/g"
+
+  if (!$Delete)
+  {
+    $yaml | kubectl apply -f -
+  }
+  else
+  {
+    $yaml | kubectl delete -f -
   }
 }
 
@@ -39,7 +72,7 @@ Function kb-mongo-up
     [int]$Instances = 2,
     [int]$SizeConfig = 5,
     [int]$SizeMain = 10,
-    [string]$Shards = 2,
+    [int]$Shards = 2,
     [switch]$Delete = $False
   )
 
