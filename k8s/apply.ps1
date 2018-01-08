@@ -120,10 +120,6 @@ Function kb-mongo-up
   kubectl get svc,po "--namespace=$Namespace"
   if (May-Quit $Confirm) { return; }
 
-  kb-apply-t mongodb-mongos-deployment-service.yaml -Namespace $Namespace -Delete:$Delete
-  kubectl get svc,po "--namespace=$Namespace"
-  if (May-Quit $Confirm) { return; }
-
   if (!$Delete)
   {
     kb-mongo-config -Namespace $Namespace -Shards $Shard
