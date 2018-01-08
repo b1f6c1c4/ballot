@@ -69,6 +69,7 @@
     ],
     "no-confusing-arrow": "off",
     "no-console": "warn",
+    "no-underscore-dangle": "off",
     "no-use-before-define": "error",
     "prefer-template": "error",
     "require-yield": "warn"

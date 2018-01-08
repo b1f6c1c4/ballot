@@ -57,7 +57,9 @@
     "express": "4.16.2",
     "ip": "1.1.5",
     "jsonwebtoken": "8.1.0",
+    "kubernetes-client": "3.17.2",
     "minimist": "1.2.0",
+    "mongoose": "5.0.0-rc1",
     "nocache": "2.0.0",
     "passport": "0.4.0",
     "passport-jwt": "3.0.1"

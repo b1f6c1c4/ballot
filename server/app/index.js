@@ -7,6 +7,8 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const fs = require('fs');
 
+const Organizer = require('../models/organizers');
+
 const router = express.Router();
 
 const { Strategy, ExtractJwt } = passportJWT;
@@ -73,5 +75,19 @@ router.post('/login', (req, res) => {
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => res.status(200).json(req.user));
 
 router.get('*', (req, res) => res.status(501).send());
+
+router.post('/new', (req, res) => {
+  const org = new Organizer({
+    _id: req.body._id,
+    salt: req.body.salt,
+    hash: req.body.hash,
+  });
+
+  org.save().then((doc) => {
+    res.status(200).json(doc);
+  }).catch((err) => {
+    res.status(500).json(err);
+  });
+});
 
 module.exports = router;
