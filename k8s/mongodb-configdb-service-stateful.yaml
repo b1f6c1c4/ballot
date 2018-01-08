@@ -5,6 +5,7 @@ metadata:
   namespace: NAMESPACE_ID
   labels:
     name: mongodb-configdb
+    tier: configdb
 spec:
   ports:
   - port: 27019

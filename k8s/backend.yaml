@@ -12,6 +12,26 @@ spec:
   selector:
     role: backend
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backend
+  namespace: NAMESPACE_ID
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backend-rolebinding
+  namespace: NAMESPACE_ID
+subjects:
+- kind: ServiceAccount
+  name: backend
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: service-reader
+  apiGroup: ""
+---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -27,6 +47,7 @@ spec:
       labels:
         role: backend
     spec:
+      serviceAccount: backend
       containers:
       - name: ballot-backend
         image: b1f6c1c4/ballot-backend

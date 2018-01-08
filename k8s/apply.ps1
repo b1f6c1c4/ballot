@@ -76,6 +76,7 @@ Function kb-mongo-up
     [switch]$Delete = $False
   )
 
+  kb-apply-t role.yaml -Namespace $Namespace -Delete:$Delete
   kb-apply-t namespace.yaml -Namespace $Namespace -Delete:$Delete
   kubectl get ns
   if (May-Quit $Confirm) { return; }

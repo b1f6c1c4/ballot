@@ -5,6 +5,7 @@ metadata:
   namespace: NAMESPACE_ID
   labels:
     name: mongodb-shardX
+    tier: maindb
 spec:
   ports:
   - port: 27017
