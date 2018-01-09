@@ -9,13 +9,22 @@ void runRpc()
     console->trace("runRpc()");
 
     auto rawHost = std::getenv("RABBIT_HOST");
+    auto rawUsername = std::getenv("RABBIT_USER");
+    auto rawPassword = std::getenv("RABBIT_PASS");
     std::string host = "localhost";
+    std::string username = "guest";
+    std::string password = "guest";
     if (rawHost != nullptr)
         host = std::string(rawHost);
+    if (rawUsername != nullptr)
+        username = std::string(rawUsername);
+    if (rawPassword != nullptr)
+        password = std::string(rawPassword);
 
     console->info("Connecting {}", host);
+    console->info("Username {}", username);
     console->debug("Channel::Create ...");
-    auto &&channel = AmqpClient::Channel::Create(host);
+    auto &&channel = AmqpClient::Channel::Create(host, 5672, username, password);
     console->trace("Channel::Create done");
 
     console->debug("Channel::Declare ...");
