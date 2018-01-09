@@ -1,7 +1,7 @@
 CXX=g++
-TARGETS=main
+TARGETS=main rpc
 DEPS=common.h $(addsuffix .h, $(TARGETS))
-LIBS=
+LIBS=-lrabbitmq -lSimpleAmqpClient
 CFLAGS=-Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
 CFLAGSP=$(CFLAGS) -O3
 CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "common.h"
+#include "rpc.h"
 
 #include <iostream>
 
@@ -8,10 +9,19 @@ int main()
 {
     try
     {
-        auto console = spdlog::stdout_color_mt("console");
+        auto &&console = spdlog::stdout_color_mt("main");
 
         console->info("Version {0}", VERSION);
         console->info("CommitHash {0}", COMMITHASH);
+
+        try
+        {
+            runRpc();
+        }
+        catch (const std::exception &ex)
+        {
+            console->error(ex.what());
+        }
 
         console->warn("Crypto Exited.");
     }
