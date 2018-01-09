@@ -5,17 +5,34 @@
 #include <iostream>
 
 #ifndef IS_TEST
-int main()
+int main(int argc, char *argv[])
 {
     try
     {
         auto &&console = spdlog::stdout_color_mt("main");
 
-        console->info("Version {0}", VERSION);
-        console->info("CommitHash {0}", COMMITHASH);
+        console->info("Version {}", VERSION);
+        console->info("CommitHash {}", COMMITHASH);
+        for (auto i = 0; i < argc; i++)
+            console->info("Argv[{}]: {}", i, argv[i]);
+
+        if (argc >= 2)
+        {
+            if (std::string(argv[1]) == "debug")
+            {
+                spdlog::set_level(spdlog::level::debug);
+                console->info("Verbosity set to DEBUG");
+            }
+            else if (std::string(argv[1]) == "trace")
+            {
+                spdlog::set_level(spdlog::level::trace);
+                console->info("Verbosity set to TRACE");
+            }
+        }
 
         try
         {
+            console->debug("Run rpc");
             runRpc();
         }
         catch (const std::exception &ex)
