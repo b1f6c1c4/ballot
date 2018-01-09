@@ -3,6 +3,11 @@ FROM gcc:7
 MAINTAINER b1f6c1c4, <b1f6c1c4@gmail.com>
 
 RUN \
+    apt-get update \
+    && apt-get install -y cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN \
     curl -fsSL "https://downloads.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.66.0%2F&ts=1515136452&use_mirror=phoenixnap" \
         -o boost_1_66_0.tar.bz2 \
     && tar --bzip2 -xf boost_1_66_0.tar.bz2 \
@@ -14,8 +19,15 @@ ENV LD_LIBRARY_PATH "$LD_LIBRARY_PATH:/usr/local/lib"
 
 RUN \
     cd boost_1_66_0 \
-    && ./b2 -q -a -sHAVE_ICU=1 --with-test \
-    && ./b2 -d0 --with-test install \
+    && ./b2 -q -a -sHAVE_ICU=1 -j 10 \
+        --with-test \
+        --with-chrono \
+        --with-system \
+    && ./b2 -d0 -j 10 \
+        --with-test \
+        --with-chrono \
+        --with-system \
+        install \
     && cd .. \
     && rm -rf boost_1_66_0
 
@@ -28,12 +40,35 @@ RUN \
     && rm -rf cryptopp
 
 RUN \
-    git clone --depth=1 "https://github.com/CopernicaMarketingSoftware/AMQP-CPP" \
-    && cd AMQP-CPP \
-    && make \
-    && make install \
-    && cd .. \
-    && rm -rf AMQP-CPP
+    git clone --depth=1 "https://github.com/alanxz/rabbitmq-c" \
+    && cd rabbitmq-c \
+    && mkdir build && cd build \
+    && cmake \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DBUILD_SHARED_LIBS=ON \
+        -DBUILD_STATIC_LIBS=OFF \
+        -DBUILD_TESTS=OFF \
+        -DBUILD_TOOLS=OFF \
+        -DBUILD_TOOLS_DOCS=OFF \
+        -DENABLE_SSL_SUPPORT=OFF \
+        -DBUILD_EXAMPLES=OFF \
+        .. \
+    && cmake --build . --target install -- -j 10 \
+    && cd ../.. \
+    && rm -rf rabbitmq-c
+
+RUN \
+    git clone --depth=1 "https://github.com/alanxz/SimpleAmqpClient" \
+    && cd SimpleAmqpClient \
+    && mkdir build && cd build \
+    && cmake \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DENABLE_SSL_SUPPORT=OFF \
+        .. \
+    && cmake --build . --target install -- -j 10 \
+    && cd ../.. \
+    && rm -rf SimpleAmqpClient
 
 RUN \
     git clone --depth=1 "https://github.com/P-H-C/phc-winner-argon2" \
