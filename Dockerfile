@@ -1,14 +1,9 @@
-FROM b1f6c1c4/ballot-builder
+FROM debian:stretch
 
 WORKDIR /root/cryptor
 
-COPY . .
+COPY build .
 
-RUN make ci-test
-RUN make all
+ENV LD_LIBRARY_PATH .
 
-FROM ubuntu:artful
-
-WORKDIR /root/cryptor
-COPY --from=0 /root/cryptor .
-CMD ["./build/cryptor"]
+CMD ["./cryptor"]

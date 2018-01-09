@@ -20,13 +20,14 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - docker build -t b1f6c1c4/ballot-cryptor .
+  - docker build -f Dockerfile.build -t b1f6c1c4/ballot-cryptor-build .
+  - docker create --name extract b1f6c1c4/ballot-cryptor-build
+  - docker cp extract:/root/cryptor ./build
+  - docker rm -f extract
+  - docker build -t b1f6c1c4/ballot-cryptor ./build
 
 after_success:
-  - docker create --name extract b1f6c1c4/ballot-cryptor
-  - docker cp extract:/root/cryptor ./built
-  - docker rm -f extract
-  - cd built
+  - cd build
   - coveralls --exclude tests --exclude-pattern ".*\.h(pp)?" -b . -n
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push b1f6c1c4/ballot-cryptor
