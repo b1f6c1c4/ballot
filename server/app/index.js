@@ -7,6 +7,7 @@ const { graphqlExpress } = require('apollo-server-express');
 const fs = require('fs');
 const passport = require('passport');
 const anony = require('./anonymity');
+const secret = require('./secret');
 
 const router = express.Router();
 
@@ -80,6 +81,8 @@ router.get('/secret', anony(false), (req, res) => {
     res.status(500).send();
   }
 });
+
+router.use('/secret', secret);
 
 router.get('*', (req, res) => res.status(404).send());
 

@@ -1,7 +1,9 @@
 const TorTest = require('tor-test');
 const logger = require('../logger');
 
-module.exports = (strict = true) => (req, res, next) => {
+module.exports = (force = true) => (req, res, next) => {
+  const strict = force && process.env.NODE_ENV === 'production';
+
   TorTest.isTor(req.ip, (err, isTor) => {
     if (err) {
       logger.error(err);

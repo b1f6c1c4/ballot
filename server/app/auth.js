@@ -51,6 +51,7 @@ class TryJWTStrategy extends Strategy {
         }
       });
     } catch (err) {
+      /* istanbul ignore next */
       this.error(err);
     }
   }
@@ -59,6 +60,7 @@ class TryJWTStrategy extends Strategy {
 passport.use(new TryJWTStrategy());
 
 module.exports = {
+  TryJWTStrategy,
   issue: (payload) => jwt.sign(payload, secret, signOptions),
   auth: passport.authenticate('try-jwt', { session: false }),
 };
