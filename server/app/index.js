@@ -6,7 +6,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const { graphqlExpress } = require('apollo-server-express');
 const fs = require('fs');
 const passport = require('passport');
-const { issue, auth } = require('./auth');
+const anony = require('./anonymity');
 
 const router = express.Router();
 
@@ -66,8 +66,20 @@ router.get('/', (req, res) => {
   }
 });
 
-router.post('/login', (req, res) => res.status(200).json({ token: issue({ a: 1, b: 2 }) }));
-router.get('/profile', auth, (req, res) => res.status(200).json(req.user));
+router.get('/secret', anony(false), (req, res) => {
+  if (theStatus) {
+    res.status(200).json({
+      version: theStatus.version,
+      commitHash: theStatus.commitHash,
+      ip: req.ip,
+      error: req.anony.error,
+      isTor: req.anony.isTor,
+      headers: req.headers,
+    });
+  } else {
+    res.status(500).send();
+  }
+});
 
 router.get('*', (req, res) => res.status(404).send());
 

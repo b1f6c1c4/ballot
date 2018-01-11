@@ -13,6 +13,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false;
 const app = express();
 
+app.set('trust proxy', true);
 app.use('/api', api);
 if (process.env.NODE_ENV !== 'production') {
   app.get('/graphql', graphiqlExpress({
