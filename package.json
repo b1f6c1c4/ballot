@@ -17,7 +17,7 @@
   "scripts": {
     "start": "nodemon graphiql.js",
     "start:prod": "yarn build && serve ./build",
-    "start:public": "aglio -i docs/public.apib -s",
+    "start:apib": "aglio -i docs/public.apib -s",
     "start:cryptor": "aglio -i docs/cryptor.apib -s",
     "build": "graphdoc --force"
   },
