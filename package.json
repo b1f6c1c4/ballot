@@ -65,7 +65,7 @@
     "mongoose": "5.0.0-rc1",
     "nocache": "2.0.0",
     "passport": "0.4.0",
-    "passport-jwt": "3.0.1"
+    "passport-strategy": "1.0.0"
   },
   "devDependencies": {
     "coveralls": "3.0.0",

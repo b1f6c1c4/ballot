@@ -2,42 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const nocache = require('nocache');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const passportJWT = require('passport-jwt');
 const { makeExecutableSchema } = require('graphql-tools');
 const { graphqlExpress } = require('apollo-server-express');
 const fs = require('fs');
-
-const Organizer = require('../models/organizers');
+const passport = require('passport');
+const { issue, auth } = require('./auth');
 
 const router = express.Router();
-
-const { Strategy, ExtractJwt } = passportJWT;
-const jwtOptions = {
-  issuer: 'try-react',
-  audience: 'try-react',
-  expiresIn: '2h',
-};
-const pjwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET || 's3cReT',
-  ignoreExpiration: false,
-  maxAge: '2h',
-  jsonWebTokenOptions: jwtOptions,
-};
-
-passport.use(new Strategy(pjwtOptions, (payload, done) => {
-  if (typeof payload.username !== 'string') {
-    return done(new Error('Malformat'), null);
-  }
-
-  // return done(new Error('User not exist'), null);
-
-  return done(null, {
-    username: payload.username,
-  });
-}));
 
 router.use(cors({
   origin: '*',
@@ -95,33 +66,9 @@ router.get('/', (req, res) => {
   }
 });
 
-router.post('/login', (req, res) => {
-  const payload = {
-    username: req.body.username,
-  };
-  const token = jwt.sign(payload, pjwtOptions.secretOrKey, jwtOptions);
-  res.json({
-    message: 'ok',
-    token,
-  });
-});
+router.post('/login', (req, res) => res.status(200).json({ token: issue({ a: 1, b: 2 }) }));
+router.get('/profile', auth, (req, res) => res.status(200).json(req.user));
 
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => res.status(200).json(req.user));
-
-router.get('*', (req, res) => res.status(501).send());
-
-router.post('/new', (req, res) => {
-  const org = new Organizer({
-    _id: req.body._id,
-    salt: req.body.salt,
-    hash: req.body.hash,
-  });
-
-  org.save().then((doc) => {
-    res.status(200).json(doc);
-  }).catch((err) => {
-    res.status(500).json(err);
-  });
-});
+router.get('*', (req, res) => res.status(404).send());
 
 module.exports = router;
