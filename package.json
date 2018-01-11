@@ -15,7 +15,22 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "aglio -i docs/public.apib -s",
-    "start:cryptor": "aglio -i docs/cryptor.apib -s"
+    "start": "nodemon graphiql.js",
+    "start:prod": "yarn build && serve ./build",
+    "start:public": "aglio -i docs/public.apib -s",
+    "start:cryptor": "aglio -i docs/cryptor.apib -s",
+    "build": "graphdoc --force"
+  },
+  "nodemonConfig": {
+    "ext": "graphql"
+  },
+  "graphdoc": {
+    "schemaFile": "./docs/public.graphql",
+    "output": "./build"
+  },
+  "dependencies": {
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.12.3",
+    "restify": "^6.3.4"
   }
 }

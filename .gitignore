@@ -1,3 +1,7 @@
+# Artifact
+build
+node_modules
+
 # Cruft
 *~
 *.swp
