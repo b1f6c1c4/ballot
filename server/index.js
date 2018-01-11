@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const argv = require('minimist')(process.argv.slice(2));
-const redirect = require('./middlewares/redirect');
+const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
 const logger = require('./logger');
 const shard = require('./shard');
@@ -14,8 +14,11 @@ const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngr
 const app = express();
 
 app.use('/api', api);
-
-app.use('*', redirect);
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/graphql', graphiqlExpress({
+    endpointURL: '/api/graphql',
+  }));
+}
 
 // get the intended host and port number, use localhost and port 3000 if not provided
 const customHost = argv.host || process.env.HOST;
