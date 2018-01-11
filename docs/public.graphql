@@ -1,8 +1,279 @@
+# Entry points
+
 type Query {
-  me: User
+
+  # Check system status [GET /]
+  status: Status
+
+  # Authentication is required when `id` not specified
+  ballot(bId: ID): [Ballot]
 }
 
-type User {
-  id: ID
-  name: String
+type Mutation {
+
+  # Create account
+  #
+  # + Username must be unique.
+  # + Username must have at least 5 characters.
+  # + Username must be composed of alphanumeric and dash.
+  # + Password must have at least 8 characters.
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `unmf`   | Username malformed                          |
+  # | `400`   | `pwmf`   | Password malformed                          |
+  # | `400`   | `unex`   | Username exists                             |
+  register(input: RegisterInput!): Boolean
+
+  # Get credential
+  login(input: LoginInput!): JWT
+
+  # Change password
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `pwmf`   | Password malformed                          |
+  password(input: PasswordInput!): Boolean
+
+  # Create a new ballot
+  #
+  # Authentication is required
+  createBallot(input: CreateBallotInput!): Ballot
+
+  # Replace all fields
+  #
+  # Authentication required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `fdmf`   | Field malformed                             |
+  # | `409`   | `flkd`   | Field changes locked by ballot status       |
+  replaceFields(input: ReplaceFieldsInput!): BallotField
+
+  # Finalize field changes
+  #
+  # Locks field changes, and turn ballot status from `invited` to `preVoting`.
+  #
+  # Authentication required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `409`   | `snid`   | Ballot status is not `invited`              |
+  finalizeFields(input: FinalizeFieldsInput!): Boolean
+
+  # Create a new voter
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `409`   | `vlkd`   | Voter changes locked by ballot status       |
+  createVoter(input: CreateVoterInput!): BallotVoter
+
+  # Delete a voter
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `409`   | `vlkd`   | Voter changes locked by ballot status       |
+  deleteVoter(input: DeleteVoterInput!): Boolean
+
+  # Finalize voter changes
+  #
+  # Locks voter changes, and turn ballot status from `inviting` to `invited`.
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `409`   | `sniv`   | Ballot status is not `inviting`             |
+  finalizeVoters(input: FinalizeVotersInput!): Boolean
+
+  # Register as a voter
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `pkmf`   | Public key malformed                        |
+  # | `409`   | `rniv`   | Ballot status is not `inviting`             |
+  registerVoter(input: RegisterVoterInput!): Boolean
 }
+
+# Inputs
+
+input RegisterInput {
+  # Must be unique.
+  # Must have at least 5 characters.
+  # Must be composed of alphanumeric and dash.
+  username: String!
+  # Must have at least 8 characters.
+  password: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input PasswordInput {
+  oldPassword: String!
+  # Must have at least 8 characters.
+  newPassword: String!
+}
+
+input CreateBallotInput {
+  # Must have at least 1 characters.
+  # Must be composed of alphanumeric and dash.
+  name: String!
+}
+
+input ReplaceFieldsInput {
+  bId: ID!
+  fields: [FieldInput!]!
+}
+
+input FieldInput {
+  prompt: String!
+  stringDefault: String
+  enumItems: [String]
+}
+
+input FinalizeFieldsInput {
+  bId: ID!
+}
+
+input CreateVoterInput {
+  bId: ID!
+  name: String!
+}
+
+input DeleteVoterInput {
+  bId: ID!
+  iCode: ID!
+}
+
+input FinalizeVotersInput {
+  bId: ID!
+}
+
+input RegisterVoterInput {
+  bId: ID!
+  iCode: ID!
+  comment: String
+  publicKey: Crypto!
+}
+
+# Objects
+
+type Status {
+  version: String
+  commitHash: String
+}
+
+type Ballot {
+  bId: ID!
+  name: String!
+  status: BallotStatus!
+  q: Crypto
+  g: Crypto
+  h: Crypto
+
+  # Authentication **is** required when
+  # - `created`
+  # - `inviting`
+  # - `invited`
+  #
+  # Authentication is **not** required when
+  # - `preVoting`
+  # - `voting`
+  # - `finished`
+  fields: [BallotField!]!
+
+  # Authentication **is** required when
+  # - `created`
+  # - `inviting`
+  #
+  # Authentication is **not** required when
+  # - `invited`
+  # - `preVoting`
+  # - `voting`
+  # - `finished`
+  voters: [BallotVoter!]!
+}
+
+interface BallotField {
+  prompt: String!
+}
+
+type StringField implements BallotField {
+  prompt: String!
+  default: String
+}
+
+type EnumField implements BallotField {
+  prompt: String!
+  items: [String]!
+}
+
+type BallotVoter {
+  iCode: ID!
+  name: String!
+  comment: String
+  publicKey: Crypto
+}
+
+type BallotTicket {
+  t: Crypto!
+  payload: TicketPayload!
+  s: Crypto!
+  c: Crypto!
+}
+
+type TicketPayload {
+  bId: ID!
+  result: [String]!
+}
+
+type TicketStat {
+  count: Int!
+  summary: [[FieldStat!]!]!
+}
+
+type FieldStat {
+  answer: String
+  count: Int!
+}
+
+# Enums
+
+enum BallotStatus {
+  creating
+  inviting
+  invited
+  preVoting
+  voting
+  finished
+}
+
+# Scalars
+
+scalar JWT
+scalar Crypto

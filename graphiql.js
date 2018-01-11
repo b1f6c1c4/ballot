@@ -1,11 +1,16 @@
 const restify = require('restify');
-const { buildSchema } = require('graphql');
+const { parse, buildASTSchema } = require('graphql');
 const graphqlHTTP = require('express-graphql');
 const fs = require('fs');
 
 const app = restify.createServer();
 
-const schema = buildSchema(fs.readFileSync('./docs/public.graphql', 'utf8'));
+const schema = buildASTSchema(
+  parse(fs.readFileSync('./docs/public.graphql', 'utf8')),
+  {
+    commentDescriptions: true,
+  }
+);
 
 app.post('/graphql', graphqlHTTP({
   schema,

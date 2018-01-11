@@ -94,7 +94,7 @@ This API only returns machine-readable error codes in the field `error`. Please 
     + creating (string)
     + inviting (string)
     + invited (string)
-    + pre-voting (string)
+    + preVoting (string)
     + voting (string)
     + finished (string)
 
@@ -340,7 +340,7 @@ Authentication **is** required only when ballot status is one of the following:
 - `invited`
 
 Authentication is **not** required only when ballot status is one of the following:
-- `pre-voting`
+- `preVoting`
 - `voting`
 - `finished`
 
@@ -432,7 +432,7 @@ Authentication is **not** required only when ballot status is one of the followi
 
 ### Finalize field changes [PATCH]
 
-This endpoint locks field changes, and turn ballot status from `invited` to `pre-voting`.
+This endpoint locks field changes, and turn ballot status from `invited` to `preVoting`.
 
 **Endpoint information**
 
@@ -469,7 +469,7 @@ Authentication **is** required only when ballot status is one of the following:
 - `invited`
 
 Authentication is **not** required only when ballot status is one of the following:
-- `pre-voting`
+- `preVoting`
 - `voting`
 - `finished`
 
@@ -572,7 +572,7 @@ Authentication **is** required only when ballot status is one of the following:
 
 Authentication is **not** required only when ballot status is one of the following:
 - `invited`
-- `pre-voting`
+- `preVoting`
 - `voting`
 - `finished`
 
@@ -654,7 +654,7 @@ Authentication **is** required only when ballot status is one of the following:
 
 Authentication is **not** required only when ballot status is one of the following:
 - `invited`
-- `pre-voting`
+- `preVoting`
 - `voting`
 - `finished`
 
