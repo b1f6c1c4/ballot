@@ -3,65 +3,53 @@ const Api = require('kubernetes-client');
 const { Mongos, Server } = require('mongodb');
 const logger = require('./logger');
 
-const execute = (top) => (cmd) => new Promise((resolve, reject) => {
+const execute = (top) => async (cmd) => {
   logger.info(`Executing ${JSON.stringify(cmd)}`);
   top.command('admin', cmd, {}, (ex, rx) => {
     if (ex) {
       logger.error(ex);
-      reject(ex);
-    } else {
-      logger.info(`Server response: ${JSON.stringify(rx)}`);
-      if (rx.result.ok === 1) {
-        resolve(rx);
-      } else {
-        reject(rx);
-      }
+      throw rx;
     }
+    logger.info(`Server response: ${JSON.stringify(rx)}`);
+    if (rx.result.ok === 1) {
+      return rx;
+    }
+    throw rx;
   });
-});
+};
 
-module.exports = () => new Promise((resolve, reject) => {
+module.exports = async () => {
   const cfg = Api.config.getInCluster();
   logger.info('Got credential from mounted k8s');
   const core = new Api.Core(cfg);
 
   logger.info('Fetching services with tier maingdb');
-  core.namespaces.services.matchLabels({
-    tier: 'maindb',
-  }).get((err, data) => {
-    if (err) {
-      logger.error(err);
-      reject(err);
-    } else {
-      const services = data.items.map((it) => it.metadata.name);
-      logger.info(`Services: ${JSON.stringify(services)}`);
+  try {
+    const data = await core.namespaces.services.matchLabels({
+      tier: 'maindb',
+    }).getPromise();
 
-      const ids = services.map((sv) => sv.match(/^mongodb-shard(\d+)-headless-service$/)[1]);
-      logger.info(`Indexes: ${JSON.stringify(ids)}`);
+    const services = data.items.map((it) => it.metadata.name);
+    logger.info(`Services: ${JSON.stringify(services)}`);
 
-      const cmds = ids.map((i) => ({
-        addShard: `${cfg.namespace}-shard${i}/mongodb-shard${i}-0.mongodb-shard${i}-headless-service.${cfg.namespace}.svc.cluster.local:27017`,
-        name: `shard${i}`,
-      }));
+    const ids = services.map((sv) => sv.match(/^mongodb-shard(\d+)-headless-service$/)[1]);
+    logger.info(`Indexes: ${JSON.stringify(ids)}`);
 
-      const mongos = new Mongos([
-        new Server('localhost', 27017),
-      ]);
-      mongos.connect((e) => {
-        if (e) {
-          logger.error(e);
-          reject(e);
-        } else {
-          Promise.all(cmds.map(execute(mongos)))
-            .then((rxs) => {
-              logger.info('Done setting up mongos.');
-              resolve(rxs);
-            }, (exs) => {
-              logger.error(exs);
-              reject(exs);
-            });
-        }
-      });
-    }
-  });
-});
+    const cmds = ids.map((i) => ({
+      addShard: `${cfg.namespace}-shard${i}/mongodb-shard${i}-0.mongodb-shard${i}-headless-service.${cfg.namespace}.svc.cluster.local:27017`,
+      name: `shard${i}`,
+    }));
+
+    const mongos = new Mongos([
+      new Server('localhost', 27017),
+    ]);
+    await mongos.connect();
+
+    const rxs = await Promise.all(cmds.map(execute(mongos)));
+    logger.info('Done setting up mongos.');
+    return rxs;
+  } catch (err) {
+    logger.error(err);
+    throw err;
+  }
+};
