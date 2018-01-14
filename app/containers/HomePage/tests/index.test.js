@@ -10,7 +10,7 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('<HomePage />', () => {
   it('should render', () => {
     const renderedComponent = shallow(
-      <HomePage />
+      <HomePage />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

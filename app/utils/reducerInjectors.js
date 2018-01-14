@@ -12,7 +12,7 @@ export function injectReducerFactory(store, isValid) {
 
     invariant(
       isString(key) && !isEmpty(key) && isFunction(reducer),
-      '(app/utils...) injectReducer: Expected `reducer` to be a reducer function'
+      '(app/utils...) injectReducer: Expected `reducer` to be a reducer function',
     );
 
     store.injectedReducers[key] = reducer; // eslint-disable-line no-param-reassign

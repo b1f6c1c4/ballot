@@ -30,9 +30,9 @@ describe('<{{ properCase name }} />', () => {
         // Actions
         on{{ properCase actionName }}Action={jest.fn()}
 {{/if}}
-      />
+      />,
 {{else}}
-      <{{ properCase name }} />
+      <{{ properCase name }} />,
 {{/ifOr}}
     ).dive();
     expect(renderedComponent).toBeDefined();

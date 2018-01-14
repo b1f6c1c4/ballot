@@ -17,7 +17,7 @@ describe('<Global />', () => {
         hasCredential={false}
         // Actions
         onToggleDrawerOpenAction={jest.fn()}
-      />
+      />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

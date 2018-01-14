@@ -10,7 +10,7 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('<NotFoundPage />', () => {
   it('should render', () => {
     const renderedComponent = shallow(
-      <NotFoundPage />
+      <NotFoundPage />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

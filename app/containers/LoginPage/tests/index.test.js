@@ -16,7 +16,7 @@ describe('<LoginPage />', () => {
         isLoading={false}
         // Actions
         onSubmitLoginAction={jest.fn()}
-      />
+      />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

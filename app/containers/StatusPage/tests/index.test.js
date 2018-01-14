@@ -17,7 +17,7 @@ describe('<StatusPage />', () => {
         commitHash="the-h"
         // Actions
         onFetchStatusAction={jest.fn()}
-      />
+      />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

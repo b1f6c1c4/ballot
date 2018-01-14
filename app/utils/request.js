@@ -22,30 +22,34 @@ function checkStatus(response) {
   throw error;
 }
 
-function apiBare(method, url, auth) {
-  return fetch(makeApi(url), {
+async function apiBare(method, url, auth) {
+  const response = await fetch(makeApi(url), {
     method,
     headers: {
       Authorization: auth,
     },
-  }).then(checkStatus)
-    .then(parseJSON);
+  });
+
+  checkStatus(response);
+  return parseJSON(response);
 }
 
-export function api(method, url, auth, body) {
+export async function api(method, url, auth, body) {
   if (!body) {
     return apiBare(method, url, auth);
   }
 
-  return fetch(makeApi(url), {
+  const response = await fetch(makeApi(url), {
     method,
     headers: {
       Authorization: auth,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
-  }).then(checkStatus)
-    .then(parseJSON);
+  });
+
+  checkStatus(response);
+  return parseJSON(response);
 }
 
 export const GET = /* istanbul ignore next */ (url, auth, body) => api('GET', url, auth, body);
