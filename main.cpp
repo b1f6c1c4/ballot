@@ -1,8 +1,6 @@
 #include "main.h"
-#include "common.h"
-#include "rpc.h"
-
 #include <iostream>
+#include "rpc.h"
 
 #ifndef IS_TEST
 int main(int argc, char *argv[])

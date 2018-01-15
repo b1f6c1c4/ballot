@@ -1,1 +1,1 @@
-int fun();
+#include "common.h"

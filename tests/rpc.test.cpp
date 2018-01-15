@@ -1,12 +1,8 @@
 #define BOOST_TEST_MODULE rpc
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
-#include <json.hpp>
 
 #include "../rpc.h"
-#include <iostream>
-
-using json = nlohmann::json;
 
 RpcAnswer handler(const std::string &method, const json &data)
 {

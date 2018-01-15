@@ -1,6 +1,5 @@
 #include "rpc.h"
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
-#include <iostream>
 
 std::string executeRpcs(const std::string &str, RpcHandler executer)
 {
