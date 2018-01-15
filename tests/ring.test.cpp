@@ -12,7 +12,7 @@
 Ring generate()
 {
     Ring ring;
-    ring.p = Integer(15485863);
+    ring.q = Integer(15485863);
     ring.g = Integer(6);
     return ring;
 }
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_SUITE(newRing_test);
 BOOST_AUTO_TEST_CASE(gen)
 {
     auto &&j = newRing();
-    BOOST_TEST(j["p"] == "00000000000000000000000000ec4ba7");
+    BOOST_TEST(j["q"] == "00000000000000000000000000ec4ba7");
     BOOST_TEST(j["g"] == "00000000000000000000000000000006");
 }
 

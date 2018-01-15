@@ -12,11 +12,11 @@ BOOST_AUTO_TEST_SUITE(MathRing_test);
 BOOST_AUTO_TEST_CASE(moveRing)
 {
     Ring ring;
-    ring.p = Integer(123);
+    ring.q = Integer(123);
     ring.g = Integer(456);
 
     auto &&mr = MathRing(std::move(ring));
-    BOOST_TEST(mr.p == Integer(123));
+    BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
     BOOST_TEST(mr.ma.GetModulus() == 122);
 }
@@ -24,11 +24,11 @@ BOOST_AUTO_TEST_CASE(moveRing)
 BOOST_AUTO_TEST_CASE(copyRing)
 {
     Ring ring;
-    ring.p = Integer(123);
+    ring.q = Integer(123);
     ring.g = Integer(456);
 
     auto &&mr = MathRing(ring);
-    BOOST_TEST(mr.p == Integer(123));
+    BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
     BOOST_TEST(mr.ma.GetModulus() == Integer(122));
 }
@@ -126,8 +126,8 @@ BOOST_AUTO_TEST_CASE(gen)
     half <<= WIDTH_BIT - 1;
 
     AutoSeededRandomPool prng;
-    BOOST_TEST(VerifyPrime(prng, ring.p));
-    BOOST_TEST(ring.p > half);
+    BOOST_TEST(VerifyPrime(prng, ring.q));
+    BOOST_TEST(ring.q > half);
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(hash)
 {
     const byte buffer[] = "asdfqwer";
     Ring ring;
-    ring.p = Integer(15485863);
+    ring.q = Integer(15485863);
     ring.g = Integer(6);
 
     auto &&res = groupHash(buffer, 8, ring);

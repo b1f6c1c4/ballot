@@ -6,7 +6,7 @@ json newRing()
     auto &&ring = generate();
 
     json j;
-    j["p"] = toString(ring.p);
+    j["q"] = toString(ring.q);
     j["g"] = toString(ring.g);
     return j;
 }

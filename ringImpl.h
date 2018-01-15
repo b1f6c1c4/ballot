@@ -14,7 +14,7 @@ using namespace CryptoPP;
 
 struct Ring
 {
-    Integer p;
+    Integer q;
     Integer g;
 };
 

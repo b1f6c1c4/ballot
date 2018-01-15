@@ -6,8 +6,8 @@
 
 using namespace CryptoPP;
 
-MathRing::MathRing(Ring &&ring) : Ring(std::move(ring)), ma((Integer(Ring::p) -= Integer::One())) {}
-MathRing::MathRing(const Ring &ring) : Ring(ring), ma((Integer(Ring::p) -= Integer::One())) {}
+MathRing::MathRing(Ring &&ring) : Ring(std::move(ring)), ma((Integer(Ring::q) -= Integer::One())) {}
+MathRing::MathRing(const Ring &ring) : Ring(ring), ma((Integer(Ring::q) -= Integer::One())) {}
 
 Integer fromJson(const json &j)
 {
@@ -38,7 +38,7 @@ Ring generate()
     pg.Generate(1, prng, WIDTH_BIT, WIDTH_BIT - 1);
 
     Ring ring;
-    ring.p = pg.Prime();
+    ring.q = pg.Prime();
     ring.g = pg.Generator();
     return ring;
 }
