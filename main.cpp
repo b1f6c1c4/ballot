@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
         try
         {
             console->debug("Run rpc");
-            runRpc();
+            // runRpc(&handler);
         }
         catch (const std::exception &ex)
         {

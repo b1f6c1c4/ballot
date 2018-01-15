@@ -2,7 +2,7 @@ CXX=g++
 TARGETS=main rpc
 DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=-lrabbitmq -lSimpleAmqpClient
-CFLAGS=-Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
+CFLAGS=-std=c++17 -Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
 CFLAGSP=$(CFLAGS) -O3
 CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage
 
@@ -30,13 +30,13 @@ test: clean-cov $(addprefix run-, $(TARGETS))
 	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s
 
 run-%: build/tests/%
-	-./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=detailed --report_sink=stdout
+	-./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=short --report_sink=stdout
 
 ci-test: clean-cov $(addprefix ci-run-, $(TARGETS))
 	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s --keep
 
 ci-run-%: build/tests/%
-	./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=detailed --report_sink=stdout
+	./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=short --report_sink=stdout
 
 clean: clean-coverage
 	rm -rf build

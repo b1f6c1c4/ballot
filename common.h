@@ -1,4 +1,7 @@
 #include <spdlog/spdlog.h>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 #ifndef VERSION
 #define VERSION "UNKNOWN"
