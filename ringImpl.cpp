@@ -29,6 +29,7 @@ std::string toString(const Integer &v)
     return str;
 }
 
+#ifndef IS_TEST_RING
 Ring generate()
 {
     AutoSeededRandomPool prng;
@@ -41,6 +42,7 @@ Ring generate()
     ring.g = pg.Generator();
     return ring;
 }
+#endif
 
 size_t fillBuffer(const Integer &v, byte *buffer)
 {

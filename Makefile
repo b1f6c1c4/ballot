@@ -1,5 +1,5 @@
 CXX=g++
-TARGETS=main rpc ringImpl
+TARGETS=main rpc ring ringImpl
 DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=-lrabbitmq -lSimpleAmqpClient -lcryptopp
 CFLAGS=-std=c++17 -Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
