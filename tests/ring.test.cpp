@@ -29,3 +29,21 @@ BOOST_AUTO_TEST_CASE(gen)
 }
 
 BOOST_AUTO_TEST_SUITE_END();
+
+BOOST_AUTO_TEST_SUITE(genH_test);
+
+BOOST_AUTO_TEST_CASE(genh)
+{
+    json j;
+    j["q"] = "00000000000000000000000000ec4ba7";
+    j["g"] = "00000000000000000000000000000006";
+    j["publicKeys"] = {
+        "61736466717765727a7863766c6b6a68", // asdfqwerzxcvlkjh
+        "71776572766861697364666876616c65", // qwervhaisdfhvale
+    };
+
+    auto &&res = genH(j);
+    BOOST_TEST(res["h"] == "000000000000000000000000000f9c0c");
+}
+
+BOOST_AUTO_TEST_SUITE_END();
