@@ -2,8 +2,12 @@
 #include <cryptopp/misc.h>
 #include <cryptopp/osrng.h>
 #include <cryptopp/nbtheory.h>
+#include <cryptopp/sha3.h>
 
 using namespace CryptoPP;
+
+MathRing::MathRing(Ring &&ring) : Ring(std::move(ring)), ma((Integer(Ring::p) -= Integer::One())) {}
+MathRing::MathRing(const Ring &ring) : Ring(ring), ma((Integer(Ring::p) -= Integer::One())) {}
 
 Integer fromJson(const json &j)
 {
@@ -49,4 +53,15 @@ Integer readBuffer(const byte *buffer, size_t len)
     Integer v;
     v.Decode(buffer, len);
     return v;
+}
+
+Integer groupHash(const byte *buffer, size_t len, const MathRing &ring)
+{
+    SHA3_512 raw;
+
+    byte digest[SHA3_512::DIGESTSIZE];
+    raw.CalculateDigest(digest, buffer, len);
+
+    auto &&hash = readBuffer(digest, SHA3_512::DIGESTSIZE);
+    return ring.ma.Exponentiate(ring.g, hash);
 }

@@ -7,7 +7,66 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/nbtheory.h>
 
+BOOST_AUTO_TEST_SUITE(MathRing_test);
+
+BOOST_AUTO_TEST_CASE(moveRing)
+{
+    Ring ring;
+    ring.p = Integer(123);
+    ring.g = Integer(456);
+
+    auto &&mr = MathRing(std::move(ring));
+    BOOST_TEST(mr.p == Integer(123));
+    BOOST_TEST(mr.g == Integer(456));
+    BOOST_TEST(mr.ma.GetModulus() == 122);
+}
+
+BOOST_AUTO_TEST_CASE(copyRing)
+{
+    Ring ring;
+    ring.p = Integer(123);
+    ring.g = Integer(456);
+
+    auto &&mr = MathRing(ring);
+    BOOST_TEST(mr.p == Integer(123));
+    BOOST_TEST(mr.g == Integer(456));
+    BOOST_TEST(mr.ma.GetModulus() == Integer(122));
+}
+
+BOOST_AUTO_TEST_SUITE_END();
+
 BOOST_AUTO_TEST_SUITE(fromJson_test);
+
+BOOST_AUTO_TEST_CASE(throws_no)
+{
+    json j;
+
+    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+}
+
+BOOST_AUTO_TEST_CASE(throws_number)
+{
+    json j;
+    j["key"] = 123;
+
+    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+}
+
+BOOST_AUTO_TEST_CASE(throws_object)
+{
+    json j;
+    j["key"]["val"] = "abcde";
+
+    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+}
+
+BOOST_AUTO_TEST_CASE(throws_array)
+{
+    json j;
+    j["key"] = { "abc" };
+
+    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+}
 
 BOOST_AUTO_TEST_CASE(full)
 {
@@ -104,6 +163,21 @@ BOOST_AUTO_TEST_CASE(read)
     Integer v0(str.c_str());
     auto &&v = readBuffer(buffer, WIDTH_BYTE);
     BOOST_TEST(v == v0);
+}
+
+BOOST_AUTO_TEST_SUITE_END();
+
+BOOST_AUTO_TEST_SUITE(groupHash_test);
+
+BOOST_AUTO_TEST_CASE(hash)
+{
+    const byte buffer[] = "asdfqwer";
+    Ring ring;
+    ring.p = Integer(15485863);
+    ring.g = Integer(6);
+
+    auto &&res = groupHash(buffer, 8, ring);
+    BOOST_TEST(res == Integer(4439226)); // 6^^$SHA3-512(buffer) % (15485863-1)
 }
 
 BOOST_AUTO_TEST_SUITE_END();
