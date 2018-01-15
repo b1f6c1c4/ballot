@@ -79,7 +79,7 @@ RUN \
     && rm -rf phc-winner-argon2
 
 RUN \
-    curl -SL "https://raw.githubusercontent.com/nlohmann/json/develop/src/json.hpp" \
+    curl -SL "https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp" \
         -o json.hpp \
     && mv json.hpp /usr/local/include
 
