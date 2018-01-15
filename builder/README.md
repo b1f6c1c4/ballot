@@ -16,5 +16,5 @@ The following utils are included:
 - [CopernicaMarketingSoftware/AMQP-CPP](https://github.com/CopernicaMarketingSoftware/AMQP-CPP)
 - [P-H-C/phc-winner-argon2](https://github.com/P-H-C/phc-winner-argon2)
 - [nlohmann/json](https://raw.githubusercontent.com/nlohmann/json/develop/src/json.hpp)
-- spdlog
+- [gabime/spdlog](https://github.com/gabime/spdlog)
 - gcovr

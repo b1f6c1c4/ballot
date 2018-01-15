@@ -34,8 +34,8 @@ RUN \
 RUN \
     git clone --depth=1 "https://github.com/weidai11/cryptopp" \
     && cd cryptopp \
-    && make \
-    && make install \
+    && make -j 10 \
+    && make -j 10 install \
     && cd .. \
     && rm -rf cryptopp
 
@@ -73,13 +73,13 @@ RUN \
 RUN \
     git clone --depth=1 "https://github.com/P-H-C/phc-winner-argon2" \
     && cd phc-winner-argon2 \
-    && make \
-    && make install \
+    && make -j 10 \
+    && make -j 10 install \
     && cd .. \
     && rm -rf phc-winner-argon2
 
 RUN \
-    curl -SL "https://raw.githubusercontent.com/nlohmann/json/develop/src/json.hpp" \
+    curl -SL "https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp" \
         -o json.hpp \
     && mv json.hpp /usr/local/include
 
