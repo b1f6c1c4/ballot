@@ -20,7 +20,8 @@ struct Ring
 
 struct MathRing : public Ring
 {
-    ModularArithmetic ma;
+    ModularArithmetic maq;
+    ModularArithmetic maqm1;
 
     MathRing(Ring &&ring);
     MathRing(const Ring &ring);

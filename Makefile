@@ -30,7 +30,7 @@ test: clean-cov $(addprefix run-, $(TARGETS))
 	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s
 
 run-%: build/tests/%
-	-./$< --color_output --log_format=CLF --log_level=all --log_sink=stdout --report_format=CLF --report_level=short --report_sink=stdout
+	-./$< --color_output --log_format=CLF --log_level=message --log_sink=stdout --report_format=CLF --report_level=short --report_sink=stdout
 
 ci-test: clean-cov $(addprefix ci-run-, $(TARGETS))
 	gcovr -r . --exclude="\.h(pp)?$$" --exclude="^tests/" -s --keep

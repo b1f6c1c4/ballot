@@ -6,8 +6,14 @@
 
 using namespace CryptoPP;
 
-MathRing::MathRing(Ring &&ring) : Ring(std::move(ring)), ma((Integer(Ring::q) -= Integer::One())) {}
-MathRing::MathRing(const Ring &ring) : Ring(ring), ma((Integer(Ring::q) -= Integer::One())) {}
+MathRing::MathRing(Ring &&ring) :
+    Ring(std::move(ring)),
+    maq(Ring::q),
+    maqm1((Integer(Ring::q) -= Integer::One())) {}
+MathRing::MathRing(const Ring &ring) :
+    Ring(ring),
+    maq(Ring::q),
+    maqm1((Integer(Ring::q) -= Integer::One())) {}
 
 Integer fromJson(const json &j)
 {
@@ -65,5 +71,5 @@ Integer groupHash(const byte *buffer, size_t len, const MathRing &ring)
     raw.CalculateDigest(digest, buffer, len);
 
     auto &&hash = readBuffer(digest, SHA3_512::DIGESTSIZE);
-    return ring.ma.Exponentiate(ring.g, hash);
+    return ring.maq.Exponentiate(ring.g, hash);
 }

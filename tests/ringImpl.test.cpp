@@ -18,7 +18,8 @@ BOOST_AUTO_TEST_CASE(moveRing)
     auto &&mr = MathRing(std::move(ring));
     BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
-    BOOST_TEST(mr.ma.GetModulus() == 122);
+    BOOST_TEST(mr.maq.GetModulus() == 123);
+    BOOST_TEST(mr.maqm1.GetModulus() == 122);
 }
 
 BOOST_AUTO_TEST_CASE(copyRing)
@@ -30,7 +31,8 @@ BOOST_AUTO_TEST_CASE(copyRing)
     auto &&mr = MathRing(ring);
     BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
-    BOOST_TEST(mr.ma.GetModulus() == Integer(122));
+    BOOST_TEST(mr.maq.GetModulus() == 123);
+    BOOST_TEST(mr.maqm1.GetModulus() == 122);
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -177,7 +179,7 @@ BOOST_AUTO_TEST_CASE(hash)
     ring.g = Integer(6);
 
     auto &&res = groupHash(buffer, 8, ring);
-    BOOST_TEST(res == Integer(4439226)); // 6^^$SHA3-512(buffer) % (15485863-1)
+    BOOST_TEST(res == Integer(7691388)); // 6^^$SHA3-512(buffer) % 15485863
 }
 
 BOOST_AUTO_TEST_SUITE_END();

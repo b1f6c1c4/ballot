@@ -18,4 +18,6 @@ typedef RpcAnswer RpcHandler(const std::string &method, const json &data);
 std::string executeRpcs(const std::string &str, RpcHandler executer);
 json executeRpc(const json &req, RpcHandler executer);
 
+// LCOV_EXCL_START
 void runRpc(RpcHandler executer);
+// LCOV_EXCL_STOP
