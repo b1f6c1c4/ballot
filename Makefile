@@ -6,17 +6,21 @@ CFLAGS=-std=c++17 -Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMI
 CFLAGSP=$(CFLAGS) -O3
 CFLAGST=$(CFLAGS) -DIS_TEST -g --coverage
 
-build/%.o: %.cpp $(DEPS)
+-include $(patsubst %, build/%.o.d, $(TARGETS))
+
+build/%.o: %.cpp
 	mkdir -p build
-	g++ -c -o $@ $< $(CFLAGSP)
+	$(CXX) -c -o $@ $< -MMD -MT $@ -MF $@.d $(CFLAGSP)
 
 build/cryptor: $(patsubst %, build/%.o, $(TARGETS))
 	mkdir -p build
-	g++ -o $@ $^ $(CFLAGSP) $(LIBS)
+	$(CXX) -o $@ $^ $(CFLAGSP) $(LIBS)
 
-build/tests/%: tests/%.test.cpp %.cpp $(DEPS)
+-include $(patsubst %, build/tests/%.d, $(TARGETS))
+
+build/tests/%: tests/%.test.cpp %.cpp
 	mkdir -p build/tests
-	g++ -o $@ $< $*.cpp $(CFLAGST) $(LIBS) -lboost_unit_test_framework
+	$(CXX) -o $@ $< $*.cpp $(CFLAGST) -MMD -MT $@ -MF $@.d $(LIBS) -lboost_unit_test_framework
 
 .PRECIOUS: $(addprefix build/tests/, $(TARGETS))
 
