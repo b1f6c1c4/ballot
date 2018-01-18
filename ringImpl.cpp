@@ -41,10 +41,10 @@ Ring generate()
     AutoSeededRandomPool prng;
     PrimeAndGenerator pg;
 
-    pg.Generate(1, prng, WIDTH_BIT, WIDTH_BIT - 1);
+    pg.Generate(1, prng, WIDTH_BIT + 1, WIDTH_BIT);
 
     Ring ring;
-    ring.q = pg.Prime();
+    ring.q = pg.SubPrime();
     ring.g = pg.Generator();
     return ring;
 }
