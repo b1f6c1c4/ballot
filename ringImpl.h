@@ -1,3 +1,4 @@
+#pragma once
 #include "common.h"
 #include <cryptopp/integer.h>
 #include <cryptopp/modarith.h>

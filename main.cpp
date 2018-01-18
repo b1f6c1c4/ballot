@@ -1,7 +1,51 @@
 #include "main.h"
 #include <iostream>
 #include "rpc.h"
+#include "argon.h"
+#include "ring.h"
 
+RpcAnswer handler(const std::string &method, const json &data)
+{
+    try
+    {
+        if (method == "status")
+        {
+            json j;
+            j["version"] = VERSION;
+            j["commitHash"] = COMMITHASH;
+            return j;
+        }
+        else if (method == "argon2i")
+        {
+            return argon2i(data);
+        }
+        else if (method == "newRing")
+        {
+            return newRing();
+        }
+        else if (method == "genH")
+        {
+            return genH(data);
+        }
+        else if (method == "verify")
+        {
+            json j;
+            auto res = verify(data);
+            j["valid"] = res ? 1 : 0;
+            return j;
+        }
+        else
+        {
+            return RpcAnswer(-32601, "Method not found");
+        }
+    }
+    catch (nlohmann::detail::type_error)
+    {
+        return RpcAnswer(-32602, "Invalid params");
+    }
+}
+
+// LCOV_EXCL_START
 #ifndef IS_TEST
 int main(int argc, char *argv[])
 {
@@ -31,7 +75,7 @@ int main(int argc, char *argv[])
         try
         {
             console->debug("Run rpc");
-            // runRpc(&handler);
+            runRpc(&handler);
         }
         catch (const std::exception &ex)
         {
