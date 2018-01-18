@@ -2,6 +2,7 @@
 #include <cryptopp/osrng.h>
 #include <argon2.h>
 
+#ifndef IS_TEST_ARGON
 ArgonSaltType genSalt()
 {
 	ArgonSaltType result;
@@ -9,6 +10,7 @@ ArgonSaltType genSalt()
 	gen.GenerateBlock(result.data(), SALT_BYTE);
 	return result;
 }
+#endif
 
 ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt)
 {
