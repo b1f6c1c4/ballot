@@ -1,31 +1,15 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const argv = require('minimist')(process.argv.slice(2));
 const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
-const logger = require('./logger')('index');
-const shard = require('./shard');
 const rpc = require('./rpc');
+const mongo = require('./mongo');
+const logger = require('./logger')('index');
 
-rpc.onPMessage((err, res, con) => {
-  if (err) {
-    logger.warn('Errored message from P', err);
-  }
-  logger.info('RES', res);
-  logger.info('CON', con);
+process.on('unhandledRejection', (e) => {
+  logger.fatal('Unhandled rejection', e);
+  throw e;
 });
-rpc.connect()
-  .then(() => {
-    rpc.publish('status');
-    rpc.call('status')
-      .then((res) => {
-        logger.info('Status', res);
-      }).catch((err) => {
-        logger.warn('Status', err);
-      });
-  });
-
-process.on('unhandledRejection', (up) => { throw up; });
 
 const isDev = process.env.NODE_ENV !== 'production';
 // eslint-disable-next-line import/newline-after-import
@@ -45,16 +29,6 @@ const customHost = argv.host || process.env.HOST;
 const host = customHost || null; // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost';
 const port = parseInt(argv.port || process.env.PORT || '3000', 10);
-
-mongoose.connection.on('connected', () => {
-  logger.info('Mongoose default connection open');
-});
-mongoose.connection.on('error', (err) => {
-  logger.info('Mongoose default connection error', err);
-});
-mongoose.connection.on('disconnected', () => {
-  logger.info('Mongoose default connection disconnected');
-});
 
 function appStarted(p, h, t) {
   logger.info(`Server started ${h}:${p}`);
@@ -88,37 +62,30 @@ function runApp() {
   });
 }
 
-if (process.env.NODE_ENV === 'test') {
-  // TODO
-  logger.info('Use local test db');
-  mongoose.connect('mongodb://localhost:27017/ballot-test', (e) => {
-    if (e) {
-      logger.fatal('Connect mongoose', e);
-      process.exit(1);
-      return;
-    }
-    runApp();
-  });
-} else {
-  shard()
-    .then(() => {
-      mongoose.useDb('ballot');
-      runApp();
-    }).catch((err) => {
-      if (process.env.NODE_ENV === 'production') {
-        logger.fatal('Init shard', err);
-        process.exit(1);
-        return;
-      }
-      logger.warn('Init shard', err);
-      logger.info('Use local db');
-      mongoose.connect('mongodb://localhost:27017/ballot', (e) => {
-        if (e) {
-          logger.fatal('Connect mongoose', e);
-          process.exit(1);
-          return;
-        }
-        runApp();
+rpc.onPMessage((err, res, con) => {
+  if (err) {
+    logger.warn('Errored message from P', err);
+  }
+  logger.info('RES', res);
+  logger.info('CON', con);
+});
+
+const initRpc = rpc.connect()
+  .then(() => {
+    rpc.publish('status');
+    rpc.call('status')
+      .then((res) => {
+        logger.info('Status', res);
+      }).catch((err) => {
+        logger.warn('Status', err);
       });
-    });
-}
+  });
+
+const initDb = mongo.connect();
+
+Promise.all([initRpc, initDb])
+  .then(runApp)
+  .catch((e) => {
+    logger.fatal('Init failed', e);
+    process.exit(1);
+  });

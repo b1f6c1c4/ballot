@@ -122,8 +122,8 @@ const makeQueueNP = () => new Promise((resolve) => {
 
 const connect = () => new Promise((resolve, reject) => {
   logger.info('Connecting AMQP...');
-  logger.debug(`AMQP host: ${process.env.RABBIT_HOST}`);
-  logger.debug(`AMQP user: ${process.env.RABBIT_USER}`);
+  logger.debug('AMQP host', process.env.RABBIT_HOST);
+  logger.debug('AMQP user', process.env.RABBIT_USER);
   connection = amqp.createConnection({
     host: process.env.RABBIT_HOST || 'localhost',
     port: 5672,
