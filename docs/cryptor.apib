@@ -1,0 +1,151 @@
+FORMAT: 1A
+
+# Cryptor
+
+Cryptography middleware for Ballot.
+
+## Authentication
+
+This API doesn't use authentication.
+
+## Notational Conventions
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC2119](https://www.ietf.org/rfc/rfc2119).
+
+## Errors
+
+- `code`
+    - `-32700` - Parse error
+    - `-32600` - Invalid request
+    - `-32601` - Method not found
+    - `-32602` - Invalid params
+    - `-32603` - Internal error
+
+## Data Structures
+
+# Group Default
+
+## Check system status [POST /status]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `status`
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + version: `4907ca16`
+            + commitHash: `4907ca16faf693b76a71df0efd19ef9dcefaa309`
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+
+# Group Password Hashing
+
+## Argon2i [POST /argon2i]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `argon2i`
+        + param (object, required)
+            + password: `letmein` (string, required)
+            + salt: `DiFfvBwXt2krDJe1...` (string)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + salt: `DiFfvBwXt2krDJe1...` (string)
+            + hash: `m6Sxrc1Mq9/MnNyH...` (string)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+
+# Group Ring Signature
+
+## Setup [POST /newRing]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `newRing`
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + q: `3XZ4+lRLx0I9jzEU...` (string)
+            + g: `9EWKxabxMFLvZiVI...` (string)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+
+## Generate h [POST /genH]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `genH`
+        + param (object, required)
+            + q: `3XZ4+lRLx0I9jzEU...` (string, required)
+            + g: `9EWKxabxMFLvZiVI...` (string, required)
+            + publicKeys: `EIBy/4RYxoeg0pbu...` `8MQdeMLPUSs9K5qh...` (array[string], required)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + h: `60vGbvWnsjKvcDYz...` (string)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+
+
+## Verify [POST /verify]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `verify`
+        + param (object, required)
+            + q: `3XZ4+lRLx0I9jzEU...` (string, required)
+            + g: `9EWKxabxMFLvZiVI...` (string, required)
+            + h: `60vGbvWnsjKvcDYz...` (string, required)
+            + publicKeys: `EIBy/4RYxoeg0pbu...` `8MQdeMLPUSs9K5qh...` (array[string], required)
+            + t: `whu44u3wVnqnVT78...` (string, required)
+            + payload: `{"bId":"876ef6f5fe7fd8d7",...` (string, required)
+            + s: `y4V+udaSG4h9YWiH...` (array[string], required)
+            + c: `qzohcWz1CLLJI2+J...` (array[string], required)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + valid: 0 (number)
+        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+
