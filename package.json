@@ -37,6 +37,7 @@
     "collectCoverageFrom": [
       "server/**/*.js",
       "!server/**/*.test.js",
+      "!server/models/*.js",
       "!server/index.js",
       "!server/logger.js"
     ],
