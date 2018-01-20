@@ -1,16 +1,16 @@
 const Api = require('kubernetes-client');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Mongos, Server } = require('mongodb');
-const logger = require('./logger');
+const logger = require('./logger')('shard');
 
 const execute = (top) => async (cmd) => {
-  logger.info(`Executing ${JSON.stringify(cmd)}`);
+  logger.info('Executing', cmd);
   top.command('admin', cmd, {}, (ex, rx) => {
     if (ex) {
       logger.error(ex);
       throw rx;
     }
-    logger.info(`Server response: ${JSON.stringify(rx)}`);
+    logger.info('Server response', rx);
     if (rx.result.ok === 1) {
       return rx;
     }
@@ -30,10 +30,10 @@ module.exports = async () => {
     }).getPromise();
 
     const services = data.items.map((it) => it.metadata.name);
-    logger.info(`Services: ${JSON.stringify(services)}`);
+    logger.info('Services', services);
 
     const ids = services.map((sv) => sv.match(/^mongodb-shard(\d+)-headless-service$/)[1]);
-    logger.info(`Indexes: ${JSON.stringify(ids)}`);
+    logger.info('Indexes', ids);
 
     const cmds = ids.map((i) => ({
       addShard: `${cfg.namespace}-shard${i}/mongodb-shard${i}-0.mongodb-shard${i}-headless-service.${cfg.namespace}.svc.cluster.local:27017`,

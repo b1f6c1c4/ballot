@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const argv = require('minimist')(process.argv.slice(2));
 const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
-const logger = require('./logger');
+const logger = require('./logger')('index');
 const shard = require('./shard');
 const rpc = require('./rpc');
 
@@ -11,17 +11,17 @@ rpc.onPMessage((err, res, con) => {
   if (err) {
     logger.warn('Errored message from P', err);
   }
-  logger.trace('RES', res);
-  logger.trace('CON', con);
+  logger.info('RES', res);
+  logger.info('CON', con);
 });
 rpc.connect()
   .then(() => {
     rpc.publish('status');
     rpc.call('status')
       .then((res) => {
-        logger.info(res);
+        logger.info('Status', res);
       }).catch((err) => {
-        logger.warn(err);
+        logger.warn('Status', err);
       });
   });
 
@@ -50,7 +50,7 @@ mongoose.connection.on('connected', () => {
   logger.info('Mongoose default connection open');
 });
 mongoose.connection.on('error', (err) => {
-  logger.info(`Mongoose default connection error: ${err}`);
+  logger.info('Mongoose default connection error', err);
 });
 mongoose.connection.on('disconnected', () => {
   logger.info('Mongoose default connection disconnected');
@@ -93,7 +93,7 @@ if (process.env.NODE_ENV === 'test') {
   logger.info('Use local test db');
   mongoose.connect('mongodb://localhost:27017/ballot-test', (e) => {
     if (e) {
-      logger.fatal(e);
+      logger.fatal('Connect mongoose', e);
       process.exit(1);
       return;
     }
@@ -106,15 +106,15 @@ if (process.env.NODE_ENV === 'test') {
       runApp();
     }).catch((err) => {
       if (process.env.NODE_ENV === 'production') {
-        logger.fatal(err);
+        logger.fatal('Init shard', err);
         process.exit(1);
         return;
       }
-      logger.warn(err);
+      logger.warn('Init shard', err);
       logger.info('Use local db');
       mongoose.connect('mongodb://localhost:27017/ballot', (e) => {
         if (e) {
-          logger.fatal(e);
+          logger.fatal('Connect mongoose', e);
           process.exit(1);
           return;
         }

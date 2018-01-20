@@ -1,5 +1,5 @@
 const amqp = require('amqp');
-const logger = require('./logger');
+const logger = require('./logger')('rpc');
 
 let connection;
 let npName;
@@ -77,7 +77,7 @@ function cbNP(msg) {
       logger.trace('Dealing with errored message from NP done');
     } else {
       logger.debug('Dealing with message from NP...');
-      resolve(data.error);
+      resolve(data.result);
       logger.trace('Dealing with message from NP done');
     }
   } catch (e) {
@@ -180,7 +180,7 @@ const call = (method, param) => new Promise((resolve, reject) => {
     param,
     id,
   };
-  logger.debug('Set npCallFulfills', { id });
+  logger.debug('Set npCallFulfills', id);
   npCallFulfills.set(body.id, { resolve, reject });
   connection.publish('cryptor', JSON.stringify(body), {
     mandatory: true,
