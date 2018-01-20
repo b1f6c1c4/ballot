@@ -62,28 +62,22 @@ function runApp() {
   });
 }
 
-rpc.onPMessage((err, res, con) => {
-  if (err) {
-    logger.warn('Errored message from P', err);
-  }
-  logger.info('RES', res);
-  logger.info('CON', con);
-});
+const inits = [];
+inits.push(mongo.connect());
 
-const initRpc = rpc.connect()
-  .then(() => {
-    rpc.publish('status');
-    rpc.call('status')
-      .then((res) => {
-        logger.info('Status', res);
-      }).catch((err) => {
-        logger.warn('Status', err);
-      });
-  });
+if (process.env.NODE_ENV !== 'test') {
+  inits.push(rpc.connect()
+    .then(() => {
+      rpc.call('status')
+        .then((res) => {
+          logger.info('Rpc status', res);
+        }).catch((err) => {
+          logger.error('Rpc status', err);
+        });
+    }));
+}
 
-const initDb = mongo.connect();
-
-Promise.all([initRpc, initDb])
+Promise.all(inits)
   .then(runApp)
   .catch((e) => {
     logger.fatal('Init failed', e);
