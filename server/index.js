@@ -37,47 +37,69 @@ mongoose.connection.on('disconnected', () => {
   logger.info('Mongoose default connection disconnected');
 });
 
+function appStarted(p, h, t) {
+  logger.info(`Server started ${h}:${p}`);
+  if (t) {
+    logger.info(`Tunnel initialized ${t}`);
+  }
+}
+
 function runApp() {
   app.listen(port, host, (err) => {
     if (err) {
-      return logger.error(err.message);
+      logger.fatal(err);
+      process.exit(1);
+      return;
     }
 
     // Connect to ngrok in dev mode
     if (ngrok) {
       ngrok.connect(port, (innerErr, url) => {
         if (innerErr) {
-          return logger.error(innerErr);
+          logger.fatal(innerErr);
+          process.exit(1);
+          return;
         }
 
-        logger.appStarted(port, prettyHost, url);
-        return undefined;
+        appStarted(port, prettyHost, url);
       });
     } else {
-      logger.appStarted(port, prettyHost);
+      appStarted(port, prettyHost);
     }
-
-    return undefined;
   });
 }
 
 if (process.env.NODE_ENV === 'test') {
   // TODO
-  runApp();
+  logger.info('Use local test db');
+  mongoose.connect('mongodb://localhost:27017/ballot-test', (e) => {
+    if (e) {
+      logger.fatal(e);
+      process.exit(1);
+      return;
+    }
+    runApp();
+  });
 } else {
   shard()
     .then(() => {
       mongoose.useDb('ballot');
       runApp();
     }).catch((err) => {
-      logger.error(err);
+      if (process.env.NODE_ENV === 'production') {
+        logger.fatal(err);
+        process.exit(1);
+        return;
+      }
+      logger.warn(err);
       logger.info('Use local db');
       mongoose.connect('mongodb://localhost:27017/ballot', (e) => {
         if (e) {
-          logger.error(e);
-        } else {
-          runApp();
+          logger.fatal(e);
+          process.exit(1);
+          return;
         }
+        runApp();
       });
     });
 }
