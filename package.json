@@ -51,6 +51,7 @@
     "ext": "js"
   },
   "dependencies": {
+    "amqp": "0.2.6",
     "apollo-server-express": "1.3.2",
     "body-parser": "1.18.2",
     "chalk": "2.3.0",

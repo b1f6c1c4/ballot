@@ -5,6 +5,25 @@ const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
 const logger = require('./logger');
 const shard = require('./shard');
+const rpc = require('./rpc');
+
+rpc.onPMessage((err, res, con) => {
+  if (err) {
+    logger.warn('Errored message from P', err);
+  }
+  logger.trace('RES', res);
+  logger.trace('CON', con);
+});
+rpc.connect()
+  .then(() => {
+    rpc.publish('status');
+    rpc.call('status')
+      .then((res) => {
+        logger.info(res);
+      }).catch((err) => {
+        logger.warn(err);
+      });
+  });
 
 process.on('unhandledRejection', (up) => { throw up; });
 
