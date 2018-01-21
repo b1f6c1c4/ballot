@@ -2,15 +2,20 @@ const stringify = require('json-stringify-deterministic');
 const rpc = require('../rpc');
 const logger = require('../logger')('cryptor');
 
-rpc.onPMessage((err, res, con) => {
+const handler = (err, res, con) => {
   if (err) {
     logger.warn('Errored message from P', err);
   }
+  // TODO
   logger.info('RES', res);
   logger.info('CON', con);
-});
+};
+
+rpc.onPMessage(handler);
 
 module.exports = {
+  handler,
+
   async argon2i(password, salt) {
     return rpc.call('argon2i', {
       password,
