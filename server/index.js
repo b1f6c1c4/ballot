@@ -63,9 +63,14 @@ function runApp() {
 }
 
 const inits = [];
-inits.push(mongo.connect());
-
 if (process.env.NODE_ENV !== 'test') {
+  inits.push(mongo.connect());
+} else {
+  logger.warn('Mongodb omitted.');
+}
+
+if (process.env.NODE_ENV !== 'test'
+  && !process.env.NO_RABBIT) {
   inits.push(rpc.connect()
     .then(() => {
       rpc.call('status')
@@ -75,6 +80,8 @@ if (process.env.NODE_ENV !== 'test') {
           logger.error('Rpc status', err);
         });
     }));
+} else {
+  logger.warn('Rabbitmq omitted.');
 }
 
 Promise.all(inits)

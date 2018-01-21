@@ -59,6 +59,9 @@ const BallotSchema = new Schema({
     type: String,
     lowercase: true,
   },
+  name: {
+    type: String,
+  },
   owner: {
     type: String,
   },
