@@ -21,9 +21,6 @@
     "start:cryptor": "aglio -i docs/cryptor.apib -s",
     "build": "graphdoc --force"
   },
-  "nodemonConfig": {
-    "ext": "graphql"
-  },
   "graphdoc": {
     "schemaFile": "./docs/public.graphql",
     "output": "./build"
