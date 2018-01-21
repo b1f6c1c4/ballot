@@ -2,12 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const nocache = require('nocache');
 const bodyParser = require('body-parser');
-const { makeExecutableSchema } = require('graphql-tools');
-const { graphqlExpress } = require('apollo-server-express');
-const fs = require('fs');
 const passport = require('passport');
+const status = require('../status');
 const anony = require('./anonymity');
 const secret = require('./secret');
+const graphql = require('./graphql');
 
 const router = express.Router();
 
@@ -20,58 +19,22 @@ router.use(cors({
 
 router.use(nocache(), bodyParser.json(), passport.initialize());
 
-let theStatus;
-fs.readFile('VERSION.json', 'utf8', (err, data) => {
-  if (!err) {
-    theStatus = JSON.parse(data);
-  }
-});
-
-const typeDefs = fs.readFileSync('./docs/public.graphql', 'utf8');
-const resolvers = {
-  Query: {
-    status: () => theStatus,
-  },
-};
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
-const graphqlParser = [
-  bodyParser.text({ type: 'application/graphql' }),
-  (req, res, next) => {
-    if (req.is('application/graphql')) {
-      req.body = { query: req.body };
-    }
-    next();
-  },
-];
-router.use('/graphql', ...graphqlParser, graphqlExpress({
-  schema,
-  tracing: process.env.NODE_ENV !== 'production',
-  formatError: (err) => {
-    if (err.originalError && err.originalError.error_message) {
-      // eslint-disable-next-line no-param-reassign
-      err.message = err.originalError.error_message;
-    }
-
-    return err;
-  },
-}));
-
 router.get('/', (req, res) => {
-  if (theStatus) {
-    res.status(200).json(theStatus);
+  if (status) {
+    res.status(200).json(status);
   } else {
     res.status(500).send();
   }
 });
 
+router.use('/graphql', ...graphql);
+
 router.get('/secret', anony(false), (req, res) => {
-  if (theStatus) {
+  const { version, commitHash } = status;
+  if (status) {
     res.status(200).json({
-      version: theStatus.version,
-      commitHash: theStatus.commitHash,
+      version,
+      commitHash,
       ip: req.ip,
       error: req.anony.error,
       isTor: req.anony.isTor,

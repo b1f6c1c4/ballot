@@ -24,9 +24,10 @@
     "lint:staged": "lint-staged",
     "pretest": "yarn test:clean && yarn lint",
     "test:clean": "rimraf ./coverage",
-    "test": "cross-env NODE_ENV=test jest --coverage && yarn test:api",
+    "test": "yarn test:jest && yarn test:api",
+    "test:jest": "cross-env NODE_ENV=test jest --coverage",
     "test:api": "yarn build && dredd",
-    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "test:watch": "cross-env NODE_ENV=test jest --coverage --watchAll",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
@@ -35,14 +36,9 @@
   "pre-commit": "lint:staged",
   "jest": {
     "collectCoverageFrom": [
-      "server/**/*.js",
-      "!server/**/*.test.js",
-      "!server/models/*.js",
-      "!server/index.js",
-      "!server/logger.js",
-      "!server/mongo.js",
-      "!server/rpc.js",
-      "!server/shard.js"
+      "server/app/*.js",
+      "!server/app/index.js",
+      "!server/app/**/*.test.js"
     ],
     "moduleDirectories": [
       "node_modules",
