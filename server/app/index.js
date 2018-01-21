@@ -3,10 +3,11 @@ const cors = require('cors');
 const nocache = require('nocache');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const { graphqlExpress } = require('apollo-server-express');
 const status = require('../status');
 const anony = require('./anonymity');
 const secret = require('./secret');
-const graphql = require('./graphql');
+const { schema } = require('./graphql');
 
 const router = express.Router();
 
@@ -27,7 +28,30 @@ router.get('/', (req, res) => {
   }
 });
 
-router.use('/graphql', ...graphql);
+router.use(
+  '/graphql',
+  bodyParser.text({
+    type: 'application/graphql',
+  }),
+  (req, res, next) => {
+    if (req.is('application/graphql')) {
+      req.body = { query: req.body };
+    }
+    next();
+  },
+  graphqlExpress({
+    schema,
+    tracing: process.env.NODE_ENV !== 'production',
+    formatError: (err) => {
+      if (err.originalError && err.originalError.error_message) {
+        // eslint-disable-next-line no-param-reassign
+        err.message = err.originalError.error_message;
+      }
+
+      return err;
+    },
+  }),
+);
 
 router.get('/secret', anony(false), (req, res) => {
   const { version, commitHash } = status;

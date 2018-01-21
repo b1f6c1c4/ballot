@@ -1,4 +1,4 @@
-jest.doMock('tor-test', () => ({
+jest.mock('tor-test', () => ({
   isTor(ip, cb) {
     if (ip === '1.2.3.4') {
       cb('value');
