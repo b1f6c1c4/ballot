@@ -1,5 +1,5 @@
 const TorTest = require('tor-test');
-const logger = require('../logger');
+const logger = require('../logger')('anonymity');
 
 module.exports = (force = true) => (req, res, next) => {
   const strict = force && process.env.NODE_ENV === 'production';
