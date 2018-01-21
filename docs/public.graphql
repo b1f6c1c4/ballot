@@ -5,8 +5,10 @@ type Query {
   # Check system status [GET /]
   status: Status
 
-  # Authentication is required when `id` not specified
-  ballot(bId: ID): [Ballot]
+  ballot(bId: ID!): Ballot
+
+  # Authentication is required
+  ballots: [Ballot]
 }
 
 type Mutation {
