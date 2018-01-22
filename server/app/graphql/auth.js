@@ -99,7 +99,7 @@ module.exports = {
         }
 
         try {
-          const user = await Organizer.findById(username, { });
+          const user = await Organizer.findById(username, {});
           if (!user) {
             return new Error();
           }

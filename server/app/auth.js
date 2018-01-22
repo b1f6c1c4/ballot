@@ -57,6 +57,7 @@ class TryJWTStrategy extends Strategy {
         }
       });
     } catch (err) {
+      /* istanbul ignore next */
       logger.error('Auth', err);
       /* istanbul ignore next */
       this.error(err);

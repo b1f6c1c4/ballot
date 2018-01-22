@@ -20,8 +20,13 @@ const handler = (err, res, con) => {
         _id,
         status: 'creating',
       }, {
-        status: 'inviting',
-        crypto: { q, g },
+        $inc: {
+          __v: 1,
+        },
+        $set: {
+          status: 'inviting',
+          crypto: { q, g },
+        },
       }, {
         upsert: false,
       }, (e) => {
