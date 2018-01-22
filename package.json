@@ -36,7 +36,7 @@
   "pre-commit": "lint:staged",
   "jest": {
     "collectCoverageFrom": [
-      "server/app/*.js",
+      "server/app/**/*.js",
       "!server/app/index.js",
       "!server/app/**/*.test.js"
     ],
