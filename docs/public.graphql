@@ -18,6 +18,7 @@ type Mutation {
   # + Username must be unique.
   # + Username must have at least 5 characters.
   # + Username must be composed of alphanumeric and dash.
+  # + Username must start with an alphanumeric character.
   # + Password must have at least 8 characters.
   #
   # **Error codes**
@@ -30,11 +31,20 @@ type Mutation {
   register(input: RegisterInput!): Boolean
 
   # Get credential
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `unmf`   | Username malformed                          |
+  # | `400`   | `pwmf`   | Password malformed                          |
   login(input: LoginInput!): JWT
 
   # Change password
   #
   # Authentication is required
+  #
+  # + Password must have at least 8 characters.
   #
   # **Error codes**
   #
@@ -46,6 +56,15 @@ type Mutation {
   # Create a new ballot
   #
   # Authentication is required
+  #
+  # + Name must have at least 1 characters.
+  # + Name must be composed of alphanumeric and dash.
+  #
+  # **Error codes**
+  #
+  # | Code    | Error    | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `400`   | `nmmf`   | Name malformed                              |
   createBallot(input: CreateBallotInput!): Ballot
 
   # Replace all fields
@@ -58,7 +77,7 @@ type Mutation {
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `fdmf`   | Field malformed                             |
   # | `409`   | `flkd`   | Field changes locked by ballot status       |
-  replaceFields(input: ReplaceFieldsInput!): BallotField
+  replaceFields(input: ReplaceFieldsInput!): [BallotField!]
 
   # Finalize field changes
   #
@@ -125,6 +144,7 @@ input RegisterInput {
   # Must be unique.
   # Must have at least 5 characters.
   # Must be composed of alphanumeric and dash.
+  # Must start with an alphanumeric character.
   username: String!
   # Must have at least 8 characters.
   password: String!
@@ -155,7 +175,7 @@ input ReplaceFieldsInput {
 input FieldInput {
   prompt: String!
   stringDefault: String
-  enumItems: [String]
+  enumItems: [String!]
 }
 
 input FinalizeFieldsInput {
@@ -193,6 +213,7 @@ type Status {
 type Ballot {
   bId: ID!
   name: String!
+  owner: String!
   status: BallotStatus!
   q: Crypto
   g: Crypto
@@ -245,8 +266,8 @@ type BallotVoter {
 type BallotTicket {
   t: Crypto!
   payload: TicketPayload!
-  s: Crypto!
-  c: Crypto!
+  s: [Crypto!]!
+  c: [Crypto!]!
 }
 
 type TicketPayload {
