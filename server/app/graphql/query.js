@@ -1,26 +1,19 @@
-const _ = require('lodash');
 const Ballot = require('../../models/ballots');
+const { project } = require('./projection');
 const logger = require('../../logger')('graphql/query');
 
 module.exports = {
   Query: {
-    ballot(parent, args, context) {
+    ballot(parent, args, context, info) {
       logger.debug('Query.ballot', args);
       logger.trace('parent', parent);
       logger.trace('context', context);
 
+      const proj = project(info);
+      logger.debug('proj', proj);
+
       return new Promise((resolve, reject) => {
-        Ballot.findById(args.bId, {
-          // TODO
-          _id: 1,
-          name: 1,
-          status: 1,
-          'crypto.q': 1,
-          'crypto.g': 1,
-          'crypto.h': 1,
-          fields: 1,
-          voters: 1,
-        }, (err, obj) => {
+        Ballot.findById(args.bId, proj, (err, obj) => {
           if (err) {
             logger.error('Ballot.findById', err);
             reject(err);
@@ -33,10 +26,17 @@ module.exports = {
     },
   },
 
-  Ballot: {
-    bId: (parent) => parent._id,
-    q: (parent) => _.get(parent, 'crypto.q'),
-    g: (parent) => _.get(parent, 'crypto.g'),
-    h: (parent) => _.get(parent, 'crypto.h'),
+  BallotField: {
+    __resolveType(parent) {
+      logger.debug('BallotField.__resolveType', parent);
+      switch (parent.type) {
+        case 'enum':
+          return 'EnumField';
+        case 'string':
+          return 'StringField';
+        default:
+          return null;
+      }
+    },
   },
 };

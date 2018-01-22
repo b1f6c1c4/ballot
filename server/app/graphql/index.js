@@ -5,6 +5,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const fs = require('fs');
 const status = require('../../status');
 
+const projs = require('./projection').resolvers;
 const query = require('./query');
 
 /* istanbul ignore next */
@@ -51,6 +52,7 @@ const schema = makeExecutableSchema({
   typeDefs,
   resolvers: _.merge(
     resolvers,
+    projs,
     query,
   ),
 });
