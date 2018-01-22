@@ -1,20 +1,58 @@
 const stringify = require('json-stringify-deterministic');
+const crypto = require('crypto');
+const Ballot = require('../models/ballots');
 const rpc = require('../rpc');
 const logger = require('../logger')('cryptor');
 
 const handler = (err, res, con) => {
+  logger.trace('CON', con);
+  logger.trace('RES', res);
   if (err) {
-    logger.warn('Errored message from P', err);
+    logger.error('Errored message from P', err);
+    return;
   }
-  // TODO
-  logger.info('RES', res);
-  logger.info('CON', con);
+  switch (con.method) {
+    case 'newRing': {
+      const { _id } = con;
+      const { q, g } = res;
+      logger.debug('Finalize newRing...', _id);
+      Ballot.findOneAndUpdate({
+        _id,
+        status: 'creating',
+      }, {
+        status: 'inviting',
+        crypto: { q, g },
+      }, {
+        upsert: false,
+      }, (e) => {
+        if (e) {
+          logger.error('Finalize newRing', e);
+        } else {
+          logger.info('Crypto param created', _id);
+        }
+      });
+      break;
+    }
+    default:
+      logger.error('Method not found form P', con.method);
+      break;
+  }
 };
 
 rpc.onPMessage(handler);
 
 module.exports = {
   handler,
+
+  bIdGen: () => new Promise((resolve, reject) => {
+    crypto.randomBytes(32, (err, buf) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(buf.toString('hex'));
+      }
+    });
+  }),
 
   async argon2i(password, salt) {
     return rpc.call('argon2i', {
@@ -26,7 +64,10 @@ module.exports = {
   newRing(ballot) {
     const { _id } = ballot;
     rpc.publish('newRing', undefined, {
-      _id,
+      reply: {
+        method: 'newRing',
+        _id,
+      },
     });
   },
 

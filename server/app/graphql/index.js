@@ -8,6 +8,7 @@ const status = require('../../status');
 const projs = require('./projection').resolvers;
 const query = require('./query').resolvers;
 const auth = require('./auth').resolvers;
+const ballot = require('./ballot').resolvers;
 
 /* istanbul ignore next */
 const typeDefs = fs.readFileSync('./docs/public.graphql', 'utf8');
@@ -56,6 +57,7 @@ const schema = makeExecutableSchema({
     projs,
     query,
     auth,
+    ballot,
   ),
 });
 

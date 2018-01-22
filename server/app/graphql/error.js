@@ -30,9 +30,18 @@ class UsernameExistsError extends Error {
   }
 }
 
+class NameMalformedError extends Error {
+  constructor() {
+    super('Name malformed');
+    this.statusCode = 400;
+    this.errorCode = 'nmmf';
+  }
+}
+
 module.exports = {
   UnauthorizedError,
   UsernameMalformedError,
   PasswordMalformedError,
   UsernameExistsError,
+  NameMalformedError,
 };

@@ -1,8 +1,19 @@
+const cryptoMock = {
+  size: null,
+  err: null,
+  buf: null,
+};
+jest.doMock('crypto', () => ({
+  randomBytes(size, cb) {
+    expect(size).toEqual(cryptoMock.size);
+    cb(cryptoMock.err, cryptoMock.buf);
+  },
+}));
+
 const rpcMock = {
   onPMessage() {},
   publish: jest.fn(),
   call: jest.fn(),
-  fuck: 'shit',
 };
 jest.doMock('../../rpc', () => rpcMock);
 
@@ -10,9 +21,42 @@ describe('handler', () => {
   // eslint-disable-next-line global-require
   const { handler } = require('../cryptor');
 
-  // TODO
   it('should not throw if error', () => {
     expect(() => handler(new Error(), undefined)).not.toThrow();
+  });
+
+  it('should not throw if method not found', () => {
+    expect(() => handler(undefined, undefined, {})).not.toThrow();
+  });
+
+  it('should handle newRing', () => {
+    // TODO
+    // handler(undefined, {
+    //   q: 'qval',
+    //   g: 'gval',
+    // }, {
+    //   method: 'newRing',
+    //   _id: 'val',
+    // });
+  });
+});
+
+describe('bIdGen', () => {
+  // eslint-disable-next-line global-require
+  const { bIdGen } = require('../cryptor');
+
+  it('should resolve hex string', () => {
+    cryptoMock.size = 256 / 8;
+    cryptoMock.err = undefined;
+    cryptoMock.buf = Buffer.from([0xab, 0xcd, 0x12, 0x34]);
+    return expect(bIdGen()).resolves.toEqual('abcd1234');
+  });
+
+  it('should reject err', () => {
+    cryptoMock.size = 256 / 8;
+    cryptoMock.err = { key: 'val' };
+    cryptoMock.buf = undefined;
+    return expect(bIdGen()).rejects.toBe(cryptoMock.err);
   });
 });
 
@@ -76,7 +120,10 @@ describe('newRing', () => {
     expect(rpcMock.publish.mock.calls[0][0]).toEqual('newRing');
     expect(rpcMock.publish.mock.calls[0][1]).toBeUndefined();
     expect(rpcMock.publish.mock.calls[0][2]).toEqual({
-      _id: 'bId',
+      reply: {
+        method: 'newRing',
+        _id: 'bId',
+      },
     });
   });
 });

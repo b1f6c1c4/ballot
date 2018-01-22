@@ -25,7 +25,8 @@ describe('Query', () => {
 
   describe('ballots', () => {
     it('should throw if unauthorized', () => {
-      expect(Query.ballots(undefined, undefined, { auth: undefined }, undefined)).toBeInstanceOf(errors.UnauthorizedError);
+      expect(Query.ballots(undefined, undefined, { auth: undefined }, undefined))
+        .toBeInstanceOf(errors.UnauthorizedError);
     });
   });
 });
