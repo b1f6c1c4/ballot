@@ -9,6 +9,14 @@ const theConfig = {
       q: 'crypto.q',
       g: 'crypto.g',
       h: 'crypto.h',
+      fields: {
+        query: ['owner', 'status'],
+        recursive: true,
+      },
+      voters: {
+        query: ['owner', 'status'],
+        recursive: true,
+      },
     },
   },
 
@@ -22,10 +30,10 @@ const theConfig = {
   StringField: {
     prefix: 'fields.',
     proj: {
-      default: [
-        'data',
-        'data[0]',
-      ],
+      default: {
+        query: 'data',
+        select: 'data[0]',
+      },
     },
   },
 
@@ -65,23 +73,14 @@ const genResolvers = (config) => {
     return {};
   }
   const res = {};
-  try {
-    Object.keys(config.proj).forEach((k) => {
-      const def = config.proj[k];
-      if (Array.isArray(def)) {
-        if (def[1]) {
-          res[k] = (v) => _.get(v, def[1]);
-        }
-      } else if (typeof def === 'string') {
-        res[k] = (v) => _.get(v, def);
-      } else {
-        throw new Error(`config.proj.${k} not supported: ${typeof def}`);
-      }
-    });
-  } catch (e) {
-    logger.fatal('genResolvers', e);
-    throw e;
-  }
+  Object.keys(config.proj).forEach((k) => {
+    const def = config.proj[k];
+    if (typeof def === 'string') {
+      res[k] = (v) => _.get(v, def);
+    } else if (def.select) {
+      res[k] = (v) => _.get(v, def.select);
+    }
+  });
   logger.trace('Generated resolvers', Object.keys(res));
   return res;
 };
@@ -117,7 +116,7 @@ function gen(
         case 'Field': {
           logger.debug('Projecting field', sel.name.value);
           const def = cfg && _.get(cfg.proj, sel.name.value);
-          if (!def) {
+          const goDefault = () => {
             if (!sel.selectionSet) {
               logger.trace('>Default', prefix + sel.name.value);
               proj[prefix + sel.name.value] = 1;
@@ -141,18 +140,34 @@ function gen(
               logger.trace('Recursive', core);
               Object.assign(proj, gen(root, sel, core));
             }
-          } else if (Array.isArray(def)) {
-            if (def[0]) {
-              logger.trace('>Array', prefix + def[0]);
-              proj[prefix + def[0]] = 1;
+          };
+          const goSimple = (v) => {
+            if (Array.isArray(v)) {
+              v.forEach(goSimple);
             } else {
-              logger.trace('>Array ignored');
+              logger.trace('>Simple', prefix + v);
+              proj[prefix + v] = 1;
             }
-          } else if (typeof def === 'string') {
-            logger.trace('>Simple', prefix + def);
-            proj[prefix + def] = 1;
-          } else {
-            throw new Error(`config.proj.${sel.name.value} not supported: ${typeof def}`);
+          };
+          if (!def) {
+            goDefault();
+            return;
+          }
+          if (typeof def === 'string') {
+            goSimple(def);
+            return;
+          }
+          if (Array.isArray(def)) {
+            goSimple(def);
+            return;
+          }
+          if (def.query) {
+            goSimple(def.query);
+          }
+          if (def.recursive && sel.selectionSet) {
+            goDefault();
+          } else if (!def.query) {
+            logger.trace('>Ignored');
           }
           return;
         }
@@ -176,7 +191,9 @@ function gen(
     });
     return proj;
   } catch (e) {
+    /* istanbul ignore next */
     logger.error('Projecting', e);
+    /* istanbul ignore next */
     return undefined;
   }
 }
@@ -184,7 +201,9 @@ function gen(
 const genProjection = (config) => (info) => {
   const context = info.fieldNodes[0];
   const res = gen({ config, info }, context, info.returnType);
+  /* istanbul ignore if */
   if (!res) {
+    /* istanbul ignore next */
     return undefined;
   }
   return _.assign({ _id: 0 }, res);

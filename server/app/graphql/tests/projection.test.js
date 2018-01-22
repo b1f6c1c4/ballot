@@ -18,14 +18,14 @@ describe('genResolver', () => {
     })).toEqual('v');
   });
 
-  it('should accept array proj', () => {
+  it('should accept object proj', () => {
     expect(genResolvers({
       prefix: 'wrap.',
       proj: {
-        key: [
-          'fun',
-          'value',
-        ],
+        key: {
+          query: 'fun',
+          select: 'value',
+        },
       },
     }).key({
       value: 'v',
@@ -36,21 +36,11 @@ describe('genResolver', () => {
     expect(genResolvers({
       prefix: 'wrap.',
       proj: {
-        key: [
-          'fun',
-          undefined,
-        ],
+        key: {
+          query: 'fun',
+        },
       },
     }).key).toBeUndefined();
-  });
-
-  it('should throw unsupported proj', () => {
-    expect(() => genResolvers({
-      prefix: 'wrap.',
-      proj: {
-        key: {},
-      },
-    })).toThrow();
   });
 });
 
@@ -92,17 +82,6 @@ type Child implements Father {
     });
   });
 
-  it('should throw unsupported proj', () => {
-    expect.hasAssertions();
-    return expect(run({
-      Obj: {
-        proj: {
-          field1: {},
-        },
-      },
-    }, '{ obj { field1 } }')).resolves.toBeUndefined();
-  });
-
   it('should project default when not configured', () => {
     expect.hasAssertions();
     return expect(run({}, '{ obj { field1 } }')).resolves.toEqual({
@@ -126,16 +105,32 @@ type Child implements Father {
     });
   });
 
-  it('should project array', () => {
+  it('should project multiple', () => {
     expect.hasAssertions();
     return expect(run({
       Obj: {
         prefix: 'wrap.',
         proj: {
-          field1: [
-            'value',
-            'x',
-          ],
+          field1: ['value', 'value2'],
+        },
+      },
+    }, '{ obj { field1 } }')).resolves.toEqual({
+      _id: 0,
+      'wrap.value': 1,
+      'wrap.value2': 1,
+    });
+  });
+
+  it('should project object', () => {
+    expect.hasAssertions();
+    return expect(run({
+      Obj: {
+        prefix: 'wrap.',
+        proj: {
+          field1: {
+            query: 'value',
+            select: 'x',
+          },
         },
       },
     }, '{ obj { field1 } }')).resolves.toEqual({
@@ -144,16 +139,34 @@ type Child implements Father {
     });
   });
 
-  it('should project array undefined', () => {
+  it('should project object multiple', () => {
     expect.hasAssertions();
     return expect(run({
       Obj: {
         prefix: 'wrap.',
         proj: {
-          field1: [
-            undefined,
-            'x',
-          ],
+          field1: {
+            query: ['value', 'value2'],
+            select: 'x',
+          },
+        },
+      },
+    }, '{ obj { field1 } }')).resolves.toEqual({
+      _id: 0,
+      'wrap.value': 1,
+      'wrap.value2': 1,
+    });
+  });
+
+  it('should project object undefined', () => {
+    expect.hasAssertions();
+    return expect(run({
+      Obj: {
+        prefix: 'wrap.',
+        proj: {
+          field1: {
+            select: 'x',
+          },
         },
       },
     }, '{ obj { field1 } }')).resolves.toEqual({
@@ -166,12 +179,7 @@ type Child implements Father {
     return expect(run({
       Obj: {
         prefix: 'wrap.',
-        proj: {
-          field1: [
-            'value',
-            'x',
-          ],
-        },
+        proj: { },
       },
       Foo: {
         prefix: 'wrap2.',
@@ -185,16 +193,12 @@ type Child implements Father {
     });
   });
 
-  it('should project nested override', () => {
+  it('should project nested simple override', () => {
     expect.hasAssertions();
     return expect(run({
       Obj: {
         prefix: 'wrap.',
         proj: {
-          field1: [
-            'value',
-            'x',
-          ],
           field2: 'wrap2',
         },
       },
@@ -207,6 +211,54 @@ type Child implements Father {
     }, '{ obj { field2 { f1 } } }')).resolves.toEqual({
       _id: 0,
       'wrap.wrap2': 1,
+    });
+  });
+
+  it('should project nested force override', () => {
+    expect.hasAssertions();
+    return expect(run({
+      Obj: {
+        prefix: 'wrap.',
+        proj: {
+          field2: {
+            query: 'wrap2',
+          },
+        },
+      },
+      Foo: {
+        prefix: 'wrap2.',
+        proj: {
+          f1: 'foo',
+        },
+      },
+    }, '{ obj { field2 { f1 } } }')).resolves.toEqual({
+      _id: 0,
+      'wrap.wrap2': 1,
+    });
+  });
+
+  it('should project nested additional override', () => {
+    expect.hasAssertions();
+    return expect(run({
+      Obj: {
+        prefix: 'wrap.',
+        proj: {
+          field2: {
+            query: 'wrap2',
+            recursive: true,
+          },
+        },
+      },
+      Foo: {
+        prefix: 'wrap2.',
+        proj: {
+          f1: 'foo',
+        },
+      },
+    }, '{ obj { field2 { f1 } } }')).resolves.toEqual({
+      _id: 0,
+      'wrap.wrap2': 1,
+      'wrap2.foo': 1,
     });
   });
 

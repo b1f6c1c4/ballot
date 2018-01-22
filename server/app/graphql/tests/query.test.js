@@ -4,6 +4,7 @@ const { UnauthorizedError } = require('../error');
 
 const {
   Query,
+  Ballot,
   BallotField,
 } = resolvers;
 
@@ -25,6 +26,126 @@ describe('Query', () => {
   describe('ballots', () => {
     it('should throw if unauthorized', () => {
       expect(Query.ballots(undefined, undefined, { auth: undefined }, undefined)).toBeInstanceOf(UnauthorizedError);
+    });
+  });
+});
+
+describe('Ballot', () => {
+  describe('fields', () => {
+    it('should not throw if no auth required', () => {
+      const statuses = [
+        'preVoting',
+        'voting',
+        'finished',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.fields({
+          status: st,
+          owner: 'un',
+          fields: 'value',
+        }, undefined, { auth: undefined }, undefined)).toEqual('value');
+      });
+    });
+    it('should throw if unauthorized', () => {
+      const statuses = [
+        'created',
+        'inviting',
+        'invited',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.fields({
+          status: st,
+          owner: 'un',
+        }, undefined, { auth: undefined }, undefined))
+          .toBeInstanceOf(UnauthorizedError);
+      });
+    });
+    it('should throw if forbidden', () => {
+      const statuses = [
+        'created',
+        'inviting',
+        'invited',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.fields({
+          status: st,
+          owner: 'un',
+        }, undefined, { auth: { username: 'unx' } }, undefined))
+          .toBeInstanceOf(UnauthorizedError);
+      });
+    });
+    it('should not throw if allowed', () => {
+      const statuses = [
+        'created',
+        'inviting',
+        'invited',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.fields({
+          status: st,
+          owner: 'un',
+          fields: 'value',
+        }, undefined, { auth: { username: 'un' } }, undefined))
+          .toEqual('value');
+      });
+    });
+  });
+
+  describe('voters', () => {
+    it('should not throw if no auth required', () => {
+      const statuses = [
+        'invited',
+        'preVoting',
+        'voting',
+        'finished',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.voters({
+          status: st,
+          owner: 'un',
+          voters: 'value',
+        }, undefined, { auth: undefined }, undefined)).toEqual('value');
+      });
+    });
+    it('should throw if unauthorized', () => {
+      const statuses = [
+        'created',
+        'inviting',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.voters({
+          status: st,
+          owner: 'un',
+        }, undefined, { auth: undefined }, undefined))
+          .toBeInstanceOf(UnauthorizedError);
+      });
+    });
+    it('should throw if forbidden', () => {
+      const statuses = [
+        'created',
+        'inviting',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.voters({
+          status: st,
+          owner: 'un',
+        }, undefined, { auth: { username: 'unx' } }, undefined))
+          .toBeInstanceOf(UnauthorizedError);
+      });
+    });
+    it('should not throw if allowed', () => {
+      const statuses = [
+        'created',
+        'inviting',
+      ];
+      statuses.forEach((st) => {
+        expect(Ballot.voters({
+          status: st,
+          owner: 'un',
+          voters: 'value',
+        }, undefined, { auth: { username: 'un' } }, undefined))
+          .toEqual('value');
+      });
     });
   });
 });

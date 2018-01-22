@@ -56,6 +56,49 @@ module.exports = {
       },
     },
 
+    Ballot: {
+      fields(parent, args, context) {
+        logger.debug('Ballot.fields', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        switch (parent.status) {
+          case 'preVoting':
+          case 'voting':
+          case 'finished':
+            break;
+          default:
+            if (parent.owner !== _.get(context, 'auth.username')) {
+              return new UnauthorizedError();
+            }
+            break;
+        }
+
+        return parent.fields;
+      },
+
+      voters(parent, args, context) {
+        logger.debug('Ballot.voters', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        switch (parent.status) {
+          case 'invited':
+          case 'preVoting':
+          case 'voting':
+          case 'finished':
+            break;
+          default:
+            if (parent.owner !== _.get(context, 'auth.username')) {
+              return new UnauthorizedError();
+            }
+            break;
+        }
+
+        return parent.voters;
+      },
+    },
+
     BallotField: {
       __resolveType(parent) {
         logger.debug('BallotField.__resolveType', parent);
