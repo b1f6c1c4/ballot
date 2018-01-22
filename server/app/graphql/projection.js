@@ -200,7 +200,10 @@ function gen(
 
 const genProjection = (config) => (info) => {
   const context = info.fieldNodes[0];
-  const res = gen({ config, info }, context, info.returnType);
+  logger.trace('returnType', info.returnType);
+  const type = stripType(info.returnType);
+  logger.trace('Stripped returnType', type);
+  const res = gen({ config, info }, context, type);
   /* istanbul ignore if */
   if (!res) {
     /* istanbul ignore next */

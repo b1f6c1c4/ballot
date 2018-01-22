@@ -47,7 +47,7 @@ describe('genResolver', () => {
 describe('genProjection', () => {
   const typeDefs = `
 type Query {
-  obj: Obj
+  obj: [Obj!]
 }
 type Obj {
   field1: String

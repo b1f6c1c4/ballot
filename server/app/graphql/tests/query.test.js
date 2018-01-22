@@ -1,6 +1,6 @@
 // const mockingoose = require('mockingoose').default;
 const { resolvers } = require('../query');
-const { UnauthorizedError } = require('../error');
+const errors = require('../error');
 
 const {
   Query,
@@ -25,7 +25,7 @@ describe('Query', () => {
 
   describe('ballots', () => {
     it('should throw if unauthorized', () => {
-      expect(Query.ballots(undefined, undefined, { auth: undefined }, undefined)).toBeInstanceOf(UnauthorizedError);
+      expect(Query.ballots(undefined, undefined, { auth: undefined }, undefined)).toBeInstanceOf(errors.UnauthorizedError);
     });
   });
 });
@@ -57,7 +57,7 @@ describe('Ballot', () => {
           status: st,
           owner: 'un',
         }, undefined, { auth: undefined }, undefined))
-          .toBeInstanceOf(UnauthorizedError);
+          .toBeInstanceOf(errors.UnauthorizedError);
       });
     });
     it('should throw if forbidden', () => {
@@ -71,7 +71,7 @@ describe('Ballot', () => {
           status: st,
           owner: 'un',
         }, undefined, { auth: { username: 'unx' } }, undefined))
-          .toBeInstanceOf(UnauthorizedError);
+          .toBeInstanceOf(errors.UnauthorizedError);
       });
     });
     it('should not throw if allowed', () => {
@@ -117,7 +117,7 @@ describe('Ballot', () => {
           status: st,
           owner: 'un',
         }, undefined, { auth: undefined }, undefined))
-          .toBeInstanceOf(UnauthorizedError);
+          .toBeInstanceOf(errors.UnauthorizedError);
       });
     });
     it('should throw if forbidden', () => {
@@ -130,7 +130,7 @@ describe('Ballot', () => {
           status: st,
           owner: 'un',
         }, undefined, { auth: { username: 'unx' } }, undefined))
-          .toBeInstanceOf(UnauthorizedError);
+          .toBeInstanceOf(errors.UnauthorizedError);
       });
     });
     it('should not throw if allowed', () => {
