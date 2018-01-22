@@ -102,12 +102,11 @@ function gen(
   logger.debug('Projecting type', type);
   const cfg = config[type];
   if (!cfg) {
-    logger.error('Type not found', type);
-    return undefined;
+    logger.debug('Type not found, default everywhere', type);
   }
   const proj = {};
-  const prefix = cfg.prefix || '';
-  if (cfg.typeProj) {
+  const prefix = (cfg && cfg.prefix) || '';
+  if (cfg && cfg.typeProj) {
     logger.trace('>TypeProj', prefix + cfg.typeProj);
     proj[prefix + cfg.typeProj] = 1;
   }
@@ -117,19 +116,23 @@ function gen(
       switch (sel.kind) {
         case 'Field': {
           logger.debug('Projecting field', sel.name.value);
-          const def = _.get(cfg.proj, sel.name.value);
+          const def = cfg && _.get(cfg.proj, sel.name.value);
           if (!def) {
             if (!sel.selectionSet) {
               logger.trace('>Default', prefix + sel.name.value);
               proj[prefix + sel.name.value] = 1;
             } else {
               const typeRef = info.schema.getType(type);
+              /* istanbul ignore if */
               if (!typeRef) {
+                /* istanbul ignore next */
                 throw new Error('Type not found', type);
               }
               logger.trace('typeRef', typeRef.toString());
               const field = typeRef.getFields()[sel.name.value];
+              /* istanbul ignore if */
               if (!field) {
+                /* istanbul ignore next */
                 throw new Error('Field not found', sel.name.value);
               }
               const nextTypeRef = field.type;
@@ -142,10 +145,14 @@ function gen(
             if (def[0]) {
               logger.trace('>Array', prefix + def[0]);
               proj[prefix + def[0]] = 1;
+            } else {
+              logger.trace('>Array ignored');
             }
           } else if (typeof def === 'string') {
             logger.trace('>Simple', prefix + def);
             proj[prefix + def] = 1;
+          } else {
+            throw new Error(`config.proj.${sel.name.value} not supported: ${typeof def}`);
           }
           return;
         }
@@ -161,7 +168,9 @@ function gen(
           logger.trace('Recursive', sel.name.value);
           Object.assign(proj, gen(root, info.fragments[sel.name.value]));
           return;
+        /* istanbul ignore next */
         default:
+          /* istanbul ignore next */
           throw new Error(`sel.kind not supported: ${sel.kind}`);
       }
     });
@@ -174,7 +183,11 @@ function gen(
 
 const genProjection = (config) => (info) => {
   const context = info.fieldNodes[0];
-  return _.assign({ _id: 0 }, gen({ config, info }, context, info.returnType));
+  const res = gen({ config, info }, context, info.returnType);
+  if (!res) {
+    return undefined;
+  }
+  return _.assign({ _id: 0 }, res);
 };
 
 const resolvers = _.mapValues(theConfig, genResolvers);
