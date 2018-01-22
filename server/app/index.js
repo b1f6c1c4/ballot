@@ -8,6 +8,7 @@ const status = require('../status');
 const anony = require('./anonymity');
 const secret = require('./secret');
 const { schema } = require('./graphql');
+const { auth } = require('./auth');
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router.get('/', (req, res) => {
 
 router.use(
   '/graphql',
+  auth,
   bodyParser.text({
     type: 'application/graphql',
   }),

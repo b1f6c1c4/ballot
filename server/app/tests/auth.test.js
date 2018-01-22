@@ -26,7 +26,7 @@ describe('auth', () => {
   it('should not auth malformed header', () => {
     const req = {
       headers: {
-        authentication: 'value',
+        authorization: 'value',
       },
     };
     strategy.authenticate(req);
@@ -38,7 +38,7 @@ describe('auth', () => {
   it('should not auth invalid jwt', () => {
     const req = {
       headers: {
-        authentication: 'bearer ae0751uj94.98ncf9q34.dfncq249-_z-afer',
+        authorization: 'bearer ae0751uj94.98ncf9q34.dfncq249-_z-afer',
       },
     };
     strategy.authenticate(req);
@@ -57,7 +57,7 @@ describe('auth', () => {
 
     const req = {
       headers: {
-        authentication: `bearer ${jwt}`,
+        authorization: `bearer ${jwt}`,
       },
     };
     strategy.authenticate(req);
@@ -79,7 +79,7 @@ describe('auth', () => {
 
     const req = {
       headers: {
-        authentication: `JWT ${jwt}`,
+        authorization: `JWT ${jwt}`,
       },
     };
     strategy.authenticate(req);
