@@ -6,7 +6,7 @@ const fs = require('fs');
 const status = require('../../status');
 
 const projs = require('./projection').resolvers;
-const query = require('./query');
+const query = require('./query').resolvers;
 
 /* istanbul ignore next */
 const typeDefs = fs.readFileSync('./docs/public.graphql', 'utf8');

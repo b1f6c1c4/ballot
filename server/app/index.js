@@ -39,8 +39,11 @@ router.use(
     }
     next();
   },
-  graphqlExpress({
+  graphqlExpress((req) => ({
     schema,
+    context: {
+      auth: req.user,
+    },
     tracing: process.env.NODE_ENV !== 'production',
     formatError: (err) => {
       if (err.originalError && err.originalError.error_message) {
@@ -50,7 +53,7 @@ router.use(
 
       return err;
     },
-  }),
+  })),
 );
 
 router.get('/secret', anony(false), (req, res) => {
