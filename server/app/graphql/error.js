@@ -6,6 +6,14 @@ class UnauthorizedError extends Error {
   }
 }
 
+class NotFoundError extends Error {
+  constructor() {
+    super('Not Found');
+    this.statusCode = 404;
+    this.errorCode = 'ntfd';
+  }
+}
+
 class UsernameMalformedError extends Error {
   constructor() {
     super('Username malformed');
@@ -38,10 +46,29 @@ class NameMalformedError extends Error {
   }
 }
 
+class FieldMalformedError extends Error {
+  constructor() {
+    super('Field malformed');
+    this.statusCode = 400;
+    this.errorCode = 'fdmf';
+  }
+}
+
+class FieldLockedError extends Error {
+  constructor() {
+    super('Field changes locked by ballot status');
+    this.statusCode = 409;
+    this.errorCode = 'flkd';
+  }
+}
+
 module.exports = {
   UnauthorizedError,
+  NotFoundError,
   UsernameMalformedError,
   PasswordMalformedError,
   UsernameExistsError,
   NameMalformedError,
+  FieldMalformedError,
+  FieldLockedError,
 };
