@@ -1,7 +1,14 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const shard = require('./shard');
 const logger = require('./logger')('mongo');
+
+let shard;
+if (process.env.NODE_ENV !== 'test') {
+  // eslint-disable-next-line global-require
+  shard = require('./shard');
+} else {
+  shard = undefined;
+}
 
 if (process.env.BACKEND_LOG === 'trace'
   || process.env.MONGOOSE_DEBUG) {

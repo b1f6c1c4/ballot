@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Ballot = require('../models/ballots');
 const SubmittedTicket = require('../models/submittedTickets');
-const { tIdGen } = require('./cryptor');
+const { tIdGen, verify } = require('./cryptor');
 const logger = require('../logger')('secret');
 
 const errors = {
@@ -121,6 +121,8 @@ const submitTicket = async (data) => {
     };
     ticket.status = 'submitted';
     await ticket.save();
+    logger.debug('Submitted ticket saved', tId);
+    verify(doc, ticket);
     logger.info('Ticket submitted', tId);
     return {
       status: 202,
@@ -158,7 +160,7 @@ const checkTicket = async (tId) => {
         return {
           status: 204,
         };
-      case 'decline':
+      case 'declined':
         return errors.xsgn;
       case 'timeout':
         return errors.stna;

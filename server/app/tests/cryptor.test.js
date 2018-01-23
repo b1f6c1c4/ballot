@@ -9,6 +9,10 @@ jest.doMock('crypto', () => ({
     cb(cryptoMock.err, cryptoMock.buf);
   },
 }));
+jest.mock('../verify', () => (res, con) => {
+  expect(res).toEqual({ key: 'val1' });
+  expect(con).toEqual({ method: 'verify', key: 'val2' });
+});
 
 const rpcMock = {
   onPMessage() {},
@@ -38,6 +42,11 @@ describe('handler', () => {
     //   method: 'newRing',
     //   _id: 'val',
     // });
+  });
+
+  it('should handle verify', () => {
+    expect.hasAssertions();
+    handler(undefined, { key: 'val1' }, { method: 'verify', key: 'val2' });
   });
 });
 
@@ -165,28 +174,14 @@ describe('genH', () => {
 
 describe('verify', () => {
   beforeEach(() => {
-    rpcMock.call.mockReset();
+    rpcMock.publish.mockReset();
   });
 
-  it('should resolve false if valid === 0', () => {
-    rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('verify');
-      expect(o.q).toEqual('valq');
-      expect(o.g).toEqual('valg');
-      expect(o.h).toEqual('valh');
-      expect(o.publicKeys).toEqual(['p1', 'p2']);
-      expect(o.t).toEqual('valt');
-      expect(o.payload).toEqual('{"a":1,"b":2}');
-      expect(o.s).toEqual(['s1', 's2']);
-      expect(o.c).toEqual(['c1', 'c2']);
-      return {
-        valid: 0,
-      };
-    });
-
+  it('should call publish', () => {
     // eslint-disable-next-line global-require
     const { verify } = require('../cryptor');
-    return expect(verify({
+    verify({
+      _id: 'bId',
       crypto: {
         q: 'valq',
         g: 'valg',
@@ -199,54 +194,35 @@ describe('verify', () => {
       }],
       key: 'value',
     }, {
-      t: 'valt',
-      payload: {
-        b: 2,
-        a: 1,
+      _id: '3456',
+      ticket: {
+        _id: 'valt',
+        payload: {
+          b: 2,
+          a: 1,
+        },
+        s: ['s1', 's2'],
+        c: ['c1', 'c2'],
       },
-      s: ['s1', 's2'],
-      c: ['c1', 'c2'],
-    })).resolves.toEqual(false);
-  });
-
-  it('should resolve false if valid === 1', () => {
-    rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('verify');
-      expect(o.q).toEqual('valq');
-      expect(o.g).toEqual('valg');
-      expect(o.h).toEqual('valh');
-      expect(o.publicKeys).toEqual(['p1', 'p2']);
-      expect(o.t).toEqual('valt');
-      expect(o.payload).toEqual('{"a":1,"b":2}');
-      expect(o.s).toEqual(['s1', 's2']);
-      expect(o.c).toEqual(['c1', 'c2']);
-      return {
-        valid: 1,
-      };
     });
-
-    // eslint-disable-next-line global-require
-    const { verify } = require('../cryptor');
-    return expect(verify({
-      crypto: {
-        q: 'valq',
-        g: 'valg',
-        h: 'valh',
-      },
-      voters: [{
-        publicKey: 'p1',
-      }, {
-        publicKey: 'p2',
-      }],
-      key: 'value',
-    }, {
+    expect(rpcMock.publish.mock.calls.length).toEqual(1);
+    expect(rpcMock.publish.mock.calls[0][0]).toEqual('verify');
+    expect(rpcMock.publish.mock.calls[0][1]).toEqual({
+      q: 'valq',
+      g: 'valg',
+      h: 'valh',
+      publicKeys: ['p1', 'p2'],
       t: 'valt',
-      payload: {
-        b: 2,
-        a: 1,
-      },
+      payload: '{"a":1,"b":2}',
       s: ['s1', 's2'],
       c: ['c1', 'c2'],
-    })).resolves.toEqual(true);
+    });
+    expect(rpcMock.publish.mock.calls[0][2]).toEqual({
+      reply: {
+        method: 'verify',
+        _id: '3456',
+        bId: 'bId',
+      },
+    });
   });
 });

@@ -104,7 +104,9 @@ router.post('/secret/tickets', async (req, res, next) => {
         if (rst.status === 202) {
           res.status(rst.status).send(`Ticket staged. Your tId is <pre>${rst.json.tId}</pre>`);
         } else {
-          res.status(rst.status).send(`Error occured: <pre>${rst.json.error}</pre>`);
+          res.status(rst.status)
+            .send(`Error occured: <pre>${rst.json.error.code}</pre>
+<pre>${rst.json.error.message}</pre>`);
         }
         return;
       }
@@ -134,10 +136,12 @@ router.get('/secret/tickets/', async (req, res, next) => {
         logger.debug('Resposne status', rst.status);
         if (rst.status === 202) {
           res.status(rst.status).send('Still processing.');
-        } else if (rst.status === 200) {
-          res.status(rst.status).send('Success.');
+        } else if (rst.status === 204) {
+          res.status(200).send('Success.');
         } else {
-          res.status(rst.status).send(`Error occured: <pre>${rst.json.error}</pre>`);
+          res.status(rst.status)
+            .send(`Error occured: <pre>${rst.json.error.code}</pre>
+<pre>${rst.json.error.message}</pre>`);
         }
         return;
       }

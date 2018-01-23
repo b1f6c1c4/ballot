@@ -2,6 +2,7 @@ const stringify = require('json-stringify-deterministic');
 const crypto = require('crypto');
 const Ballot = require('../models/ballots');
 const rpc = require('../rpc');
+const finalizeVerify = require('./verify');
 const logger = require('../logger')('cryptor');
 
 const handler = (err, res, con) => {
@@ -20,9 +21,6 @@ const handler = (err, res, con) => {
         _id,
         status: 'creating',
       }, {
-        $inc: {
-          __v: 1,
-        },
         $set: {
           status: 'inviting',
           crypto: { q, g },
@@ -38,6 +36,9 @@ const handler = (err, res, con) => {
       });
       break;
     }
+    case 'verify':
+      finalizeVerify(res, con);
+      break;
     default:
       logger.error('Method not found form P', con.method);
       break;
@@ -91,21 +92,27 @@ module.exports = {
     });
   },
 
-  async verify(ballot, signedTicket) {
+  verify(ballot, submittedTicket) {
     const { q, g, h } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
-    const { t, s, c } = signedTicket;
-    const payload = stringify(signedTicket.payload);
-    const res = await rpc.call('verify', {
+    const { _id, ticket } = submittedTicket;
+    const { s, c } = ticket;
+    const payload = stringify(ticket.payload);
+    rpc.publish('verify', {
       q,
       g,
       h,
       publicKeys,
-      t,
+      t: ticket._id,
       payload,
       s,
       c,
+    }, {
+      reply: {
+        method: 'verify',
+        _id,
+        bId: ballot._id,
+      },
     });
-    return res.valid === 1;
   },
 };
