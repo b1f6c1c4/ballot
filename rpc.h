@@ -16,9 +16,15 @@ struct RpcAnswer
 
 typedef RpcAnswer RpcHandler(const std::string &method, const json &data);
 
-std::string executeRpcs(const std::string &str, RpcHandler executer);
-json executeRpc(const json &req, RpcHandler executer);
+class Rpc : public Logger
+{
+    LOGGABLE(Rpc);
+public:
 
-// LCOV_EXCL_START
-void runRpc(RpcHandler executer);
-// LCOV_EXCL_STOP
+    std::string executeRpcs(const std::string &str, RpcHandler executer);
+    json executeRpc(const json &req, RpcHandler executer);
+
+    // LCOV_EXCL_START
+    void runRpc(RpcHandler executer);
+    // LCOV_EXCL_STOP
+};
