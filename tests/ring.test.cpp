@@ -9,7 +9,7 @@
 #include "../ringImpl.cpp"
 
 // .. and mock the rest ...
-RingData generate()
+RingData RingImpl::generate()
 {
     RingData ring;
     ring.q = Integer(15485863);

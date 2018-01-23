@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(throws_no)
 {
     json j;
 
-    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(throws_number)
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(throws_number)
     json j;
     j["key"] = 123;
 
-    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(throws_object)
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(throws_object)
     json j;
     j["key"]["val"] = "abcde";
 
-    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(throws_array)
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(throws_array)
     json j;
     j["key"] = { "abc" };
 
-    BOOST_CHECK_THROW(fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(full)
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(full)
     json j;
     j["key"] = str;
 
-    auto &&i = fromJson(j["key"]);
+    auto &&i = RingImpl::Inst().fromJson(j["key"]);
     BOOST_TEST(i == Integer(hstr.c_str()));
 }
 
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(partial)
     json j;
     j["key"] = str;
 
-    auto &&i = fromJson(j["key"]);
+    auto &&i = RingImpl::Inst().fromJson(j["key"]);
     BOOST_TEST(i == Integer(hstr.c_str()));
 }
 
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(full)
     std::string str = "a012badf1494f3c358417e2a797765c2";
     auto &&hstr = str + "h";
 
-    auto &&res = toString(Integer(hstr.c_str()));
+    auto &&res = RingImpl::Inst().toString(Integer(hstr.c_str()));
     BOOST_TEST(res == str);
 }
 
@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(partial)
     std::string str = "0000000000000a962620e95c1aa3bdbc";
     auto &&hstr = str + "h";
 
-    auto &&res = toString(Integer(hstr.c_str()));
+    auto &&res = RingImpl::Inst().toString(Integer(hstr.c_str()));
     BOOST_TEST(res == str);
 }
 
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_SUITE(generate_test);
 
 BOOST_AUTO_TEST_CASE(gen)
 {
-    auto &&ring = generate();
+    auto &&ring = RingImpl::Inst().generate();
 
     auto half = Integer::One();
     half <<= WIDTH_BIT - 1;
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(fill)
     Integer v(str.c_str());
     byte buffer[WIDTH_BYTE] = {0};
 
-    auto res = fillBuffer(v, buffer);
+    auto res = RingImpl::Inst().fillBuffer(v, buffer);
     BOOST_TEST(res == WIDTH_BYTE);
     for (auto i = 0; i < WIDTH_BYTE; i++)
     {
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(read)
         buffer[i] = std::stoi(str.substr(i * 2, 2), 0, 16);
 
     Integer v0(str.c_str());
-    auto &&v = readBuffer(buffer, WIDTH_BYTE);
+    auto &&v = RingImpl::Inst().readBuffer(buffer, WIDTH_BYTE);
     BOOST_TEST(v == v0);
 }
 
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(hash)
     ring.q = Integer(15485863);
     ring.g = Integer(6);
 
-    auto &&res = groupHash(buffer, 8, ring);
+    auto &&res = RingImpl::Inst().groupHash(buffer, 8, ring);
     BOOST_TEST(res == Integer(7691388)); // 6^^$SHA3-512(buffer) % 15485863
 }
 

@@ -15,7 +15,7 @@ MathRing::MathRing(const RingData &ring) :
     maq(RingData::q),
     maqm1((Integer(RingData::q) -= Integer::One())) {}
 
-Integer fromJson(const json &j)
+Integer RingImpl::fromJson(const json &j)
 {
     if (!j.is_string())
         throw std::exception{};
@@ -24,7 +24,7 @@ Integer fromJson(const json &j)
     return Integer(str.c_str());
 }
 
-std::string toString(const Integer &v)
+std::string RingImpl::toString(const Integer &v)
 {
     auto &&str = IntToString(v, 16);
     auto length = str.length();
@@ -36,7 +36,7 @@ std::string toString(const Integer &v)
 }
 
 #ifndef IS_TEST_RING
-RingData generate()
+RingData RingImpl::generate()
 {
     AutoSeededRandomPool prng;
     PrimeAndGenerator pg;
@@ -50,20 +50,20 @@ RingData generate()
 }
 #endif
 
-size_t fillBuffer(const Integer &v, byte *buffer)
+size_t RingImpl::fillBuffer(const Integer &v, byte *buffer)
 {
     v.Encode(buffer, WIDTH_BYTE);
     return WIDTH_BYTE;
 }
 
-Integer readBuffer(const byte *buffer, size_t len)
+Integer RingImpl::readBuffer(const byte *buffer, size_t len)
 {
     Integer v;
     v.Decode(buffer, len);
     return v;
 }
 
-Integer groupHash(const byte *buffer, size_t len, const MathRing &ring)
+Integer RingImpl::groupHash(const byte *buffer, size_t len, const MathRing &ring)
 {
     SHA3_512 raw;
 

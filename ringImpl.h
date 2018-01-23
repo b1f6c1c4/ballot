@@ -28,14 +28,20 @@ struct MathRing : public RingData
     MathRing(const RingData &ring);
 };
 
-Integer fromJson(const json &j);
+class RingImpl : public Logger
+{
+    LOGGABLE(RingImpl);
+public:
 
-std::string toString(const Integer &v);
+    Integer fromJson(const json &j);
 
-RingData generate();
+    std::string toString(const Integer &v);
 
-size_t fillBuffer(const Integer &v, byte *buffer);
+    RingData generate();
 
-Integer readBuffer(const byte *buffer, size_t len);
+    size_t fillBuffer(const Integer &v, byte *buffer);
 
-Integer groupHash(const byte *buffer, size_t len, const MathRing &ring);
+    Integer readBuffer(const byte *buffer, size_t len);
+
+    Integer groupHash(const byte *buffer, size_t len, const MathRing &ring);
+};
