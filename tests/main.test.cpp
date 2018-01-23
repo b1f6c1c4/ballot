@@ -4,6 +4,7 @@
 #include <boost/test/data/test_case.hpp>
 #include "../main.h"
 
+#include "../argon.h"
 #include "../ring.h"
 
 bool g_throwStd;
@@ -22,7 +23,7 @@ void mayThrow()
         throw std::exception{};
 }
 
-json argon2i(const json &param)
+json Argon::argon2i(const json &param)
 {
     mayThrow();
     return json{

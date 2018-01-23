@@ -9,7 +9,7 @@
 #include "../argonImpl.cpp"
 
 // .. and mock the rest ...
-ArgonSaltType genSalt()
+ArgonSaltType ArgonImpl::genSalt()
 {
 	std::string rawsalt = "qwertyuiopzxcvbn";
 	ArgonSaltType salt;
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(gensalt)
 	json j;
 	j["password"] = "asdfghjkl";
 
-	auto &&res = argon2i(j);
+	auto &&res = Argon::Inst().argon2i(j);
 	auto &&salt = res.at("salt").get<std::string>();
 	auto &&hash = res.at("hash").get<std::string>();
 	BOOST_TEST(salt == "71776572747975696f707a786376626e");
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(usesalt)
 	j["password"] = "asdfghjkl";
 	j["salt"] = "71776572747975696f707a786376626d";
 
-	auto &&res = argon2i(j);
+	auto &&res = Argon::Inst().argon2i(j);
 	auto &&salt = res.at("salt").get<std::string>();
 	auto &&hash = res.at("hash").get<std::string>();
 	BOOST_TEST(salt == "71776572747975696f707a786376626d");

@@ -17,7 +17,7 @@ RpcAnswer handler(const std::string &method, const json &data)
         }
         else if (method == "argon2i")
         {
-            return argon2i(data);
+            return Argon::Inst().argon2i(data);
         }
         else if (method == "newRing")
         {

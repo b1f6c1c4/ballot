@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_SUITE(genSalt_test);
 
 BOOST_AUTO_TEST_CASE(nothrow)
 {
-	BOOST_CHECK_NO_THROW(genSalt());
+	BOOST_CHECK_NO_THROW(ArgonImpl::Inst().genSalt());
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(argon)
 	std::copy(rawsalt.begin(), rawsalt.begin() + SALT_BYTE, salt.data());
 
 	std::string hx = "03028213517a805207dddd9db5f8d88e";
-	auto &&v = runArgon("asdfghjkl", salt);
+	auto &&v = ArgonImpl::Inst().runArgon("asdfghjkl", salt);
     for (auto i = 0; i < HASH_BYTE; i++)
     {
         uint8_t b = std::stoi(hx.substr(i * 2, 2), 0, 16);

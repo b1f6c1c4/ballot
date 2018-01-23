@@ -62,6 +62,12 @@ Buffer<N> fromJson(const json &j)
 	return decoded;
 }
 
-ArgonSaltType genSalt();
+class ArgonImpl : public Logger
+{
+	LOGGABLE(ArgonImpl);
+public:
 
-ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
+	ArgonSaltType genSalt();
+
+	ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
+};

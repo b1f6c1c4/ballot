@@ -1,17 +1,29 @@
 #include "argon.h"
 #include "argonImpl.h"
 
-json argon2i(const json &param)
+json Argon::argon2i(const json &param)
 {
+	logger->trace("Argon::argon2i");
 	auto &&pwd = param.at("password").get<std::string>();
+
 	ArgonSaltType salt;
 	if (param.find("salt") != param.end())
+	{
+		logger->debug("Salt provided");
 		salt = fromJson<SALT_BYTE>(param.at("salt"));
+	}
 	else
-		salt = genSalt();
+	{
+		logger->debug("No salt provided");
+		salt = ArgonImpl::Inst().genSalt();
+	}
 
+	logger->trace("Calling argonImpl");
+	auto &&hash = ArgonImpl::Inst().runArgon(pwd, salt);
+
+	logger->trace("Finalize");
 	json j;
 	j["salt"] = toString(salt);
-	j["hash"] = toString(runArgon(pwd, salt));
+	j["hash"] = toString(hash);
 	return j;
 }
