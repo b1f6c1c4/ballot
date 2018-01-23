@@ -93,7 +93,7 @@ json Rpc::executeRpc(const json &req, RpcHandler executer)
     }
     catch (std::exception)
     {
-        logger->warn("Param: undefined");
+        logger->debug("Param: undefined");
         par = nullptr;
     }
 

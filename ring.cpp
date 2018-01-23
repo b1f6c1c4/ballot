@@ -12,8 +12,10 @@ RingData getRing(const json &param)
 
 json Ring::newRing()
 {
+    logger->trace("Ring::newRing");
     auto &&ring = RingImpl::Inst().generate();
 
+    logger->trace("Finalize");
     json j;
     j["q"] = RingImpl::Inst().toString(ring.q);
     j["g"] = RingImpl::Inst().toString(ring.g);
@@ -22,16 +24,20 @@ json Ring::newRing()
 
 json Ring::genH(const json &param)
 {
+    logger->trace("Ring::genH");
     MathRing ring = getRing(param);
 
     auto &&pks = param.at("publicKeys");
     auto num = pks.size();
+    logger->debug("PublicKey size: {}", num);
     byte *buffer = new byte[WIDTH_BYTE * num];
     auto cur = buffer;
     for (auto it = pks.begin(); it != pks.end(); ++it)
         cur += RingImpl::Inst().fillBuffer(RingImpl::Inst().fromJson(*it), cur);
+    logger->trace("Calculate group hash");
     auto &&h = RingImpl::Inst().groupHash(buffer, WIDTH_BYTE * num, ring);
 
+    logger->trace("Finalize");
     json j;
     j["h"] = RingImpl::Inst().toString(h);
     return j;
@@ -39,36 +45,50 @@ json Ring::genH(const json &param)
 
 bool Ring::verify(const json &param)
 {
+    logger->trace("Ring::verify");
     MathRing ring = getRing(param);
 
     std::vector<Integer> y, s, c;
 
     auto &&pks = param.at("publicKeys");
     auto num = pks.size();
+    logger->debug("PublicKey size: {}", num);
     y.reserve(num);
     for (auto it = pks.begin(); it != pks.end(); ++it)
         y.push_back(std::move(RingImpl::Inst().fromJson(*it)));
 
+    logger->trace("Parse s");
     auto &&ss = param.at("s");
     if (num != ss.size())
-        throw std::exception{};
+    {
+        logger->error("Param s size {}, should be {}", ss.size(), num);
+        throw std::invalid_argument{"s"};
+    }
     s.reserve(num);
     for (auto it = ss.begin(); it != ss.end(); ++it)
         s.push_back(std::move(RingImpl::Inst().fromJson(*it)));
 
+    logger->trace("Parse c");
     auto &&cs = param.at("c");
     if (num != cs.size())
-        throw std::exception{};
+    {
+        logger->error("Param s size {}, should be {}", ss.size(), num);
+        throw std::invalid_argument{"s"};
+    }
     c.reserve(num);
     for (auto it = cs.begin(); it != cs.end(); ++it)
         c.push_back(std::move(RingImpl::Inst().fromJson(*it)));
 
-
+    logger->trace("Get payload");
     auto &&payload = param.at("payload").get<std::string>();
+    logger->trace("Calculate group hash phase 1");
     auto &&m = RingImpl::Inst().groupHash(reinterpret_cast<const byte *>(payload.c_str()), payload.length(), ring);
+    logger->trace("Parse h");
     auto &&h = RingImpl::Inst().fromJson(param.at("h"));
+    logger->trace("Parse t");
     auto &&t = RingImpl::Inst().fromJson(param.at("t"));
 
+    logger->trace("Calculate u, v");
     auto sum = Integer::Zero();
     byte *buffer = new byte[WIDTH_BYTE * (2 + 2 * num)];
     RingImpl::Inst().fillBuffer(m, buffer);
@@ -88,7 +108,9 @@ bool Ring::verify(const json &param)
         sum = ring.maqm1.Add(sum, c[i]);
     }
 
+    logger->trace("Calculate group hash phase 2");
     auto &&hx = RingImpl::Inst().groupHash(buffer, WIDTH_BYTE * (2 + 2 * num), ring);
 
+    logger->trace("Finalize");
     return sum == hx;
 }
