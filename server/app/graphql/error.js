@@ -33,7 +33,7 @@ class PasswordMalformedError extends Error {
 class UsernameExistsError extends Error {
   constructor() {
     super('UsernameExists');
-    this.statusCode = 400;
+    this.statusCode = 409;
     this.errorCode = 'unex';
   }
 }
@@ -86,6 +86,22 @@ class StatusNotInvitingError extends Error {
   }
 }
 
+class PublicKeyMalformedError extends Error {
+  constructor() {
+    super('Public key malformed');
+    this.statusCode = 400;
+    this.errorCode = 'pkmf';
+  }
+}
+
+class VoterRegisteredError extends Error {
+  constructor() {
+    super('Voter already registered');
+    this.statusCode = 409;
+    this.errorCode = 'vtrg';
+  }
+}
+
 module.exports = {
   UnauthorizedError,
   NotFoundError,
@@ -98,4 +114,6 @@ module.exports = {
   VoterLockedError,
   StatusNotInvitedError,
   StatusNotInvitingError,
+  PublicKeyMalformedError,
+  VoterRegisteredError,
 };
