@@ -21,7 +21,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
     - `-32602` - Invalid params
     - `-32603` - Internal error
 
-## Data Structures
+## Message Queue
+
+Reply message is tagged persist iff `id` starts with `{` or `[`.
 
 # Group Default
 
@@ -34,7 +36,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
             + `2.0` (string)
         + method (enum, required)
             + `status`
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 + Response 200
 
@@ -44,7 +48,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + result (object)
             + version: `4907ca16`
             + commitHash: `4907ca16faf693b76a71df0efd19ef9dcefaa309`
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 # Group Password Hashing
 
@@ -59,8 +65,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
             + `argon2i`
         + param (object, required)
             + password: `letmein` (string, required)
-            + salt: `DiFfvBwXt2krDJe1...` (string)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 + Response 200
 
@@ -68,9 +76,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + jsonrpc (enum)
             + `2.0` (string)
         + result (object)
-            + salt: `DiFfvBwXt2krDJe1...` (string)
-            + hash: `m6Sxrc1Mq9/MnNyH...` (string)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
+            + hash: `7d98293897e5265b4d8e8817af18f6ac` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 # Group Ring Signature
 
@@ -83,7 +93,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
             + `2.0` (string)
         + method (enum, required)
             + `newRing`
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 + Response 200
 
@@ -91,9 +103,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + jsonrpc (enum)
             + `2.0` (string)
         + result (object)
-            + q: `3XZ4+lRLx0I9jzEU...` (string)
-            + g: `9EWKxabxMFLvZiVI...` (string)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+            + q: `acdc2c107bff745981be922065b3e308` (string)
+            + g: `c6ad50b0f41696dbf2a0f01abf56ca74` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 ## Generate h [POST /genH]
 
@@ -105,10 +119,12 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + method (enum, required)
             + `genH`
         + param (object, required)
-            + q: `3XZ4+lRLx0I9jzEU...` (string, required)
-            + g: `9EWKxabxMFLvZiVI...` (string, required)
-            + publicKeys: `EIBy/4RYxoeg0pbu...` `8MQdeMLPUSs9K5qh...` (array[string], required)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+            + q: `acdc2c107bff745981be922065b3e308` (string, required)
+            + g: `c6ad50b0f41696dbf2a0f01abf56ca74` (string, required)
+            + publicKeys: `aa57c17b4406f4b1b71b8e4f222714d3` `c8aeda0f3dccdf1b84a9e5ca87e045cc` (array[string], required)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 + Response 200
 
@@ -116,9 +132,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + jsonrpc (enum)
             + `2.0` (string)
         + result (object)
-            + h: `60vGbvWnsjKvcDYz...` (string)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
-
+            + h: `2e56f2ff6b9d33ae878001217d7e7d64` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 ## Verify [POST /verify]
 
@@ -130,15 +147,17 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
         + method (enum, required)
             + `verify`
         + param (object, required)
-            + q: `3XZ4+lRLx0I9jzEU...` (string, required)
-            + g: `9EWKxabxMFLvZiVI...` (string, required)
-            + h: `60vGbvWnsjKvcDYz...` (string, required)
-            + publicKeys: `EIBy/4RYxoeg0pbu...` `8MQdeMLPUSs9K5qh...` (array[string], required)
-            + t: `whu44u3wVnqnVT78...` (string, required)
-            + payload: `{"bId":"876ef6f5fe7fd8d7",...` (string, required)
-            + s: `y4V+udaSG4h9YWiH...` (array[string], required)
-            + c: `qzohcWz1CLLJI2+J...` (array[string], required)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string, required)
+            + q: `acdc2c107bff745981be922065b3e308` (string, required)
+            + g: `c6ad50b0f41696dbf2a0f01abf56ca74` (string, required)
+            + h: `2e56f2ff6b9d33ae878001217d7e7d64` (string, required)
+            + publicKeys: `aa57c17b4406f4b1b71b8e4f222714d3` `c8aeda0f3dccdf1b84a9e5ca87e045cc` (array[string], required)
+            + t: `bd700a31b8464dbe721b55ce5f76b971` (string, required)
+            + payload: `{"bId":"876ef6f5fe7fd8d7",` (string, required)
+            + s: `12a5deb064195ba51a7074fe5a1d83df` (array[string], required)
+            + c: `e60363581e1b1cfb0365ff202ebda6cf` (array[string], required)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
 + Response 200
 
@@ -147,5 +166,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
             + `2.0` (string)
         + result (object)
             + valid: 0 (number)
-        + id: `c1cec9df6fe613181e71e5083a51f9e0` (string)
+        + id (enum, required)
+            + `123` (number)
+            + `{}` (string)
 
