@@ -76,7 +76,7 @@ This API uses HTTP status codes to communicate with the API consumer.
 
 ### Error response
 
-This API only returns machine-readable error codes in the field `error`. Please refer to this document when an error is encountered.
+This API returns machine-readable error codes in the field `error.code` and human-readable error message in the field `error.message`.
 
 ## Data Structures
 
@@ -148,12 +148,13 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
 **Error codes**
 
-| Code    | Error    | Description                                 |
+| Status  | Code     | Description                                 |
 | ------- | -------- | ------------------------------------------- |
 | `400`   | `tkmf`   | Ticket malformed                            |
-| `400`   | `rsmf`   | `payload.result` malformed                  |
-| `404`   | `xbid`   | `payload.bId` non-exist                     |
-| `409`   | `nvtg`   | Ballot status is not `voting`               |
+| `400`   | `rsmf`   | Payload result malformed                    |
+| `403`   | `anon`   | Anonymity broken                            |
+| `404`   | `ntfd`   | Resource not found                          |
+| `409`   | `stna`   | Ballot status doesn't allow the operation   |
 
 + Request (application/json)
 
@@ -188,6 +189,12 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
     + Body
 
+            Error occured: <pre>tkmf</pre>
+
++ Response 400 (text/html; charset=utf-8)
+
+    + Body
+
             Error occured: <pre>rsmf</pre>
 
 + Response 403 (text/html; charset=utf-8)
@@ -200,13 +207,13 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
     + Body
 
-            Error occured: <pre>xbid</pre>
+            Error occured: <pre>ntfd</pre>
 
 + Response 409 (text/html; charset=utf-8)
 
     + Body
 
-            Error occured: <pre>nvtg</pre>
+            Error occured: <pre>stna</pre>
 
 ## Anonymously query submitted ticket status [GET /secret/tickets/?tId={tId}]
 
@@ -222,10 +229,12 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
 **Error codes**
 
-| Code    | Error    | Description                                 |
+| Status  | Code     | Description                                 |
 | ------- | -------- | ------------------------------------------- |
 | `401`   | `xsgn`   | Invalid signature                           |
-| `409`   | `nvtg`   | Ballot status is not `voting`               |
+| `403`   | `anon`   | Anonymity broken                            |
+| `404`   | `ntfd`   | Resource not found                          |
+| `409`   | `stna`   | Ballot status doesn't allow the operation   |
 
 + Parameters
     + tId: d82f714ec7a98ff372d72c7ba20146cc58cce58379f61249727a391ff3f4e953 (required, string) - Trace ID issued by [POST /secret/tickets].
@@ -274,5 +283,5 @@ This endpoint allows check your anonymity. User will get verbose output even `40
 
     + Body
 
-            Error occured: <pre>nvtg</pre>
+            Error occured: <pre>stna</pre>
 

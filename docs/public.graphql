@@ -23,7 +23,7 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `unmf`   | Username malformed                          |
   # | `400`   | `pwmf`   | Password malformed                          |
@@ -34,7 +34,7 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `unmf`   | Username malformed                          |
   # | `400`   | `pwmf`   | Password malformed                          |
@@ -48,7 +48,7 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `pwmf`   | Password malformed                          |
   password(input: PasswordInput!): Boolean
@@ -62,7 +62,7 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `nmmf`   | Name malformed                              |
   createBallot(input: CreateBallotInput!): Ballot
@@ -73,10 +73,11 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `fdmf`   | Field malformed                             |
-  # | `409`   | `flkd`   | Field changes locked by ballot status       |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   replaceFields(input: ReplaceFieldsInput!): [BallotField!]
 
   # Finalize field changes
@@ -87,9 +88,10 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
-  # | `409`   | `snid`   | Ballot status is not `invited`              |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   finalizeFields(input: FinalizeFieldsInput!): Boolean
 
   # Create a new voter
@@ -98,9 +100,10 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
-  # | `409`   | `vlkd`   | Voter changes locked by ballot status       |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   createVoter(input: CreateVoterInput!): BallotVoter
 
   # Delete a voter
@@ -109,9 +112,10 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
-  # | `409`   | `vlkd`   | Voter changes locked by ballot status       |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   deleteVoter(input: DeleteVoterInput!): Boolean
 
   # Finalize voter changes
@@ -122,21 +126,51 @@ type Mutation {
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
-  # | `409`   | `sniv`   | Ballot status is not `inviting`             |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   finalizeVoters(input: FinalizeVotersInput!): Boolean
 
   # Register as a voter
   #
   # **Error codes**
   #
-  # | Code    | Error    | Description                                 |
+  # | Status  | Code     | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `pkmf`   | Public key malformed                        |
-  # | `409`   | `sniv`   | Ballot status is not `inviting`             |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
   # | `409`   | `vtrg`   | Voter already registered                    |
   registerVoter(input: RegisterVoterInput!): Boolean
+
+  # Finalize pre voting
+  #
+  # Turn ballot status from `preVoting` to `voting`.
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Status  | Code     | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
+  finalizePreVoting(input: FinalizePreVotingInput!): Boolean
+
+  # Finalize voting
+  #
+  # Turn ballot status from `voting` to `finished`.
+  #
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Status  | Code     | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
+  finalizeVoting(input: FinalizeVotingInput!): Boolean
 }
 
 # Inputs
@@ -202,6 +236,14 @@ input RegisterVoterInput {
   iCode: ID!
   comment: String
   publicKey: Crypto!
+}
+
+input FinalizePreVotingInput {
+  bId: ID!
+}
+
+input FinalizeVotingInput {
+  bId: ID!
 }
 
 # Objects
