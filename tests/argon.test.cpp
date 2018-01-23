@@ -2,6 +2,7 @@
 #include "common.test.h"
 
 #include "../argon.h"
+#include "mockArgon2.test.cpp"
 
 // Borrow some implemention ...
 #define IS_TEST_ARGON
@@ -22,6 +23,10 @@ BOOST_AUTO_TEST_SUITE(argon2i_test);
 
 BOOST_AUTO_TEST_CASE(gensalt)
 {
+    g_pass = "asdfghjkl";
+    g_rawsalt = "qwertyuiopzxcvbn";
+    g_hx = "03028213517a805207dddd9db5f8d88e";
+
     json j;
     j["password"] = "asdfghjkl";
 
@@ -34,6 +39,10 @@ BOOST_AUTO_TEST_CASE(gensalt)
 
 BOOST_AUTO_TEST_CASE(usesalt)
 {
+    g_pass = "asdfghjkl";
+    g_rawsalt = "qwertyuiopzxcvbm";
+    g_hx = "307adbe399303fc1b79d7a82d386638a";
+
     json j;
     j["password"] = "asdfghjkl";
     j["salt"] = "71776572747975696f707a786376626d";
