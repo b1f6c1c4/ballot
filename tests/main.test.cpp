@@ -4,6 +4,8 @@
 #include <boost/test/data/test_case.hpp>
 #include "../main.h"
 
+#include "../ring.h"
+
 bool g_throwStd;
 bool g_throwParam;
 
@@ -29,7 +31,7 @@ json argon2i(const json &param)
     };
 }
 
-json newRing()
+json Ring::newRing()
 {
     mayThrow();
     return json{
@@ -37,7 +39,7 @@ json newRing()
     };
 }
 
-json genH(const json &param)
+json Ring::genH(const json &param)
 {
     mayThrow();
     return json{
@@ -46,7 +48,7 @@ json genH(const json &param)
     };
 }
 
-bool verify(const json &param)
+bool Ring::verify(const json &param)
 {
     mayThrow();
     return param.at("echo").get<std::string>() == "true";

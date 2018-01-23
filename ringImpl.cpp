@@ -6,14 +6,14 @@
 
 using namespace CryptoPP;
 
-MathRing::MathRing(Ring &&ring) :
-    Ring(std::move(ring)),
-    maq(Ring::q),
-    maqm1((Integer(Ring::q) -= Integer::One())) {}
-MathRing::MathRing(const Ring &ring) :
-    Ring(ring),
-    maq(Ring::q),
-    maqm1((Integer(Ring::q) -= Integer::One())) {}
+MathRing::MathRing(RingData &&ring) :
+    RingData(std::move(ring)),
+    maq(RingData::q),
+    maqm1((Integer(RingData::q) -= Integer::One())) {}
+MathRing::MathRing(const RingData &ring) :
+    RingData(ring),
+    maq(RingData::q),
+    maqm1((Integer(RingData::q) -= Integer::One())) {}
 
 Integer fromJson(const json &j)
 {
@@ -36,14 +36,14 @@ std::string toString(const Integer &v)
 }
 
 #ifndef IS_TEST_RING
-Ring generate()
+RingData generate()
 {
     AutoSeededRandomPool prng;
     PrimeAndGenerator pg;
 
     pg.Generate(1, prng, WIDTH_BIT + 1, WIDTH_BIT);
 
-    Ring ring;
+    RingData ring;
     ring.q = pg.SubPrime();
     ring.g = pg.Generator();
     return ring;

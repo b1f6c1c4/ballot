@@ -9,9 +9,9 @@
 #include "../ringImpl.cpp"
 
 // .. and mock the rest ...
-Ring generate()
+RingData generate()
 {
-    Ring ring;
+    RingData ring;
     ring.q = Integer(15485863);
     ring.g = Integer(6);
     return ring;
@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_SUITE(newRing_test);
 
 BOOST_AUTO_TEST_CASE(gen)
 {
-    auto &&j = newRing();
+    auto &&j = Ring::Inst().newRing();
     BOOST_TEST(j["q"] == "00000000000000000000000000ec4ba7");
     BOOST_TEST(j["g"] == "00000000000000000000000000000006");
 }
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(genh)
         "00000000000000000000000000c76edd", // privateKey = 0d456
     };
 
-    auto &&res = genH(j);
+    auto &&res = Ring::Inst().genH(j);
     BOOST_TEST(res["h"] == "000000000000000000000000005a0219");
 }
 
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(ver_false)
         "000000000000000000000000000000e9",
     };
 
-    auto res = verify(j);
+    auto res = Ring::Inst().verify(j);
     BOOST_TEST(res == false);
 }
 
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(ver_true)
         "000000000000000000000000000000e9",
     };
 
-    auto res = verify(j);
+    auto res = Ring::Inst().verify(j);
     BOOST_TEST(res == true);
 }
 
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(ver_throwc)
         "000000000000000000000000014f6851",
     };
 
-    BOOST_CHECK_THROW(verify(j), std::exception);
+    BOOST_CHECK_THROW(Ring::Inst().verify(j), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(ver_throws)
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(ver_throws)
         "000000000000000000000000000000e9",
     };
 
-    BOOST_CHECK_THROW(verify(j), std::exception);
+    BOOST_CHECK_THROW(Ring::Inst().verify(j), std::exception);
 }
 
 BOOST_AUTO_TEST_SUITE_END();

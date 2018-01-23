@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_SUITE(MathRing_test);
 
 BOOST_AUTO_TEST_CASE(moveRing)
 {
-    Ring ring;
+    RingData ring;
     ring.q = Integer(123);
     ring.g = Integer(456);
 
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(moveRing)
 
 BOOST_AUTO_TEST_CASE(copyRing)
 {
-    Ring ring;
+    RingData ring;
     ring.q = Integer(123);
     ring.g = Integer(456);
 
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_SUITE(groupHash_test);
 BOOST_AUTO_TEST_CASE(hash)
 {
     const byte buffer[] = "asdfqwer";
-    Ring ring;
+    RingData ring;
     ring.q = Integer(15485863);
     ring.g = Integer(6);
 

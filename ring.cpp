@@ -2,15 +2,15 @@
 #include "ringImpl.h"
 #include <iostream>
 
-Ring getRing(const json &param)
+RingData getRing(const json &param)
 {
-    Ring ring;
+    RingData ring;
     ring.q = fromJson(param.at("q"));
     ring.g = fromJson(param.at("g"));
     return ring;
 }
 
-json newRing()
+json Ring::newRing()
 {
     auto &&ring = generate();
 
@@ -20,7 +20,7 @@ json newRing()
     return j;
 }
 
-json genH(const json &param)
+json Ring::genH(const json &param)
 {
     MathRing ring = getRing(param);
 
@@ -37,7 +37,7 @@ json genH(const json &param)
     return j;
 }
 
-bool verify(const json &param)
+bool Ring::verify(const json &param)
 {
     MathRing ring = getRing(param);
 

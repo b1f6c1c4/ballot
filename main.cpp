@@ -21,16 +21,16 @@ RpcAnswer handler(const std::string &method, const json &data)
         }
         else if (method == "newRing")
         {
-            return newRing();
+            return Ring::Inst().newRing();
         }
         else if (method == "genH")
         {
-            return genH(data);
+            return Ring::Inst().genH(data);
         }
         else if (method == "verify")
         {
             json j;
-            auto res = verify(data);
+            auto res = Ring::Inst().verify(data);
             j["valid"] = res ? 1 : 0;
             return j;
         }
@@ -94,3 +94,4 @@ int main(int argc, char *argv[])
     return 0;
 }
 #endif
+// LCOV_EXCL_STOP
