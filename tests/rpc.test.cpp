@@ -1,6 +1,5 @@
 #define BOOST_TEST_MODULE rpc
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
+#include "common.test.h"
 
 #include "../rpc.h"
 

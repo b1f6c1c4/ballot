@@ -29,19 +29,8 @@ using json = nlohmann::json;
 
 class Logger : private boost::noncopyable
 {
-public:
-    inline void setLoggingLevel(spdlog::level::level_enum level)
-    {
-        logger->set_level(level);
-    }
-
 protected:
-    inline explicit Logger(std::string &&name) : logger(spdlog::stdout_color_mt(name))
-    {
-#ifdef IS_TEST
-        logger->set_level(spdlog::level::off);
-#endif
-    }
+    inline explicit Logger(std::string &&name) : logger(spdlog::stdout_color_mt(name)) {}
 
     std::shared_ptr<spdlog::logger> logger;
 };

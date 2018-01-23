@@ -18,7 +18,7 @@ build/cryptor: $(patsubst %, build/%.o, $(TARGETS))
 
 -include $(patsubst %, build/tests/%.d, $(TARGETS))
 
-build/tests/%: tests/%.test.cpp %.cpp
+build/tests/%: tests/%.test.cpp %.cpp tests/common.test.h
 	mkdir -p build/tests
 	$(CXX) -o $@ $< $*.cpp $(CFLAGST) -MMD -MT $@ -MF $@.d $(LIBS) -lboost_unit_test_framework
 

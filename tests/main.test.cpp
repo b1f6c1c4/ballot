@@ -1,7 +1,5 @@
 #define BOOST_TEST_MODULE main
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
-#include <boost/test/data/test_case.hpp>
+#include "common.test.h"
 #include "../main.h"
 
 #include "../argon.h"
