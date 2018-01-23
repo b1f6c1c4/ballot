@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const errors = require('./error');
 const Ballot = require('../../models/ballots');
-const { bIdGen, newRing } = require('../cryptor');
+const { bIdGen, iCodeGen, newRing } = require('../cryptor');
 const logger = require('../../logger')('graphql/ballot');
 
 module.exports = {
@@ -30,6 +30,7 @@ module.exports = {
           ballot.owner = username;
           ballot.status = 'creating';
           await ballot.save();
+          logger.info('Ballot created', ballot._id);
           newRing(ballot);
           return ballot;
         } catch (e) {
@@ -90,8 +91,17 @@ module.exports = {
           if (doc.owner !== username) {
             return new errors.UnauthorizedError();
           }
+          switch (doc.status) {
+            case 'creating':
+            case 'inviting':
+            case 'invited':
+              break;
+            default:
+              return new errors.FieldLockedError();
+          }
           doc.fields = flds;
           await doc.save();
+          logger.info('Field replaced', bId);
           return doc.fields;
         } catch (e) {
           if (e instanceof errors.FieldMalformedError) {
@@ -101,7 +111,92 @@ module.exports = {
           return e;
         }
       },
+
+      async createVoter(parent, args, context) {
+        logger.debug('Mutation.createVoter', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        if (!_.get(context, 'auth.username')) {
+          return new errors.UnauthorizedError();
+        }
+
+        const { username } = context.auth;
+        const { bId, name } = args.input;
+
+        try {
+          const doc = await Ballot.findById(bId);
+          if (!doc) {
+            return new errors.NotFoundError();
+          }
+          logger.trace('Old ballot', doc);
+          if (doc.owner !== username) {
+            return new errors.UnauthorizedError();
+          }
+          switch (doc.status) {
+            case 'creating':
+            case 'inviting':
+              break;
+            default:
+              return new errors.VoterLockedError();
+          }
+          const iCode = await iCodeGen();
+          const voter = {
+            _id: iCode,
+            name,
+          };
+          doc.voters.push(voter);
+          await doc.save();
+          logger.info('Voter created', { bId, iCode });
+          return voter;
+        } catch (e) {
+          logger.error('Create voter', e);
+          return e;
+        }
+      },
+
+      async deleteVoter(parent, args, context) {
+        logger.debug('Mutation.deleteVoter', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        if (!_.get(context, 'auth.username')) {
+          return new errors.UnauthorizedError();
+        }
+
+        const { username } = context.auth;
+        const { bId, iCode } = args.input;
+
+        try {
+          const doc = await Ballot.findById(bId);
+          if (!doc) {
+            return new errors.NotFoundError();
+          }
+          logger.trace('Old ballot', doc);
+          if (doc.owner !== username) {
+            return new errors.UnauthorizedError();
+          }
+          switch (doc.status) {
+            case 'creating':
+            case 'inviting':
+              break;
+            default:
+              return new errors.VoterLockedError();
+          }
+          const oLen = doc.voters.length;
+          doc.voters = doc.voters.filter((v) => v._id !== iCode);
+          if (oLen === doc.voters.length) {
+            return new errors.NotFoundError();
+          }
+          await doc.save();
+          logger.info('Voter removed', { bId, iCode });
+          return true;
+        } catch (e) {
+          logger.error('Delete voter', e);
+          return e;
+        }
+      },
+
     },
   },
 };
-

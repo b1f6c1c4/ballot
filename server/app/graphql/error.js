@@ -62,6 +62,14 @@ class FieldLockedError extends Error {
   }
 }
 
+class VoterLockedError extends Error {
+  constructor() {
+    super('Voter changes locked by ballot status');
+    this.statusCode = 409;
+    this.errorCode = 'vlkd';
+  }
+}
+
 module.exports = {
   UnauthorizedError,
   NotFoundError,
@@ -71,4 +79,5 @@ module.exports = {
   NameMalformedError,
   FieldMalformedError,
   FieldLockedError,
+  VoterLockedError,
 };

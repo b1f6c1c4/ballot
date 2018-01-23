@@ -46,18 +46,22 @@ const handler = (err, res, con) => {
 
 rpc.onPMessage(handler);
 
+const idGen = (len) => () => new Promise((resolve, reject) => {
+  crypto.randomBytes(len, (err, buf) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(buf.toString('hex'));
+    }
+  });
+});
+
 module.exports = {
   handler,
 
-  bIdGen: () => new Promise((resolve, reject) => {
-    crypto.randomBytes(32, (err, buf) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(buf.toString('hex'));
-      }
-    });
-  }),
+  idGen,
+  bIdGen: idGen(32),
+  iCodeGen: idGen(32),
 
   async argon2i(password, salt) {
     return rpc.call('argon2i', {

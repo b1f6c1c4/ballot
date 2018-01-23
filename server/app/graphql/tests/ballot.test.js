@@ -5,6 +5,8 @@ const errors = require('../error');
 const {
   createBallot,
   replaceFields,
+  createVoter,
+  deleteVoter,
 } = resolvers.Mutation;
 
 describe('Mutation', () => {
@@ -87,6 +89,60 @@ describe('Mutation', () => {
           username: 'asdfqwer',
         },
       })).resolves.toBeInstanceOf(errors.FieldMalformedError);
+    });
+    // TODO
+  });
+
+  describe('createVoter', () => {
+    it('should throw unauthorized', () => {
+      expect.hasAssertions();
+      return expect(createVoter(undefined, {
+        input: {
+          bId: '123',
+          name: 'nm',
+        },
+      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    });
+    it('should throw unauthorized if not owner', () => {
+      // TODO
+      // expect.hasAssertions();
+      // return expect(createVoter(undefined, {
+      //   input: {
+      //     bId: '123',
+      //     name: 'nm',
+      //   },
+      // }, {
+      //   auth: {
+      //     username: 'asdfqwer',
+      //   },
+      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    });
+    // TODO
+  });
+
+  describe('deleteVoter', () => {
+    it('should throw unauthorized', () => {
+      expect.hasAssertions();
+      return expect(deleteVoter(undefined, {
+        input: {
+          bId: '123',
+          name: 'nm',
+        },
+      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    });
+    it('should throw unauthorized if not owner', () => {
+      // TODO
+      // expect.hasAssertions();
+      // return expect(deleteVoter(undefined, {
+      //   input: {
+      //     bId: '123',
+      //     name: 'nm',
+      //   },
+      // }, {
+      //   auth: {
+      //     username: 'asdfqwer',
+      //   },
+      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
     });
     // TODO
   });

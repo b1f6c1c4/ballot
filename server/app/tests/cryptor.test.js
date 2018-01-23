@@ -41,22 +41,22 @@ describe('handler', () => {
   });
 });
 
-describe('bIdGen', () => {
+describe('idGen', () => {
   // eslint-disable-next-line global-require
-  const { bIdGen } = require('../cryptor');
+  const { idGen } = require('../cryptor');
 
   it('should resolve hex string', () => {
     cryptoMock.size = 256 / 8;
     cryptoMock.err = undefined;
     cryptoMock.buf = Buffer.from([0xab, 0xcd, 0x12, 0x34]);
-    return expect(bIdGen()).resolves.toEqual('abcd1234');
+    return expect(idGen(32)()).resolves.toEqual('abcd1234');
   });
 
   it('should reject err', () => {
     cryptoMock.size = 256 / 8;
     cryptoMock.err = { key: 'val' };
     cryptoMock.buf = undefined;
-    return expect(bIdGen()).rejects.toBe(cryptoMock.err);
+    return expect(idGen(32)()).rejects.toBe(cryptoMock.err);
   });
 });
 
