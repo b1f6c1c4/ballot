@@ -169,6 +169,7 @@ void Rpc::setupRpc(const std::string &sub)
     logger->trace("Channel::Declare done");
 }
 
+#ifndef IS_TEST_MAIN
 void Rpc::runRpc(RpcHandler executer)
 {
     logger->trace("runRpc()");
@@ -221,4 +222,5 @@ void Rpc::runRpc(RpcHandler executer)
             logger->error(ex.what());
         }
 }
+#endif
 // LCOV_EXCL_STOP

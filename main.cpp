@@ -88,6 +88,7 @@ void Main::Setup(const po::variables_map &vm)
     Rpc::Inst().setupRpc(sub);
     logger->debug("Setup done");
 }
+// LCOV_EXCL_STOP
 
 void Main::EventLoop()
 {
@@ -107,6 +108,7 @@ void Main::EventLoop()
     logger->warn("Crypto Exited.");
 }
 
+// LCOV_EXCL_START
 #ifndef IS_TEST
 int main(int argc, char *argv[])
 {

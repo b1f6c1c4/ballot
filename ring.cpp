@@ -22,15 +22,22 @@ json Ring::newRing()
     return j;
 }
 
+template <typename T>
+std::unique_ptr<T> makeBuffer(size_t size)
+{
+    return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]);
+}
+
 json Ring::genH(const json &param)
 {
     logger->trace("Ring::genH");
-    MathRing ring = getRing(param);
+    auto &&ring = MathRing{std::move(getRing(param))};
 
     auto &&pks = param.at("publicKeys");
     auto num = pks.size();
     logger->debug("PublicKey size: {}", num);
-    byte *buffer = new byte[WIDTH_BYTE * num];
+    auto &&rawBuffer = makeBuffer<byte>(WIDTH_BYTE * num);
+    auto buffer = &*rawBuffer;
     auto cur = buffer;
     for (auto it = pks.begin(); it != pks.end(); ++it)
         cur += RingImpl::Inst().fillBuffer(RingImpl::Inst().fromJson(*it), cur);
@@ -46,7 +53,7 @@ json Ring::genH(const json &param)
 bool Ring::verify(const json &param)
 {
     logger->trace("Ring::verify");
-    MathRing ring = getRing(param);
+    auto &&ring = MathRing{std::move(getRing(param))};
 
     std::vector<Integer> y, s, c;
 
@@ -90,7 +97,8 @@ bool Ring::verify(const json &param)
 
     logger->trace("Calculate u, v");
     auto sum = Integer::Zero();
-    byte *buffer = new byte[WIDTH_BYTE * (2 + 2 * num)];
+    auto &&rawBuffer = makeBuffer<byte>(WIDTH_BYTE * (2 + 2 * num));
+    auto buffer = &*rawBuffer;
     RingImpl::Inst().fillBuffer(m, buffer);
     RingImpl::Inst().fillBuffer(t, buffer + WIDTH_BYTE);
     for (size_t i = 0; i < num; i++)

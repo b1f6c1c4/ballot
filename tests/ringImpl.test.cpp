@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE(moveRing)
     ring.q = Integer(123);
     ring.g = Integer(456);
 
-    auto &&mr = MathRing(std::move(ring));
+    auto &&mr = MathRing{std::move(ring)};
     BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
     BOOST_TEST(mr.maq.GetModulus() == 123);
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(copyRing)
     ring.q = Integer(123);
     ring.g = Integer(456);
 
-    auto &&mr = MathRing(ring);
+    auto &&mr = MathRing{ring};
     BOOST_TEST(mr.q == Integer(123));
     BOOST_TEST(mr.g == Integer(456));
     BOOST_TEST(mr.maq.GetModulus() == 123);
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(throws_no)
 {
     json j;
 
-    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(throws_number)
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(throws_number)
     json j;
     j["key"] = 123;
 
-    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(throws_object)
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(throws_object)
     json j;
     j["key"]["val"] = "abcde";
 
-    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(throws_array)
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(throws_array)
     json j;
     j["key"] = { "abc" };
 
-    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::exception);
+    BOOST_CHECK_THROW(RingImpl::Inst().fromJson(j["key"]), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(full)

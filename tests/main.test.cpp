@@ -6,7 +6,6 @@
 
 #include "../argon.h"
 #include "../ring.h"
-#include "../rpc.cpp"
 
 bool g_throwStd;
 bool g_throwParam;
@@ -23,6 +22,18 @@ void mayThrow()
     if (g_throwStd)
         throw std::exception{};
 }
+
+// Borrow some implemention ...
+#define IS_TEST_MAIN
+#include "../rpc.cpp"
+
+// .. and mock the rest ...
+void Rpc::runRpc(RpcHandler executer)
+{
+    mayThrow();
+}
+
+// done
 
 json Argon::argon2i(const json &param)
 {
@@ -170,6 +181,26 @@ BOOST_AUTO_TEST_CASE(method_notfound)
     json j;
     auto &&res = Main::Inst().handler("non-exist", j);
     BOOST_TEST(res.code == -32601);
+}
+
+BOOST_AUTO_TEST_SUITE_END();
+
+BOOST_AUTO_TEST_SUITE(EventLoop_test);
+
+BOOST_AUTO_TEST_CASE(nothrow)
+{
+    g_throwStd = false;
+    g_throwParam = false;
+
+    BOOST_CHECK_NO_THROW(Main::Inst().EventLoop());
+}
+
+BOOST_AUTO_TEST_CASE(always_nothrow)
+{
+    g_throwStd = true;
+    g_throwParam = false;
+
+    BOOST_CHECK_NO_THROW(Main::Inst().EventLoop());
 }
 
 BOOST_AUTO_TEST_SUITE_END();

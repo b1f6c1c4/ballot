@@ -36,7 +36,7 @@ public:
     }
 
 protected:
-    inline Logger(std::string &&name) : logger(spdlog::stdout_color_mt(name))
+    inline explicit Logger(std::string &&name) : logger(spdlog::stdout_color_mt(name))
     {
 #ifdef IS_TEST
         logger->set_level(spdlog::level::off);
