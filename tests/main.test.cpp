@@ -6,6 +6,7 @@
 
 #include "../argon.h"
 #include "../ring.h"
+#include "../rpc.cpp"
 
 bool g_throwStd;
 bool g_throwParam;
@@ -73,7 +74,7 @@ BOOST_DATA_TEST_CASE(throws_std, listMethods)
     g_throwParam = false;
 
     json j;
-    BOOST_CHECK_THROW(handler("argon2i", j), std::exception);
+    BOOST_CHECK_THROW(Main::Inst().handler("argon2i", j), std::exception);
 }
 
 BOOST_DATA_TEST_CASE(throws_param, listMethods)
@@ -82,7 +83,7 @@ BOOST_DATA_TEST_CASE(throws_param, listMethods)
     g_throwParam = true;
 
     json j;
-    auto &&res = handler("argon2i", j);
+    auto &&res = Main::Inst().handler("argon2i", j);
     BOOST_TEST(res.code == -32602);
 }
 
@@ -94,7 +95,7 @@ BOOST_AUTO_TEST_CASE(status_test)
     g_throwParam = false;
 
     json j;
-    auto &&res = handler("status", j);
+    auto &&res = Main::Inst().handler("status", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["version"] == VERSION);
     BOOST_TEST(res.data["commitHash"] == COMMITHASH);
@@ -107,7 +108,7 @@ BOOST_AUTO_TEST_CASE(argon2i_test)
 
     json j;
     j["echo"] = "val";
-    auto &&res = handler("argon2i", j);
+    auto &&res = Main::Inst().handler("argon2i", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["key"] == "argon2i");
     BOOST_TEST(res.data["echo"] == "val");
@@ -119,7 +120,7 @@ BOOST_AUTO_TEST_CASE(newRing_test)
     g_throwParam = false;
 
     json j;
-    auto &&res = handler("newRing", j);
+    auto &&res = Main::Inst().handler("newRing", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["key"] == "newRing");
 }
@@ -131,7 +132,7 @@ BOOST_AUTO_TEST_CASE(genH_test)
 
     json j;
     j["echo"] = "val";
-    auto &&res = handler("genH", j);
+    auto &&res = Main::Inst().handler("genH", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["key"] == "genH");
     BOOST_TEST(res.data["echo"] == "val");
@@ -144,7 +145,7 @@ BOOST_AUTO_TEST_CASE(verify_test_true)
 
     json j;
     j["echo"] = "true";
-    auto &&res = handler("verify", j);
+    auto &&res = Main::Inst().handler("verify", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["valid"] == 1);
 }
@@ -156,7 +157,7 @@ BOOST_AUTO_TEST_CASE(verify_test_false)
 
     json j;
     j["echo"] = "val";
-    auto &&res = handler("verify", j);
+    auto &&res = Main::Inst().handler("verify", j);
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["valid"] == 0);
 }
@@ -167,7 +168,7 @@ BOOST_AUTO_TEST_CASE(method_notfound)
     g_throwParam = false;
 
     json j;
-    auto &&res = handler("non-exist", j);
+    auto &&res = Main::Inst().handler("non-exist", j);
     BOOST_TEST(res.code == -32601);
 }
 

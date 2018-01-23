@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include <functional>
+#include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 struct RpcAnswer
 {
@@ -14,7 +16,7 @@ struct RpcAnswer
     RpcAnswer(const json &d) : data(d) {}
 };
 
-typedef RpcAnswer RpcHandler(const std::string &method, const json &data);
+using RpcHandler = std::function<RpcAnswer (const std::string &method, const json &data)>;
 
 class Rpc : public Logger
 {
@@ -25,6 +27,10 @@ public:
     json executeRpc(const json &req, RpcHandler executer);
 
     // LCOV_EXCL_START
+    void setupRpc(const std::string &sub);
     void runRpc(RpcHandler executer);
     // LCOV_EXCL_STOP
+private:
+    std::string m_ChannelName;
+    AmqpClient::Channel::ptr_t m_Channel;
 };

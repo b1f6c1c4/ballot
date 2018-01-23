@@ -1,5 +1,4 @@
 #include "rpc.h"
-#include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 std::string Rpc::executeRpcs(const std::string &str, RpcHandler executer)
 {
@@ -126,9 +125,11 @@ json Rpc::executeRpc(const json &req, RpcHandler executer)
 }
 
 // LCOV_EXCL_START
-void Rpc::runRpc(RpcHandler executer)
+void Rpc::setupRpc(const std::string &sub)
 {
-    logger->trace("runRpc()");
+    logger->trace("setupRpc()");
+    m_ChannelName = sub;
+    logger->info("Channel name set to {}", m_ChannelName);
 
     auto rawHost = std::getenv("RABBIT_HOST");
     auto rawUsername = std::getenv("RABBIT_USER");
@@ -146,22 +147,28 @@ void Rpc::runRpc(RpcHandler executer)
     logger->info("Connecting {}", host);
     logger->info("Username {}", username);
     logger->debug("Channel::Create ...");
-    auto &&channel = AmqpClient::Channel::Create(host, 5672, username, password);
+    m_Channel = AmqpClient::Channel::Create(host, 5672, username, password);
     logger->trace("Channel::Create done");
 
     logger->debug("Channel::Declare ...");
-    channel->DeclareQueue("cryptor", false, true, false, false);
+    m_Channel->DeclareQueue(m_ChannelName, false, true, false, false);
     logger->trace("Channel::Declare done");
+}
+
+void Rpc::runRpc(RpcHandler executer)
+{
+    logger->trace("runRpc()");
 
     logger->debug("Channel::BasicConsume...");
-    auto &&consumerTag = channel->BasicConsume("cryptor", "", true, false, false, 1);
+    auto &&consumerTag = m_Channel->BasicConsume(m_ChannelName, "", true, false, false, 1);
     logger->info("Consumer tag: {}", consumerTag);
 
+    logger->info("Entering event loop");
     while (true)
         try
         {
             logger->trace("Channel::BasicConsumeMessage...");
-            auto &&envelope = channel->BasicConsumeMessage(consumerTag);
+            auto &&envelope = m_Channel->BasicConsumeMessage(consumerTag);
             logger->trace("Channel::BasicConsumeMessage done");
             auto &&message = envelope->Message();
             auto &&body = message->Body();
@@ -171,7 +178,7 @@ void Rpc::runRpc(RpcHandler executer)
             {
                 logger->warn("replyTo is empty");
                 logger->trace("Channel::BasicReject...");
-                channel->BasicReject(envelope, false);
+                m_Channel->BasicReject(envelope, false);
                 logger->trace("Channel::BasicReject done");
                 continue;
             }
@@ -183,11 +190,11 @@ void Rpc::runRpc(RpcHandler executer)
             logger->trace("BasicMessage::Create");
             auto &&reply = AmqpClient::BasicMessage::Create(res);
             logger->trace("Channel::BasicPublish...");
-            channel->BasicPublish("", replyTo, reply, false, false);
+            m_Channel->BasicPublish("", replyTo, reply, false, false);
             logger->trace("Channel::BasicPublish done");
 
             logger->trace("Channel::BasicAck...");
-            channel->BasicAck(envelope);
+            m_Channel->BasicAck(envelope);
             logger->trace("Channel::BasicAck done");
         }
         catch (const std::exception &ex)
