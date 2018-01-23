@@ -10,6 +10,7 @@ The following utils are included:
     - boost.test
     - boost.chrono
     - boost.system
+    - boost.program\_options
 - [weidai11/cryptopp](https://github.com/weidai11/cryptopp)
 - [alanxz/rabbitmq-c](https://github.com/alanxz/rabbitmq-c)
 - [alanxz/SimpleAmqpClient](https://github.com/alanxz/SimpleAmqpClient)

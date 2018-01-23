@@ -23,10 +23,12 @@ RUN \
         --with-test \
         --with-chrono \
         --with-system \
+        --with-program_options \
     && ./b2 -d0 -j 10 \
         --with-test \
         --with-chrono \
         --with-system \
+        --with-program_options \
         install \
     && cd .. \
     && rm -rf boost_1_66_0
