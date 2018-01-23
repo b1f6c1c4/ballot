@@ -70,6 +70,22 @@ class VoterLockedError extends Error {
   }
 }
 
+class StatusNotInvitedError extends Error {
+  constructor() {
+    super('Ballot status is not `invited`');
+    this.statusCode = 409;
+    this.errorCode = 'snid';
+  }
+}
+
+class StatusNotInvitingError extends Error {
+  constructor() {
+    super('Ballot status is not `inviting`');
+    this.statusCode = 409;
+    this.errorCode = 'snid';
+  }
+}
+
 module.exports = {
   UnauthorizedError,
   NotFoundError,
@@ -80,4 +96,6 @@ module.exports = {
   FieldMalformedError,
   FieldLockedError,
   VoterLockedError,
+  StatusNotInvitedError,
+  StatusNotInvitingError,
 };
