@@ -6,7 +6,7 @@ const passport = require('passport');
 const { graphqlExpress } = require('apollo-server-express');
 const status = require('../status');
 const anony = require('./anonymity');
-const secret = require('./secret');
+const secret = require('./secret').default;
 const { schema } = require('./graphql');
 const { auth } = require('./auth');
 

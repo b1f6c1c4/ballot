@@ -62,6 +62,7 @@ module.exports = {
   idGen,
   bIdGen: idGen(32),
   iCodeGen: idGen(32),
+  tIdGen: idGen(32),
 
   async argon2i(password, salt) {
     return rpc.call('argon2i', {
