@@ -10,7 +10,7 @@ json Argon::argon2i(const json &param)
 	if (param.find("salt") != param.end())
 	{
 		logger->debug("Salt provided");
-		salt = fromJson<SALT_BYTE>(param.at("salt"));
+		salt = ArgonImpl::Inst().fromJson<SALT_BYTE>(param.at("salt"));
 	}
 	else
 	{
@@ -23,7 +23,7 @@ json Argon::argon2i(const json &param)
 
 	logger->trace("Finalize");
 	json j;
-	j["salt"] = toString(salt);
-	j["hash"] = toString(hash);
+	j["salt"] = ArgonImpl::Inst().toString(salt);
+	j["hash"] = ArgonImpl::Inst().toString(hash);
 	return j;
 }
