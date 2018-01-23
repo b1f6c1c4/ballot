@@ -82,7 +82,7 @@ module.exports = {
   },
 
   async genH(ballot) {
-    const { q, g } = ballot;
+    const { q, g } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
     return rpc.call('genH', {
       q,
@@ -92,7 +92,7 @@ module.exports = {
   },
 
   async verify(ballot, signedTicket) {
-    const { q, g, h } = ballot;
+    const { q, g, h } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
     const { t, s, c } = signedTicket;
     const payload = stringify(signedTicket.payload);

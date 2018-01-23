@@ -73,7 +73,7 @@ module.exports = {
           }
           doc.voters = doc.voters.filter((v) => v.publicKey);
           logger.trace('genH...');
-          const h = await genH(doc);
+          const { h } = await genH(doc);
           logger.trace('genH done', h);
           doc.crypto.h = h;
           doc.status = 'invited';

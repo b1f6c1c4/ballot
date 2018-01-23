@@ -147,8 +147,10 @@ describe('genH', () => {
     // eslint-disable-next-line global-require
     const { genH } = require('../cryptor');
     return expect(genH({
-      q: 'valq',
-      g: 'valg',
+      crypto: {
+        q: 'valq',
+        g: 'valg',
+      },
       voters: [{
         publicKey: 'p1',
       }, {
@@ -185,9 +187,11 @@ describe('verify', () => {
     // eslint-disable-next-line global-require
     const { verify } = require('../cryptor');
     return expect(verify({
-      q: 'valq',
-      g: 'valg',
-      h: 'valh',
+      crypto: {
+        q: 'valq',
+        g: 'valg',
+        h: 'valh',
+      },
       voters: [{
         publicKey: 'p1',
       }, {
@@ -224,9 +228,11 @@ describe('verify', () => {
     // eslint-disable-next-line global-require
     const { verify } = require('../cryptor');
     return expect(verify({
-      q: 'valq',
-      g: 'valg',
-      h: 'valh',
+      crypto: {
+        q: 'valq',
+        g: 'valg',
+        h: 'valh',
+      },
       voters: [{
         publicKey: 'p1',
       }, {

@@ -10,6 +10,7 @@ const query = require('./query').resolvers;
 const auth = require('./auth').resolvers;
 const ballot = require('./ballot').resolvers;
 const finalize = require('./finalize').resolvers;
+const voter = require('./voter').resolvers;
 
 /* istanbul ignore next */
 const typeDefs = fs.readFileSync('./docs/public.graphql', 'utf8');
@@ -60,6 +61,7 @@ const schema = makeExecutableSchema({
     auth,
     ballot,
     finalize,
+    voter,
   ),
 });
 
