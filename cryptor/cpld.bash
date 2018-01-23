@@ -6,7 +6,7 @@
 
 function useage()
 {
-	cat << EOU
+    cat << EOU
 Useage: bash $0 <path to the binary> <path to copy the dependencies>
 EOU
 exit 1
@@ -27,8 +27,8 @@ echo "Copying the dependencies to $2"
 #Copy the deps
 for dep in $deps
 do
-	echo "Copying $dep to $2"
-	cp "$dep" "$2"
+    echo "Copying $dep to $2"
+    cp "$dep" "$2"
 done
 
 echo "Done!"

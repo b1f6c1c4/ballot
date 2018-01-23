@@ -13,29 +13,35 @@
 
 using namespace CryptoPP;
 
-struct Ring
+struct RingData
 {
     Integer q;
     Integer g;
 };
 
-struct MathRing : public Ring
+struct MathRing : public RingData
 {
     ModularArithmetic maq;
     ModularArithmetic maqm1;
 
-    MathRing(Ring &&ring);
-    MathRing(const Ring &ring);
+    MathRing(RingData &&ring);
+    MathRing(const RingData &ring);
 };
 
-Integer fromJson(const json &j);
+class RingImpl : public Logger
+{
+    LOGGABLE(RingImpl);
+public:
 
-std::string toString(const Integer &v);
+    Integer fromJson(const json &j);
 
-Ring generate();
+    std::string toString(const Integer &v);
 
-size_t fillBuffer(const Integer &v, byte *buffer);
+    RingData generate();
 
-Integer readBuffer(const byte *buffer, size_t len);
+    size_t fillBuffer(const Integer &v, byte *buffer);
 
-Integer groupHash(const byte *buffer, size_t len, const MathRing &ring);
+    Integer readBuffer(const byte *buffer, size_t len);
+
+    Integer groupHash(const byte *buffer, size_t len, const MathRing &ring);
+};

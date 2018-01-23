@@ -38,30 +38,41 @@ typedef Buffer<HASH_BYTE> ArgonHashType;
 #endif
 #define HASH_P 1
 
-template <size_t N>
-std::string toString(const Buffer<N> &v)
+class ArgonImpl : public Logger
 {
-	std::string encoded;
-	auto sink = new StringSink{encoded};
-	auto hex = new HexEncoder{sink, false};
-	ArraySource{v.data(), N, true, hex};
-	return encoded;
-}
+    LOGGABLE(ArgonImpl);
+public:
 
-template <size_t N>
-Buffer<N> fromJson(const json &j)
-{
-	if (!j.is_string())
-		throw std::exception{};
+    template <size_t N>
+    std::string toString(const Buffer<N> &v)
+    {
+        logger->trace("toString<{}>", N);
+        std::string encoded;
+        auto sink = new StringSink{encoded};
+        auto hex = new HexEncoder{sink, false};
+        ArraySource{v.data(), N, true, hex};
+        return encoded;
+    }
 
-	auto &&str = j.get<std::string>();
-	Buffer<N> decoded;
-	auto sink = new ArraySink{decoded.data(), N};
-	auto hex = new HexDecoder{sink};
-	StringSource{str, true, hex};
-	return decoded;
-}
+    template <size_t N>
+    Buffer<N> fromJson(const json &j)
+    {
+        logger->trace("fromJson<{}>", N);
+        if (!j.is_string())
+        {
+            logger->error("Not string {}", j.dump());
+            throw std::invalid_argument{"j"};
+        }
 
-ArgonSaltType genSalt();
+        auto &&str = j.get<std::string>();
+        Buffer<N> decoded;
+        auto sink = new ArraySink{decoded.data(), N};
+        auto hex = new HexDecoder{sink};
+        StringSource{str, true, hex};
+        return decoded;
+    }
 
-ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
+    ArgonSaltType genSalt();
+
+    ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
+};

@@ -1,8 +1,14 @@
 #pragma once
 #include "common.h"
 
-json newRing();
+class Ring : public Logger
+{
+    LOGGABLE(Ring);
+public:
 
-json genH(const json &param);
+    json newRing();
 
-bool verify(const json &param);
+    json genH(const json &param);
+
+    bool verify(const json &param);
+};

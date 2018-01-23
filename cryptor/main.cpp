@@ -4,12 +4,13 @@
 #include "argon.h"
 #include "ring.h"
 
-RpcAnswer handler(const std::string &method, const json &data)
+RpcAnswer Main::handler(const std::string &method, const json &data)
 {
     try
     {
         if (method == "status")
         {
+            logger->info("Method {} called", method);
             json j;
             j["version"] = VERSION;
             j["commitHash"] = COMMITHASH;
@@ -17,32 +18,94 @@ RpcAnswer handler(const std::string &method, const json &data)
         }
         else if (method == "argon2i")
         {
-            return argon2i(data);
+            logger->info("Method {} called", method);
+            return Argon::Inst().argon2i(data);
         }
         else if (method == "newRing")
         {
-            return newRing();
+            logger->info("Method {} called", method);
+            return Ring::Inst().newRing();
         }
         else if (method == "genH")
         {
-            return genH(data);
+            logger->info("Method {} called", method);
+            return Ring::Inst().genH(data);
         }
         else if (method == "verify")
         {
+            logger->info("Method {} called", method);
             json j;
-            auto res = verify(data);
+            auto res = Ring::Inst().verify(data);
             j["valid"] = res ? 1 : 0;
             return j;
         }
         else
         {
+            logger->error("Method {} not found", method);
             return RpcAnswer(-32601, "Method not found");
         }
     }
-    catch (nlohmann::detail::type_error)
+    catch (const nlohmann::detail::type_error &ex)
     {
+        logger->error(ex.what());
         return RpcAnswer(-32602, "Invalid params");
     }
+    catch (const std::exception &ex)
+    {
+        logger->error(ex.what());
+        throw;
+    }
+}
+
+// LCOV_EXCL_START
+void Main::Setup(const po::variables_map &vm)
+{
+    auto &&verbose = vm["verbose"].as<std::string>();
+    if (verbose == "trace") {
+        spdlog::set_level(spdlog::level::trace);
+    } else if (verbose == "debug") {
+        spdlog::set_level(spdlog::level::debug);
+    } else if (verbose == "info") {
+        spdlog::set_level(spdlog::level::info);
+    } else if (verbose == "warn") {
+        spdlog::set_level(spdlog::level::warn);
+    } else if (verbose == "error") {
+        spdlog::set_level(spdlog::level::err);
+    } else if (verbose == "fatal") {
+        spdlog::set_level(spdlog::level::critical);
+    } else if (verbose == "off") {
+        spdlog::set_level(spdlog::level::off);
+    } else {
+        logger->warn("vm.verbose unknown {}", verbose);
+        spdlog::set_level(spdlog::level::info);
+    }
+
+    logger->info("Version {}", VERSION);
+    logger->info("CommitHash {}", COMMITHASH);
+
+    auto &&sub = vm["subscribe"].as<std::string>();
+    logger->debug("Will subscribe {}", sub);
+    Rpc::Inst().setupRpc(sub);
+    logger->debug("Setup done");
+}
+// LCOV_EXCL_STOP
+
+void Main::EventLoop()
+{
+    logger->info("Main::EventLoop");
+
+    try
+    {
+        using namespace std::placeholders;
+        logger->debug("Run rpc");
+        Rpc::Inst().runRpc(std::bind(&Main::handler, this, _1, _2));
+    }
+    catch (const std::exception &ex)
+    {
+        logger->error(ex.what());
+    }
+
+    logger->warn("Crypto Exited.");
 }
 
 // LCOV_EXCL_START
@@ -51,38 +114,24 @@ int main(int argc, char *argv[])
 {
     try
     {
-        auto &&console = spdlog::stdout_color_mt("main");
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help,h", "produce help message")
+            ("verbose,v", po::value<std::string>()->default_value("info"), "set logging level")
+            ("subscribe,s", po::value<std::string>()->default_value("cryptor"), "channel to listen")
+        ;
 
-        console->info("Version {}", VERSION);
-        console->info("CommitHash {}", COMMITHASH);
-        for (auto i = 0; i < argc; i++)
-            console->info("Argv[{}]: {}", i, argv[i]);
+        po::variables_map vm;
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
 
-        if (argc >= 2)
-        {
-            if (std::string(argv[1]) == "debug")
-            {
-                spdlog::set_level(spdlog::level::debug);
-                console->info("Verbosity set to DEBUG");
-            }
-            else if (std::string(argv[1]) == "trace")
-            {
-                spdlog::set_level(spdlog::level::trace);
-                console->info("Verbosity set to TRACE");
-            }
+        if (vm.count("help")) {
+            std::cout << desc << std::endl;
+            return 1;
         }
 
-        try
-        {
-            console->debug("Run rpc");
-            runRpc(&handler);
-        }
-        catch (const std::exception &ex)
-        {
-            console->error(ex.what());
-        }
-
-        console->warn("Crypto Exited.");
+        Main::Inst().Setup(vm);
+        Main::Inst().EventLoop();
     }
     catch (const spdlog::spdlog_ex &ex)
     {
@@ -94,3 +143,4 @@ int main(int argc, char *argv[])
     return 0;
 }
 #endif
+// LCOV_EXCL_STOP

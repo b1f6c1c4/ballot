@@ -1,4 +1,10 @@
 #pragma once
 #include "common.h"
 
-json argon2i(const json &param);
+class Argon : public Logger
+{
+    LOGGABLE(Argon);
+public:
+
+    json argon2i(const json &param);
+};
