@@ -50,9 +50,9 @@ BOOST_AUTO_TEST_SUITE(toString_test);
 
 BOOST_AUTO_TEST_CASE(tostr)
 {
-	Buffer<8> v = { 0x00, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xde };
-	auto &&res = ArgonImpl::Inst().toString(v);
-	BOOST_TEST(res == "0034567890abcdde");
+    Buffer<8> v = { 0x00, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xde };
+    auto &&res = ArgonImpl::Inst().toString(v);
+    BOOST_TEST(res == "0034567890abcdde");
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_SUITE(genSalt_test);
 
 BOOST_AUTO_TEST_CASE(nothrow)
 {
-	BOOST_CHECK_NO_THROW(ArgonImpl::Inst().genSalt());
+    BOOST_CHECK_NO_THROW(ArgonImpl::Inst().genSalt());
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -120,12 +120,12 @@ BOOST_AUTO_TEST_SUITE(runArgon_test);
 
 BOOST_AUTO_TEST_CASE(argon)
 {
-	std::string rawsalt = "qwertyuiopzxcvbn";
-	ArgonSaltType salt;
-	std::copy(rawsalt.begin(), rawsalt.begin() + SALT_BYTE, salt.data());
+    std::string rawsalt = "qwertyuiopzxcvbn";
+    ArgonSaltType salt;
+    std::copy(rawsalt.begin(), rawsalt.begin() + SALT_BYTE, salt.data());
 
-	std::string hx = "03028213517a805207dddd9db5f8d88e";
-	auto &&v = ArgonImpl::Inst().runArgon("asdfghjkl", salt);
+    std::string hx = "03028213517a805207dddd9db5f8d88e";
+    auto &&v = ArgonImpl::Inst().runArgon("asdfghjkl", salt);
     for (auto i = 0; i < HASH_BYTE; i++)
     {
         uint8_t b = std::stoi(hx.substr(i * 2, 2), 0, 16);

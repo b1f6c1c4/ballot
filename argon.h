@@ -3,8 +3,8 @@
 
 class Argon : public Logger
 {
-	LOGGABLE(Argon);
+    LOGGABLE(Argon);
 public:
 
-	json argon2i(const json &param);
+    json argon2i(const json &param);
 };

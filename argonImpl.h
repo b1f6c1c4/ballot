@@ -40,39 +40,39 @@ typedef Buffer<HASH_BYTE> ArgonHashType;
 
 class ArgonImpl : public Logger
 {
-	LOGGABLE(ArgonImpl);
+    LOGGABLE(ArgonImpl);
 public:
 
-	template <size_t N>
-	std::string toString(const Buffer<N> &v)
-	{
-		logger->trace("toString<{}>", N);
-		std::string encoded;
-		auto sink = new StringSink{encoded};
-		auto hex = new HexEncoder{sink, false};
-		ArraySource{v.data(), N, true, hex};
-		return encoded;
-	}
+    template <size_t N>
+    std::string toString(const Buffer<N> &v)
+    {
+        logger->trace("toString<{}>", N);
+        std::string encoded;
+        auto sink = new StringSink{encoded};
+        auto hex = new HexEncoder{sink, false};
+        ArraySource{v.data(), N, true, hex};
+        return encoded;
+    }
 
-	template <size_t N>
-	Buffer<N> fromJson(const json &j)
-	{
-		logger->trace("fromJson<{}>", N);
-		if (!j.is_string())
-		{
-			logger->error("Not string {}", j.dump());
-			throw std::invalid_argument{"j"};
-		}
+    template <size_t N>
+    Buffer<N> fromJson(const json &j)
+    {
+        logger->trace("fromJson<{}>", N);
+        if (!j.is_string())
+        {
+            logger->error("Not string {}", j.dump());
+            throw std::invalid_argument{"j"};
+        }
 
-		auto &&str = j.get<std::string>();
-		Buffer<N> decoded;
-		auto sink = new ArraySink{decoded.data(), N};
-		auto hex = new HexDecoder{sink};
-		StringSource{str, true, hex};
-		return decoded;
-	}
+        auto &&str = j.get<std::string>();
+        Buffer<N> decoded;
+        auto sink = new ArraySink{decoded.data(), N};
+        auto hex = new HexDecoder{sink};
+        StringSource{str, true, hex};
+        return decoded;
+    }
 
-	ArgonSaltType genSalt();
+    ArgonSaltType genSalt();
 
-	ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
+    ArgonHashType runArgon(const std::string &pwd, const ArgonSaltType &salt);
 };
