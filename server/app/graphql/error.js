@@ -8,7 +8,7 @@ class UnauthorizedError extends Error {
 
 class NotFoundError extends Error {
   constructor() {
-    super('Not Found');
+    super('Resource not found');
     this.statusCode = 404;
     this.errorCode = 'ntfd';
   }
@@ -54,35 +54,11 @@ class FieldMalformedError extends Error {
   }
 }
 
-class FieldLockedError extends Error {
+class StatusNotAllowedError extends Error {
   constructor() {
-    super('Field changes locked by ballot status');
+    super('Ballot status doesn\'t allow the operation');
     this.statusCode = 409;
-    this.errorCode = 'flkd';
-  }
-}
-
-class VoterLockedError extends Error {
-  constructor() {
-    super('Voter changes locked by ballot status');
-    this.statusCode = 409;
-    this.errorCode = 'vlkd';
-  }
-}
-
-class StatusNotInvitedError extends Error {
-  constructor() {
-    super('Ballot status is not `invited`');
-    this.statusCode = 409;
-    this.errorCode = 'snid';
-  }
-}
-
-class StatusNotInvitingError extends Error {
-  constructor() {
-    super('Ballot status is not `inviting`');
-    this.statusCode = 409;
-    this.errorCode = 'snid';
+    this.errorCode = 'stna';
   }
 }
 
@@ -110,10 +86,7 @@ module.exports = {
   UsernameExistsError,
   NameMalformedError,
   FieldMalformedError,
-  FieldLockedError,
-  VoterLockedError,
-  StatusNotInvitedError,
-  StatusNotInvitingError,
+  StatusNotAllowedError,
   PublicKeyMalformedError,
   VoterRegisteredError,
 };

@@ -97,7 +97,7 @@ module.exports = {
             case 'invited':
               break;
             default:
-              return new errors.FieldLockedError();
+              return new errors.StatusNotAllowedError();
           }
           doc.fields = flds;
           await doc.save();
@@ -138,7 +138,7 @@ module.exports = {
             case 'inviting':
               break;
             default:
-              return new errors.VoterLockedError();
+              return new errors.StatusNotAllowedError();
           }
           const iCode = await iCodeGen();
           const voter = {
@@ -181,7 +181,7 @@ module.exports = {
             case 'inviting':
               break;
             default:
-              return new errors.VoterLockedError();
+              return new errors.StatusNotAllowedError();
           }
           const oLen = doc.voters.length;
           doc.voters = doc.voters.filter((v) => v._id !== iCode);

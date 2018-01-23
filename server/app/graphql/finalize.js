@@ -32,7 +32,7 @@ module.exports = {
             case 'invited':
               break;
             default:
-              return new errors.StatusNotInvitedError();
+              return new errors.StatusNotAllowedError();
           }
           doc.status = 'preVoting';
           await doc.save();
@@ -69,7 +69,7 @@ module.exports = {
             case 'inviting':
               break;
             default:
-              return new errors.StatusNotInvitingError();
+              return new errors.StatusNotAllowedError();
           }
           doc.voters = doc.voters.filter((v) => v.publicKey);
           logger.trace('genH...');

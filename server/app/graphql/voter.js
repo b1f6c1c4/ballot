@@ -31,7 +31,7 @@ module.exports = {
             case 'inviting':
               break;
             default:
-              return new errors.StatusNotInvitingError();
+              return new errors.StatusNotAllowedError();
           }
           const voter = doc.voters.find((v) => v._id === iCode);
           if (!voter) {

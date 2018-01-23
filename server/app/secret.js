@@ -5,29 +5,25 @@ const { tIdGen } = require('./cryptor');
 const logger = require('../logger')('secret');
 
 const errors = {
-  ntfd: {
-    status: 404,
-    json: { error: { code: 'ntfd', message: 'Not Found' } },
-  },
   tkmf: {
     status: 400,
     json: { error: { code: 'tkmf', message: 'Ticket malformed' } },
   },
   rsmf: {
     status: 400,
-    json: { error: { code: 'rsmf', message: '`payload.result` malformed' } },
-  },
-  xbid: {
-    status: 404,
-    json: { error: { code: 'xbid', message: '`payload.bId` non-exist' } },
-  },
-  nvtg: {
-    status: 409,
-    json: { error: { code: 'nvtg', message: 'Ballot status is not `voting`' } },
+    json: { error: { code: 'rsmf', message: 'Payload result malformed' } },
   },
   xsgn: {
     status: 401,
     json: { error: { code: 'xsgn', message: 'Invalid signature' } },
+  },
+  ntfd: {
+    status: 404,
+    json: { error: { code: 'ntfd', message: 'Resource not found' } },
+  },
+  stna: {
+    status: 409,
+    json: { error: { code: 'stna', message: 'Ballot status doesn\'t allow the operation' } },
   },
 };
 
@@ -82,7 +78,7 @@ const submitTicket = async (data) => {
     }
     logger.trace('Old ballot', doc);
     if (doc.status !== 'voting') {
-      return errors.nvtg;
+      return errors.stna;
     }
     if (doc.fields.length !== result.length) {
       return errors.rsmf;
@@ -165,7 +161,7 @@ const checkTicket = async (tId) => {
       case 'decline':
         return errors.xsgn;
       case 'timeout':
-        return errors.nvtg;
+        return errors.stna;
       default:
         logger.error('Invalid status', doc.status);
         return {
