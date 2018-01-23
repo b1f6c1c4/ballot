@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { fixUpdate } = require('../mongo');
 
 const { Schema } = mongoose;
 
@@ -31,7 +32,6 @@ const SignedTicketSchema = new Schema({
   },
 }, {
   id: false,
-  timestamps: { },
 });
 
 const SubmittedTicketSchema = new Schema({
@@ -43,6 +43,14 @@ const SubmittedTicketSchema = new Schema({
   status: {
     type: String,
   },
+}, {
+  id: false,
+  shardKey: {
+    _id: 1,
+  },
+  timestamps: { },
 });
+
+SubmittedTicketSchema.plugin(fixUpdate);
 
 module.exports = mongoose.model('submittedTickets', SubmittedTicketSchema);

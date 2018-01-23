@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { fixUpdate } = require('../mongo');
 
 const { Schema } = mongoose;
 
@@ -21,5 +22,7 @@ const OrganizerSchema = new Schema({
   },
   timestamps: { },
 });
+
+OrganizerSchema.plugin(fixUpdate);
 
 module.exports = mongoose.model('organizers', OrganizerSchema);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { fixUpdate } = require('../mongo');
 
 const { Schema } = mongoose;
 
@@ -79,5 +80,7 @@ const BallotSchema = new Schema({
   },
   timestamps: { },
 });
+
+BallotSchema.plugin(fixUpdate);
 
 module.exports = mongoose.model('ballots', BallotSchema);

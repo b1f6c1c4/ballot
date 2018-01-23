@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { fixUpdate } = require('../mongo');
 
 const { Schema } = mongoose;
 
@@ -36,5 +37,7 @@ const SignedTicketSchema = new Schema({
   },
   timestamps: { },
 });
+
+SignedTicketSchema.plugin(fixUpdate);
 
 module.exports = mongoose.model('signedTickets', SignedTicketSchema);
