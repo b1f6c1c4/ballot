@@ -1,13 +1,8 @@
 const _ = require('lodash');
-const express = require('express');
-const bodyParser = require('body-parser');
-const anony = require('./anonymity');
 const Ballot = require('../models/ballots');
 const SubmittedTicket = require('../models/submittedTickets');
 const { tIdGen } = require('./cryptor');
 const logger = require('../logger')('secret');
-
-const router = express.Router();
 
 const errors = {
   ntfd: {
@@ -187,80 +182,8 @@ const checkTicket = async (tId) => {
   }
 };
 
-router.use(anony(), bodyParser.urlencoded({
-  extended: false,
-}));
-
-router.post('/tickets', async (req, res, next) => {
-  logger.trace('POST /tickets');
-  logger.trace('Anony', req.anony);
-  try {
-    switch (req.accepts(['json', 'html'])) {
-      case 'json': {
-        logger.debug('Requesting json');
-        const rst = await submitTicket(req.body);
-        logger.debug('Resposne status', rst.status);
-        res.status(rst.status).json(rst.json);
-        return;
-      }
-      case 'html': {
-        logger.debug('Requesting html');
-        const buf = Buffer.from(req.body.enc, 'base64');
-        const j = JSON.stringify(buf.toString('utf8'));
-        logger.trace('Parsing base64 succeed');
-        const rst = await submitTicket(j);
-        logger.debug('Resposne status', rst.status);
-        if (rst.status === 202) {
-          res.status(rst.status).send(`Ticket staged. Your tId is <pre>${rst.json.tId}</pre>`);
-        } else {
-          res.status(rst.status).send(`Error occured: <pre>${rst.json.error}</pre>`);
-        }
-        return;
-      }
-      default:
-        res.status(406).send();
-    }
-  } catch (e) {
-    next(e);
-  }
-});
-
-router.get('/tickets/', async (req, res, next) => {
-  logger.trace('GET /tickets/?tId=', req.query.tId);
-  logger.trace('Anony', req.anony);
-  try {
-    switch (req.accepts(['json', 'html'])) {
-      case 'json': {
-        logger.debug('Requesting json');
-        const rst = await checkTicket(req.query.tId);
-        logger.debug('Resposne status', rst.status);
-        res.status(rst.status).json(rst.json);
-        return;
-      }
-      case 'html': {
-        logger.debug('Requesting html');
-        const rst = await checkTicket(req.query.tId);
-        logger.debug('Resposne status', rst.status);
-        if (rst.status === 202) {
-          res.status(rst.status).send('Still processing.');
-        } else if (rst.status === 200) {
-          res.status(rst.status).send('Success.');
-        } else {
-          res.status(rst.status).send(`Error occured: <pre>${rst.json.error}</pre>`);
-        }
-        return;
-      }
-      default:
-        res.status(406).send();
-    }
-  } catch (e) {
-    next(e);
-  }
-});
-
 module.exports = {
   errors,
   submitTicket,
   checkTicket,
-  default: router,
 };
