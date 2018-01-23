@@ -27,7 +27,7 @@ type Mutation {
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `unmf`   | Username malformed                          |
   # | `400`   | `pwmf`   | Password malformed                          |
-  # | `400`   | `unex`   | Username exists                             |
+  # | `409`   | `unex`   | Username exists                             |
   register(input: RegisterInput!): Boolean
 
   # Get credential
@@ -134,7 +134,8 @@ type Mutation {
   # | Code    | Error    | Description                                 |
   # | ------- | -------- | ------------------------------------------- |
   # | `400`   | `pkmf`   | Public key malformed                        |
-  # | `409`   | `rniv`   | Ballot status is not `inviting`             |
+  # | `409`   | `sniv`   | Ballot status is not `inviting`             |
+  # | `409`   | `vtrg`   | Voter already registered                    |
   registerVoter(input: RegisterVoterInput!): Boolean
 }
 
