@@ -16,6 +16,12 @@ struct RpcAnswer
     RpcAnswer(const json &d) : data(d) {}
 };
 
+struct RpcMessage
+{
+    json message;
+    bool persist;
+};
+
 using RpcHandler = std::function<RpcAnswer (const std::string &method, const json &data)>;
 
 class Rpc : public Logger
@@ -23,8 +29,8 @@ class Rpc : public Logger
     LOGGABLE(Rpc);
 public:
 
-    std::string executeRpcs(const std::string &str, RpcHandler executer);
-    json executeRpc(const json &req, RpcHandler executer);
+    RpcMessage executeRpcs(const std::string &str, RpcHandler executer);
+    RpcMessage executeRpc(const json &req, RpcHandler executer);
 
     // LCOV_EXCL_START
     void setupRpc(const std::string &sub);

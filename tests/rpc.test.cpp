@@ -21,34 +21,38 @@ BOOST_AUTO_TEST_SUITE(executeRpcs_test);
 
 BOOST_AUTO_TEST_CASE(parseError)
 {
-    auto &&j = json::parse(Rpc::Inst().executeRpcs("asdf", &handler));
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32700);
-    BOOST_TEST(j["id"] == nullptr);
+    auto &&j = Rpc::Inst().executeRpcs("asdf", &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32700);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(invalidRequest_empty)
 {
-    auto &&j = json::parse(Rpc::Inst().executeRpcs("[]", &handler));
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == nullptr);
+    auto &&j = Rpc::Inst().executeRpcs("[]", &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(invalidRequest_number)
 {
-    auto &&j = json::parse(Rpc::Inst().executeRpcs("[123]", &handler));
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == nullptr);
+    auto &&j = Rpc::Inst().executeRpcs("[123]", &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(invalidRequest_string)
 {
-    auto &&j = json::parse(Rpc::Inst().executeRpcs("[\"str\"]", &handler));
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == nullptr);
+    auto &&j = Rpc::Inst().executeRpcs("[\"str\"]", &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(single)
@@ -58,10 +62,11 @@ BOOST_AUTO_TEST_CASE(single)
     r["method"] = "1234";
     r["id"] = "str";
 
-    auto &&j = json::parse(Rpc::Inst().executeRpcs(r.dump(), &handler));
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32601);
-    BOOST_TEST(j["id"] == "str");
+    auto &&j = Rpc::Inst().executeRpcs(r.dump(), &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32601);
+    BOOST_TEST(j.message["id"] == "str");
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(multiple)
@@ -73,14 +78,42 @@ BOOST_AUTO_TEST_CASE(multiple)
 
     json rs = { r, r, r };
 
-    auto &&js = json::parse(Rpc::Inst().executeRpcs(rs.dump(), &handler));
+    auto &&js = Rpc::Inst().executeRpcs(rs.dump(), &handler);
     for (auto i = 0; i < 3; i++)
     {
-        auto &&j = js[i];
+        auto &&j = js.message[i];
         BOOST_TEST(j["jsonrpc"] == "2.0");
         BOOST_TEST(j["error"]["code"] == -32601);
         BOOST_TEST(j["id"] == "str");
     }
+    BOOST_TEST(js.persist == false);
+}
+
+BOOST_AUTO_TEST_CASE(multiple_persist1)
+{
+    json r;
+    r["jsonrpc"] = "2.0";
+    r["method"] = "1234";
+    r["id"] = "str";
+    json rp;
+    rp["jsonrpc"] = "2.0";
+    rp["method"] = "1234";
+    rp["id"] = "{str";
+
+    json rs = { r, rp, r };
+
+    auto &&js = Rpc::Inst().executeRpcs(rs.dump(), &handler);
+    for (auto i = 0; i < 3; i++)
+    {
+        auto &&j = js.message[i];
+        BOOST_TEST(j["jsonrpc"] == "2.0");
+        BOOST_TEST(j["error"]["code"] == -32601);
+        if (i == 1)
+            BOOST_TEST(j["id"] == "{str");
+        else
+            BOOST_TEST(j["id"] == "str");
+    }
+    BOOST_TEST(js.persist == true);
 }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -95,9 +128,10 @@ BOOST_AUTO_TEST_CASE(invalidRequest_noid)
     r["params"] = "qwer";
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == nullptr);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(invalidRequest_nomethod)
@@ -108,9 +142,10 @@ BOOST_AUTO_TEST_CASE(invalidRequest_nomethod)
     r["id"] = "aaa";
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == "aaa");
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == "aaa");
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(invalidRequest_method)
@@ -122,9 +157,10 @@ BOOST_AUTO_TEST_CASE(invalidRequest_method)
     r["id"] = "aaa";
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32600);
-    BOOST_TEST(j["id"] == "aaa");
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32600);
+    BOOST_TEST(j.message["id"] == "aaa");
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(methodNotFound_number)
@@ -135,9 +171,10 @@ BOOST_AUTO_TEST_CASE(methodNotFound_number)
     r["id"] = 12;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32601);
-    BOOST_TEST(j["id"] == 12);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32601);
+    BOOST_TEST(j.message["id"] == 12);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(methodNotFound_string)
@@ -148,9 +185,10 @@ BOOST_AUTO_TEST_CASE(methodNotFound_string)
     r["id"] = "str";
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32601);
-    BOOST_TEST(j["id"] == "str");
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32601);
+    BOOST_TEST(j.message["id"] == "str");
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(methodNotFound_null)
@@ -161,9 +199,10 @@ BOOST_AUTO_TEST_CASE(methodNotFound_null)
     r["id"] = nullptr;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32601);
-    BOOST_TEST(j["id"] == nullptr);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32601);
+    BOOST_TEST(j.message["id"] == nullptr);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(echo)
@@ -175,9 +214,10 @@ BOOST_AUTO_TEST_CASE(echo)
     r["id"] = 123;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["result"]["key"] == "value");
-    BOOST_TEST(j["id"] == 123);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["result"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == 123);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(throws)
@@ -189,9 +229,10 @@ BOOST_AUTO_TEST_CASE(throws)
     r["id"] = 123;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == -32603);
-    BOOST_TEST(j["id"] == 123);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == -32603);
+    BOOST_TEST(j.message["id"] == 123);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(emptyError)
@@ -203,11 +244,12 @@ BOOST_AUTO_TEST_CASE(emptyError)
     r["id"] = 123;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == 1);
-    BOOST_TEST(j["error"]["message"] == "Some error");
-    BOOST_CHECK_THROW(j["error"].at("data").is_object(), nlohmann::detail::out_of_range);
-    BOOST_TEST(j["id"] == 123);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_CHECK_THROW(j.message["error"].at("data").is_object(), nlohmann::detail::out_of_range);
+    BOOST_TEST(j.message["id"] == 123);
+    BOOST_TEST(j.persist == false);
 }
 
 BOOST_AUTO_TEST_CASE(error)
@@ -219,11 +261,80 @@ BOOST_AUTO_TEST_CASE(error)
     r["id"] = 123;
 
     auto &&j = Rpc::Inst().executeRpc(r, &handler);
-    BOOST_TEST(j["jsonrpc"] == "2.0");
-    BOOST_TEST(j["error"]["code"] == 1);
-    BOOST_TEST(j["error"]["message"] == "Some error");
-    BOOST_TEST(j["error"]["data"]["key"] == "value");
-    BOOST_TEST(j["id"] == 123);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_TEST(j.message["error"]["data"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == 123);
+    BOOST_TEST(j.persist == false);
+}
+
+BOOST_AUTO_TEST_CASE(error_persist0)
+{
+    json r;
+    r["jsonrpc"] = "2.0";
+    r["method"] = "error";
+    r["param"]["key"] = "value";
+    r["id"] = "";
+
+    auto &&j = Rpc::Inst().executeRpc(r, &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_TEST(j.message["error"]["data"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == "");
+    BOOST_TEST(j.persist == false);
+}
+
+BOOST_AUTO_TEST_CASE(error_persist1)
+{
+    json r;
+    r["jsonrpc"] = "2.0";
+    r["method"] = "error";
+    r["param"]["key"] = "value";
+    r["id"] = "{";
+
+    auto &&j = Rpc::Inst().executeRpc(r, &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_TEST(j.message["error"]["data"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == "{");
+    BOOST_TEST(j.persist == true);
+}
+
+BOOST_AUTO_TEST_CASE(error_persist2)
+{
+    json r;
+    r["jsonrpc"] = "2.0";
+    r["method"] = "error";
+    r["param"]["key"] = "value";
+    r["id"] = "[";
+
+    auto &&j = Rpc::Inst().executeRpc(r, &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_TEST(j.message["error"]["data"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == "[");
+    BOOST_TEST(j.persist == true);
+}
+
+BOOST_AUTO_TEST_CASE(error_persist3)
+{
+    json r;
+    r["jsonrpc"] = "2.0";
+    r["method"] = "error";
+    r["param"]["key"] = "value";
+    r["id"] = "{}";
+
+    auto &&j = Rpc::Inst().executeRpc(r, &handler);
+    BOOST_TEST(j.message["jsonrpc"] == "2.0");
+    BOOST_TEST(j.message["error"]["code"] == 1);
+    BOOST_TEST(j.message["error"]["message"] == "Some error");
+    BOOST_TEST(j.message["error"]["data"]["key"] == "value");
+    BOOST_TEST(j.message["id"] == "{}");
+    BOOST_TEST(j.persist == true);
 }
 
 BOOST_AUTO_TEST_SUITE_END();

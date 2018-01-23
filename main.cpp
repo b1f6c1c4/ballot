@@ -10,6 +10,7 @@ RpcAnswer Main::handler(const std::string &method, const json &data)
     {
         if (method == "status")
         {
+            logger->info("Method {} called", method);
             json j;
             j["version"] = VERSION;
             j["commitHash"] = COMMITHASH;
@@ -17,18 +18,22 @@ RpcAnswer Main::handler(const std::string &method, const json &data)
         }
         else if (method == "argon2i")
         {
+            logger->info("Method {} called", method);
             return Argon::Inst().argon2i(data);
         }
         else if (method == "newRing")
         {
+            logger->info("Method {} called", method);
             return Ring::Inst().newRing();
         }
         else if (method == "genH")
         {
+            logger->info("Method {} called", method);
             return Ring::Inst().genH(data);
         }
         else if (method == "verify")
         {
+            logger->info("Method {} called", method);
             json j;
             auto res = Ring::Inst().verify(data);
             j["valid"] = res ? 1 : 0;
@@ -36,12 +41,19 @@ RpcAnswer Main::handler(const std::string &method, const json &data)
         }
         else
         {
+            logger->error("Method {} not found", method);
             return RpcAnswer(-32601, "Method not found");
         }
     }
-    catch (nlohmann::detail::type_error)
+    catch (const nlohmann::detail::type_error &ex)
     {
+        logger->error(ex.what());
         return RpcAnswer(-32602, "Invalid params");
+    }
+    catch (const std::exception &ex)
+    {
+        logger->error(ex.what());
+        throw;
     }
 }
 
