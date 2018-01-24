@@ -39,25 +39,25 @@ describe('verify', () => {
     await make.Ballot(dBallot);
     await make.SubmittedTicket(dSubTicket);
     await finalizeVerify({ valid: 0 }, dCon);
-    await check.SubmittedTicket(dSubTicket, { status: 'declined' });
+    await check.SubmittedTicket(dSubTicket, 'status', 'declined');
     await check.SignedTicket();
     done();
   });
 
   it('should handle timeout', async (done) => {
-    await make.Ballot(dBallot, { status: 'unknown' });
+    await make.Ballot(dBallot, 'status', 'unknown');
     await make.SubmittedTicket(dSubTicket);
     await finalizeVerify({ valid: 0 }, dCon);
-    await check.SubmittedTicket(dSubTicket, { status: 'timeout' });
+    await check.SubmittedTicket(dSubTicket, 'status', 'timeout');
     await check.SignedTicket();
     done();
   });
 
   it('should not change unknown ticket status', async (done) => {
     await make.Ballot(dBallot);
-    await make.SubmittedTicket(dSubTicket, { status: 'unknown' });
+    await make.SubmittedTicket(dSubTicket, 'status', 'unknown');
     await finalizeVerify({ valid: 0 }, dCon);
-    await check.SubmittedTicket(dSubTicket, { status: 'unknown' });
+    await check.SubmittedTicket(dSubTicket, 'status', 'unknown');
     await check.SignedTicket();
     done();
   });
@@ -66,7 +66,7 @@ describe('verify', () => {
     await make.Ballot(dBallot);
     await make.SubmittedTicket(dSubTicket);
     await finalizeVerify({ valid: 1 }, dCon);
-    await check.SubmittedTicket(dSubTicket, { status: 'accepted' });
+    await check.SubmittedTicket(dSubTicket, 'status', 'accepted');
     await check.SignedTicket(dSignedTicket);
     done();
   });
