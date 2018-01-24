@@ -17,13 +17,6 @@ jest.mock('../../auth', () => ({
 // eslint-disable-next-line global-require
 const { resolvers } = require('../ballot');
 
-const {
-  createBallot,
-  replaceFields,
-  createVoter,
-  deleteVoter,
-} = resolvers.Mutation;
-
 const dBallot = {
   _id: '123',
   owner: 'asdfqwer',
@@ -38,6 +31,7 @@ const dBallot = {
 
 describe('Mutation', () => {
   describe('createBallot', () => {
+    const func = resolvers.Mutation.createBallot;
     const dArgs = [
       undefined,
       {
@@ -59,27 +53,27 @@ describe('Mutation', () => {
     };
 
     it('should throw unauthorized', async (done) => {
-      const res = await createBallot(...mer(dArgs, '[2]', {}));
+      const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should throw name malformed', async (done) => {
-      const res = await createBallot(...mer(dArgs, '[1].input.name', ''));
+      const res = await func(...mer(dArgs, '[1].input.name', ''));
       expect(res).toBeInstanceOf(errors.NameMalformedError);
       done();
     });
 
     it('should not throw if error', async (done) => {
       models.Ballot.throwErrOn('save');
-      const res = await createBallot(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
     });
 
     it('should save if good', async (done) => {
-      const res = await createBallot(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(targ);
       done();
@@ -87,6 +81,7 @@ describe('Mutation', () => {
   });
 
   describe('replaceFields', () => {
+    const func = resolvers.Mutation.replaceFields;
     const dArgs = [
       undefined,
       {
@@ -106,26 +101,26 @@ describe('Mutation', () => {
     ];
 
     it('should throw unauthorized', async (done) => {
-      const res = await replaceFields(...mer(dArgs, '[2]', {}));
+      const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should throw field type both malformed', async (done) => {
-      const res = await replaceFields(...mer(dArgs, '[1].input.fields[1].stringDefault', 'df'));
+      const res = await func(...mer(dArgs, '[1].input.fields[1].stringDefault', 'df'));
       expect(res).toBeInstanceOf(errors.FieldMalformedError);
       done();
     });
 
     it('should throw field type neither malformed', async (done) => {
-      const res = await replaceFields(...mer(dArgs, '[1].input.fields[2].prompt', 3));
+      const res = await func(...mer(dArgs, '[1].input.fields[2].prompt', 3));
       expect(res).toBeInstanceOf(errors.FieldMalformedError);
       done();
     });
 
     it('should not throw if error', async (done) => {
       models.Ballot.throwErrOn('findOne');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
@@ -133,21 +128,21 @@ describe('Mutation', () => {
 
     it('should throw unauthorized if not owner', async (done) => {
       await make.Ballot(dBallot, 'owner', 'own');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       await check.Ballot(dBallot, 'owner', 'own');
       done();
     });
 
     it('should handle not found', async (done) => {
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
       done();
     });
 
     it('should handle status incorrect', async (done) => {
       await make.Ballot(dBallot, 'status', 'unknown');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
       done();
@@ -155,7 +150,7 @@ describe('Mutation', () => {
 
     it('should save if good creating', async (done) => {
       await make.Ballot(dBallot, 'status', 'creating');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(dBallot, 'status', 'creating', 'fields', targ);
       done();
@@ -163,7 +158,7 @@ describe('Mutation', () => {
 
     it('should save if good inviting', async (done) => {
       await make.Ballot(dBallot, 'status', 'inviting');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(dBallot, 'status', 'inviting', 'fields', targ);
       done();
@@ -171,7 +166,7 @@ describe('Mutation', () => {
 
     it('should save if good invited', async (done) => {
       await make.Ballot(dBallot, 'status', 'invited');
-      const res = await replaceFields(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(dBallot, 'status', 'invited', 'fields', targ);
       done();
@@ -179,6 +174,7 @@ describe('Mutation', () => {
   });
 
   describe('createVoter', () => {
+    const func = resolvers.Mutation.createVoter;
     const dArgs = [
       undefined,
       { input: { bId: '123', name: 'nm' } },
@@ -187,20 +183,20 @@ describe('Mutation', () => {
     const targ = { _id: 'icc', name: 'nm' };
 
     it('should throw unauthorized', async (done) => {
-      const res = await createVoter(...mer(dArgs, '[2]', {}));
+      const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should throw name malformed', async (done) => {
-      const res = await createVoter(...mer(dArgs, '[1].input.name', ''));
+      const res = await func(...mer(dArgs, '[1].input.name', ''));
       expect(res).toBeInstanceOf(errors.NameMalformedError);
       done();
     });
 
     it('should not throw if error', async (done) => {
       models.Ballot.throwErrOn('findOne');
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
@@ -208,20 +204,20 @@ describe('Mutation', () => {
 
     it('should throw unauthorized if not owner', async (done) => {
       await make.Ballot(dBallot, 'owner', 'own');
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should handle not found', async (done) => {
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
       done();
     });
 
     it('should handle status incorrect', async (done) => {
       await make.Ballot(dBallot, 'status', 'unknown');
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
       done();
@@ -229,7 +225,7 @@ describe('Mutation', () => {
 
     it('should save if good creating', async (done) => {
       await make.Ballot(dBallot, 'status', 'creating');
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(dBallot, 'status', 'creating', 'voters[1]', targ);
       done();
@@ -237,7 +233,7 @@ describe('Mutation', () => {
 
     it('should save if good inviting', async (done) => {
       await make.Ballot(dBallot, 'status', 'inviting');
-      const res = await createVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(targ);
       await check.Ballot(dBallot, 'status', 'inviting', 'voters[1]', targ);
       done();
@@ -245,6 +241,7 @@ describe('Mutation', () => {
   });
 
   describe('deleteVoter', () => {
+    const func = resolvers.Mutation.deleteVoter;
     const dArgs = [
       undefined,
       { input: { bId: '123', iCode: 'ic' } },
@@ -252,14 +249,14 @@ describe('Mutation', () => {
     ];
 
     it('should throw unauthorized', async (done) => {
-      const res = await deleteVoter(...mer(dArgs, '[2]', {}));
+      const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should not throw if error', async (done) => {
       models.Ballot.throwErrOn('findOne');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
@@ -267,20 +264,20 @@ describe('Mutation', () => {
 
     it('should throw unauthorized if not owner', async (done) => {
       await make.Ballot(dBallot, 'owner', 'own');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       done();
     });
 
     it('should handle ballot not found', async (done) => {
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
       done();
     });
 
     it('should handle voter not found', async (done) => {
       await make.Ballot(dBallot, 'voters[0]._id', 'xxx');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
       await check.Ballot(dBallot, 'voters[0]._id', 'xxx');
       done();
@@ -288,7 +285,7 @@ describe('Mutation', () => {
 
     it('should handle status incorrect', async (done) => {
       await make.Ballot(dBallot, 'status', 'unknown');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
       done();
@@ -296,7 +293,7 @@ describe('Mutation', () => {
 
     it('should save if good creating', async (done) => {
       await make.Ballot(dBallot, 'status', 'creating');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(true);
       await check.Ballot(dBallot, 'status', 'creating', 'voters', []);
       done();
@@ -304,7 +301,7 @@ describe('Mutation', () => {
 
     it('should save if good inviting', async (done) => {
       await make.Ballot(dBallot, 'status', 'inviting');
-      const res = await deleteVoter(...dArgs);
+      const res = await func(...dArgs);
       expect(res).toEqual(true);
       await check.Ballot(dBallot, 'status', 'inviting', 'voters', []);
       done();

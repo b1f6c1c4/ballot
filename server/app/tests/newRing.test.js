@@ -2,6 +2,7 @@ const { models, make, check } = require('../../tests/util');
 const finalizeNewRing = require('../newRing');
 
 describe('newRing', () => {
+  const func = finalizeNewRing;
   const dBallot = {
     _id: 'val',
     status: 'creating',
@@ -11,27 +12,27 @@ describe('newRing', () => {
     fields: [],
     voters: [],
   };
-  const dResCon = [
+  const dArgs = [
     { q: 'qval', g: 'gval' },
     { method: 'newRing', _id: 'val' },
   ];
 
   it('should not throw if errored', async (done) => {
     models.Ballot.throwErrOn('findOneAndUpdate');
-    await finalizeNewRing(...dResCon);
+    await func(...dArgs);
     done();
   });
 
   it('should not change if status not match', async (done) => {
     await make.Ballot(dBallot, 'status', 'unknown');
-    await finalizeNewRing(...dResCon);
+    await func(...dArgs);
     await check.Ballot(dBallot, 'status', 'unknown');
     done();
   });
 
   it('should change if good', async (done) => {
     await make.Ballot(dBallot);
-    await finalizeNewRing(...dResCon);
+    await func(...dArgs);
     await check.Ballot(dBallot, 'status', 'inviting', 'crypto', {
       q: 'qval',
       g: 'gval',
