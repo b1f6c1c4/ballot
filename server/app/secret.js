@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const Ballot = require('../models/ballots');
-const SubmittedTicket = require('../models/submittedTickets');
+const { Ballot } = require('../models/ballots');
+const { SubmittedTicket } = require('../models/submittedTickets');
 const { tIdGen, verify } = require('./cryptor');
 const logger = require('../logger')('secret');
 
@@ -64,17 +64,17 @@ const submitTicket = async (data) => {
     result,
   } = payload;
 
-  if (!reg.test(bId)) {
-    return errors.xbid;
-  }
   if (!Array.isArray(result)) {
     return errors.tkmf;
+  }
+  if (!reg.test(bId)) {
+    return errors.ntfd;
   }
 
   try {
     const doc = await Ballot.findById(bId);
     if (!doc) {
-      return errors.xbid;
+      return errors.ntfd;
     }
     logger.trace('Old ballot', doc);
     if (doc.status !== 'voting') {

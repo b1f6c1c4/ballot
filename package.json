@@ -24,8 +24,8 @@
     "lint:staged": "lint-staged",
     "pretest": "yarn test:clean && yarn lint",
     "test:clean": "rimraf ./coverage",
-    "test": "cross-env NODE_ENV=test jest --forceExit --coverage",
-    "test:watch": "cross-env NODE_ENV=test jest --forceExit --coverage --watchAll",
+    "test": "cross-env NODE_ENV=test jest --forceExit --coverage --runInBand",
+    "test:watch": "cross-env NODE_ENV=test jest --forceExit --coverage --runInBand --watchAll",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
