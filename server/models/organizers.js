@@ -25,4 +25,7 @@ const OrganizerSchema = new Schema({
 
 OrganizerSchema.plugin(fixUpdate);
 
-module.exports = mongoose.model('organizers', OrganizerSchema);
+module.exports = {
+  OrganizerSchema,
+  Organizer: mongoose.model('organizers', OrganizerSchema),
+};
