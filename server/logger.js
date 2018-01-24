@@ -22,6 +22,12 @@ const lvls = {
 
 winston.addColors(lvls);
 
+const stderrLevels = ['fatal'];
+if (process.env.NODE_ENV !== 'test') {
+  stderrLevels.push('error');
+  stderrLevels.push('warn');
+}
+
 const logger = winston.createLogger({
   level: process.env.BACKEND_LOG || (process.env.NODE_ENV === 'test' ? 'fatal' : 'info'),
   levels: lvls.levels,
@@ -46,7 +52,9 @@ const logger = winston.createLogger({
     }),
   ),
   transports: [
-    new winston.transports.Console(),
+    new winston.transports.Console({
+      stderrLevels: ['fatal'],
+    }),
   ],
 });
 

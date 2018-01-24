@@ -83,4 +83,7 @@ const BallotSchema = new Schema({
 
 BallotSchema.plugin(fixUpdate);
 
-module.exports = mongoose.model('ballots', BallotSchema);
+module.exports = {
+  BallotSchema,
+  Ballot: mongoose.model('ballots', BallotSchema),
+};

@@ -1,7 +1,7 @@
 const stringify = require('json-stringify-deterministic');
 const crypto = require('crypto');
-const Ballot = require('../models/ballots');
 const rpc = require('../rpc');
+const finalizeNewRing = require('./newRing');
 const finalizeVerify = require('./verify');
 const logger = require('../logger')('cryptor');
 
@@ -13,29 +13,9 @@ const handler = (err, res, con) => {
     return;
   }
   switch (con.method) {
-    case 'newRing': {
-      const { _id } = con;
-      const { q, g } = res;
-      logger.debug('Finalize newRing...', _id);
-      Ballot.findOneAndUpdate({
-        _id,
-        status: 'creating',
-      }, {
-        $set: {
-          status: 'inviting',
-          crypto: { q, g },
-        },
-      }, {
-        upsert: false,
-      }, (e) => {
-        if (e) {
-          logger.error('Finalize newRing', e);
-        } else {
-          logger.info('Crypto param created', _id);
-        }
-      });
+    case 'newRing':
+      finalizeNewRing(res, con);
       break;
-    }
     case 'verify':
       finalizeVerify(res, con);
       break;

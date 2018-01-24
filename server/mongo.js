@@ -51,8 +51,17 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
   }
 });
 
+let isConnected = false;
+
 const connect = async () => {
+  if (isConnected) {
+    logger.warn('Try connecting mongo mult times');
+    return;
+  }
+  isConnected = true;
+
   if (process.env.NODE_ENV === 'test') {
+    mongoose.set('bufferCommands', false);
     await connectLocal('ballot-test');
     return;
   }

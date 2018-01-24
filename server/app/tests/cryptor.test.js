@@ -9,6 +9,10 @@ jest.doMock('crypto', () => ({
     cb(cryptoMock.err, cryptoMock.buf);
   },
 }));
+jest.mock('../newRing', () => (res, con) => {
+  expect(res).toEqual({ key: 'val3' });
+  expect(con).toEqual({ method: 'newRing', key: 'val4' });
+});
 jest.mock('../verify', () => (res, con) => {
   expect(res).toEqual({ key: 'val1' });
   expect(con).toEqual({ method: 'verify', key: 'val2' });
@@ -34,14 +38,8 @@ describe('handler', () => {
   });
 
   it('should handle newRing', () => {
-    // TODO
-    // handler(undefined, {
-    //   q: 'qval',
-    //   g: 'gval',
-    // }, {
-    //   method: 'newRing',
-    //   _id: 'val',
-    // });
+    expect.hasAssertions();
+    handler(undefined, { key: 'val3' }, { method: 'newRing', key: 'val4' });
   });
 
   it('should handle verify', () => {
