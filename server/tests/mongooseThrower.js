@@ -24,7 +24,11 @@ module.exports = (model) => {
         logger.warn('Hacked by', obj);
         expect(this.op).toEqual(verb);
       }
-      next(obj);
+      if (obj) {
+        next(obj);
+      } else {
+        next();
+      }
     });
   });
   return (th) => {

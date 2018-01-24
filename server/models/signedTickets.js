@@ -40,4 +40,7 @@ const SignedTicketSchema = new Schema({
 
 SignedTicketSchema.plugin(fixUpdate);
 
-module.exports = mongoose.model('signedTickets', SignedTicketSchema);
+module.exports = {
+  SignedTicketSchema,
+  SignedTicket: mongoose.model('signedTickets', SignedTicketSchema),
+};
