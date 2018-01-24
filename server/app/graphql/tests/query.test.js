@@ -49,7 +49,7 @@ describe('Ballot', () => {
     });
     it('should throw if unauthorized', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
         'invited',
       ];
@@ -63,7 +63,7 @@ describe('Ballot', () => {
     });
     it('should throw if forbidden', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
         'invited',
       ];
@@ -77,7 +77,7 @@ describe('Ballot', () => {
     });
     it('should not throw if allowed', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
         'invited',
       ];
@@ -110,7 +110,7 @@ describe('Ballot', () => {
     });
     it('should throw if unauthorized', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
       ];
       statuses.forEach((st) => {
@@ -123,7 +123,7 @@ describe('Ballot', () => {
     });
     it('should throw if forbidden', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
       ];
       statuses.forEach((st) => {
@@ -136,7 +136,7 @@ describe('Ballot', () => {
     });
     it('should not throw if allowed', () => {
       const statuses = [
-        'created',
+        'creating',
         'inviting',
       ];
       statuses.forEach((st) => {

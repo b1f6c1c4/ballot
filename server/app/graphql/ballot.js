@@ -32,7 +32,11 @@ module.exports = {
           await ballot.save();
           logger.info('Ballot created', ballot._id);
           newRing(ballot);
-          return ballot;
+          const obj = ballot.toObject();
+          delete obj.__v;
+          delete obj.createdAt;
+          delete obj.updatedAt;
+          return obj;
         } catch (e) {
           logger.error('Create ballot', e);
           return e;
