@@ -121,6 +121,12 @@ const makeQueueNP = () => new Promise((resolve) => {
 });
 
 const connect = () => new Promise((resolve, reject) => {
+  if (process.env.NODE_ENV === 'test') {
+    logger.fatalDie('AMQP is not for test!');
+    // hangs there
+    return;
+  }
+
   logger.info('Connecting AMQP...');
   logger.debug('AMQP host', process.env.RABBIT_HOST);
   logger.debug('AMQP user', process.env.RABBIT_USER);

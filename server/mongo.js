@@ -34,8 +34,7 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
     logger.warn('Mongoose connection reconnected');
   });
   mongoose.connection.on('reconnectFailed', () => {
-    logger.fatal('Mongoose connection reconnecting failed');
-    process.exit(1);
+    logger.fatalDie('Mongoose connection reconnecting failed');
   });
 
   try {

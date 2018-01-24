@@ -6,9 +6,27 @@ const rpc = require('./rpc');
 const mongo = require('./mongo');
 const logger = require('./logger')('index');
 
+logger.info('Versions', process.versions);
+
 process.on('unhandledRejection', (e) => {
   logger.fatal('Unhandled rejection', e);
   throw e;
+});
+
+process.on('uncaughtException', (e) => {
+  logger.fatalDie('Uncaught exception', e);
+});
+
+process.on('warning', (e) => {
+  logger.warn('Node warning', e);
+});
+
+process.on('SIGINT', () => {
+  logger.fatalDie('SIGINT received');
+});
+
+process.on('SIGTERM', () => {
+  logger.fatalDie('SIGTERM received');
 });
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -40,8 +58,7 @@ function appStarted(p, h, t) {
 function runApp() {
   app.listen(port, host, (err) => {
     if (err) {
-      logger.fatal(err);
-      process.exit(1);
+      logger.fatalDie(err);
       return;
     }
 
@@ -49,8 +66,7 @@ function runApp() {
     if (ngrok) {
       ngrok.connect(port, (innerErr, url) => {
         if (innerErr) {
-          logger.fatal(innerErr);
-          process.exit(1);
+          logger.fatalDie(innerErr);
           return;
         }
 
@@ -63,14 +79,9 @@ function runApp() {
 }
 
 const inits = [];
-if (process.env.NODE_ENV !== 'test') {
-  inits.push(mongo.connect());
-} else {
-  logger.warn('Mongodb omitted.');
-}
+inits.push(mongo.connect());
 
-if (process.env.NODE_ENV !== 'test'
-  && !process.env.NO_RABBIT) {
+if (!process.env.NO_RABBIT) {
   inits.push(rpc.connect()
     .then(() => {
       rpc.call('status')
@@ -87,6 +98,5 @@ if (process.env.NODE_ENV !== 'test'
 Promise.all(inits)
   .then(runApp)
   .catch((e) => {
-    logger.fatal('Init failed', e);
-    process.exit(1);
+    logger.fatalDie('Init failed', e);
   });
