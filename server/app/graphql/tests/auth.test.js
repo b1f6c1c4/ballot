@@ -1,10 +1,5 @@
-const { connect } = require('../../../mongo');
-const { Organizer } = require('../../../models/organizers');
+const { models, make, mer, check } = require('../../../tests/util');
 const errors = require('../error');
-const logger = require('../../../logger')('tests/graphql/auth');
-const thrower = require('../../../tests/mongooseThrower');
-
-const throwOrganizer = thrower(Organizer);
 
 jest.mock('../../cryptor', () => ({
   argon2i(pw, st) {
@@ -30,329 +25,187 @@ const {
   password,
 } = resolvers.Mutation;
 
-beforeAll(async (done) => {
-  logger.info('Connecting mongoose');
-  await connect();
-  done();
-});
-
 describe('Mutation', () => {
-  beforeEach(async (done) => {
-    await Organizer.remove({});
-    throwOrganizer({});
-    done();
-  });
-
-  afterAll(async (done) => {
-    await Organizer.remove({});
-    done();
-  });
+  const dOrganizer = {
+    _id: 'asdfqwer',
+    hash: '66666666yy',
+    salt: 'yy',
+  };
+  const dCred = [
+    undefined,
+    {
+      input: {
+        username: 'asdfqwer',
+        password: '66666666',
+      },
+    },
+    undefined,
+  ];
 
   describe('register', () => {
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(register(undefined, {
-        input: {
-          username: 'asdfa3 eibv',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 1', async (done) => {
+      const res = await register(...mer(dCred, '[1].input.username', 'asdfa3 eibv'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(register(undefined, {
-        input: {
-          username: '-asd3333bghhf',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 2', async (done) => {
+      const res = await register(...mer(dCred, '[1].input.username', '-asd3333bghhf'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(register(undefined, {
-        input: {
-          username: 'asd',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 3', async (done) => {
+      const res = await register(...mer(dCred, '[1].input.username', 'asd'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw password malformed', () => {
-      expect.hasAssertions();
-      return expect(register(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.PasswordMalformedError);
+    it('should throw password malformed', async (done) => {
+      const res = await register(...mer(dCred, '[1].input.password', '123'));
+      expect(res).toBeInstanceOf(errors.PasswordMalformedError);
+      done();
     });
 
     it('should not throw if errored', async (done) => {
-      throwOrganizer({
-        save: new Error('Some error'),
-      });
-      expect.hasAssertions();
-      const res = await register(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      models.Organizer.throwErrOn('save');
+      const res = await register(...dCred);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
     });
 
     it('should handle username exists', async (done) => {
-      let doc = new Organizer();
-      doc._id = 'asdfqwer';
-      doc.hash = '66666666yy';
-      doc.salt = 'yy';
-      await doc.save();
-      expect.hasAssertions();
-      const res = await register(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      await make.Organizer(dOrganizer);
+      const res = await register(...dCred);
       expect(res).toBeInstanceOf(errors.UsernameExistsError);
-      doc = await Organizer.findById('asdfqwer');
-      expect(doc.hash).toEqual('66666666yy');
-      expect(doc.salt).toEqual('yy');
+      await check.Organizer(dOrganizer);
       done();
     });
 
     it('should save if good', async (done) => {
-      expect.hasAssertions();
-      const res = await register(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      const res = await register(...dCred);
       expect(res).toEqual(true);
-      const doc = await Organizer.findById('asdfqwer');
-      expect(doc.hash).toEqual('123456789xx');
-      expect(doc.salt).toEqual('xx');
+      await check.Organizer({
+        _id: 'asdfqwer',
+        hash: '66666666xx',
+        salt: 'xx',
+      });
       done();
     });
   });
 
   describe('login', () => {
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(login(undefined, {
-        input: {
-          username: 'asdfa3 eibv',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 1', async (done) => {
+      const res = await login(...mer(dCred, '[1].input.username', 'asdfa3 eibv'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(login(undefined, {
-        input: {
-          username: '-asd3333bghhf',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 2', async (done) => {
+      const res = await login(...mer(dCred, '[1].input.username', '-asd3333bghhf'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw username malformed', () => {
-      expect.hasAssertions();
-      return expect(login(undefined, {
-        input: {
-          username: 'asd',
-          password: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UsernameMalformedError);
+    it('should throw username malformed 3', async (done) => {
+      const res = await login(...mer(dCred, '[1].input.username', 'asd'));
+      expect(res).toBeInstanceOf(errors.UsernameMalformedError);
+      done();
     });
 
-    it('should throw password malformed', () => {
-      expect.hasAssertions();
-      return expect(login(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.PasswordMalformedError);
+    it('should throw password malformed', async (done) => {
+      const res = await login(...mer(dCred, '[1].input.password', '123'));
+      expect(res).toBeInstanceOf(errors.PasswordMalformedError);
+      done();
     });
 
     it('should not throw if errored', async (done) => {
-      throwOrganizer({
-        findOne: new Error('Some error'),
-      });
-      expect.hasAssertions();
-      const res = await login(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      models.Organizer.throwErrOn('findOne');
+      const res = await login(...dCred);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
     });
 
     it('should handle user not found', async (done) => {
-      expect.hasAssertions();
-      const res = await login(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      const res = await login(...dCred);
       expect(res).toBeNull();
       done();
     });
 
     it('should handle password wrong', async (done) => {
-      const doc = new Organizer();
-      doc._id = 'asdfqwer';
-      doc.hash = '66666666yy';
-      doc.salt = 'yy';
-      await doc.save();
-      expect.hasAssertions();
-      const res = await login(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '123456789',
-        },
-      }, undefined);
+      await make.Organizer(dOrganizer);
+      const res = await login(...mer(dCred, '[1].input.password', '123456789'));
       expect(res).toBeNull();
       done();
     });
 
     it('should issue token if good', async (done) => {
-      const doc = new Organizer();
-      doc._id = 'asdfqwer';
-      doc.hash = '66666666yy';
-      doc.salt = 'yy';
-      await doc.save();
-      expect.hasAssertions();
-      const res = await login(undefined, {
-        input: {
-          username: 'asdfqwer',
-          password: '66666666',
-        },
-      }, undefined);
+      await make.Organizer(dOrganizer);
+      const res = await login(...dCred);
       expect(res).toEqual({ username: 'asdfqwer' });
       done();
     });
   });
 
   describe('password', () => {
-    it('should throw unauthorized', () => {
-      expect.hasAssertions();
-      return expect(password(undefined, {
-        input: {
-          oldPassword: '123456789',
-          newPassword: '123456789',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    const dPwChg = [
+      undefined,
+      {
+        oldPassword: '66666666',
+        newPassword: '123456789',
+      },
+      {
+        auth: { username: 'asdfqwer' },
+      },
+    ];
+
+    it('should throw unauthorized', async (done) => {
+      const res = await password(...mer(dPwChg, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
     });
 
-    it('should throw old password malformed', () => {
-      expect.hasAssertions();
-      return expect(password(undefined, {
-        input: {
-          oldPassword: '123',
-          newPassword: '123456789',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      })).resolves.toBeInstanceOf(errors.PasswordMalformedError);
+    it('should throw old password malformed', async (done) => {
+      const res = await password(...mer(dPwChg, '[1].oldPassword', '123'));
+      expect(res).toBeInstanceOf(errors.PasswordMalformedError);
+      done();
     });
 
-    it('should throw new password malformed', () => {
-      expect.hasAssertions();
-      return expect(password(undefined, {
-        input: {
-          oldPassword: '123456789',
-          newPassword: '123',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      })).resolves.toBeInstanceOf(errors.PasswordMalformedError);
+    it('should throw new password malformed', async (done) => {
+      const res = await password(...mer(dPwChg, '[1].newPassword', '123'));
+      expect(res).toBeInstanceOf(errors.PasswordMalformedError);
+      done();
     });
 
     it('should not throw if errored', async (done) => {
-      throwOrganizer({
-        findOne: new Error('Some error'),
-      });
-      expect.hasAssertions();
-      const res = await password(undefined, {
-        input: {
-          oldPassword: '123456789',
-          newPassword: '987654321',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      });
+      models.Organizer.throwErrOn('findOne');
+      const res = await password(...dPwChg);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
       done();
     });
 
     it('should handle user not found', async (done) => {
-      expect.hasAssertions();
-      const res = await password(undefined, {
-        input: {
-          oldPassword: '123456789',
-          newPassword: '987654321',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      });
+      const res = await password(...dPwChg);
       expect(res).toBeInstanceOf(errors.NotFoundError);
       done();
     });
 
     it('should handle password wrong', async (done) => {
-      let doc = new Organizer();
-      doc._id = 'asdfqwer';
-      doc.hash = '66666666yy';
-      doc.salt = 'yy';
-      await doc.save();
-      expect.hasAssertions();
-      const res = await password(undefined, {
-        input: {
-          oldPassword: '123456789',
-          newPassword: '987654321',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      });
+      await make.Organizer(dOrganizer);
+      const res = await password(...mer(dPwChg, '[1].oldPassword', '77777777'));
       expect(res).toEqual(false);
-      doc = await Organizer.findById('asdfqwer');
-      expect(doc.hash).toEqual('66666666yy');
-      expect(doc.salt).toEqual('yy');
+      await check.Organizer(dOrganizer);
       done();
     });
 
     it('should handle password correct', async (done) => {
-      let doc = new Organizer();
-      doc._id = 'asdfqwer';
-      doc.hash = '66666666yy';
-      doc.salt = 'yy';
-      await doc.save();
-      expect.hasAssertions();
-      const res = await password(undefined, {
-        input: {
-          oldPassword: '66666666',
-          newPassword: '987654321',
-        },
-      }, {
-        auth: { username: 'asdfqwer' },
-      }, undefined);
+      await make.Organizer(dOrganizer);
+      const res = await password(...dPwChg);
       expect(res).toEqual(true);
-      doc = await Organizer.findById('asdfqwer');
-      expect(doc.hash).toEqual('987654321xx');
-      expect(doc.salt).toEqual('xx');
+      await check.Organizer(dOrganizer, 'hash', '123456789xx', 'salt', 'xx');
       done();
     });
   });

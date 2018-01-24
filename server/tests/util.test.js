@@ -47,4 +47,9 @@ describe('mer', () => {
     expect(mer(obj, 'a.b', 2)).toEqual({ a: { b: 2 } });
     expect(mer(obj, 'c', 3)).toEqual({ a: { b: 1 }, c: 3 });
   });
+  it('should support array', () => {
+    const obj = [1, 2, 3];
+    expect(mer(obj, '[1]', 4)).toEqual([1, 4, 3]);
+    expect(mer(obj, ['a'])).toEqual(['a', 2, 3]);
+  });
 });

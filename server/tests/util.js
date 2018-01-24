@@ -95,7 +95,7 @@ const check = _.mapValues(models, (M) => async (...os) => {
 module.exports = {
   superMerge,
   models,
-  mer: (...os) => superMerge({}, os),
+  mer: (base, ...os) => superMerge(Array.isArray(base) ? [] : {}, [base, ...os]),
   make,
   check,
 };
