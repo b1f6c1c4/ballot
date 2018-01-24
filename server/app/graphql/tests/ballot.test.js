@@ -1,10 +1,6 @@
-const { connect } = require('../../../mongo');
 const { Ballot } = require('../../../models/ballots');
 const errors = require('../error');
-const logger = require('../../../logger')('tests/graphql/auth');
-const thrower = require('../../../tests/mongooseThrower');
-
-const throwBallot = thrower(Ballot);
+const { throwBallot } = require('../../../tests/util');
 
 jest.doMock('../../cryptor', () => ({
   bIdGen: () => 'bbb',
@@ -29,24 +25,7 @@ const {
   deleteVoter,
 } = resolvers.Mutation;
 
-beforeAll(async (done) => {
-  logger.info('Connecting mongoose');
-  await connect();
-  done();
-});
-
 describe('Mutation', () => {
-  beforeEach(async (done) => {
-    await Ballot.remove({});
-    throwBallot({});
-    done();
-  });
-
-  afterAll(async (done) => {
-    await Ballot.remove({});
-    done();
-  });
-
   describe('createBallot', () => {
     it('should throw unauthorized', () => {
       expect.hasAssertions();
