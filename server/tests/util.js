@@ -52,9 +52,27 @@ afterAll(async (done) => {
   done();
 });
 
+const superMerge = (base, objs) => {
+  for (let i = 0; i < objs.length;) {
+    const o = objs[i];
+    if (typeof o === 'string') {
+      const target = i < objs.length - 1 ? objs[i + 1] : undefined;
+      _.set(base, o, target);
+      i += 2;
+    } else if (typeof o === 'object') {
+      _.assignIn(base, _.cloneDeep(o));
+      i += 1;
+    } else {
+      logger.error('Super merge', o);
+      i += 1;
+    }
+  }
+  return base;
+};
+
 const make = _.mapValues(models, (M) => async (...os) => {
   const doc = new M();
-  os.forEach((o) => doc.set(o));
+  doc.set(superMerge({}, os));
   await doc.save();
   return doc.toObject();
 });
@@ -64,8 +82,7 @@ const check = _.mapValues(models, (M) => async (...os) => {
   if (os.length === 0) {
     expect(docs.length).toEqual(0);
   } else {
-    const o = {};
-    _.assign(o, ...os);
+    const o = superMerge({}, os);
     expect(docs.length).toEqual(1);
     const ox = docs[0].toObject();
     delete ox.__v;
@@ -75,11 +92,10 @@ const check = _.mapValues(models, (M) => async (...os) => {
   }
 });
 
-const variant = (df, va) => _.defaultsDeep(va, df);
-
 module.exports = {
+  superMerge,
   models,
+  mer: (...os) => superMerge({}, os),
   make,
-  variant,
   check,
 };

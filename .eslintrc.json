@@ -77,6 +77,14 @@
     "no-console": "warn",
     "no-underscore-dangle": "off",
     "no-use-before-define": "error",
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true,
+        "consistent": true,
+        "minProperties": 0
+      }
+    ],
     "prefer-template": "error",
     "require-yield": "warn"
   }
