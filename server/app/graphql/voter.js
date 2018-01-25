@@ -1,5 +1,5 @@
 const errors = require('./error');
-const Ballot = require('../../models/ballots');
+const { Ballot } = require('../../models/ballots');
 const logger = require('../../logger')('graphql/voter');
 
 module.exports = {
