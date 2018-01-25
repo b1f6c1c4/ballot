@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const cors = require('cors');
 const nocache = require('nocache');
@@ -51,12 +52,13 @@ router.use(
     },
     tracing: process.env.NODE_ENV !== 'production',
     formatError: (err) => {
-      if (err.originalError && err.originalError.error_message) {
-        // eslint-disable-next-line no-param-reassign
-        err.message = err.originalError.error_message;
-      }
-
-      return err;
+      const e = {
+        message: err.message,
+        statusCode: _.get(err, 'originalError.statusCode'),
+        errorCode: _.get(err, 'originalError.errorCode'),
+      };
+      logger.trace('Return err', e);
+      return e;
     },
   })),
 );
