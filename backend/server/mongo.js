@@ -34,8 +34,7 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
     logger.warn('Mongoose connection reconnected');
   });
   mongoose.connection.on('reconnectFailed', () => {
-    logger.fatal('Mongoose connection reconnecting failed');
-    process.exit(1);
+    logger.fatalDie('Mongoose connection reconnecting failed');
   });
 
   try {
@@ -52,9 +51,23 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
   }
 });
 
+let isConnected = false;
+
 const connect = async () => {
+  if (isConnected) {
+    logger.warn('Try connecting mongo mult times');
+    return;
+  }
+  isConnected = true;
+
   if (process.env.NODE_ENV === 'test') {
+    mongoose.set('bufferCommands', false);
     await connectLocal('ballot-test');
+    return;
+  }
+
+  if (process.env.NO_SHARD) {
+    await connectLocal('ballot');
     return;
   }
 

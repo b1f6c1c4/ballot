@@ -5,7 +5,7 @@ type Query {
   # Check system status [GET /]
   status: Status
 
-  ballot(bId: ID!): Ballot
+  ballot(input: BallotInput!): Ballot
 
   # Authentication is required
   ballots: [Ballot]
@@ -175,6 +175,10 @@ type Mutation {
 
 # Inputs
 
+input BallotInput {
+  bId: ID!
+}
+
 input RegisterInput {
   # Must be unique.
   # Must have at least 5 characters.
@@ -263,7 +267,7 @@ type Ballot {
   h: Crypto
 
   # Authentication **is** required when
-  # - `created`
+  # - `creating`
   # - `inviting`
   # - `invited`
   #
@@ -274,7 +278,7 @@ type Ballot {
   fields: [BallotField!]!
 
   # Authentication **is** required when
-  # - `created`
+  # - `creating`
   # - `inviting`
   #
   # Authentication is **not** required when

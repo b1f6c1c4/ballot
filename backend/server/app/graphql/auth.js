@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const compare = require('secure-compare');
 const errors = require('./error');
-const Organizer = require('../../models/organizers');
+const { Organizer } = require('../../models/organizers');
 const { argon2i } = require('../cryptor');
 const { issue } = require('../auth');
 const logger = require('../../logger')('graphql/auth');
@@ -101,7 +101,7 @@ module.exports = {
         try {
           const user = await Organizer.findById(username, {});
           if (!user) {
-            return new Error();
+            return new errors.NotFoundError();
           }
           const res = await argon2i(oldPassword, user.salt);
           const oldHash = res.hash;

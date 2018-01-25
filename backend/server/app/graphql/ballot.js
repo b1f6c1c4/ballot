@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const errors = require('./error');
-const Ballot = require('../../models/ballots');
+const { Ballot } = require('../../models/ballots');
 const { bIdGen, iCodeGen, newRing } = require('../cryptor');
 const logger = require('../../logger')('graphql/ballot');
 
@@ -32,7 +32,11 @@ module.exports = {
           await ballot.save();
           logger.info('Ballot created', ballot._id);
           newRing(ballot);
-          return ballot;
+          const obj = ballot.toObject();
+          delete obj.__v;
+          delete obj.createdAt;
+          delete obj.updatedAt;
+          return obj;
         } catch (e) {
           logger.error('Create ballot', e);
           return e;
@@ -50,10 +54,6 @@ module.exports = {
 
         const { username } = context.auth;
         const { bId, fields } = args.input;
-
-        if (!Array.isArray(fields)) {
-          return new errors.FieldMalformedError();
-        }
 
         try {
           const flds = fields.map((f) => {
@@ -102,7 +102,7 @@ module.exports = {
           doc.fields = flds;
           await doc.save();
           logger.info('Field replaced', bId);
-          return doc.fields;
+          return doc.fields.toObject();
         } catch (e) {
           if (e instanceof errors.FieldMalformedError) {
             return e;
@@ -123,6 +123,10 @@ module.exports = {
 
         const { username } = context.auth;
         const { bId, name } = args.input;
+
+        if (name.length < 1) {
+          return new errors.NameMalformedError();
+        }
 
         try {
           const doc = await Ballot.findById(bId);

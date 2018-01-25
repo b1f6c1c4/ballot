@@ -53,4 +53,7 @@ const SubmittedTicketSchema = new Schema({
 
 SubmittedTicketSchema.plugin(fixUpdate);
 
-module.exports = mongoose.model('submittedTickets', SubmittedTicketSchema);
+module.exports = {
+  SubmittedTicketSchema,
+  SubmittedTicket: mongoose.model('submittedTickets', SubmittedTicketSchema),
+};

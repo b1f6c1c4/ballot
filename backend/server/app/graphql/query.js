@@ -1,58 +1,57 @@
 const _ = require('lodash');
-const { UnauthorizedError } = require('./error');
-const Ballot = require('../../models/ballots');
+const errors = require('./error');
+const { Ballot } = require('../../models/ballots');
 const { project } = require('./projection');
 const logger = require('../../logger')('graphql/query');
 
 module.exports = {
   resolvers: {
     Query: {
-      ballot(parent, args, context, info) {
+      async ballot(parent, args, context, info) {
         logger.debug('Query.ballot', args);
         logger.trace('parent', parent);
         logger.trace('context', context);
 
-        const proj = project(info);
-        logger.debug('Project', proj);
+        const { bId } = args.input;
 
-        return new Promise((resolve, reject) => {
-          Ballot.findById(args.bId, proj, (err, obj) => {
-            if (err) {
-              logger.error('Ballot.findById', err);
-              reject(err);
-            } else {
-              logger.debug('Ballot.findById', obj);
-              resolve(obj);
-            }
-          });
-        });
+        try {
+          const proj = project(info);
+          logger.debug('Project', proj);
+
+          const doc = await Ballot.findById(bId, proj);
+          if (!doc) {
+            return new errors.NotFoundError();
+          }
+          const obj = doc.toObject();
+          return obj;
+        } catch (e) {
+          logger.error('Query ballot', e);
+          return e;
+        }
       },
 
-      ballots(parent, args, context, info) {
+      async ballots(parent, args, context, info) {
         logger.debug('Query.ballots', args);
         logger.trace('parent', parent);
         logger.trace('context', context);
 
         if (!_.get(context, 'auth.username')) {
-          return new UnauthorizedError();
+          return new errors.UnauthorizedError();
         }
 
-        const proj = project(info);
-        logger.debug('Project', proj);
+        const { username } = context.auth;
 
-        return new Promise((resolve, reject) => {
-          Ballot.find({
-            owner: context.auth.username,
-          }, proj, (err, obj) => {
-            if (err) {
-              logger.error('Ballot.find', err);
-              reject(err);
-            } else {
-              logger.debug('Ballot.find', obj);
-              resolve(obj);
-            }
-          });
-        });
+        try {
+          const proj = project(info);
+          logger.debug('Project', proj);
+
+          const docs = await Ballot.find({ owner: username }, proj);
+          const objs = docs.map((d) => d.toObject());
+          return objs;
+        } catch (e) {
+          logger.error('Query ballots', e);
+          return e;
+        }
       },
     },
 
@@ -69,7 +68,7 @@ module.exports = {
             break;
           default:
             if (parent.owner !== _.get(context, 'auth.username')) {
-              return new UnauthorizedError();
+              return new errors.UnauthorizedError();
             }
             break;
         }
@@ -90,7 +89,7 @@ module.exports = {
             break;
           default:
             if (parent.owner !== _.get(context, 'auth.username')) {
-              return new UnauthorizedError();
+              return new errors.UnauthorizedError();
             }
             break;
         }

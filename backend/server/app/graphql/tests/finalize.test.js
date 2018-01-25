@@ -1,109 +1,242 @@
-// const mockingoose = require('mockingoose').default;
-const { resolvers } = require('../finalize');
+const { models, make, mer, check } = require('../../../tests/util');
 const errors = require('../error');
 
-const {
-  finalizeFields,
-  finalizeVoters,
-  finalizePreVoting,
-  finalizeVoting,
-} = resolvers.Mutation;
+jest.doMock('../../cryptor', () => ({
+  async genH(doc) {
+    expect(doc).toBeInstanceOf(models.Ballot);
+    expect(doc._id).toEqual('123');
+    return { h: 'hhh' };
+  },
+}));
+
+// eslint-disable-next-line global-require
+const { resolvers } = require('../finalize');
+
+const dBallotRoot = {
+  _id: '123',
+  owner: 'asdfqwer',
+  status: 'unknown',
+  crypto: { q: 'q', g: 'g' },
+  fields: [
+    { prompt: 'a', type: 't', data: ['d'] },
+  ],
+  voters: [
+    { _id: 'icc', comment: 'cmt', publicKey: 'pk' },
+  ],
+};
 
 describe('Mutation', () => {
   describe('finalizeFields', () => {
-    it('should throw unauthorized', () => {
-      expect.hasAssertions();
-      return expect(finalizeFields(undefined, {
-        input: {
-          bId: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    const func = resolvers.Mutation.finalizeFields;
+    const dArgs = [
+      undefined,
+      { input: { bId: '123' } },
+      { auth: { username: 'asdfqwer' } },
+    ];
+    const dBallot = mer(dBallotRoot, 'status', 'invited');
+
+    it('should throw unauthorized', async (done) => {
+      const res = await func(...mer(dArgs, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
     });
-    it('should throw unauthorized if not owner', () => {
-      // TODO
-      // expect.hasAssertions();
-      // return expect(finalizeFields(undefined, {
-      //   input: {
-      //     bId: '123',
-      //   },
-      // }, {
-      //   auth: {
-      //     username: 'asdfqwer',
-      //   },
-      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
+
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
     });
-    // TODO
+
+    it('should throw unauthorized if not owner', async (done) => {
+      await make.Ballot(dBallot, 'owner', 'own');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      await check.Ballot(dBallot, 'owner', 'own');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
+    it('should handle status incorrect', async (done) => {
+      await make.Ballot(dBallot, 'status', 'unknown');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
+      await check.Ballot(dBallot, 'status', 'unknown');
+      done();
+    });
+
+    it('should save if good', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      expect(res).toEqual(true);
+      await check.Ballot(dBallot, 'status', 'preVoting');
+      done();
+    });
   });
+
   describe('finalizeVoters', () => {
-    it('should throw unauthorized', () => {
-      expect.hasAssertions();
-      return expect(finalizeVoters(undefined, {
-        input: {
-          bId: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    const func = resolvers.Mutation.finalizeVoters;
+    const dArgs = [
+      undefined,
+      { input: { bId: '123' } },
+      { auth: { username: 'asdfqwer' } },
+    ];
+    const dBallot = mer(dBallotRoot, 'status', 'inviting');
+
+    it('should throw unauthorized', async (done) => {
+      const res = await func(...mer(dArgs, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
     });
-    it('should throw unauthorized if not owner', () => {
-      // TODO
-      // expect.hasAssertions();
-      // return expect(finalizeVoters(undefined, {
-      //   input: {
-      //     bId: '123',
-      //   },
-      // }, {
-      //   auth: {
-      //     username: 'asdfqwer',
-      //   },
-      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
+
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
     });
-    // TODO
+
+    it('should throw unauthorized if not owner', async (done) => {
+      await make.Ballot(dBallot, 'owner', 'own');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      await check.Ballot(dBallot, 'owner', 'own');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
+    it('should handle status incorrect', async (done) => {
+      await make.Ballot(dBallot, 'status', 'unknown');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
+      await check.Ballot(dBallot, 'status', 'unknown');
+      done();
+    });
+
+    it('should save if good', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      expect(res).toEqual(true);
+      await check.Ballot(dBallot, 'status', 'invited', 'crypto.h', 'hhh');
+      done();
+    });
   });
   describe('finalizePreVoting', () => {
-    it('should throw unauthorized', () => {
-      expect.hasAssertions();
-      return expect(finalizePreVoting(undefined, {
-        input: {
-          bId: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    const func = resolvers.Mutation.finalizePreVoting;
+    const dArgs = [
+      undefined,
+      { input: { bId: '123' } },
+      { auth: { username: 'asdfqwer' } },
+    ];
+    const dBallot = mer(dBallotRoot, 'status', 'preVoting');
+
+    it('should throw unauthorized', async (done) => {
+      const res = await func(...mer(dArgs, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
     });
-    it('should throw unauthorized if not owner', () => {
-      // TODO
-      // expect.hasAssertions();
-      // return expect(finalizePreVoting(undefined, {
-      //   input: {
-      //     bId: '123',
-      //   },
-      // }, {
-      //   auth: {
-      //     username: 'asdfqwer',
-      //   },
-      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
+
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
     });
-    // TODO
+
+    it('should throw unauthorized if not owner', async (done) => {
+      await make.Ballot(dBallot, 'owner', 'own');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      await check.Ballot(dBallot, 'owner', 'own');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
+    it('should handle status incorrect', async (done) => {
+      await make.Ballot(dBallot, 'status', 'unknown');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
+      await check.Ballot(dBallot, 'status', 'unknown');
+      done();
+    });
+
+    it('should save if good', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      expect(res).toEqual(true);
+      await check.Ballot(dBallot, 'status', 'voting');
+      done();
+    });
   });
   describe('finalizeVoting', () => {
-    it('should throw unauthorized', () => {
-      expect.hasAssertions();
-      return expect(finalizeVoting(undefined, {
-        input: {
-          bId: '123',
-        },
-      }, undefined)).resolves.toBeInstanceOf(errors.UnauthorizedError);
+    const func = resolvers.Mutation.finalizeVoting;
+    const dArgs = [
+      undefined,
+      { input: { bId: '123' } },
+      { auth: { username: 'asdfqwer' } },
+    ];
+    const dBallot = mer(dBallotRoot, 'status', 'voting');
+
+    it('should throw unauthorized', async (done) => {
+      const res = await func(...mer(dArgs, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
     });
-    it('should throw unauthorized if not owner', () => {
-      // TODO
-      // expect.hasAssertions();
-      // return expect(finalizeVoting(undefined, {
-      //   input: {
-      //     bId: '123',
-      //   },
-      // }, {
-      //   auth: {
-      //     username: 'asdfqwer',
-      //   },
-      // })).resolves.toBeInstanceOf(errors.UnauthorizedError);
+
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
     });
-    // TODO
+
+    it('should throw unauthorized if not owner', async (done) => {
+      await make.Ballot(dBallot, 'owner', 'own');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      await check.Ballot(dBallot, 'owner', 'own');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
+    it('should handle status incorrect', async (done) => {
+      await make.Ballot(dBallot, 'status', 'unknown');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
+      await check.Ballot(dBallot, 'status', 'unknown');
+      done();
+    });
+
+    it('should save if good', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      expect(res).toEqual(true);
+      await check.Ballot(dBallot, 'status', 'finished');
+      done();
+    });
   });
 });

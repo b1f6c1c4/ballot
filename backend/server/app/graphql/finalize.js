@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const errors = require('./error');
-const Ballot = require('../../models/ballots');
+const { Ballot } = require('../../models/ballots');
 const { genH } = require('../cryptor');
 const logger = require('../../logger')('graphql/finalize');
 

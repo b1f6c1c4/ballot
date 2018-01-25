@@ -22,8 +22,14 @@ const lvls = {
 
 winston.addColors(lvls);
 
+const stderrLevels = ['fatal'];
+if (process.env.NODE_ENV !== 'test') {
+  stderrLevels.push('error');
+  stderrLevels.push('warn');
+}
+
 const logger = winston.createLogger({
-  level: process.env.BACKEND_LOG || (process.env.NODE_ENV === 'test' ? -1 : 'info'),
+  level: process.env.BACKEND_LOG || (process.env.NODE_ENV === 'test' ? 'fatal' : 'info'),
   levels: lvls.levels,
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -46,25 +52,37 @@ const logger = winston.createLogger({
     }),
   ),
   transports: [
-    new winston.transports.Console(),
+    new winston.transports.Console({
+      stderrLevels: ['fatal'],
+    }),
   ],
 });
 
 module.exports = (lbl) => {
+  const regularize = (k, f) => (msg, data) => {
+    let message = msg;
+    if (message === undefined) {
+      message = 'undefined';
+    }
+    f({
+      level: k,
+      label: lbl || 'default',
+      message,
+      data,
+    });
+  };
   const customApi = {};
   Object.keys(lvls.levels).forEach((k) => {
-    customApi[k] = (msg, data) => {
-      let message = msg;
-      if (message === undefined) {
-        message = 'undefined';
-      }
-      logger.log({
-        level: k,
-        label: lbl || 'default',
-        message,
-        data,
-      });
-    };
+    customApi[k] = regularize(k, (j) => logger.log(j));
+  });
+  customApi.fatalDie = regularize('fatal', (j) => {
+    logger.log(j);
+    logger.log({
+      level: 'fatal',
+      label: 'KERNEL',
+      message: 'logger.fatalDie called, scheduing process.exit()',
+    });
+    setTimeout(() => process.exit(1), 1000);
   });
   return customApi;
 };

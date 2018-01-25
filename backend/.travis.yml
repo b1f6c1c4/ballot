@@ -13,6 +13,9 @@ branches:
 node_js:
   - 8
 
+services:
+  - mongodb
+
 sudo: required
 
 before_install:

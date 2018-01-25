@@ -1,6 +1,6 @@
-const Ballot = require('../models/ballots');
-const SubmittedTicket = require('../models/submittedTickets');
-const SignedTicket = require('../models/signedTickets');
+const { Ballot } = require('../models/ballots');
+const { SubmittedTicket } = require('../models/submittedTickets');
+const { SignedTicket } = require('../models/signedTickets');
 const logger = require('../logger')('verify');
 
 const verify = async (res, con) => {
@@ -10,6 +10,10 @@ const verify = async (res, con) => {
     const { valid } = res;
     let result = valid ? 'accepted' : 'declined';
     const doc = await Ballot.findById(bId, { _id: 0, status: 1 });
+    if (!doc) {
+      logger.error('Finalize verify: ballot not found', bId);
+      return;
+    }
     logger.trace('Old ballot', doc);
     if (doc.status !== 'voting') {
       result = 'timeout';
