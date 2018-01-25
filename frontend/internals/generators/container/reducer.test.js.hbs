@@ -1,0 +1,53 @@
+import { fromJS } from 'immutable';
+
+import {{ camelCase name }}Reducer from '../reducer';
+
+import * as {{ camelCase name }}Actions from '../actions';
+
+describe('{{ camelCase name }}Reducer', () => {
+  let state;
+  beforeEach(() => {
+    state = fromJS({
+      {{ camelCase selectorName }}: 'the {{ camelCase selectorName }}',
+    });
+  });
+
+  it('should return the initial state', () => {
+    const expectedResult = state;
+    expect({{ camelCase name }}Reducer(undefined, {})).toEqual(expectedResult);
+  });
+
+  // Actions
+  it('should handle {{ camelCase actionName }} action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase actionName }}())).toEqual(expectedResult);
+  });
+{{#if wantSagas}}
+
+  // Sagas
+  it('should handle {{ camelCase sagaName }} request', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Request())).toEqual(expectedResult);
+  });
+
+  it('should handle {{ camelCase sagaName }} success', () => {
+    const originalState = state;
+    const result = { };
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result))).toEqual(expectedResult);
+  });
+
+  it('should handle {{ camelCase sagaName }} failure', () => {
+    const originalState = state;
+    const error = { };
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))).toEqual(expectedResult);
+  });
+{{/if}}
+});

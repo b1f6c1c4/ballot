@@ -1,0 +1,29 @@
+import { call, put, select, takeEvery } from 'redux-saga/effects';
+import * as api from 'utils/request';
+
+import * as {{ constantCase name }} from './constants';
+import * as {{ camelCase name }}Actions from './actions';
+import gql from './api.graphql';
+
+// Sagas
+export function* handle{{ properCase sagaName }}Request() {
+  const json = yield select((state) => state.getIn(['{{ camelCase name }}', '{{ camelCase selectorName }}']));
+  const { key } = json.toJS();
+
+  try {
+    const result = yield call(api.query, gql.FetchData, { key });
+    yield put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result));
+  } catch (err) {
+    yield put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(err));
+  }
+}
+
+// Watcher
+/* eslint-disable func-names */
+export default function* watcher() {
+  yield takeEvery({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST, handle{{ properCase sagaName }}Request);
+
+  yield takeEvery({{ constantCase name }}.{{ constantCase actionName }}_ACTION, function* () {
+    yield put({{ camelCase name }}Actions.{{ camelCase sagaName }}Request());
+  });
+}

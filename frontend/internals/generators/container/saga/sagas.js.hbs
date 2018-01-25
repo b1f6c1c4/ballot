@@ -1,0 +1,11 @@
+export function* handle{{ properCase sagaName }}Request() {
+  const json = yield select((state) => state.getIn(['{{ camelCase name }}', '{{ camelCase sagaName }}']));
+  const { key } = json.toJS();
+
+  try {
+    const result = yield call(api.query, gql.FetchData, { key });
+    yield put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result));
+  } catch (err) {
+    yield put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(err));
+  }
+}

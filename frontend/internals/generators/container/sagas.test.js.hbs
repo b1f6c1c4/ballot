@@ -1,0 +1,68 @@
+import { fromJS } from 'immutable';
+import { expectSaga } from 'redux-saga-test-plan';
+import { throwError } from 'redux-saga-test-plan/providers';
+import * as matchers from 'redux-saga-test-plan/matchers';
+import * as api from 'utils/request';
+
+import * as {{ constantCase name }} from '../constants';
+import * as {{ camelCase name }}Actions from '../actions';
+import gql from '../api.graphql';
+
+import watcher, {
+  handle{{ properCase sagaName }}Request,
+} from '../sagas';
+
+// Sagas
+describe('handle{{ properCase sagaName }}Request Saga', () => {
+  const variables = { key: 'value' };
+  const state = fromJS({ {{ camelCase name }}: { {{ camelCase selectorName }}: variables } });
+  const func = handle{{ properCase sagaName }}Request;
+  const dArgs = [api.query, gql.FetchData, variables];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch {{ camelCase sagaName }}Success', () => {
+    const {{ camelCase sagaName}} = 'resp';
+    const response = { {{ camelCase sagaName }} };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), response],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(response))
+      .run();
+  });
+
+  it('should dispatch {{ camelCase sagaName }}Failure', () => {
+    const error = new Error('value');
+
+    return expectSaga(handle{{ properCase sagaName }}Request)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), throwError(error)],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))
+      .run();
+  });
+});
+
+// Watcher
+describe('watcher', () => {
+  // eslint-disable-next-line arrow-body-style
+  it('should forward {{ camelCase actionName }} to {{ camelCase sagaName }}Request', () => {
+    return expectSaga(watcher)
+      .provide([
+        [matchers.put({{ camelCase name }}Actions.{{ camelCase sagaName }}Request())],
+      ])
+      .dispatch({{ camelCase name }}Actions.{{ camelCase actionName }}())
+      .silentRun();
+  });
+});

@@ -1,0 +1,14 @@
+  describe('on{{ properCase actionName }}Action', () => {
+    it('should be injected', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      expect(result.on{{ properCase actionName }}Action).toBeDefined();
+    });
+
+    it('should dispatch {{ camelCase actionName }} when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      result.on{{ properCase actionName }}Action();
+      expect(dispatch).toHaveBeenCalledWith({{ camelCase name }}Actions.{{ camelCase actionName }}());
+    });
+  });

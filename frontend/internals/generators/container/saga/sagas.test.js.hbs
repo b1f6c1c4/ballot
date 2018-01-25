@@ -1,0 +1,40 @@
+describe('handle{{ properCase sagaName }}Request Saga', () => {
+  const variables = { key: 'value' };
+  const state = fromJS({ {{ camelCase name }}: { {{ camelCase sagaName }}: variables } });
+  const func = handle{{ properCase sagaName }}Request;
+  const dArgs = [api.query, gql.FetchData, variables];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch {{ camelCase sagaName }}Success', () => {
+    const {{ camelCase sagaName}} = 'resp';
+    const response = { {{ camelCase sagaName }} };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), response],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(response))
+      .run();
+  });
+
+  it('should dispatch {{ camelCase sagaName }}Failure', () => {
+    const error = new Error('value');
+
+    return expectSaga(handle{{ properCase sagaName }}Request)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), throwError(error)],
+      ])
+      .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))
+      .run();
+  });
+});

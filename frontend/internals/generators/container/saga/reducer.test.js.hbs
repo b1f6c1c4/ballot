@@ -1,0 +1,22 @@
+  it('should handle {{ camelCase sagaName }} request', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Request())).toEqual(expectedResult);
+  });
+
+  it('should handle {{ camelCase sagaName }} success', () => {
+    const originalState = state;
+    const result = { };
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result))).toEqual(expectedResult);
+  });
+
+  it('should handle {{ camelCase sagaName }} failure', () => {
+    const originalState = state;
+    const error = { };
+    const expectedResult = state;
+
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))).toEqual(expectedResult);
+  });

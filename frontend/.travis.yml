@@ -1,0 +1,30 @@
+language: node_js
+
+notifications:
+  email: false
+
+branches:
+  only:
+    - frontend
+    - backend
+    - cryptor
+    - builder
+
+node_js:
+  - 8
+
+script:
+  - yarn test
+  - yarn build
+
+before_install:
+  - chmod +x ./internals/netlify.sh
+
+after_success:
+  - yarn coveralls
+  - ./internals/netlify.sh
+
+cache:
+  yarn: true
+  directories:
+    - node_modules

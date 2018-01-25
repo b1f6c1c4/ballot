@@ -1,0 +1,22 @@
+import _ from 'lodash';
+import { addLocaleData } from 'react-intl';
+import rawResources from './translations';
+
+export const DEFAULT_LOCALE = 'zh'; // When can't find browser locale
+export const ROOT_LOCALE = 'en'; // Fallback when there is no translation
+
+export const appLocales = Object.keys(rawResources);
+appLocales.forEach((k) => {
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  const lo = require(`react-intl/locale-data/${k}`);
+  addLocaleData(lo);
+});
+
+export const translationMessages = _.mapValues(
+  rawResources,
+  /* istanbul ignore next */ (msg) => _.mergeWith(
+    _.cloneDeep(msg),
+    rawResources[ROOT_LOCALE],
+    (obj, src) => (obj || src),
+  ),
+);
