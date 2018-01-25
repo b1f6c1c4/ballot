@@ -1,0 +1,61 @@
+version: "3"
+services:
+
+  backend:
+    image: b1f6c1c4/ballot-backend
+    restart: always
+    environment:
+      BACKEND_LOG: debug
+      NO_SHARD: 'true'
+      ANONY_NO_STRICT: 'true'
+      MONGO_HOST: mongo
+      RABBIT_HOST: rabbit
+      RABBIT_USER: guest
+      RABBIT_PASS: guest
+      CRYPTOR_QUEUE: |
+        {}
+    ports:
+      - 3001:3000
+    networks:
+      - prod
+    depends_on:
+      - rabbit
+      - mongo
+    links:
+      - rabbit
+      - mongo
+
+  cryptor:
+    image: b1f6c1c4/ballot-cryptor
+    restart: always
+    entrypoint: ["./cryptor", "-w", "2048", "-s", "cryptor"]
+    environment:
+      RABBIT_HOST: rabbit
+      RABBIT_USER: guest
+      RABBIT_PASS: guest
+    networks:
+      - prod
+    depends_on:
+      - rabbit
+    links:
+      - rabbit
+
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - /data/ballot/mongo:/data/db
+    networks:
+      - prod
+
+  rabbit:
+    image: rabbitmq:alpine
+    restart: always
+    volumes:
+      - /data/ballot/rabbit:/var/lib/rabbitmq/mnesia
+    networks:
+      - prod
+
+networks:
+  prod:
+    driver: bridge
