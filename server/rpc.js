@@ -150,6 +150,27 @@ const connect = () => new Promise((resolve, reject) => {
   });
 });
 
+let queues = {};
+try {
+  const cfg = process.env.CRYPTOR_QUEUE;
+  logger.debug('CRYPTOR_QUEUE', cfg);
+  if (!cfg) {
+    logger.warn('No queue env found, use default', 'cryptor');
+  } else {
+    queues = JSON.parse(cfg);
+    logger.info('Cryptor queues', queues);
+  }
+} catch (e) {
+  logger.error('Parsing CRYPTOR_QUEUE', e);
+}
+
+const resolveQueue = (method) => {
+  if (!queues || !queues[method]) {
+    return 'cryptor';
+  }
+  return queues[method];
+};
+
 const publish = (method, param, options) => new Promise((resolve, reject) => {
   const opt = Object.assign({
     reply: {},
@@ -160,7 +181,10 @@ const publish = (method, param, options) => new Promise((resolve, reject) => {
     param,
     id: JSON.stringify(opt.reply),
   };
-  connection.publish('cryptor', JSON.stringify(body), {
+  const qu = resolveQueue(method);
+  logger.trace('Method', method);
+  logger.debug('Publish to', qu);
+  connection.publish(qu, JSON.stringify(body), {
     mandatory: true,
     contentType: 'application/json',
     deliveryMode: 2,
@@ -188,7 +212,10 @@ const call = (method, param) => new Promise((resolve, reject) => {
   };
   logger.debug('Set npCallFulfills', id);
   npCallFulfills.set(body.id, { resolve, reject });
-  connection.publish('cryptor', JSON.stringify(body), {
+  const qu = resolveQueue(method);
+  logger.trace('Method', method);
+  logger.debug('Publish to', qu);
+  connection.publish(qu, JSON.stringify(body), {
     mandatory: true,
     contentType: 'application/json',
     deliveryMode: 2,
