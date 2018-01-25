@@ -170,6 +170,14 @@ module.exports = {
           templateFile: './container/sagas.test.js.hbs',
           abortOnFail: true,
         });
+
+        // Generate api.graphql
+        actions.push({
+          type: 'add',
+          path: '../../app/containers/{{properCase name}}/api.graphql',
+          templateFile: './container/api.graphql.hbs',
+          abortOnFail: true,
+        });
       }
     }
 

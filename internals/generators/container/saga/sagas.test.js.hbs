@@ -1,10 +1,8 @@
 describe('handle{{ properCase sagaName }}Request Saga', () => {
-  const {{ camelCase sagaName }}Data = 'the-{{ camelCase sagaName }}Data';
-  const state = fromJS({
-    {{ camelCase name }}: {
-      {{ camelCase sagaName }}Data,
-    },
-  });
+  const variables = { key: 'value' };
+  const state = fromJS({ {{ camelCase name }}: { {{ camelCase sagaName }}: variables } });
+  const func = handle{{ properCase sagaName }}Request;
+  const dArgs = [api.query, gql.FetchData, variables];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {
@@ -13,30 +11,28 @@ describe('handle{{ properCase sagaName }}Request Saga', () => {
       .silentRun();
   });
 
-  it('should dispatch the {{ camelCase sagaName }}Success action if it requests the credential successfully', () => {
-    const response = {
-      message: 'ok',
-      payload: 'value',
-    };
+  it('should dispatch {{ camelCase sagaName }}Success', () => {
+    const {{ camelCase sagaName}} = 'resp';
+    const response = { {{ camelCase sagaName }} };
 
-    return expectSaga(handle{{ properCase sagaName }}Request, api)
+    return expectSaga(func)
       .withState(state)
-      .call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data), response],
+        [matchers.call(...dArgs), response],
       ])
       .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Success(response))
       .run();
   });
 
-  it('should call the {{ camelCase sagaName }}Failure action if the response errors', () => {
+  it('should dispatch {{ camelCase sagaName }}Failure', () => {
     const error = new Error('value');
 
-    return expectSaga(handle{{ properCase sagaName }}Request, api)
+    return expectSaga(handle{{ properCase sagaName }}Request)
       .withState(state)
-      .call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.POST, '/{{ camelCase sagaName }}', undefined, {{ camelCase sagaName }}Data), throwError(error)],
+        [matchers.call(...dArgs), throwError(error)],
       ])
       .put({{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))
       .run();
