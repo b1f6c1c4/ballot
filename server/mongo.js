@@ -66,6 +66,11 @@ const connect = async () => {
     return;
   }
 
+  if (process.env.NO_SHARD) {
+    await connectLocal('ballot');
+    return;
+  }
+
   try {
     await shard();
     mongoose.useDb('ballot');
