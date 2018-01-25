@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(fill)
 
     auto res = RingImpl::Inst().fillBuffer(v, buffer);
     BOOST_TEST(res == WIDTH_BYTE);
-    for (auto i = 0; i < WIDTH_BYTE; i++)
+    for (size_t i = 0; i < WIDTH_BYTE; i++)
     {
         byte b = std::stoi(str.substr(i * 2, 2), 0, 16);
         BOOST_TEST(buffer[i] == b);
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE(read)
 {
     std::string str = "0000000000000a962620e95c1aa3bdbch";
     byte buffer[WIDTH_BYTE] = {0};
-    for (auto i = 0; i < WIDTH_BYTE; i++)
+    for (size_t i = 0; i < WIDTH_BYTE; i++)
         buffer[i] = std::stoi(str.substr(i * 2, 2), 0, 16);
 
     Integer v0(str.c_str());

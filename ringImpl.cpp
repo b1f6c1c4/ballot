@@ -6,6 +6,10 @@
 
 using namespace CryptoPP;
 
+#ifndef IS_TEST
+size_t g_WIDTH_BIT = 2048;
+#endif
+
 MathRing::MathRing(RingData &&ring) :
     RingData(std::move(ring)),
     maq(RingData::q),
