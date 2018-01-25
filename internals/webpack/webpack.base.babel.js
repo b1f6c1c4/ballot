@@ -1,26 +1,16 @@
-/**
- * COMMON WEBPACK CONFIGURATION
- */
-
 const path = require('path');
 const webpack = require('webpack');
 
-// Remove this line once the following warning goes away (it was meant for webpack loader authors not users):
-// 'DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic,
-// see https://github.com/webpack/loader-utils/issues/56 parseQuery() will be replaced with getOptions()
-// in the next major version of loader-utils.'
-process.noDeprecation = true;
-
 module.exports = (options) => ({
   entry: options.entry,
-  output: Object.assign({ // Compile into js/build.js
+  output: Object.assign({
     path: path.resolve(process.cwd(), 'build'),
     publicPath: '/',
-  }, options.output), // Merge with env dependent settings
+  }, options.output),
   module: {
     rules: [
       {
-        test: /\.js$/, // Transform all .js files required somewhere with Babel
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -29,8 +19,6 @@ module.exports = (options) => ({
       },
       {
         // Preprocess our own .css files
-        // This is the place to add your own loaders (e.g. sass/less etc.)
-        // for a list of loaders, see https://webpack.js.org/loaders/#styling
         test: /\.css$/,
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader'],
@@ -76,15 +64,6 @@ module.exports = (options) => ({
         exclude: /node_modules/,
         loader: 'graphql-tag/loader',
       },
-      {
-        test: /\.(mp4|webm)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-          },
-        },
-      },
     ],
   },
   plugins: options.plugins.concat([
@@ -108,7 +87,6 @@ module.exports = (options) => ({
     modules: ['app', 'node_modules'],
     extensions: [
       '.js',
-      '.react.js',
     ],
     mainFields: [
       'browser',

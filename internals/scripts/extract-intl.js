@@ -8,9 +8,6 @@ const nodeGlob = require('glob');
 const { transform } = require('babel-core');
 const { merge, pickBy } = require('lodash');
 
-const animateProgress = require('./helpers/progress');
-const addCheckmark = require('./helpers/checkmark');
-
 const pkg = require('../../package.json');
 
 const { presets } = pkg.babel;
@@ -26,21 +23,17 @@ const { mkdir } = require('shelljs');
 const FILES_TO_PARSE = 'app/**/!(*.test).js';
 const locales = i18n.appLocales;
 
-const newLine = () => process.stdout.write('\n');
-
 // Progress Logger
-let progress;
 const task = (message) => {
-  progress = animateProgress(message);
-  process.stdout.write(message);
+  /* eslint-disable no-console */
+  console.log(message);
 
   return (error) => {
     if (error) {
-      process.stderr.write(error);
+      console.error(error);
     }
-    clearTimeout(progress);
-    return addCheckmark(() => newLine());
   };
+  /* eslint-enable no-console */
 };
 
 // Wrap async functions below into a promise
@@ -76,7 +69,7 @@ for (const locale of locales) {
     if (error.code !== 'ENOENT') {
       process.stderr.write(
         `There was an error loading this translation file: ${translationFileName}
-        \n${error}`
+        \n${error}`,
       );
     }
   }
@@ -137,9 +130,7 @@ const extractFromFile = async (fileName) => {
   for (const locale of locales) {
     const translationFileName = `app/translations/${locale}.json`;
 
-    const localeTaskDone = task(
-      `Writing translation messages for ${locale} to: ${translationFileName}`
-    );
+    const localeTaskDone = task(`Writing translation messages for ${locale} to: ${translationFileName}`);
 
     try {
       // Sort the translation JSON file so that git diffing is easier
@@ -159,7 +150,7 @@ const extractFromFile = async (fileName) => {
     } catch (error) {
       localeTaskDone(
         `There was an error saving this translation file: ${translationFileName}
-        \n${error}`
+        \n${error}`,
       );
     }
   }

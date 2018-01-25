@@ -1,14 +1,12 @@
 import { cloneDeep, mapValues, mergeWith } from 'lodash';
 import { addLocaleData } from 'react-intl';
-
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import rawResources from './translations';
 
 export const DEFAULT_LOCALE = 'zh'; // When can't find browser locale
 export const ROOT_LOCALE = 'en'; // Fallback when there is no translation
 
 export const appLocales = Object.keys(rawResources);
-Array.forEach(appLocales, (k) => {
+appLocales.forEach((k) => {
   // eslint-disable-next-line global-require, import/no-dynamic-require
   const lo = require(`react-intl/locale-data/${k}`);
   addLocaleData(lo);
