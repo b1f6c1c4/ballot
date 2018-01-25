@@ -1,14 +1,15 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
-import * as api from 'utils/request';
+import api from 'utils/request';
 
 import * as STATUS_PAGE from './constants';
 import * as statusPageActions from './actions';
+import gql from './api.graphql';
 
 // Sagas
 export function* handleCheckStatusRequest() {
   try {
-    const result = yield call(api.GET, '/', undefined);
-    yield put(statusPageActions.checkStatusSuccess(result));
+    const result = yield call(api.query, { query: gql.Status });
+    yield put(statusPageActions.checkStatusSuccess(result.data.status));
   } catch (err) {
     yield put(statusPageActions.checkStatusFailure(err));
   }

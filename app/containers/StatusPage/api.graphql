@@ -1,0 +1,6 @@
+query Status {
+  status {
+    version
+    commitHash
+  }
+}

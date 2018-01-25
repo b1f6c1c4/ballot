@@ -72,6 +72,11 @@ module.exports = (options) => ({
         use: 'json-loader',
       },
       {
+        test: /\.graphql$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
+      },
+      {
         test: /\.(mp4|webm)$/,
         use: {
           loader: 'url-loader',

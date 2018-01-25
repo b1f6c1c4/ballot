@@ -1,10 +1,11 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
-import * as api from 'utils/request';
+import api from 'utils/request';
 
 import * as STATUS_PAGE from '../constants';
 import * as statusPageActions from '../actions';
+import gql from '../api.graphql';
 
 import watcher, {
   handleCheckStatusRequest,
@@ -19,28 +20,29 @@ describe('handleCheckStatusRequest Saga', () => {
       .silentRun();
   });
 
-  it('should dispatch the checkStatusSuccess action if it requests the credential successfully', () => {
-    const response = {
+  it('should dispatch the checkStatusSuccess', () => {
+    const status = {
       version: 'the-v',
       commitHash: 'the-h',
     };
+    const response = { data: { status } };
 
-    return expectSaga(handleCheckStatusRequest, api)
-      .call(api.GET, '/', undefined)
+    return expectSaga(handleCheckStatusRequest)
+      .call(api.query, { query: gql.Status })
       .provide([
-        [matchers.call(api.GET, '/', undefined), response],
+        [matchers.call(api.query, { query: gql.Status }), response],
       ])
-      .put(statusPageActions.checkStatusSuccess(response))
+      .put(statusPageActions.checkStatusSuccess(status))
       .run();
   });
 
-  it('should call the checkStatusFailure action if the response errors', () => {
+  it('should call the checkStatusFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleCheckStatusRequest, api)
-      .call(api.GET, '/', undefined)
+    return expectSaga(handleCheckStatusRequest)
+      .call(api.query, { query: gql.Status })
       .provide([
-        [matchers.call(api.GET, '/', undefined), throwError(error)],
+        [matchers.call(api.query, { query: gql.Status }), throwError(error)],
       ])
       .put(statusPageActions.checkStatusFailure(error))
       .run();

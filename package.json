@@ -78,8 +78,12 @@
   "dllPlugin": {
     "path": "dll",
     "dlls": [
+      "apollo-cache-inmemory",
+      "apollo-client",
+      "apollo-link-http",
       "babel-polyfill",
       "browser-locale",
+      "graphql",
       "history",
       "hoist-non-react-statics",
       "immutable",
@@ -110,8 +114,7 @@
       "reselect",
       "sanitize.css",
       "styled-components",
-      "whatwg-fetch",
-      "window-or-global"
+      "whatwg-fetch"
     ]
   },
   "jest": {
@@ -131,15 +134,23 @@
       ".*\\.(css|less|styl|scss|sass)$": "<rootDir>/internals/mocks/cssModule.js",
       ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/mocks/image.js"
     },
+    "transform": {
+      "\\.graphql$": "jest-transform-graphql",
+      ".*": "babel-jest"
+    },
     "setupTestFrameworkScriptFile": "<rootDir>/internals/testing/test-bundler.js",
     "testRegex": "tests/.*\\.test\\.js$"
   },
   "dependencies": {
+    "apollo-cache-inmemory": "1.1.5",
+    "apollo-client": "2.2.0",
+    "apollo-link-http": "1.3.2",
     "babel-polyfill": "6.26.0",
     "browser-locale": "1.0.3",
     "chalk": "2.3.0",
     "cross-env": "5.1.3",
     "express": "4.16.2",
+    "graphql": "0.12.3",
     "history": "4.7.2",
     "hoist-non-react-statics": "2.3.1",
     "i18next": "10.3.0",
@@ -172,8 +183,7 @@
     "reselect": "3.0.1",
     "sanitize.css": "5.0.0",
     "styled-components": "3.0.2",
-    "whatwg-fetch": "2.0.3",
-    "window-or-global": "1.0.1"
+    "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
     "add-asset-html-webpack-plugin": "2.1.2",
@@ -209,10 +219,12 @@
     "file-loader": "1.1.6",
     "git-revision-webpack-plugin": "2.5.1",
     "glob": "7.1.2",
+    "graphql-tag": "2.6.1",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "2.30.1",
     "image-webpack-loader": "4.0.0",
     "jest-cli": "22.1.4",
+    "jest-transform-graphql": "^2.1.0",
     "lint-staged": "6.0.1",
     "node-plop": "0.9.0",
     "npm-run-all": "4.1.2",

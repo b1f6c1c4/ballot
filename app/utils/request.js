@@ -1,59 +1,29 @@
-import root from 'window-or-global';
-import 'whatwg-fetch';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 export const apiUrl = (raw) => raw || '/api';
 
-export const makeApi = (url) => apiUrl(process.env.API_URL, root.location.hostname) + url;
+export const makeApi = (url) => apiUrl(process.env.API_URL) + url;
 
-function parseJSON(response) {
-  if (response.status === 204 || response.status === 205) {
-    return null;
-  }
-  return response.json();
-}
-
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
-}
-
-async function apiBare(method, url, auth) {
-  const response = await fetch(makeApi(url), {
-    method,
-    headers: {
-      Authorization: auth,
-    },
+// eslint-disable-next-line import/no-mutable-exports
+let client;
+/* istanbul ignore next */
+if (process.env.NODE_ENV !== 'test') {
+  /* istanbul ignore next */
+  // eslint-disable-next-line global-require
+  const { HttpLink } = require('apollo-link-http');
+  /* istanbul ignore next */
+  client = new ApolloClient({
+    link: new HttpLink({ uri: makeApi('/graphql') }),
+    cache: new InMemoryCache(),
   });
-
-  checkStatus(response);
-  return parseJSON(response);
+} else {
+  // mock `functions`
+  /* istanbul ignore next */
+  client = {
+    query: /* istanbul ignore next */ () => 'query',
+    mutation: /* istanbul ignore next */ () => 'mutation',
+  };
 }
 
-export async function api(method, url, auth, body) {
-  if (!body) {
-    return apiBare(method, url, auth);
-  }
-
-  const response = await fetch(makeApi(url), {
-    method,
-    headers: {
-      Authorization: auth,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-
-  checkStatus(response);
-  return parseJSON(response);
-}
-
-export const GET = /* istanbul ignore next */ (url, auth, body) => api('GET', url, auth, body);
-export const POST = /* istanbul ignore next */ (url, auth, body) => api('POST', url, auth, body);
-export const PUT = /* istanbul ignore next */ (url, auth, body) => api('PUT', url, auth, body);
-export const DELETE = /* istanbul ignore next */ (url, auth) => api('DELETE', url, auth);
-export const PATCH = /* istanbul ignore next */ (url, auth, body) => api('PATCH', url, auth, body);
+export default client;
