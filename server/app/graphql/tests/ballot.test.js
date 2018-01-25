@@ -34,14 +34,8 @@ describe('Mutation', () => {
     const func = resolvers.Mutation.createBallot;
     const dArgs = [
       undefined,
-      {
-        input: {
-          name: 'nm',
-        },
-      },
-      {
-        auth: { username: 'asdfqwer' },
-      },
+      { input: { name: 'nm' } },
+      { auth: { username: 'asdfqwer' } },
     ];
     const targ = {
       _id: 'bbb',

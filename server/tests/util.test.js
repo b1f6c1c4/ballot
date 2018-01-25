@@ -21,6 +21,12 @@ describe('superMerge', () => {
       'c.d', { e: 3 },
     ])).toEqual({ a: [5], c: { d: { e: 3 } } });
   });
+  it('should accept string unset', () => {
+    expect(superMerge({ a: [5, 6], c: { d: { e: 3 } } }, [
+      '-c.d.e',
+      '-a[0]',
+    ])).toEqual({ a: [undefined, 6], c: { d: {} } });
+  });
   it('should accept index string', () => {
     expect(superMerge({ a: 1 }, [
       'z[1]', { q: 1 },

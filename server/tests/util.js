@@ -110,9 +110,14 @@ const superMerge = (base, objs) => {
   for (let i = 0; i < objs.length;) {
     const o = objs[i];
     if (typeof o === 'string') {
-      const target = i < objs.length - 1 ? objs[i + 1] : undefined;
-      _.set(base, o, target);
-      i += 2;
+      if (!o.startsWith('-')) {
+        const target = i < objs.length - 1 ? objs[i + 1] : undefined;
+        _.set(base, o, target);
+        i += 2;
+      } else {
+        _.unset(base, o.substr(1));
+        i += 1;
+      }
     } else if (typeof o === 'object') {
       _.assignIn(base, _.cloneDeep(o));
       i += 1;
