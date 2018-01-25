@@ -25,7 +25,7 @@ export const postProcess = (raw) => {
   }
 
   if (Array.isArray(graphQLErrors)) {
-    const codes = graphQLErrors.map((e) => e.rawCode).filter((c) => c);
+    const codes = graphQLErrors.map((e) => e.errorCode).filter((c) => c);
     if (codes.length > 0) {
       err.codes = codes;
     }
@@ -48,6 +48,16 @@ if (process.env.NODE_ENV !== 'test') {
     cache: new InMemoryCache(),
   });
 }
+
+export const getClient = /* istanbul ignore next */ (c) => {
+  /* istanbul ignore next */
+  if (process.env.NODE_ENV === 'test' && c) {
+    /* istanbul ignore next */
+    client = c;
+  }
+  /* istanbul ignore next */
+  return client;
+};
 
 export const query = async (gql, vars) => {
   try {
