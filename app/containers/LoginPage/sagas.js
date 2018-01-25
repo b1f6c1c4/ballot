@@ -6,26 +6,23 @@ import { push } from 'react-router-redux';
 import * as globalActions from 'containers/Global/actions';
 import * as LOGIN_PAGE from './constants';
 import * as loginPageActions from './actions';
+import gql from './api.graphql';
 
 // Sagas
 export function* handleLoginRequest() {
-  const json = yield select((state) => state.getIn(['form', 'login', 'values']).toJS());
+  const json = yield select((state) => state.getIn(['form', 'login', 'values']));
+  const { username, password } = json.toJS();
 
   yield put(change('login', 'password', ''));
   try {
-    const result = yield call(api.POST, '/login', undefined, json);
-    if (result.message !== 'ok') {
+    const result = yield call(api.mutate, gql.Login, { username, password });
+    if (!result.login) {
       yield put(loginPageActions.loginFailure({
-        message: 'Server said no',
-        result,
-      }));
-    } else if (!result.token) {
-      yield put(loginPageActions.loginFailure({
-        message: 'Unrecognized server response',
-        result,
+        codes: ['wgup'],
+        message: 'Password or username wrong',
       }));
     } else {
-      yield put(globalActions.updateCredential(result.token));
+      yield put(globalActions.updateCredential(result.login));
       yield put(loginPageActions.loginSuccess(result));
       yield put(push('/app/'));
     }

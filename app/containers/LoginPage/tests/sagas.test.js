@@ -9,6 +9,7 @@ import { push } from 'react-router-redux';
 import * as globalActions from 'containers/Global/actions';
 import * as LOGIN_PAGE from '../constants';
 import * as loginPageActions from '../actions';
+import gql from '../api.graphql';
 
 import watcher, {
   handleLoginRequest,
@@ -16,16 +17,10 @@ import watcher, {
 
 // Sagas
 describe('handleLoginRequest Saga', () => {
-  const values = {
-    key: 'value',
-  };
-  const state = fromJS({
-    form: {
-      login: {
-        values,
-      },
-    },
-  });
+  const variables = { username: 'un', password: 'pw' };
+  const state = fromJS({ form: { login: { values: variables } } });
+  const func = handleLoginRequest;
+  const dArgs = [api.mutate, gql.Login, variables];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen LOGIN_REQUEST in the watcher', () => {
@@ -34,66 +29,46 @@ describe('handleLoginRequest Saga', () => {
       .silentRun();
   });
 
-  it('should dispatch the loginSuccess action if it requests the credential successfully', () => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTM4NjAxNzUsImV4cCI6MTUxMzg2NzM3NSwiYXVkIjoidHJ5LXJlYWN0IiwiaXNzIjoidHJ5LXJlYWN0In0.Y6li_4xDg4dQALJKFqUp0NxXjUH1skPEIg41Z0aN9LE';
-    const response = {
-      message: 'ok',
-      token,
-    };
+  it('should dispatch loginSuccess', () => {
+    const login = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTM4NjAxNzUsImV4cCI6MTUxMzg2NzM3NSwiYXVkIjoidHJ5LXJlYWN0IiwiaXNzIjoidHJ5LXJlYWN0In0.Y6li_4xDg4dQALJKFqUp0NxXjUH1skPEIg41Z0aN9LE';
+    const response = { login };
 
-    return expectSaga(handleLoginRequest, api)
+    return expectSaga(func)
       .withState(state)
       .put(change('login', 'password', ''))
-      .call(api.POST, '/login', undefined, values)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.POST, '/login', undefined, values), response],
+        [matchers.call(...dArgs), response],
       ])
-      .put(globalActions.updateCredential(token))
+      .put(globalActions.updateCredential(login))
       .put(loginPageActions.loginSuccess(response))
       .put(push('/app/'))
       .run();
   });
 
-  it('should call the loginFailure action if the response errors', () => {
+  it('should dispatch loginFailure when fatal', () => {
     const error = new Error('value');
 
-    return expectSaga(handleLoginRequest, api)
+    return expectSaga(func)
       .withState(state)
-      .call(api.POST, '/login', undefined, values)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.POST, '/login', undefined, values), throwError(error)],
+        [matchers.call(...dArgs), throwError(error)],
       ])
       .put(loginPageActions.loginFailure(error))
       .run();
   });
 
-  it('should call the loginFailure action if the response malformated', () => {
-    const response = {
-      message: 'ok',
-    };
+  it('should dispatch loginFailure when wrong', () => {
+    const response = { login: null };
 
-    return expectSaga(handleLoginRequest, api)
+    return expectSaga(func)
       .withState(state)
-      .call(api.POST, '/login', undefined, values)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.POST, '/login', undefined, values), response],
+        [matchers.call(...dArgs), response],
       ])
-      .put.actionType(LOGIN_PAGE.LOGIN_FAILURE)
-      .run();
-  });
-
-  it('should call the loginFailure action if the response message not ok', () => {
-    const response = {
-      message: 'not ok',
-    };
-
-    return expectSaga(handleLoginRequest, api)
-      .withState(state)
-      .call(api.POST, '/login', undefined, values)
-      .provide([
-        [matchers.call(api.POST, '/login', undefined, values), response],
-      ])
-      .put.actionType(LOGIN_PAGE.LOGIN_FAILURE)
+      .put.like({ action: loginPageActions.loginFailure({ codes: ['wgup'] }) })
       .run();
   });
 });

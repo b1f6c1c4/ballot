@@ -1,7 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
-import api from 'utils/request';
+import * as api from 'utils/request';
 
 import * as STATUS_PAGE from '../constants';
 import * as statusPageActions from '../actions';
@@ -13,6 +13,9 @@ import watcher, {
 
 // Sagas
 describe('handleCheckStatusRequest Saga', () => {
+  const func = handleCheckStatusRequest;
+  const dArgs = [api.query, gql.Status];
+
   // eslint-disable-next-line arrow-body-style
   it('should listen CHECK_STATUS_REQUEST in the watcher', () => {
     return expectSaga(watcher)
@@ -20,29 +23,26 @@ describe('handleCheckStatusRequest Saga', () => {
       .silentRun();
   });
 
-  it('should dispatch the checkStatusSuccess', () => {
-    const status = {
-      version: 'the-v',
-      commitHash: 'the-h',
-    };
-    const response = { data: { status } };
+  it('should dispatch checkStatusSuccess', () => {
+    const status = { version: 'the-v', commitHash: 'the-h' };
+    const response = { status };
 
-    return expectSaga(handleCheckStatusRequest)
-      .call(api.query, { query: gql.Status })
+    return expectSaga(func)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.query, { query: gql.Status }), response],
+        [matchers.call(...dArgs), response],
       ])
       .put(statusPageActions.checkStatusSuccess(status))
       .run();
   });
 
-  it('should call the checkStatusFailure', () => {
+  it('should dispatch checkStatusFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleCheckStatusRequest)
-      .call(api.query, { query: gql.Status })
+    return expectSaga(func)
+      .call(...dArgs)
       .provide([
-        [matchers.call(api.query, { query: gql.Status }), throwError(error)],
+        [matchers.call(...dArgs), throwError(error)],
       ])
       .put(statusPageActions.checkStatusFailure(error))
       .run();
