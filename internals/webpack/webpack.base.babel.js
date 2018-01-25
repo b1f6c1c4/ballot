@@ -103,7 +103,6 @@ module.exports = (options) => ({
     modules: ['app', 'node_modules'],
     extensions: [
       '.js',
-      '.jsx',
       '.react.js',
     ],
     mainFields: [
