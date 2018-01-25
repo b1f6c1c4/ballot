@@ -4,6 +4,10 @@
 #include "argon.h"
 #include "ring.h"
 
+#ifndef IS_TEST
+extern size_t g_WIDTH_BIT;
+#endif
+
 RpcAnswer Main::handler(const std::string &method, const json &data)
 {
     try
@@ -83,6 +87,12 @@ void Main::Setup(const po::variables_map &vm)
     logger->info("Version {}", VERSION);
     logger->info("CommitHash {}", COMMITHASH);
 
+#ifndef IS_TEST
+    g_WIDTH_BIT = vm["width"].as<size_t>();
+
+    logger->info("Crypto width bit {}", g_WIDTH_BIT);
+#endif
+
     auto &&sub = vm["subscribe"].as<std::string>();
     logger->debug("Will subscribe {}", sub);
     Rpc::Inst().setupRpc(sub);
@@ -118,6 +128,7 @@ int main(int argc, char *argv[])
         desc.add_options()
             ("help,h", "produce help message")
             ("verbose,v", po::value<std::string>()->default_value("info"), "set logging level")
+            ("width,w", po::value<size_t>()->default_value(2048), "set crypto width (bit)")
             ("subscribe,s", po::value<std::string>()->default_value("cryptor"), "channel to listen")
         ;
 

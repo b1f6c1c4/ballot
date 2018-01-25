@@ -4,7 +4,8 @@
 #include <cryptopp/modarith.h>
 
 #ifndef IS_TEST
-#define WIDTH_BIT 4096
+extern size_t g_WIDTH_BIT;
+#define WIDTH_BIT g_WIDTH_BIT
 #else
 #define WIDTH_BIT 128
 #endif
