@@ -1,4 +1,4 @@
-import { cloneDeep, mapValues, mergeWith } from 'lodash';
+import _ from 'lodash';
 import { addLocaleData } from 'react-intl';
 import rawResources from './translations';
 
@@ -12,10 +12,10 @@ appLocales.forEach((k) => {
   addLocaleData(lo);
 });
 
-export const translationMessages = mapValues(
+export const translationMessages = _.mapValues(
   rawResources,
-  /* istanbul ignore next */ (msg) => mergeWith(
-    cloneDeep(msg),
+  /* istanbul ignore next */ (msg) => _.mergeWith(
+    _.cloneDeep(msg),
     rawResources[ROOT_LOCALE],
     (obj, src) => (obj || src),
   ),

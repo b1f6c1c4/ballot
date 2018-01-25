@@ -6,7 +6,7 @@ import { memoryHistory } from 'react-router-dom';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-import identity from 'lodash/identity';
+import _ from 'lodash';
 
 import configureStore from '../../configureStore';
 import injectReducer from '../injectReducer';
@@ -17,7 +17,7 @@ Enzyme.configure({ adapter: new Adapter() });
 // Fixtures
 const Component = () => null;
 
-const reducer = identity;
+const reducer = _.identity;
 
 describe('injectReducer decorator', () => {
   let store;

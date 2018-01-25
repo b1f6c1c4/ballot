@@ -4,7 +4,7 @@
 
 import { memoryHistory } from 'react-router-dom';
 import { fromJS } from 'immutable';
-import identity from 'lodash/identity';
+import _ from 'lodash';
 
 import configureStore from '../../configureStore';
 
@@ -91,7 +91,7 @@ describe('reducer injectors', () => {
     it('should assign reducer if different implementation for hot reloading', () => {
       store.replaceReducer = jest.fn();
       injectReducer('test', reducer);
-      injectReducer('test', identity);
+      injectReducer('test', _.identity);
 
       expect(store.replaceReducer).toHaveBeenCalledTimes(2);
     });

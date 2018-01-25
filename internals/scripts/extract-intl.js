@@ -3,10 +3,10 @@
    and package them in the translation json files in the translations file.
  */
 /* eslint-disable no-restricted-syntax */
+const _ = require('lodash');
 const fs = require('fs');
 const nodeGlob = require('glob');
 const { transform } = require('babel-core');
-const { merge, pickBy } = require('lodash');
 
 const pkg = require('../../package.json');
 
@@ -121,7 +121,7 @@ const extractFromFile = async (fileName) => {
 
   const appendIndexTaskDone = task('Merge /^index\\./ messages');
   for (const locale of locales) {
-    merge(localeMappings[locale], pickBy(oldLocaleMappings[locale], (v, k) => /^index\./.test(k)));
+    _.merge(localeMappings[locale], _.pickBy(oldLocaleMappings[locale], (v, k) => /^index\./.test(k)));
   }
   appendIndexTaskDone();
 

@@ -1,6 +1,4 @@
-import conformsTo from 'lodash/conformsTo';
-import isFunction from 'lodash/isFunction';
-import isObject from 'lodash/isObject';
+import _ from 'lodash';
 import invariant from 'invariant';
 
 /**
@@ -8,16 +6,16 @@ import invariant from 'invariant';
  */
 export default function checkStore(store) {
   const shape = {
-    dispatch: isFunction,
-    subscribe: isFunction,
-    getState: isFunction,
-    replaceReducer: isFunction,
-    runSaga: isFunction,
-    injectedReducers: isObject,
-    injectedSagas: isObject,
+    dispatch: _.isFunction,
+    subscribe: _.isFunction,
+    getState: _.isFunction,
+    replaceReducer: _.isFunction,
+    runSaga: _.isFunction,
+    injectedReducers: _.isObject,
+    injectedSagas: _.isObject,
   };
   invariant(
-    conformsTo(store, shape),
+    _.conformsTo(store, shape),
     '(app/utils...) injectors: Expected a valid redux store',
   );
 }
