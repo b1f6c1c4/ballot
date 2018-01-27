@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import { createStructuredSelector, createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 
 import { Switch, Route } from 'react-router-dom';
@@ -26,8 +26,11 @@ const styles = (theme) => ({
   },
 });
 
-const ConnectedSwitch = connect(/* istanbul ignore next */ (state) => ({
-  location: state.get('route').get('location').toJS(),
+const ConnectedSwitch = connect(createStructuredSelector({
+  location: createSelector(
+    /* istanbul ignore next */ (state) => state.getIn(['route', 'location']),
+    /* istanbul ignore next */ (state) => state.toJS(),
+  ),
 }))(Switch);
 
 class Global extends React.PureComponent {

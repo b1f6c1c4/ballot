@@ -97,7 +97,7 @@ export function mapDispatchToProps(dispatch) {
 {{/if}}
 {{#if wantSelectors}}
 const mapStateToProps = createStructuredSelector({
-  {{ camelCase selectorName }}: /* istanbul ignore next */ (state) => state.get('{{ camelCase name }}').get('{{ camelCase selectorName }}').toJS(),
+  {{ camelCase selectorName }}: /* istanbul ignore next */ (state) => state.getIn(['{{ camelCase name }}', '{{ camelCase selectorName }}']),
 {{#if wantMSelectors}}
   {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),
 {{/if}}
