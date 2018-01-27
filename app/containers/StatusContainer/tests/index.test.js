@@ -2,16 +2,16 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { styledStatusPage as StatusPage, mapDispatchToProps } from '../index';
+import { styledStatusContainer as StatusContainer, mapDispatchToProps } from '../index';
 
 import * as statusPageActions from '../actions';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('<StatusPage />', () => {
+describe('<StatusContainer />', () => {
   it('should render', () => {
     const renderedComponent = shallow(
-      <StatusPage
+      <StatusContainer
         // Selectors
         version="the-v"
         commitHash="the-h"

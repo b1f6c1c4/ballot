@@ -25,7 +25,7 @@ const styles = (theme) => ({
   },
 });
 
-class LoginPage extends React.PureComponent {
+class LoginContainer extends React.PureComponent {
   render() {
     const { classes } = this.props;
 
@@ -43,7 +43,7 @@ class LoginPage extends React.PureComponent {
   }
 }
 
-LoginPage.propTypes = {
+LoginContainer.propTypes = {
   classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onSubmitLoginAction: PropTypes.func.isRequired,
@@ -56,14 +56,14 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isLoading: /* istanbul ignore next */ (state) => state.get('loginPage').get('isLoading'),
+  isLoading: /* istanbul ignore next */ (state) => state.get('loginContainer').get('isLoading'),
 });
 
-export const styledLoginPage = withStyles(styles, { withTheme: true })(LoginPage);
+export const styledLoginContainer = withStyles(styles, { withTheme: true })(LoginContainer);
 
 export default compose(
-  injectSaga({ key: 'loginPage', saga: sagas }),
-  injectReducer({ key: 'loginPage', reducer }),
+  injectSaga({ key: 'loginContainer', saga: sagas }),
+  injectReducer({ key: 'loginContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
   reduxForm({ form: 'login' }),
-)(styledLoginPage);
+)(styledLoginContainer);

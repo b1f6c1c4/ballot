@@ -18,26 +18,27 @@ const styles = (theme) => ({
   },
 });
 
-class NotFoundPage extends React.PureComponent {
+class HomeContainer extends React.PureComponent {
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.content}>
         <FormattedMessage {...messages.header} />
-        <Link to="/app/"><FormattedMessage {...messages.returnHome} /></Link>
+        <Link to="/app/login">login</Link>
+        <Link to="/app/status">check status</Link>
       </div>
     );
   }
 }
 
-NotFoundPage.propTypes = {
+HomeContainer.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
 
-export const styledNotFoundPage = withStyles(styles, { withTheme: true })(NotFoundPage);
+export const styledHomeContainer = withStyles(styles, { withTheme: true })(HomeContainer);
 
 export default compose(
   connect(null, null),
-)(styledNotFoundPage);
+)(styledHomeContainer);

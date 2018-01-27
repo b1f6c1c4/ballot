@@ -24,7 +24,7 @@ const styles = (theme) => ({
   },
 });
 
-class StatusPage extends React.PureComponent {
+class StatusContainer extends React.PureComponent {
   render() {
     const { classes } = this.props;
 
@@ -39,7 +39,7 @@ class StatusPage extends React.PureComponent {
   }
 }
 
-StatusPage.propTypes = {
+StatusContainer.propTypes = {
   classes: PropTypes.object.isRequired,
   version: PropTypes.string.isRequired,
   commitHash: PropTypes.string.isRequired,
@@ -53,14 +53,14 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  version: /* istanbul ignore next */ (state) => state.get('statusPage').getIn(['status', 'version']),
-  commitHash: /* istanbul ignore next */ (state) => state.get('statusPage').getIn(['status', 'commitHash']),
+  version: /* istanbul ignore next */ (state) => state.get('statusContainer').getIn(['status', 'version']),
+  commitHash: /* istanbul ignore next */ (state) => state.get('statusContainer').getIn(['status', 'commitHash']),
 });
 
-export const styledStatusPage = withStyles(styles, { withTheme: true })(StatusPage);
+export const styledStatusContainer = withStyles(styles, { withTheme: true })(StatusContainer);
 
 export default compose(
-  injectSaga({ key: 'statusPage', saga: sagas }),
-  injectReducer({ key: 'statusPage', reducer }),
+  injectSaga({ key: 'statusContainer', saga: sagas }),
+  injectReducer({ key: 'statusContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
-)(styledStatusPage);
+)(styledStatusContainer);

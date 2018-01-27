@@ -2,16 +2,16 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { styledLoginPage as LoginPage, mapDispatchToProps } from '../index';
+import { styledLoginContainer as LoginContainer, mapDispatchToProps } from '../index';
 
 import * as loginPageActions from '../actions';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('<LoginPage />', () => {
+describe('<LoginContainer />', () => {
   it('should render', () => {
     const renderedComponent = shallow(
-      <LoginPage
+      <LoginContainer
         // Selectors
         isLoading={false}
         // Actions

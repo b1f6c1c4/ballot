@@ -2,7 +2,7 @@ import * as STATUS_PAGE from '../constants';
 
 import * as statusPageActions from '../actions';
 
-describe('StatusPage actions', () => {
+describe('StatusContainer actions', () => {
   // Actions
   describe('fetchStatus action', () => {
     it('has a type of FETCH_STATUS_ACTION', () => {

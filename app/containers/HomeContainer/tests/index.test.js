@@ -2,15 +2,15 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { styledNotFoundPage as NotFoundPage } from '../index';
+import { styledHomeContainer as HomeContainer } from '../index';
 
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('<NotFoundPage />', () => {
+describe('<HomeContainer />', () => {
   it('should render', () => {
     const renderedComponent = shallow(
-      <NotFoundPage />,
+      <HomeContainer />,
     ).dive();
     expect(renderedComponent).toBeDefined();
   });

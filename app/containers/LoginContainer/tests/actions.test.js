@@ -2,7 +2,7 @@ import * as LOGIN_PAGE from '../constants';
 
 import * as loginPageActions from '../actions';
 
-describe('LoginPage actions', () => {
+describe('LoginContainer actions', () => {
   // Actions
   describe('submitLogin action', () => {
     it('has a type of SUBMIT_LOGIN_ACTION', () => {

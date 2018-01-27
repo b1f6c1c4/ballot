@@ -6,10 +6,10 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 
 import { Switch, Route } from 'react-router-dom';
-import HomePage from 'containers/HomePage/Loadable';
-import LoginPage from 'containers/LoginPage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import StatusPage from 'containers/StatusPage/Loadable';
+import HomeContainer from 'containers/HomeContainer/Loadable';
+import LoginContainer from 'containers/LoginContainer/Loadable';
+import NotFoundContainer from 'containers/NotFoundContainer/Loadable';
+import StatusContainer from 'containers/StatusContainer/Loadable';
 
 import {
   withStyles,
@@ -44,10 +44,10 @@ class Global extends React.PureComponent {
         <Typography>{this.props.isDrawerOpen.toString()}</Typography>
         <Button onClick={this.props.onToggleDrawerOpenAction}>ToggleDrawerOpenAction</Button>
         <ConnectedSwitch>
-          <Route exact path="/app/" component={HomePage} />
-          <Route exact path="/app/login" component={LoginPage} />
-          <Route exact path="/app/status" component={StatusPage} />
-          <Route component={NotFoundPage} />
+          <Route exact path="/app/" component={HomeContainer} />
+          <Route exact path="/app/login" component={LoginContainer} />
+          <Route exact path="/app/status" component={StatusContainer} />
+          <Route component={NotFoundContainer} />
         </ConnectedSwitch>
       </div>
     );

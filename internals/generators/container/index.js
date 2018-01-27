@@ -9,7 +9,7 @@ module.exports = {
   prompts: [{
     type: 'input',
     name: 'name',
-    default: 'Form',
+    default: 'FormContainer',
     message: 'What should it be called?',
     validate: (value) => {
       if ((/.+/).test(value)) {
