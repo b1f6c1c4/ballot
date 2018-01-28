@@ -12,7 +12,7 @@ describe('<HomeContainer />', () => {
     const renderedComponent = shallow(
       <HomeContainer />,
     ).dive();
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });
 

@@ -18,7 +18,7 @@ describe('<LoginContainer />', () => {
         onSubmitLoginAction={jest.fn()}
       />,
     ).dive();
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });
 

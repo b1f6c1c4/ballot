@@ -7,10 +7,28 @@ import { styledLoading as Loading } from '../index';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('<Loading />', () => {
-  it('should render', () => {
+  it('should not render if delaying', () => {
     const renderedComponent = shallow(
-      <Loading />,
+      <Loading
+        pastDelay={false}
+      />,
     ).dive();
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).toBeNull();
+  });
+  it('should render if not delaying', () => {
+    const renderedComponent = shallow(
+      <Loading
+        pastDelay
+      />,
+    ).dive();
+    expect(renderedComponent.getElement()).not.toBeNull();
+  });
+  it('should render if error', () => {
+    const renderedComponent = shallow(
+      <Loading
+        error={{}}
+      />,
+    ).dive();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });

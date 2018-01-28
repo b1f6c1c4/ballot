@@ -35,7 +35,7 @@ describe('<{{ properCase name }} />', () => {
       <{{ properCase name }} />,
 {{/ifOr}}
     );
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });
 

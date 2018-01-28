@@ -12,7 +12,7 @@ describe('<NotFoundContainer />', () => {
     const renderedComponent = shallow(
       <NotFoundContainer />,
     ).dive();
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });
 

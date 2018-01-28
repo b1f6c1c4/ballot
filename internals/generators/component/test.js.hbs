@@ -11,6 +11,6 @@ describe('<{{ properCase name }} />', () => {
     const renderedComponent = shallow(
       <{{ properCase name }} />,
     ).dive();
-    expect(renderedComponent).toBeDefined();
+    expect(renderedComponent.getElement()).not.toBeNull();
   });
 });
