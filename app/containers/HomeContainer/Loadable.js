@@ -1,12 +1,5 @@
-/**
- *
- * Asynchronously loads the component for HomeContainer
- *
- */
+import makeLoadable from 'utils/makeLoadable';
 
-import Loadable from 'react-loadable';
-
-export default Loadable({
+export default makeLoadable({
   loader: () => import(/* webpackChunkName: "HomeContainer" */ './index'),
-  loading: () => null,
 });

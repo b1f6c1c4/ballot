@@ -1,12 +1,8 @@
-/**
- *
- * Asynchronously loads the component for LoginContainer
- *
- */
-
 import Loadable from 'react-loadable';
+import Loading from 'components/Loading';
 
 export default Loadable({
   loader: () => import(/* webpackChunkName: "LoginContainer" */ './index'),
-  loading: () => null,
+  loading: Loading,
+  delay: 300,
 });

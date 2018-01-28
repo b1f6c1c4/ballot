@@ -1,12 +1,5 @@
-/**
- *
- * Asynchronously loads the component for NotFoundContainer
- *
- */
+import makeLoadable from 'utils/makeLoadable';
 
-import Loadable from 'react-loadable';
-
-export default Loadable({
+export default makeLoadable({
   loader: () => import(/* webpackChunkName: "NotFoundContainer" */ './index'),
-  loading: () => null,
 });

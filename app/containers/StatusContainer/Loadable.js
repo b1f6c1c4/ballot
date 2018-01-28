@@ -1,12 +1,5 @@
-/**
- *
- * Asynchronously loads the component for StatusContainer
- *
- */
+import makeLoadable from 'utils/makeLoadable';
 
-import Loadable from 'react-loadable';
-
-export default Loadable({
+export default makeLoadable({
   loader: () => import(/* webpackChunkName: "StatusContainer" */ './index'),
-  loading: () => null,
 });

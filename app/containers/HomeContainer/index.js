@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import { Link } from 'react-router-dom';
+import LoginContainer from 'containers/LoginContainer/Loadable';
+import StatusContainer from 'containers/StatusContainer/Loadable';
 
 import {
   withStyles,
@@ -19,14 +21,22 @@ const styles = (theme) => ({
 });
 
 class HomeContainer extends React.PureComponent {
+  onMouseOverLogin() {
+    LoginContainer.preload();
+  }
+
+  onMouseOverStatus() {
+    StatusContainer.preload();
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.content}>
         <FormattedMessage {...messages.header} />
-        <Link to="/app/login">login</Link>
-        <Link to="/app/status">check status</Link>
+        <Link to="/app/login" onMouseOver={this.onMouseOverLogin}>login</Link>
+        <Link to="/app/status" onMouseOver={this.onMouseOverStatus}>check status</Link>
       </div>
     );
   }
