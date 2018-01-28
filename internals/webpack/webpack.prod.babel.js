@@ -18,7 +18,6 @@ const minify = {
 };
 
 class NetlifyRedirectsPlugin {
-  // eslint-disable-next-line class-methods-use-this
   apply(compiler) {
     const data = '/* /app.html 200\n';
     compiler.plugin('emit', (compilation, cb) => {
