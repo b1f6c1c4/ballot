@@ -17,6 +17,21 @@ const minify = {
   minifyURLs: true,
 };
 
+class NetlifyRedirectsPlugin {
+  // eslint-disable-next-line class-methods-use-this
+  apply(compiler) {
+    const data = '/* /app.html 200\n';
+    compiler.plugin('emit', (compilation, cb) => {
+      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
+      compilation.assets._redirects = {
+        source: () => data,
+        size: () => data.length,
+      };
+      cb();
+    });
+  }
+}
+
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
@@ -36,6 +51,7 @@ module.exports = require('./webpack.base.babel')({
 
   plugins: [
     new GitRevisionPlugin(),
+    new NetlifyRedirectsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
