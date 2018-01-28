@@ -4,7 +4,7 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
 
 import * as STATUS_PAGE from '../constants';
-import * as statusPageActions from '../actions';
+import * as statusContainerActions from '../actions';
 import gql from '../api.graphql';
 
 import watcher, {
@@ -32,7 +32,7 @@ describe('handleCheckStatusRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), response],
       ])
-      .put(statusPageActions.checkStatusSuccess(status))
+      .put(statusContainerActions.checkStatusSuccess(status))
       .run();
   });
 
@@ -44,7 +44,7 @@ describe('handleCheckStatusRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), throwError(error)],
       ])
-      .put(statusPageActions.checkStatusFailure(error))
+      .put(statusContainerActions.checkStatusFailure(error))
       .run();
   });
 });
@@ -55,9 +55,9 @@ describe('watcher', () => {
   it('should forward fetchStatus to checkStatusRequest', () => {
     return expectSaga(watcher)
       .provide([
-        [matchers.put(statusPageActions.checkStatusRequest())],
+        [matchers.put(statusContainerActions.checkStatusRequest())],
       ])
-      .dispatch(statusPageActions.fetchStatus())
+      .dispatch(statusContainerActions.fetchStatus())
       .silentRun();
   });
 });

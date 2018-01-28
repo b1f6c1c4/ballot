@@ -6,7 +6,7 @@ const initialState = fromJS({
   isLoading: false,
 });
 
-function loginPageReducer(state = initialState, action) {
+function loginContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
     case LOGIN_PAGE.SUBMIT_LOGIN_ACTION:
@@ -24,4 +24,4 @@ function loginPageReducer(state = initialState, action) {
   }
 }
 
-export default loginPageReducer;
+export default loginContainerReducer;

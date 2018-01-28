@@ -17,7 +17,7 @@ import {
   TextField,
 } from 'redux-form-material-ui';
 
-import * as loginPageActions from './actions';
+import * as loginContainerActions from './actions';
 import reducer from './reducer';
 import sagas from './sagas';
 import messages from './messages';
@@ -61,7 +61,7 @@ LoginContainer.propTypes = {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onSubmitLoginAction: () => dispatch(loginPageActions.submitLogin()),
+    onSubmitLoginAction: () => dispatch(loginContainerActions.submitLogin()),
   };
 }
 

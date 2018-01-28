@@ -8,7 +8,7 @@ import { push } from 'react-router-redux';
 
 import * as globalActions from 'containers/Global/actions';
 import * as LOGIN_PAGE from '../constants';
-import * as loginPageActions from '../actions';
+import * as loginContainerActions from '../actions';
 import gql from '../api.graphql';
 
 import watcher, {
@@ -41,7 +41,7 @@ describe('handleLoginRequest Saga', () => {
         [matchers.call(...dArgs), response],
       ])
       .put(globalActions.updateCredential(login))
-      .put(loginPageActions.loginSuccess(response))
+      .put(loginContainerActions.loginSuccess(response))
       .put(push('/app/'))
       .run();
   });
@@ -55,7 +55,7 @@ describe('handleLoginRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), throwError(error)],
       ])
-      .put(loginPageActions.loginFailure(error))
+      .put(loginContainerActions.loginFailure(error))
       .run();
   });
 
@@ -68,7 +68,7 @@ describe('handleLoginRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), response],
       ])
-      .put.like({ action: loginPageActions.loginFailure({ codes: ['wgup'] }) })
+      .put.like({ action: loginContainerActions.loginFailure({ codes: ['wgup'] }) })
       .run();
   });
 });
@@ -79,9 +79,9 @@ describe('watcher', () => {
   it('should forward submitLogin to loginRequest', () => {
     return expectSaga(watcher)
       .provide([
-        [matchers.put(loginPageActions.loginRequest())],
+        [matchers.put(loginContainerActions.loginRequest())],
       ])
-      .dispatch(loginPageActions.submitLogin())
+      .dispatch(loginContainerActions.submitLogin())
       .silentRun();
   });
 });

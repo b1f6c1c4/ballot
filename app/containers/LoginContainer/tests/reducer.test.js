@@ -1,10 +1,10 @@
 import { fromJS } from 'immutable';
 
-import loginPageReducer from '../reducer';
+import loginContainerReducer from '../reducer';
 
-import * as loginPageActions from '../actions';
+import * as loginContainerActions from '../actions';
 
-describe('loginPageReducer', () => {
+describe('loginContainerReducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
@@ -14,7 +14,7 @@ describe('loginPageReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(loginPageReducer(undefined, {})).toEqual(expectedResult);
+    expect(loginContainerReducer(undefined, {})).toEqual(expectedResult);
   });
 
   // Actions
@@ -22,7 +22,7 @@ describe('loginPageReducer', () => {
     const originalState = state;
     const expectedResult = state;
 
-    expect(loginPageReducer(originalState, loginPageActions.submitLogin())).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.submitLogin())).toEqual(expectedResult);
   });
 
   // Sagas
@@ -30,7 +30,7 @@ describe('loginPageReducer', () => {
     const originalState = state;
     const expectedResult = state.set('isLoading', true);
 
-    expect(loginPageReducer(originalState, loginPageActions.loginRequest())).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.loginRequest())).toEqual(expectedResult);
   });
 
   it('should handle login success', () => {
@@ -38,7 +38,7 @@ describe('loginPageReducer', () => {
     const result = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(loginPageReducer(originalState, loginPageActions.loginSuccess(result))).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.loginSuccess(result))).toEqual(expectedResult);
   });
 
   it('should handle login failure', () => {
@@ -46,6 +46,6 @@ describe('loginPageReducer', () => {
     const error = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(loginPageReducer(originalState, loginPageActions.loginFailure(error))).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.loginFailure(error))).toEqual(expectedResult);
   });
 });

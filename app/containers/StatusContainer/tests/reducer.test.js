@@ -1,10 +1,10 @@
 import { fromJS } from 'immutable';
 
-import statusPageReducer from '../reducer';
+import statusContainerReducer from '../reducer';
 
-import * as statusPageActions from '../actions';
+import * as statusContainerActions from '../actions';
 
-describe('statusPageReducer', () => {
+describe('statusContainerReducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
@@ -17,7 +17,7 @@ describe('statusPageReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(statusPageReducer(undefined, {})).toEqual(expectedResult);
+    expect(statusContainerReducer(undefined, {})).toEqual(expectedResult);
   });
 
   // Actions
@@ -25,7 +25,7 @@ describe('statusPageReducer', () => {
     const originalState = state;
     const expectedResult = state;
 
-    expect(statusPageReducer(originalState, statusPageActions.fetchStatus())).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.fetchStatus())).toEqual(expectedResult);
   });
 
   // Sagas
@@ -33,7 +33,7 @@ describe('statusPageReducer', () => {
     const originalState = state;
     const expectedResult = state;
 
-    expect(statusPageReducer(originalState, statusPageActions.checkStatusRequest())).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusRequest())).toEqual(expectedResult);
   });
 
   it('should handle checkStatus success', () => {
@@ -44,7 +44,7 @@ describe('statusPageReducer', () => {
     };
     const expectedResult = state.set('status', fromJS(result));
 
-    expect(statusPageReducer(originalState, statusPageActions.checkStatusSuccess(result))).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusSuccess(result))).toEqual(expectedResult);
   });
 
   it('should handle checkStatus failure', () => {
@@ -52,6 +52,6 @@ describe('statusPageReducer', () => {
     const error = { };
     const expectedResult = state;
 
-    expect(statusPageReducer(originalState, statusPageActions.checkStatusFailure(error))).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusFailure(error))).toEqual(expectedResult);
   });
 });

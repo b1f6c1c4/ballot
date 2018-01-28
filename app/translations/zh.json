@@ -1,10 +1,10 @@
 {
   "app.containers.Global.header": "Global容器",
-  "app.containers.HomePage.header": "HomePage容器",
-  "app.containers.LoginPage.header": "LoginPage容器",
-  "app.containers.NotFoundPage.header": "NotFoundPage容器",
-  "app.containers.NotFoundPage.returnHome": "回到首页",
-  "app.containers.StatusPage.header": "Status容器",
+  "app.containers.HomeContainer.header": "HomeContainer容器",
+  "app.containers.LoginContainer.header": "LoginContainer容器",
+  "app.containers.NotFoundContainer.header": "NotFoundContainer容器",
+  "app.containers.NotFoundContainer.returnHome": "回到首页",
+  "app.containers.StatusContainer.header": "Status容器",
   "index.go": "go zh",
   "index.htmlTitle": "Ballot - 匿名在线投票系统",
   "index.title": "Ballot投票系统"

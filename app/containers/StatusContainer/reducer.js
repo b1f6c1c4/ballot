@@ -9,7 +9,7 @@ const initialState = fromJS({
   },
 });
 
-function statusPageReducer(state = initialState, action) {
+function statusContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
     case STATUS_PAGE.FETCH_STATUS_ACTION:
@@ -29,4 +29,4 @@ function statusPageReducer(state = initialState, action) {
   }
 }
 
-export default statusPageReducer;
+export default statusContainerReducer;

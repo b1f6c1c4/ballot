@@ -13,7 +13,7 @@ import {
   Button,
 } from 'material-ui';
 
-import * as statusPageActions from './actions';
+import * as statusContainerActions from './actions';
 import reducer from './reducer';
 import sagas from './sagas';
 import messages from './messages';
@@ -48,7 +48,7 @@ StatusContainer.propTypes = {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onFetchStatusAction: () => dispatch(statusPageActions.fetchStatus()),
+    onFetchStatusAction: () => dispatch(statusContainerActions.fetchStatus()),
   };
 }
 
