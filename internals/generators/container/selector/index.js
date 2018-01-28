@@ -92,18 +92,6 @@ module.exports = {
       abortOnFail: true,
     });
 
-    // index.test.js
-    actions.push({
-      type: 'complexModify',
-      method: 'sectionEnd',
-      indent: 8,
-      section: /^ {8}\/\/ Selectors/g,
-      pattern: /^ {8}\/\/ [A-Z][a-zA-Z]*$/g,
-      path: '../../app/containers/{{ properCase name }}/tests/index.test.js',
-      template: '        {{ camelCase mselectorName }}="value"',
-      abortOnFail: true,
-    });
-
     return actions;
   },
 };

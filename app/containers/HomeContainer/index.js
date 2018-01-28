@@ -21,12 +21,10 @@ const styles = (theme) => ({
 });
 
 class HomeContainer extends React.PureComponent {
-  /* istanbul ignore next */
   onMouseOverLogin() {
     LoginContainer.preload();
   }
 
-  /* istanbul ignore next */
   onMouseOverStatus() {
     StatusContainer.preload();
   }

@@ -56,7 +56,7 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isLoading: /* istanbul ignore next */ (state) => state.get('loginContainer').get('isLoading'),
+  isLoading: (state) => state.get('loginContainer').get('isLoading'),
 });
 
 export const styledLoginContainer = withStyles(styles, { withTheme: true })(LoginContainer);

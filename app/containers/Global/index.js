@@ -28,8 +28,8 @@ const styles = (theme) => ({
 
 const ConnectedSwitch = connect(createStructuredSelector({
   location: createSelector(
-    /* istanbul ignore next */ (state) => state.getIn(['route', 'location']),
-    /* istanbul ignore next */ (state) => state.toJS(),
+    (state) => state.getIn(['route', 'location']),
+    (state) => state.toJS(),
   ),
 }))(Switch);
 
@@ -68,8 +68,8 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isDrawerOpen: /* istanbul ignore next */ (state) => state.get('global').get('isDrawerOpen'),
-  hasCredential: /* istanbul ignore next */ (state) => !!state.get('global').get('credential'),
+  isDrawerOpen: (state) => state.get('global').get('isDrawerOpen'),
+  hasCredential: (state) => !!state.get('global').get('credential'),
 });
 
 export const styledGlobal = withStyles(styles, { withTheme: true })(Global);

@@ -53,8 +53,8 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  version: /* istanbul ignore next */ (state) => state.get('statusContainer').getIn(['status', 'version']),
-  commitHash: /* istanbul ignore next */ (state) => state.get('statusContainer').getIn(['status', 'commitHash']),
+  version: (state) => state.get('statusContainer').getIn(['status', 'version']),
+  commitHash: (state) => state.get('statusContainer').getIn(['status', 'commitHash']),
 });
 
 export const styledStatusContainer = withStyles(styles, { withTheme: true })(StatusContainer);

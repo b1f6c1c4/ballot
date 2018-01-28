@@ -86,11 +86,15 @@
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.js",
+      "!app/**/messages.js",
+      "!app/components/**/index.js",
+      "!app/containers/**/index.js",
       "!app/**/*.test.js",
       "!app/*/RbGenerated*/*.js",
       "!app/index.js",
       "!app/app.js",
-      "!app/*/*/Loadable.js"
+      "!app/*/*/Loadable.js",
+      "!app/utils/makeLoadable.js"
     ],
     "moduleDirectories": [
       "node_modules",

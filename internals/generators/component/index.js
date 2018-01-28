@@ -39,12 +39,6 @@ module.exports = {
       templateFile: './component/class.js.hbs',
       abortOnFail: true,
     });
-    actions.push({
-      type: 'add',
-      path: '../../app/components/{{properCase name}}/tests/index.test.js',
-      templateFile: './component/test.js.hbs',
-      abortOnFail: true,
-    });
 
     if (data.wantMessages) {
       // Generate messages.js
