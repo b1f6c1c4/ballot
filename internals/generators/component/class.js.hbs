@@ -1,31 +1,47 @@
-/**
-*
-* {{ properCase name }}
-*
-*/
-
 import React from 'react';
-// import styled from 'styled-components';
-
+import PropTypes from 'prop-types';
 {{#if wantMessages}}
 import { FormattedMessage } from 'react-intl';
+{{/if}}
+
+import {
+  withStyles,
+{{#if wantSelectors}}
+  Typography,
+{{/if}}
+{{#if wantActionsAndReducer}}
+  Button,
+{{/if}}
+} from 'material-ui';
+
+{{#if wantMessages}}
 import messages from './messages';
 {{/if}}
 
-class {{ properCase name }} extends {{{ type }}} { // eslint-disable-line react/prefer-stateless-function
+const styles = (theme) => ({
+  content: {
+    backgroundColor: theme.palette.background.default,
+  },
+});
+
+class {{ properCase name }} extends React.PureComponent {
   render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-      {{#if wantMessages}}
+      <div className={classes.content}>
+{{#if wantMessages}}
         <FormattedMessage {...messages.header} />
-      {{/if}}
+{{/if}}
       </div>
     );
   }
 }
 
 {{ properCase name }}.propTypes = {
-
+  classes: PropTypes.object.isRequired,
 };
 
-export default {{ properCase name }};
+export const styled{{ properCase name}} = withStyles(styles, { withTheme: true })({{ properCase name}});
+
+export default styled{{ properCase name }};

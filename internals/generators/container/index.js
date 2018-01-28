@@ -5,7 +5,7 @@
 const componentExists = require('../utils/componentExists');
 
 module.exports = {
-  description: 'Add a container component',
+  description: 'Add a container (smart) component',
   prompts: [{
     type: 'input',
     name: 'name',
@@ -67,11 +67,6 @@ module.exports = {
     message: 'Saga name?',
   }, {
     type: 'confirm',
-    name: 'wantMessages',
-    default: true,
-    message: 'Do you want i18n messages (i.e. will this component use text)?',
-  }, {
-    type: 'confirm',
     name: 'wantLoadable',
     default: true,
     message: 'Do you want to load resources asynchronously?',
@@ -105,16 +100,6 @@ module.exports = {
         type: 'add',
         path: '../../app/containers/{{properCase name}}/tests/selectors.test.js',
         templateFile: './container/selectors.test.js.hbs',
-        abortOnFail: true,
-      });
-    }
-
-    if (data.wantMessages) {
-      // Generate messages.js
-      actions.push({
-        type: 'add',
-        path: '../../app/containers/{{properCase name}}/messages.js',
-        templateFile: './container/messages.js.hbs',
         abortOnFail: true,
       });
     }
@@ -182,6 +167,7 @@ module.exports = {
     }
 
     if (data.wantLoadable) {
+      // Generate loadable.js
       actions.push({
         type: 'add',
         path: '../../app/containers/{{properCase name}}/Loadable.js',

@@ -3,15 +3,15 @@ import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 {{#if wantActionsAndReducer}}
-import { styled{{ properCase name }} as {{ properCase name }}, mapDispatchToProps } from '../index';
+import { {{ properCase name }}, mapDispatchToProps } from '../index';
 {{else}}
-import { styled{{ properCase name }} as {{ properCase name }} } from '../index';
+import { {{ properCase name }} } from '../index';
 {{/if}}
 
 {{#if wantActionsAndReducer}}
 import * as {{ camelCase name }}Actions from '../actions';
-{{/if}}
 
+{{/if}}
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('<{{ properCase name }} />', () => {
@@ -34,7 +34,7 @@ describe('<{{ properCase name }} />', () => {
 {{else}}
       <{{ properCase name }} />,
 {{/ifOr}}
-    ).dive();
+    );
     expect(renderedComponent).toBeDefined();
   });
 });
