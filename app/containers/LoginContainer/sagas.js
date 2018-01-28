@@ -4,16 +4,16 @@ import { change } from 'redux-form';
 import { push } from 'react-router-redux';
 
 import * as globalActions from 'containers/Global/actions';
-import * as LOGIN_PAGE from './constants';
+import * as LOGIN_CONTAINER from './constants';
 import * as loginContainerActions from './actions';
 import gql from './api.graphql';
 
 // Sagas
 export function* handleLoginRequest() {
-  const json = yield select((state) => state.getIn(['form', 'login', 'values']));
+  const json = yield select((state) => state.getIn(['form', 'loginPage', 'values']));
   const { username, password } = json.toJS();
 
-  yield put(change('login', 'password', ''));
+  yield put(change('loginPage', 'password', ''));
   try {
     const result = yield call(api.mutate, gql.Login, { username, password });
     if (!result.login) {
@@ -31,12 +31,26 @@ export function* handleLoginRequest() {
   }
 }
 
+export function* handleRegisterRequest() {
+  const json = yield select((state) => state.getIn(['form', 'loginPage', 'values']));
+  const { username, password } = json.toJS();
+
+  yield put(change('loginPage', 'password', ''));
+  try {
+    const result = yield call(api.mutate, gql.Register, { username, password });
+    yield put(loginContainerActions.registerSuccess(result));
+  } catch (err) {
+    yield put(loginContainerActions.registerFailure(err));
+  }
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
-  yield takeEvery(LOGIN_PAGE.LOGIN_REQUEST, handleLoginRequest);
+  yield takeEvery(LOGIN_CONTAINER.LOGIN_REQUEST, handleLoginRequest);
+  yield takeEvery(LOGIN_CONTAINER.REGISTER_REQUEST, handleRegisterRequest);
 
-  yield takeEvery(LOGIN_PAGE.SUBMIT_LOGIN_ACTION, function* () {
+  yield takeEvery(LOGIN_CONTAINER.SUBMIT_LOGIN_ACTION, function* () {
     yield put(loginContainerActions.loginRequest());
   });
 }

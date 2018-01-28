@@ -8,7 +8,7 @@ describe('loginContainerReducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
-      isLoading: false,
+      data: 'the data',
     });
   });
 
@@ -25,27 +25,57 @@ describe('loginContainerReducer', () => {
     expect(loginContainerReducer(originalState, loginContainerActions.submitLogin())).toEqual(expectedResult);
   });
 
+  it('should handle submitRegister action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(loginContainerReducer(originalState, loginContainerActions.submitRegister())).toEqual(expectedResult);
+  });
+
   // Sagas
   it('should handle login request', () => {
     const originalState = state;
-    const expectedResult = state.set('isLoading', true);
+    const expectedResult = state;
 
     expect(loginContainerReducer(originalState, loginContainerActions.loginRequest())).toEqual(expectedResult);
   });
 
   it('should handle login success', () => {
-    const originalState = state.set('isLoading', true);
+    const originalState = state;
     const result = { };
-    const expectedResult = state.set('isLoading', false);
+    const expectedResult = state;
 
     expect(loginContainerReducer(originalState, loginContainerActions.loginSuccess(result))).toEqual(expectedResult);
   });
 
   it('should handle login failure', () => {
-    const originalState = state.set('isLoading', true);
+    const originalState = state;
     const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const expectedResult = state;
 
     expect(loginContainerReducer(originalState, loginContainerActions.loginFailure(error))).toEqual(expectedResult);
+  });
+
+  it('should handle register request', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(loginContainerReducer(originalState, loginContainerActions.registerRequest())).toEqual(expectedResult);
+  });
+
+  it('should handle register success', () => {
+    const originalState = state;
+    const result = { };
+    const expectedResult = state;
+
+    expect(loginContainerReducer(originalState, loginContainerActions.registerSuccess(result))).toEqual(expectedResult);
+  });
+
+  it('should handle register failure', () => {
+    const originalState = state;
+    const error = { };
+    const expectedResult = state;
+
+    expect(loginContainerReducer(originalState, loginContainerActions.registerFailure(error))).toEqual(expectedResult);
   });
 });

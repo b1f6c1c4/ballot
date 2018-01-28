@@ -16,6 +16,9 @@ import App from 'containers/Global';
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
 
+import createMuiTheme from 'material-ui/styles/createMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-webpack-loader-syntax */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
@@ -33,6 +36,9 @@ const history = createHistory();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
+const theme = createMuiTheme({
+});
+
 const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>
@@ -40,7 +46,9 @@ const render = (messages) => {
         <ConnectedRouter history={history}>
           <div>
             <Reboot />
-            <App />
+            <MuiThemeProvider theme={theme}>
+              <App />
+            </MuiThemeProvider>
           </div>
         </ConnectedRouter>
       </LanguageProvider>

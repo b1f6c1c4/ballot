@@ -25,6 +25,9 @@ module.exports = (options) => ({
                       if (/Progress$/.test(name)) {
                         return `material-ui/Progress/${name}`;
                       }
+                      if (/^Dialog|Dialog$/.test(name)) {
+                        return `material-ui/Dialog/${name}`;
+                      }
                       if (/^[A-Z]/.test(name)) {
                         return `material-ui/${name}`;
                       }
