@@ -13,6 +13,13 @@ export function submitRegister() {
   };
 }
 
+export function changeActiveId(value) {
+  return {
+    type: LOGIN_CONTAINER.CHANGE_ACTIVE_ID_ACTION,
+    value,
+  };
+}
+
 // Sagas
 export function loginRequest() {
   return {

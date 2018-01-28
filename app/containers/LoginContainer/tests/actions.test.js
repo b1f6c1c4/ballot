@@ -15,4 +15,10 @@ describe('LoginContainer actions', () => {
       expect(loginContainerActions.submitRegister().type).toEqual(LOGIN_CONTAINER.SUBMIT_REGISTER_ACTION);
     });
   });
+
+  describe('changeActiveId action', () => {
+    it('has a type of CHANGE_ACTIVE_ID_ACTION', () => {
+      expect(loginContainerActions.changeActiveId().type).toEqual(LOGIN_CONTAINER.CHANGE_ACTIVE_ID_ACTION);
+    });
+  });
 });

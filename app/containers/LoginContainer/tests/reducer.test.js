@@ -32,6 +32,13 @@ describe('loginContainerReducer', () => {
     expect(loginContainerReducer(originalState, loginContainerActions.submitRegister())).toEqual(expectedResult);
   });
 
+  it('should handle changeActiveId action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(loginContainerReducer(originalState, loginContainerActions.changeActiveId())).toEqual(expectedResult);
+  });
+
   // Sagas
   it('should handle login request', () => {
     const originalState = state;

@@ -28,10 +28,18 @@ module.exports = (options) => ({
                       if (/^Dialog|Dialog$/.test(name)) {
                         return `material-ui/Dialog/${name}`;
                       }
+                      if (/^Tab/.test(name)) {
+                        return `material-ui/Tabs/${name}`;
+                      }
                       if (/^[A-Z]/.test(name)) {
                         return `material-ui/${name}`;
                       }
-                      return `material-ui/styles/${name}`;
+                      switch (name) {
+                        case 'Zoom':
+                          return `material-ui/transitions/${name}`;
+                        default:
+                          return `material-ui/styles/${name}`;
+                      }
                     },
                     preventFullImport: true,
                   },

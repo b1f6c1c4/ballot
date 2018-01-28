@@ -23,17 +23,20 @@ export class LoginContainer extends React.PureComponent {
 LoginContainer.propTypes = {
   onSubmitLoginAction: PropTypes.func.isRequired,
   onSubmitRegisterAction: PropTypes.func.isRequired,
+  onChangeActiveIdAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
     onSubmitLoginAction: () => dispatch(loginContainerActions.submitLogin()),
     onSubmitRegisterAction: () => dispatch(loginContainerActions.submitRegister()),
+    onChangeActiveIdAction: (value) => dispatch(loginContainerActions.changeActiveId(value)),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
-  data: (state) => state.getIn(['loginContainer', 'data']),
+  activeId: (state) => state.getIn(['loginContainer', 'activeId']),
+  isLoading: (state) => state.getIn(['loginContainer', 'isLoading']),
 });
 
 export default compose(

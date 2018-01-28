@@ -1,6 +1,13 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
-import { change } from 'redux-form';
+import {
+  change,
+  reset,
+  destroy,
+  startSubmit,
+  stopSubmit,
+  setSubmitSucceeded,
+} from 'redux-form';
 import { push } from 'react-router-redux';
 
 import * as globalActions from 'containers/Global/actions';
@@ -10,10 +17,9 @@ import gql from './api.graphql';
 
 // Sagas
 export function* handleLoginRequest() {
-  const json = yield select((state) => state.getIn(['form', 'loginPage', 'values']));
+  const json = yield select((state) => state.getIn(['form', 'loginForm', 'values']));
   const { username, password } = json.toJS();
 
-  yield put(change('loginPage', 'password', ''));
   try {
     const result = yield call(api.mutate, gql.Login, { username, password });
     if (!result.login) {
@@ -24,6 +30,7 @@ export function* handleLoginRequest() {
     } else {
       yield put(globalActions.updateCredential(result.login));
       yield put(loginContainerActions.loginSuccess(result));
+      yield put(destroy('loginForm'));
       yield put(push('/app/'));
     }
   } catch (err) {
@@ -32,15 +39,21 @@ export function* handleLoginRequest() {
 }
 
 export function* handleRegisterRequest() {
-  const json = yield select((state) => state.getIn(['form', 'loginPage', 'values']));
+  const json = yield select((state) => state.getIn(['form', 'registerForm', 'values']));
   const { username, password } = json.toJS();
 
-  yield put(change('loginPage', 'password', ''));
+  yield put(startSubmit('registerForm'));
   try {
     const result = yield call(api.mutate, gql.Register, { username, password });
     yield put(loginContainerActions.registerSuccess(result));
+    yield put(setSubmitSucceeded('registerForm'));
+    yield put(destroy('registerForm'));
+    yield put(loginContainerActions.changeActiveId(0));
+    yield put(reset('loginForm'));
+    yield put(change('loginForm', 'username', username));
   } catch (err) {
     yield put(loginContainerActions.registerFailure(err));
+    yield put(stopSubmit('registerForm', { _error: err }));
   }
 }
 
@@ -52,5 +65,8 @@ export default function* watcher() {
 
   yield takeEvery(LOGIN_CONTAINER.SUBMIT_LOGIN_ACTION, function* () {
     yield put(loginContainerActions.loginRequest());
+  });
+  yield takeEvery(LOGIN_CONTAINER.SUBMIT_REGISTER_ACTION, function* () {
+    yield put(loginContainerActions.registerRequest());
   });
 }

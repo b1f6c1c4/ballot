@@ -1,5 +1,6 @@
 // Actions
 export const SUBMIT_LOGIN_ACTION = 'LoginContainer/SUBMIT_LOGIN_ACTION';
+export const CHANGE_ACTIVE_ID_ACTION = 'LoginContainer/CHANGE_ACTIVE_ID_ACTION';
 export const SUBMIT_REGISTER_ACTION = 'LoginContainer/SUBMIT_REGISTER_ACTION';
 
 // Sagas
