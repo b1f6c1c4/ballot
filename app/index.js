@@ -3,7 +3,6 @@ import i18next from 'i18next';
 import jqueryI18next from 'jquery-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
 import { mapValues } from 'lodash';
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import rawResources from './translations';
 
 function updateContent() {

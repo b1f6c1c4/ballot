@@ -7,7 +7,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import 'sanitize.css/sanitize.css';
+import { Reboot } from 'material-ui';
+import 'typeface-roboto/index.css';
 
 // Import root app
 import App from 'containers/Global';
@@ -45,7 +46,10 @@ const render = (messages) => {
     <Provider store={store}>
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
-          <App />
+          <div>
+            <Reboot />
+            <App />
+          </div>
         </ConnectedRouter>
       </LanguageProvider>
     </Provider>,
