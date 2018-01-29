@@ -76,21 +76,23 @@ module.exports = (options) => ({
           'file-loader',
           {
             loader: 'image-webpack-loader',
-            options: {
-              progressive: true,
-              optimizationLevel: 7,
-              interlaced: false,
+            query: {
+              mozjpeg: {
+                progressive: true,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              optipng: {
+                optimizationLevel: 4,
+              },
               pngquant: {
-                quality: '65-90',
-                speed: 4,
+                quality: '75-90',
+                speed: 3,
               },
             },
           },
         ],
-      },
-      {
-        test: /\.html$/,
-        use: 'html-loader',
       },
       {
         test: /\.json$/,
@@ -105,8 +107,10 @@ module.exports = (options) => ({
   },
   plugins: options.plugins.concat([
     new webpack.ProvidePlugin({
-    // make fetch available
+      // make fetch available
+      jQuery: 'jquery',
       fetch: 'exports-loader?self.fetch!whatwg-fetch',
+      WOW: 'exports-loader?self.WOW!wowjs',
     }),
 
     // Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`

@@ -4,14 +4,12 @@ import jqueryI18next from 'jquery-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
 import _ from 'lodash';
 import rawResources from './translations';
+import './indexStyle';
 
 function updateContent() {
+  $('#lng').val(i18next.language);
   $('*').localize();
 }
-
-_.mapValues(rawResources, (lo, k) => {
-  $('#lng').append(new Option(lo['index.lang'], k, false, false));
-});
 
 i18next.use(LngDetector).init({
   fallbackLng: 'en',
@@ -20,17 +18,20 @@ i18next.use(LngDetector).init({
     translation: lo,
   })),
 }, (err) => {
-  if (err) {
-    throw err;
-  }
+  if (err) throw err;
   jqueryI18next.init(i18next, $);
-  $('#lng').val(i18next.language);
   updateContent();
-}).on('languageChanged', () => {
-  $('#lng').val(i18next.language);
-  updateContent();
+}).on('languageChanged', updateContent);
+
+_.mapValues(rawResources, (lo, k) => {
+  const o = $('<li><a href="#"></a></li>');
+  $('a', o)
+    .attr('data-lang', k)
+    .text(lo['index.lang']);
+  $('#nav-langs').append(o);
 });
 
-$('#lng').change(() => {
-  i18next.changeLanguage($('#lng').val());
+$(document).on('click', '.nav-langs a', function onLangClick() {
+  const k = $(this).attr('data-lang');
+  i18next.changeLanguage(k);
 });

@@ -22,7 +22,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-webpack-loader-syntax */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
-import '!file-loader?name=[name].[ext]!./manifest.json';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import configureStore from './configureStore';

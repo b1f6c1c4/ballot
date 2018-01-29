@@ -6,33 +6,24 @@
     <meta charset="utf-8">
     <!-- Make the page mobile compatible -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Allow installing the app to the homescreen -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
+
+    <title data-i18n="index.htmlTitle">Ballot</title>
+  </head>
+  <body>
+    <%= require('html-loader!./index.html') %>
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (key in htmlWebpackPlugin.files.chunks) {
+        if (/index/.test(key)) { %>
+          <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"></script>
+      <% }
+      }
+    } %>
 
     <% if (!htmlWebpackPlugin.options.inject) {
       for (key in htmlWebpackPlugin.files.chunks) {
         if (!/index/.test(key)) { %>
           <link rel="prefetch" href="<%= htmlWebpackPlugin.files.chunks[key].entry %>">
-      <% }
-      }
-    } %>
-
-    <title data-i18n="index.htmlTitle">Ballot</title>
-  </head>
-  <body>
-    <h1 data-i18n="index.title"></h1>
-
-    <select id="lng">
-    </select>
-
-    <a href="/app/" data-i18n="index.go"></a>
-
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (key in htmlWebpackPlugin.files.chunks) {
-        if (/index/.test(key)) { %>
-          <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"></script>
       <% }
       }
     } %>
