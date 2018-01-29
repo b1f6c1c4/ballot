@@ -1,35 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 {{#if wantMessages}}
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 {{/if}}
 
 import {
   withStyles,
-{{#if wantSelectors}}
-  Typography,
-{{/if}}
-{{#if wantActionsAndReducer}}
-  Button,
-{{/if}}
 } from 'material-ui';
 
 {{#if wantMessages}}
 import messages from './messages';
-{{/if}}
 
+{{/if}}
+// eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
-  content: {
-    backgroundColor: theme.palette.background.default,
-  },
 });
 
 class {{ properCase name }} extends React.PureComponent {
   render() {
-    const { classes } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { intl, classes } = this.props;
 
     return (
-      <div className={classes.content}>
+      <div>
 {{#if wantMessages}}
         <FormattedMessage {...messages.header} />
 {{/if}}
@@ -39,9 +32,16 @@ class {{ properCase name }} extends React.PureComponent {
 }
 
 {{ properCase name }}.propTypes = {
+{{#if wantMessages}}
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
+{{/if}}
   classes: PropTypes.object.isRequired,
 };
 
-export const styled{{ properCase name}} = withStyles(styles, { withTheme: true })({{ properCase name}});
+export const styled{{ properCase name}} = withStyles(styles)({{ properCase name}});
 
+{{#if wantMessages}}
+export default injectIntl(styled{{ properCase name }});
+{{else}}
 export default styled{{ properCase name }};
+{{/if}}

@@ -19,6 +19,7 @@ import { Field, reduxForm, propTypes } from 'redux-form/immutable';
 
 import messages from './messages';
 
+// eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
   rightIcon: {
     marginLeft: theme.spacing.unit,
@@ -59,6 +60,7 @@ class LoginForm extends React.PureComponent {
   }
 
   render() {
+    // eslint-disable-next-line no-unused-vars
     const { intl, classes } = this.props;
     const {
       handleSubmit,

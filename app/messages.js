@@ -17,6 +17,10 @@ export default defineMessages({
     id: 'app.passwordHelper',
     defaultMessage: '8+ characters.',
   },
+  login: {
+    id: 'app.login',
+    defaultMessage: 'Sign in',
+  },
   register: {
     id: 'app.register',
     defaultMessage: 'Sign up',
@@ -29,13 +33,9 @@ export default defineMessages({
     id: 'app.required',
     defaultMessage: 'Required.',
   },
-  min5char: {
-    id: 'app.min5char',
-    defaultMessage: 'At least 5 characters.',
-  },
-  min8char: {
-    id: 'app.min8char',
-    defaultMessage: 'At least 8 characters.',
+  minChar: {
+    id: 'app.minChar',
+    defaultMessage: 'At least {m} character(s).',
   },
   alphanumericDash: {
     id: 'app.alphanumericDash',

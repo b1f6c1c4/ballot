@@ -15,11 +15,13 @@ import {
 } from 'material-ui';
 import green from 'material-ui/colors/green';
 import { Delete } from 'material-ui-icons';
-import { TextField } from 'redux-form-material-ui';
-import { Field, reduxForm, propTypes } from 'redux-form/immutable';
+import { reduxForm, propTypes } from 'redux-form/immutable';
+import UsernameField from 'components/UsernameField';
+import PasswordField from 'components/PasswordField';
 
 import messages from './messages';
 
+// eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
   rightIcon: {
     marginLeft: theme.spacing.unit,
@@ -42,26 +44,6 @@ const styles = (theme) => ({
 });
 
 class RegisterForm extends React.PureComponent {
-  required = (value) => {
-    if (value) return undefined;
-    return this.props.intl.formatMessage(messages.required);
-  }
-
-  min5char = (value) => {
-    if (value.length >= 5) return undefined;
-    return this.props.intl.formatMessage(messages.min5char);
-  }
-
-  min8char = (value) => {
-    if (value.length >= 8) return undefined;
-    return this.props.intl.formatMessage(messages.min8char);
-  }
-
-  alphanumericDash = (value) => {
-    if (/^[-a-zA-Z0-9]*$/.test(value)) return undefined;
-    return this.props.intl.formatMessage(messages.alphanumericDash);
-  }
-
   formatErrors = (error) => {
     if (!error) return null;
 
@@ -93,6 +75,7 @@ class RegisterForm extends React.PureComponent {
   }
 
   render() {
+    // eslint-disable-next-line no-unused-vars
     const { intl, classes } = this.props;
     const {
       error,
@@ -110,28 +93,10 @@ class RegisterForm extends React.PureComponent {
             <FormattedMessage {...messages.description} />
           </DialogContentText>
           <div>
-            <Field
-              name="username"
-              type="text"
-              component={TextField}
-              autoFocus
-              margin="dense"
-              label={intl.formatMessage(messages.username)}
-              helperText={intl.formatMessage(messages.usernameHelper)}
-              fullWidth
-              validate={[this.required, this.alphanumericDash, this.min5char]}
-            />
+            <UsernameField name="username" autoFocus fullWidth />
           </div>
           <div>
-            <Field
-              name="password"
-              type="password"
-              component={TextField}
-              label={intl.formatMessage(messages.password)}
-              helperText={intl.formatMessage(messages.passwordHelper)}
-              fullWidth
-              validate={[this.required, this.min8char]}
-            />
+            <PasswordField name="password" fullWidth />
           </div>
           <div className={classes.resultWrapper}>
             {this.formatErrors(error)}
