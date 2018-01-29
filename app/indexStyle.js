@@ -4,14 +4,12 @@ import 'animate.css/animate.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 import 'typeface-montserrat/index.css';
 import 'ionicons/css/ionicons.min.css';
-import 'magnific-popup/dist/magnific-popup.css';
 
 import jQuery from 'jquery';
 import { WOW } from 'wowjs';
 import 'jquery.easing';
 import 'superfish';
 import 'superfish/dist/js/hoverIntent';
-import 'magnific-popup';
 import './style.css';
 
 /* eslint-disable func-names */
@@ -124,21 +122,5 @@ jQuery(document).ready(($) => {
     }
 
     return false;
-  });
-
-  // Gallery - uses the magnific popup jQuery plugin
-  $('.gallery-popup').magnificPopup({
-    type: 'image',
-    removalDelay: 300,
-    mainClass: 'mfp-fade',
-    gallery: {
-      enabled: true,
-    },
-    zoom: {
-      enabled: true,
-      duration: 300,
-      easing: 'ease-in-out',
-      opener: (e) => e.is('img') ? e : e.find('img'),
-    },
   });
 });
