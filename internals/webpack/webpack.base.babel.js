@@ -43,8 +43,6 @@ module.exports = (options) => ({
                     },
                     preventFullImport: true,
                   },
-                },
-                {
                   'material-ui-icons': {
                     // eslint-disable-next-line no-template-curly-in-string
                     transform: 'material-ui-icons/${member}',
