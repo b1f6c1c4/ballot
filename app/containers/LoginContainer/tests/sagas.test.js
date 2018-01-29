@@ -36,7 +36,6 @@ describe('handleLoginRequest Saga', () => {
 
     return expectSaga(func)
       .withState(state)
-      .put(change('loginPage', 'password', ''))
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), response],
@@ -69,7 +68,7 @@ describe('handleLoginRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), response],
       ])
-      .put.like({ action: loginContainerActions.loginFailure({ codes: ['wgup'] }) })
+      .put.actionType(LOGIN_CONTAINER.LOGIN_FAILURE)
       .run();
   });
 });
@@ -93,12 +92,12 @@ describe('handleRegisterRequest Saga', () => {
 
     return expectSaga(func)
       .withState(state)
-      .put(change('loginPage', 'password', ''))
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), response],
       ])
       .put(loginContainerActions.registerSuccess(response))
+      .put(change('loginForm', 'username', 'un'))
       .run();
   });
 
@@ -125,6 +124,16 @@ describe('watcher', () => {
         [matchers.put(loginContainerActions.loginRequest())],
       ])
       .dispatch(loginContainerActions.submitLogin())
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should forward submitRegister to registerRequest', () => {
+    return expectSaga(watcher)
+      .provide([
+        [matchers.put(loginContainerActions.registerRequest())],
+      ])
+      .dispatch(loginContainerActions.submitRegister())
       .silentRun();
   });
 });

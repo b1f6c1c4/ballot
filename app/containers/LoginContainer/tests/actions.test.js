@@ -20,5 +20,9 @@ describe('LoginContainer actions', () => {
     it('has a type of CHANGE_ACTIVE_ID_ACTION', () => {
       expect(loginContainerActions.changeActiveId().type).toEqual(LOGIN_CONTAINER.CHANGE_ACTIVE_ID_ACTION);
     });
+
+    it('should forward', () => {
+      expect(loginContainerActions.changeActiveId(1).value).toEqual(1);
+    });
   });
 });
