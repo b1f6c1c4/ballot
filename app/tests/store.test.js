@@ -16,6 +16,13 @@ describe('slicer', () => {
     expect(slicer(fromJS(state)).toJS()).toEqual(state);
   });
 
+  it('should remove language', () => {
+    const state = {
+      language: 'val',
+    };
+    expect(slicer(fromJS(state)).toJS()).toEqual({});
+  });
+
   it('should respect null form', () => {
     const state = {
       key: 'value',

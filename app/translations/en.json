@@ -26,5 +26,6 @@
   "app.validation.required": "This field is required",
   "index.go": "go en",
   "index.htmlTitle": "Ballot - Customizable anonymous online balloting system",
+  "index.lang": "English",
   "index.title": "The Ballot Voting System"
 }

@@ -9,6 +9,10 @@ function updateContent() {
   $('*').localize();
 }
 
+_.mapValues(rawResources, (lo, k) => {
+  $('#lng').append(new Option(lo['index.lang'], k, false, false));
+});
+
 i18next.use(LngDetector).init({
   fallbackLng: 'en',
   keySeparator: '/',
@@ -20,6 +24,7 @@ i18next.use(LngDetector).init({
     throw err;
   }
   jqueryI18next.init(i18next, $);
+  $('#lng').val(i18next.language);
   updateContent();
 }).on('languageChanged', () => {
   $('#lng').val(i18next.language);

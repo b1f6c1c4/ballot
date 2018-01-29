@@ -26,5 +26,6 @@
   "app.validation.required": "必填",
   "index.go": "go zh",
   "index.htmlTitle": "Ballot - 匿名在线投票系统",
+  "index.lang": "中文",
   "index.title": "Ballot投票系统"
 }
