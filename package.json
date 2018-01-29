@@ -46,10 +46,12 @@
   "dllPlugin": {
     "path": "dll",
     "dlls": [
+      "animate.css",
       "apollo-cache-inmemory",
       "apollo-client",
       "apollo-link-http",
       "babel-polyfill",
+      "bootstrap",
       "browser-locale",
       "graphql",
       "history",
@@ -61,8 +63,10 @@
       "invariant",
       "jquery",
       "jquery-i18next",
+      "jquery.easing",
       "jwt-decode",
       "lodash",
+      "magnific-popup",
       "material-ui",
       "material-ui-icons",
       "prop-types",
@@ -81,7 +85,9 @@
       "redux-logger",
       "redux-saga",
       "reselect",
-      "whatwg-fetch"
+      "superfish",
+      "whatwg-fetch",
+      "wowjs"
     ]
   },
   "jest": {
