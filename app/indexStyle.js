@@ -59,10 +59,15 @@ jQuery(document).ready(($) => {
     $('body').append('<div id="mobile-body-overly"></div>');
     $('#mobile-nav').find('.menu-has-children').prepend('<i class="fa fa-chevron-down"></i>');
 
+    $(document).on('click', '.menu-has-children > a', function () {
+      $(this).toggleClass('menu-item-active');
+      $(this).nextAll('ul').eq(0).slideToggle();
+      $(this).prev().toggleClass('fa-chevron-up fa-chevron-down');
+    });
+
     $(document).on('click', '.menu-has-children i', function () {
       $(this).next().toggleClass('menu-item-active');
-      $(this).nextAll('ul').eq(0)
-        .slideToggle();
+      $(this).nextAll('ul').eq(0).slideToggle();
       $(this).toggleClass('fa-chevron-up fa-chevron-down');
     });
 
@@ -88,10 +93,7 @@ jQuery(document).ready(($) => {
 
   // Smoth scroll on page hash links
   $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function () {
-    if (window.location.pathname.replace(/^\//, '') !== this.pathname.replace(/^\//, '')
-      || window.location.hostname !== this.hostname) {
-      return undefined;
-    }
+    if (!this.hash) return undefined;
 
     const target = $(this.hash);
     if (target.length) return undefined;
@@ -136,9 +138,7 @@ jQuery(document).ready(($) => {
       enabled: true,
       duration: 300,
       easing: 'ease-in-out',
-      opener(openerElement) {
-        return openerElement.is('img') ? openerElement : openerElement.find('img');
-      },
+      opener: (e) => e.is('img') ? e : e.find('img'),
     },
   });
 });

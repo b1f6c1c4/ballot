@@ -24,6 +24,8 @@
   "app.validation.alphanumericDash": "Alphabet, numbers, or dash (-) only.",
   "app.validation.minChar": "At least {m, plural, =1 {character} other characters}",
   "app.validation.required": "This field is required",
+  "index.home": "Intro",
+  "index.login": "Login",
   "index.go": "go en",
   "index.htmlTitle": "Ballot - Customizable anonymous online balloting system",
   "index.lang": "English",
