@@ -23,10 +23,9 @@ export function* handleLoginRequest() {
   try {
     const result = yield call(api.mutate, gql.Login, { username, password });
     if (!result.login) {
-      yield put(loginContainerActions.loginFailure({
-        codes: ['wgup'],
-        message: 'Password or username wrong',
-      }));
+      const e = new Error('Credential not accepted');
+      e.codes = ['wgup'];
+      throw e;
     } else {
       yield put(globalActions.updateCredential(result.login));
       yield put(loginContainerActions.loginSuccess(result));
@@ -35,6 +34,7 @@ export function* handleLoginRequest() {
     }
   } catch (err) {
     yield put(loginContainerActions.loginFailure(err));
+    yield put(stopSubmit('loginForm', { _error: err }));
   }
 }
 

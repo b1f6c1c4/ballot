@@ -14,10 +14,8 @@ const styles = (theme) => ({
 
 class TextField extends React.PureComponent {
   render() {
-    // eslint-disable-next-line no-unused-vars
     const {
       intl,
-      classes,
       type,
       label,
       helperText,

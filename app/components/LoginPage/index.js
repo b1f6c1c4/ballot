@@ -47,6 +47,7 @@ class LoginPage extends React.PureComponent {
           axis="x"
           index={this.props.activeId}
           onChangeIndex={this.handleChangeIndex}
+          disableLazyLoading
         >
           <LoginForm {...this.props} />
           <RegisterForm {...this.props} />

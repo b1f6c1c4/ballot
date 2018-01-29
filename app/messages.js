@@ -53,4 +53,8 @@ export default defineMessages({
     id: 'app.error_unex',
     defaultMessage: 'Username exists.',
   },
+  error_wgup: {
+    id: 'app.error_wgup',
+    defaultMessage: 'Username and/or password incorrect.',
+  },
 });
