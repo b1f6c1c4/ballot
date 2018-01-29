@@ -25,19 +25,19 @@ class ResultIndicator extends React.PureComponent {
 
     if (!error.codes) {
       flag = false;
-      arr.push(<FormattedMessage {...messages.unknownError} />);
+      arr.push(<FormattedMessage key="unk" {...messages.unknownError} />);
     } else {
       error.codes.forEach((o) => {
         const idx = `error_${o}`;
         if (messages[idx]) {
-          arr.push(<FormattedMessage {...messages[idx]} />);
+          arr.push(<FormattedMessage key={o} {...messages[idx]} />);
         } else {
           flag = false;
         }
       });
     }
     if (!flag) {
-      arr.push(error.message);
+      arr.push(<span key="msg">{error.message}</span>);
     }
 
     return arr.filter((a) => a !== null).map((a) => (

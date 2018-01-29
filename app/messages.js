@@ -1,60 +1,42 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  username: {
-    id: 'app.username',
-    defaultMessage: 'Username',
-  },
-  usernameHelper: {
-    id: 'app.usernameHelper',
-    defaultMessage: '5+ alphanumeric or dash characters.',
-  },
-  password: {
-    id: 'app.password',
-    defaultMessage: 'Password',
-  },
-  passwordHelper: {
-    id: 'app.passwordHelper',
-    defaultMessage: '8+ characters.',
-  },
   login: {
-    id: 'app.login',
+    id: 'app.general.login',
     defaultMessage: 'Sign in',
   },
   register: {
-    id: 'app.register',
+    id: 'app.general.register',
     defaultMessage: 'Sign up',
   },
-  clear: {
-    id: 'app.clear',
-    defaultMessage: 'Clear',
-  },
+  // Validation
   required: {
-    id: 'app.required',
+    id: 'app.validation.required',
     defaultMessage: 'Required.',
   },
   minChar: {
-    id: 'app.minChar',
+    id: 'app.validation.minChar',
     defaultMessage: 'At least {m} character(s).',
   },
   alphanumericDash: {
-    id: 'app.alphanumericDash',
+    id: 'app.validation.alphanumericDash',
     defaultMessage: 'Number, alphabet, or dash only.',
   },
+  // Error
   errorUnknown: {
-    id: 'app.errorUnknown',
+    id: 'app.error.unknown',
     defaultMessage: 'Unknown error happened.',
   },
   error_netw: {
-    id: 'app.error_netw',
+    id: 'app.error.netw',
     defaultMessage: 'Network is bad.',
   },
   error_unex: {
-    id: 'app.error_unex',
+    id: 'app.error.unex',
     defaultMessage: 'Username exists.',
   },
   error_wgup: {
-    id: 'app.error_wgup',
+    id: 'app.error.wgup',
     defaultMessage: 'Username and/or password incorrect.',
   },
 });

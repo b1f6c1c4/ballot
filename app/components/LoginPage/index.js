@@ -37,7 +37,7 @@ class LoginPage extends React.PureComponent {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            fullWidth
+            centered
           >
             <Tab label={intl.formatMessage(messages.login)} />
             <Tab label={intl.formatMessage(messages.register)} />
