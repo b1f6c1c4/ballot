@@ -58,13 +58,13 @@ module.exports = (options) => ({
         // Preprocess our own .css files
         test: /\.css$/,
         exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        use: ['css-loader'],
       },
       {
         // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        use: ['css-loader'],
       },
       {
         test: /\.(eot|svg|otf|ttf|woff|woff2)$/,

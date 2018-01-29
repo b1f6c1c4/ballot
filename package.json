@@ -218,7 +218,6 @@
     "redux-saga-test-plan": "3.3.1",
     "rimraf": "2.6.2",
     "shelljs": "0.8.1",
-    "style-loader": "0.19.1",
     "webpack": "3.10.0",
     "webpack-dev-middleware": "2.0.4",
     "webpack-hot-middleware": "2.21.0"
