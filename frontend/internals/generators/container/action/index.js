@@ -7,7 +7,7 @@ module.exports = {
   prompts: [{
     type: 'input',
     name: 'name',
-    default: 'Form',
+    default: 'FormContainer',
     message: 'Name of the container?',
     validate: (value) => {
       if ((/.+/).test(value)) {
@@ -108,26 +108,6 @@ module.exports = {
       pattern: /^ {4}on[a-zA-Z]+: \(\) => dispatch/g,
       path: '../../app/containers/{{ properCase name }}/index.js',
       template: '    on{{ properCase actionName }}Action: () => dispatch({{ camelCase name }}Actions.{{ camelCase actionName }}()),',
-      abortOnFail: true,
-    });
-
-    // index.test.js
-    actions.push({
-      type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /^ {8}on[A-Z][a-zA-Z]*Action=\{jest\.fn\(\)\}$/g,
-      path: '../../app/containers/{{ properCase name }}/tests/index.test.js',
-      template: '        on{{ properCase actionName }}Action={jest.fn()}',
-      abortOnFail: true,
-    });
-    actions.push({
-      type: 'complexModify',
-      method: 'sectionEnd',
-      indent: 2,
-      section: /^ {2}\/\/ Actions/g,
-      pattern: /^ {2}\/\/ [A-Z][a-zA-Z]*$/g,
-      path: '../../app/containers/{{ properCase name }}/tests/index.test.js',
-      templateFile: './container/action/test.js.hbs',
       abortOnFail: true,
     });
 

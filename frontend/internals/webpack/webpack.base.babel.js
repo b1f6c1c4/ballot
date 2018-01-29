@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const transformImports = require('babel-plugin-transform-imports');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -14,7 +15,43 @@ module.exports = (options) => ({
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: options.babelQuery,
+          query: {
+            plugins: [
+              [
+                transformImports,
+                {
+                  'material-ui': {
+                    transform(name) {
+                      if (/Progress$/.test(name)) {
+                        return `material-ui/Progress/${name}`;
+                      }
+                      if (/^Dialog|Dialog$/.test(name)) {
+                        return `material-ui/Dialog/${name}`;
+                      }
+                      if (/^Tab/.test(name)) {
+                        return `material-ui/Tabs/${name}`;
+                      }
+                      if (/^[A-Z]/.test(name)) {
+                        return `material-ui/${name}`;
+                      }
+                      switch (name) {
+                        case 'Zoom':
+                          return `material-ui/transitions/${name}`;
+                        default:
+                          return `material-ui/styles/${name}`;
+                      }
+                    },
+                    preventFullImport: true,
+                  },
+                  'material-ui-icons': {
+                    // eslint-disable-next-line no-template-curly-in-string
+                    transform: 'material-ui-icons/${member}',
+                    preventFullImport: true,
+                  },
+                },
+              ],
+            ],
+          },
         },
       },
       {
@@ -35,25 +72,7 @@ module.exports = (options) => ({
       },
       {
         test: /\.(jpg|png|gif)$/,
-        use: [
-          'file-loader',
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              progressive: true,
-              optimizationLevel: 7,
-              interlaced: false,
-              pngquant: {
-                quality: '65-90',
-                speed: 4,
-              },
-            },
-          },
-        ],
-      },
-      {
-        test: /\.html$/,
-        use: 'html-loader',
+        use: 'file-loader',
       },
       {
         test: /\.json$/,
@@ -69,7 +88,9 @@ module.exports = (options) => ({
   plugins: options.plugins.concat([
     new webpack.ProvidePlugin({
       // make fetch available
+      jQuery: 'jquery',
       fetch: 'exports-loader?self.fetch!whatwg-fetch',
+      WOW: 'exports-loader?self.WOW!wowjs',
     }),
 
     // Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`

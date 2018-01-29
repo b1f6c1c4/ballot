@@ -7,7 +7,7 @@ module.exports = {
   prompts: [{
     type: 'input',
     name: 'name',
-    default: 'Form',
+    default: 'FormContainer',
     message: 'Name of the container?',
     validate: (value) => {
       if ((/.+/).test(value)) {
@@ -89,18 +89,6 @@ module.exports = {
       pattern: /^ {2}[a-zA-Z]+: makeSelect[a-zA-Z]+\(\),$/g,
       path: '../../app/containers/{{ properCase name }}/index.js',
       template: '  {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),',
-      abortOnFail: true,
-    });
-
-    // index.test.js
-    actions.push({
-      type: 'complexModify',
-      method: 'sectionEnd',
-      indent: 8,
-      section: /^ {8}\/\/ Selectors/g,
-      pattern: /^ {8}\/\/ [A-Z][a-zA-Z]*$/g,
-      path: '../../app/containers/{{ properCase name }}/tests/index.test.js',
-      template: '        {{ camelCase mselectorName }}="value"',
       abortOnFail: true,
     });
 

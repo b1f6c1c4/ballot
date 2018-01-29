@@ -27,7 +27,7 @@ LanguageProvider.propTypes = {
 
 
 const mapStateToProps = createStructuredSelector({
-  locale: /* istanbul ignore next */ (state) => state.get('language').get('locale'),
+  locale: (state) => state.get('language').get('locale'),
 });
 
 export default compose(

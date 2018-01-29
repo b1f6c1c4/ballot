@@ -5,9 +5,6 @@ import { connect } from 'react-redux';
 {{#if wantSelectors}}
 import { createStructuredSelector } from 'reselect';
 {{/if}}
-{{#if wantMessages}}
-import { FormattedMessage } from 'react-intl';
-{{/if}}
 {{#if wantActionsAndReducer}}
 {{#if wantLoadable}}
 import injectReducer from 'utils/injectReducer';
@@ -16,16 +13,6 @@ import injectReducer from 'utils/injectReducer';
 {{#if wantSagas}}
 import injectSaga from 'utils/injectSaga';
 {{/if}}
-
-import {
-  withStyles,
-{{#if wantSelectors}}
-  Typography,
-{{/if}}
-{{#if wantActionsAndReducer}}
-  Button,
-{{/if}}
-} from 'material-ui';
 
 {{#if wantMSelectors}}
 import {
@@ -41,33 +28,19 @@ import reducer from './reducer';
 {{#if wantSagas}}
 import sagas from './sagas';
 {{/if}}
-{{#if wantMessages}}
-import messages from './messages';
-{{/if}}
 
-const styles = (theme) => ({
-  content: {
-    backgroundColor: theme.palette.background.default,
-  },
-});
-
-class {{ properCase name }} extends React.PureComponent {
+export class {{ properCase name }} extends React.PureComponent {
   render() {
-    const { classes } = this.props;
-
     return (
-      <div className={classes.content}>
-{{#if wantMessages}}
-        <FormattedMessage {...messages.header} />
-{{/if}}
+      <div>
 {{#if wantSelectors}}
-        <Typography>{{curly true}}this.props.{{ camelCase selectorName }}{{curly false}}</Typography>
+        <p>{{curly true}}this.props.{{ camelCase selectorName }}{{curly false}}</p>
 {{/if}}
 {{#if wantMSelectors}}
-        <Typography>{{curly true}}this.props.{{ camelCase mselectorName }}{{curly false}}</Typography>
+        <p>{{curly true}}this.props.{{ camelCase mselectorName }}{{curly false}}</p>
 {{/if}}
 {{#if wantActionsAndReducer}}
-        <Button onClick={this.props.on{{ properCase actionName }}Action}>{{ properCase actionName }}Action</Button>
+        <input type="button" onClick={this.props.on{{ properCase actionName }}Action} />
 {{/if}}
       </div>
     );
@@ -75,7 +48,6 @@ class {{ properCase name }} extends React.PureComponent {
 }
 
 {{ properCase name }}.propTypes = {
-  classes: PropTypes.object.isRequired,
 {{#if wantSelectors}}
   {{ camelCase selectorName }}: PropTypes.string.isRequired,
 {{/if}}
@@ -97,14 +69,12 @@ export function mapDispatchToProps(dispatch) {
 {{/if}}
 {{#if wantSelectors}}
 const mapStateToProps = createStructuredSelector({
-  {{ camelCase selectorName }}: /* istanbul ignore next */ (state) => state.get('{{ camelCase name }}').get('{{ camelCase selectorName }}').toJS(),
+  {{ camelCase selectorName }}: (state) => state.getIn(['{{ camelCase name }}', '{{ camelCase selectorName }}']),
 {{#if wantMSelectors}}
   {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),
 {{/if}}
 });
 {{/if}}
-
-export const styled{{ properCase name}} = withStyles(styles, { withTheme: true })({{ properCase name}});
 
 export default compose(
 {{#if wantSagas}}
@@ -122,4 +92,4 @@ export default compose(
   connect(null, null),
 {{/if}}
 {{/if}}
-)(styled{{ properCase name }});
+)({{ properCase name }});

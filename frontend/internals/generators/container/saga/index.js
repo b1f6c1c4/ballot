@@ -7,7 +7,7 @@ module.exports = {
   prompts: [{
     type: 'input',
     name: 'name',
-    default: 'Form',
+    default: 'FormContainer',
     message: 'Name of the container?',
     validate: (value) => {
       if ((/.+/).test(value)) {
@@ -99,8 +99,7 @@ export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ con
       method: 'lastOccurance',
       pattern: /^ {2}yield take.*REQUEST.*Request\);$/g,
       path: '../../app/containers/{{ properCase name }}/sagas.js',
-      template: `  /* istanbul ignore next */
-  yield takeEvery({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST, handle{{ properCase sagaName }}Request);`,
+      template: 'yield takeEvery({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST, handle{{ properCase sagaName }}Request);',
       abortOnFail: true,
     });
 

@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import { createStructuredSelector, createSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 
 import { Switch, Route } from 'react-router-dom';
-import HomePage from 'containers/HomePage/Loadable';
-import LoginPage from 'containers/LoginPage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import StatusPage from 'containers/StatusPage/Loadable';
+import HomeContainer from 'containers/HomeContainer/Loadable';
+import LoginContainer from 'containers/LoginContainer/Loadable';
+import NotFoundContainer from 'containers/NotFoundContainer/Loadable';
+import StatusContainer from 'containers/StatusContainer/Loadable';
 
 import {
   withStyles,
@@ -26,8 +26,11 @@ const styles = (theme) => ({
   },
 });
 
-const ConnectedSwitch = connect(/* istanbul ignore next */ (state) => ({
-  location: state.get('route').get('location').toJS(),
+const ConnectedSwitch = connect(createStructuredSelector({
+  location: createSelector(
+    (state) => state.getIn(['route', 'location']),
+    (state) => state.toJS(),
+  ),
 }))(Switch);
 
 class Global extends React.PureComponent {
@@ -41,10 +44,10 @@ class Global extends React.PureComponent {
         <Typography>{this.props.isDrawerOpen.toString()}</Typography>
         <Button onClick={this.props.onToggleDrawerOpenAction}>ToggleDrawerOpenAction</Button>
         <ConnectedSwitch>
-          <Route exact path="/app/" component={HomePage} />
-          <Route exact path="/app/login" component={LoginPage} />
-          <Route exact path="/app/status" component={StatusPage} />
-          <Route component={NotFoundPage} />
+          <Route exact path="/app/" component={HomeContainer} />
+          <Route exact path="/app/login" component={LoginContainer} />
+          <Route exact path="/app/status" component={StatusContainer} />
+          <Route component={NotFoundContainer} />
         </ConnectedSwitch>
       </div>
     );
@@ -65,8 +68,8 @@ export function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isDrawerOpen: /* istanbul ignore next */ (state) => state.get('global').get('isDrawerOpen'),
-  hasCredential: /* istanbul ignore next */ (state) => !!state.get('global').get('credential'),
+  isDrawerOpen: (state) => state.get('global').get('isDrawerOpen'),
+  hasCredential: (state) => !!state.get('global').get('credential'),
 });
 
 export const styledGlobal = withStyles(styles, { withTheme: true })(Global);

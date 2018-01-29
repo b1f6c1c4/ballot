@@ -13,7 +13,8 @@ import createReducer from './reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const slicer = () => (state) => {
+export const slicer = () => (rawState) => {
+  const state = rawState.set('language', undefined);
   const forms = state.get('form');
   if (!forms) {
     return state;

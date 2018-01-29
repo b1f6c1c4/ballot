@@ -7,7 +7,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import 'sanitize.css/sanitize.css';
+import { Reboot } from 'material-ui';
+import 'typeface-roboto/index.css';
 
 // Import root app
 import App from 'containers/Global';
@@ -15,18 +16,12 @@ import App from 'containers/Global';
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
 
+import createMuiTheme from 'material-ui/styles/createMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-webpack-loader-syntax */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
-import '!file-loader?name=[name].[ext]!./images/icon-72x72.png';
-import '!file-loader?name=[name].[ext]!./images/icon-96x96.png';
-import '!file-loader?name=[name].[ext]!./images/icon-128x128.png';
-import '!file-loader?name=[name].[ext]!./images/icon-144x144.png';
-import '!file-loader?name=[name].[ext]!./images/icon-152x152.png';
-import '!file-loader?name=[name].[ext]!./images/icon-192x192.png';
-import '!file-loader?name=[name].[ext]!./images/icon-384x384.png';
-import '!file-loader?name=[name].[ext]!./images/icon-512x512.png';
-import '!file-loader?name=[name].[ext]!./manifest.json';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import configureStore from './configureStore';
@@ -40,12 +35,20 @@ const history = createHistory();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
+const theme = createMuiTheme({
+});
+
 const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
-          <App />
+          <div>
+            <Reboot />
+            <MuiThemeProvider theme={theme}>
+              <App />
+            </MuiThemeProvider>
+          </div>
         </ConnectedRouter>
       </LanguageProvider>
     </Provider>,

@@ -1,17 +1,8 @@
-/**
- * This script will extract the internationalization messages from all components
-   and package them in the translation json files in the translations file.
- */
 /* eslint-disable no-restricted-syntax */
 const _ = require('lodash');
 const fs = require('fs');
 const nodeGlob = require('glob');
 const { transform } = require('babel-core');
-
-const pkg = require('../../package.json');
-
-const { presets } = pkg.babel;
-const plugins = pkg.babel.plugins || [];
 
 const i18n = require('../../app/i18n');
 
@@ -19,8 +10,8 @@ const { ROOT_LOCALE } = require('../../app/i18n');
 
 const { mkdir } = require('shelljs');
 
-// Glob to match all js files except test files
-const FILES_TO_PARSE = 'app/**/!(*.test).js';
+// Glob to match all messages files
+const FILES_TO_PARSE = 'app/**/messages.js';
 const locales = i18n.appLocales;
 
 // Progress Logger
@@ -75,21 +66,8 @@ for (const locale of locales) {
   }
 }
 
-/* push `react-intl` plugin to the existing plugins that are already configured in `package.json`
-   Example:
-   ```
-  "babel": {
-    "plugins": [
-      ["transform-object-rest-spread", { "useBuiltIns": true }]
-    ],
-    "presets": [
-      "env",
-      "react"
-    ]
-  }
-  ```
-*/
-plugins.push(['react-intl']);
+const presets = ['stage-0'];
+const plugins = ['react-intl'];
 
 const extractFromFile = async (fileName) => {
   try {
