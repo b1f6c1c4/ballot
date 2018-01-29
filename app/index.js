@@ -4,6 +4,7 @@ import jqueryI18next from 'jquery-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
 import _ from 'lodash';
 import rawResources from './translations';
+import './indexStyle';
 
 function updateContent() {
   $('*').localize();

@@ -105,8 +105,10 @@ module.exports = (options) => ({
   },
   plugins: options.plugins.concat([
     new webpack.ProvidePlugin({
-    // make fetch available
+      // make fetch available
+      jQuery: 'jquery',
       fetch: 'exports-loader?self.fetch!whatwg-fetch',
+      WOW: 'exports-loader?self.WOW!wowjs',
     }),
 
     // Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`
