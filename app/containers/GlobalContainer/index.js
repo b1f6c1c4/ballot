@@ -8,9 +8,9 @@ import injectSaga from 'utils/injectSaga';
 
 import { Switch, Route } from 'react-router-dom';
 import GlobalPage from 'components/GlobalPage/Loadable';
+import NotFoundPage from 'components/NotFoundPage/Loadable';
 import HomeContainer from 'containers/HomeContainer/Loadable';
 import LoginContainer from 'containers/LoginContainer/Loadable';
-import NotFoundContainer from 'containers/NotFoundContainer/Loadable';
 import StatusContainer from 'containers/StatusContainer/Loadable';
 
 import {
@@ -34,7 +34,7 @@ export class GlobalContainer extends React.PureComponent {
           <Route exact path="/app/" component={HomeContainer} />
           <Route exact path="/app/login" component={LoginContainer} />
           <Route exact path="/app/status" component={StatusContainer} />
-          <Route component={NotFoundContainer} />
+          <Route component={NotFoundPage} />
         </ConnectedSwitch>
       </GlobalPage>
     );
