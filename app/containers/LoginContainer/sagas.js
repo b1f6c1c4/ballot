@@ -1,3 +1,4 @@
+import jwtDecode from 'jwt-decode';
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import {
@@ -10,7 +11,7 @@ import {
 } from 'redux-form';
 import { push } from 'react-router-redux';
 
-import * as globalActions from 'containers/Global/actions';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 import * as LOGIN_CONTAINER from './constants';
 import * as loginContainerActions from './actions';
 import gql from './api.graphql';
@@ -27,7 +28,9 @@ export function* handleLoginRequest() {
       e.codes = ['wgup'];
       throw e;
     } else {
-      yield put(globalActions.updateCredential(result.login));
+      const decoded = jwtDecode(result.login);
+      decoded.token = result.login;
+      yield put(globalContainerActions.login(decoded));
       yield put(loginContainerActions.loginSuccess(result));
       yield put(destroy('loginForm'));
       yield put(push('/app/'));

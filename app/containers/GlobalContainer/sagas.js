@@ -9,11 +9,9 @@ import gql from './api.graphql';
 // Sagas
 export function* handleBallotsRequest() {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
-  const json = yield select((state) => state.getIn(['globalContainer', 'isDrawerOpen']));
-  const { key } = json.toJS();
 
   try {
-    const result = yield call(api.query, gql.Ballots, { key }, cred);
+    const result = yield call(api.query, gql.Ballots, undefined, cred);
     yield put(globalContainerActions.ballotsSuccess(result));
   } catch (err) {
     yield put(globalContainerActions.ballotsFailure(err));

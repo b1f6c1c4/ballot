@@ -6,7 +6,7 @@ import * as api from 'utils/request';
 import { change } from 'redux-form';
 import { push } from 'react-router-redux';
 
-import * as globalActions from 'containers/Global/actions';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 import * as LOGIN_CONTAINER from '../constants';
 import * as loginContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -33,6 +33,13 @@ describe('handleLoginRequest Saga', () => {
   it('should dispatch loginSuccess', () => {
     const login = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTM4NjAxNzUsImV4cCI6MTUxMzg2NzM3NSwiYXVkIjoidHJ5LXJlYWN0IiwiaXNzIjoidHJ5LXJlYWN0In0.Y6li_4xDg4dQALJKFqUp0NxXjUH1skPEIg41Z0aN9LE';
     const response = { login };
+    const credential = {
+      iat: 1513860175,
+      exp: 1513867375,
+      aud: 'try-react',
+      iss: 'try-react',
+      token: login,
+    };
 
     return expectSaga(func)
       .withState(state)
@@ -40,7 +47,7 @@ describe('handleLoginRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), response],
       ])
-      .put(globalActions.updateCredential(login))
+      .put(globalContainerActions.login(credential))
       .put(loginContainerActions.loginSuccess(response))
       .put(push('/app/'))
       .run();

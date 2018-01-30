@@ -25,7 +25,7 @@ class ResultIndicator extends React.PureComponent {
 
     if (!error.codes) {
       flag = false;
-      arr.push(<FormattedMessage key="unk" {...messages.unknownError} />);
+      arr.push(<FormattedMessage key="unk" {...messages.error_unknown} />);
     } else {
       error.codes.forEach((o) => {
         const idx = `error_${o}`;

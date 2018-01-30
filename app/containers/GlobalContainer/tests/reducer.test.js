@@ -53,7 +53,7 @@ describe('globalContainerReducer', () => {
   it('should handle login action', () => {
     const credential = { key: 'val' };
     const originalState = state;
-    const expectedResult = state.set('credential', credential);
+    const expectedResult = state.set('credential', fromJS(credential));
 
     expect(globalContainerReducer(originalState, globalContainerActions.login(credential))).toEqual(expectedResult);
   });
@@ -77,7 +77,7 @@ describe('globalContainerReducer', () => {
     const ballots = [{ key: 'val' }];
     const originalState = state;
     const result = { ballots };
-    const expectedResult = state.set('listBallots', ballots);
+    const expectedResult = state.set('listBallots', fromJS(ballots));
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsSuccess(result))).toEqual(expectedResult);
   });

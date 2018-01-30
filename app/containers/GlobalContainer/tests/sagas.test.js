@@ -15,15 +15,13 @@ import watcher, {
 
 // Sagas
 describe('handleBallotsRequest Saga', () => {
-  const variables = { key: 'value' };
   const state = fromJS({
     globalContainer: {
-      isDrawerOpen: variables,
       credential: { token: 'cre' },
     },
   });
   const func = handleBallotsRequest;
-  const dArgs = [api.query, gql.Ballots, variables, 'cre'];
+  const dArgs = [api.query, gql.Ballots, undefined, 'cre'];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen BALLOTS_REQUEST in the watcher', () => {

@@ -23,7 +23,7 @@ export default defineMessages({
     defaultMessage: 'Number, alphabet, or dash only.',
   },
   // Error
-  errorUnknown: {
+  error_unknown: {
     id: 'app.error.unknown',
     defaultMessage: 'Unknown error happened.',
   },

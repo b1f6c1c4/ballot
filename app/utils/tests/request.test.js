@@ -98,11 +98,8 @@ describe('makeContext', () => {
   });
 
   it('should append bearer', () => {
-    expect(makeContext('aa')({}, {
-      headers: { key: 'val' },
-    }).headers).toEqual({
-      key: 'val',
-      authorization: 'Bearer aa',
+    expect(makeContext('aa')).toEqual({
+      headers: { authorization: 'Bearer aa' },
     });
   });
 });
