@@ -3,6 +3,7 @@ import { fromJS } from 'immutable';
 import * as GLOBAL_CONTAINER from './constants';
 
 const initialState = fromJS({
+  isLoading: false,
   isDrawerOpen: false,
   isAccountOpen: false,
   credential: null,
@@ -27,11 +28,12 @@ function globalContainerReducer(state = initialState, action) {
       return state.set('credential', null);
     // Sagas
     case GLOBAL_CONTAINER.BALLOTS_REQUEST:
-      return state;
+      return state.set('isLoading', true);
     case GLOBAL_CONTAINER.BALLOTS_SUCCESS:
-      return state.set('listBallots', fromJS(action.result.ballots));
+      return state.set('isLoading', false)
+        .set('listBallots', fromJS(action.result.ballots));
     case GLOBAL_CONTAINER.BALLOTS_FAILURE:
-      return state;
+      return state.set('isLoading', false);
     // Default
     default:
       return state;

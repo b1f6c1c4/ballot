@@ -8,6 +8,7 @@ describe('globalContainerReducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
+      isLoading: false,
       isDrawerOpen: false,
       isAccountOpen: false,
       credential: null,
@@ -67,25 +68,26 @@ describe('globalContainerReducer', () => {
 
   // Sagas
   it('should handle ballots request', () => {
-    const originalState = state;
-    const expectedResult = state;
+    const originalState = state.set('isLoading', false);
+    const expectedResult = state.set('isLoading', true);
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsRequest())).toEqual(expectedResult);
   });
 
   it('should handle ballots success', () => {
     const ballots = [{ key: 'val' }];
-    const originalState = state;
+    const originalState = state.set('isLoading', true);
     const result = { ballots };
-    const expectedResult = state.set('listBallots', fromJS(ballots));
+    const expectedResult = state.set('isLoading', false)
+      .set('listBallots', fromJS(ballots));
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsSuccess(result))).toEqual(expectedResult);
   });
 
   it('should handle ballots failure', () => {
-    const originalState = state;
+    const originalState = state.set('isLoading', true);
     const error = { };
-    const expectedResult = state;
+    const expectedResult = state.set('isLoading', false);
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEqual(expectedResult);
   });

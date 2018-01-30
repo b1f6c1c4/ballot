@@ -71,6 +71,7 @@ export const query = async (gql, vars, cred) => {
       query: gql,
       variables: vars,
       context: makeContext(cred),
+      fetchPolicy: 'network-only',
     });
     return postProcess(response);
   } catch (e) {
@@ -84,6 +85,7 @@ export const mutate = async (gql, vars, cred) => {
       mutation: gql,
       variables: vars,
       context: makeContext(cred),
+      fetchPolicy: 'network-only',
     });
     return postProcess(response);
   } catch (e) {

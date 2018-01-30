@@ -111,6 +111,7 @@ describe('query', () => {
         expect(opt).toEqual({
           query: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         return { data: 'v' };
       },
@@ -126,6 +127,7 @@ describe('query', () => {
         expect(opt).toEqual({
           query: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         throw new Error('ee');
       },
@@ -147,6 +149,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         return { data: 'v' };
       },
@@ -162,6 +165,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         throw new Error('ee');
       },

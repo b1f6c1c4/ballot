@@ -2,53 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { push } from 'react-router-redux';
+import { createStructuredSelector } from 'reselect';
 
-import { Link } from 'react-router-dom';
-import LoginContainer from 'containers/LoginContainer/Loadable';
-import StatusContainer from 'containers/StatusContainer/Loadable';
+import HomePage from 'components/HomePage/Loadable';
 
 import {
-  withStyles,
-} from 'material-ui';
+  makeSelectGlobalContainerListBallots,
+} from 'containers/GlobalContainer/selectors';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
-import messages from './messages';
-
-const styles = (theme) => ({
-  content: {
-    backgroundColor: theme.palette.background.default,
-  },
-});
-
-class HomeContainer extends React.PureComponent {
-  onMouseOverLogin() {
-    LoginContainer.preload();
-  }
-
-  onMouseOverStatus() {
-    StatusContainer.preload();
-  }
-
+export class HomeContainer extends React.PureComponent {
   render() {
-    const { classes } = this.props;
-
     return (
-      <div className={classes.content}>
-        <FormattedMessage {...messages.header} />
-        <Link to="/app/login" onMouseOver={this.onMouseOverLogin}>login</Link>
-        <Link to="/app/status" onMouseOver={this.onMouseOverStatus}>check status</Link>
-      </div>
+      <HomePage {...this.props} />
     );
   }
 }
 
 HomeContainer.propTypes = {
-  classes: PropTypes.object.isRequired,
+  hasCredential: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  listBallots: PropTypes.array,
+  onRefreshListBallots: PropTypes.func.isRequired,
 };
 
+export function mapDispatchToProps(dispatch) {
+  return {
+    onPush: (url) => dispatch(push(url)),
+    onRefreshListBallots: () => dispatch(globalContainerActions.ballotsRequest()),
+  };
+}
 
-export const styledHomeContainer = withStyles(styles, { withTheme: true })(HomeContainer);
+const mapStateToProps = createStructuredSelector({
+  hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
+  isLoading: (state) => state.getIn(['globalContainer', 'isLoading']),
+  listBallots: makeSelectGlobalContainerListBallots(),
+});
 
 export default compose(
-  connect(null, null),
-)(styledHomeContainer);
+  connect(mapStateToProps, mapDispatchToProps),
+)(HomeContainer);

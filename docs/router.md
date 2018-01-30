@@ -22,14 +22,10 @@
 - 查看全部投票 - Ballot Collection Page
 - 查看投票 - View Ballot Page
 
-## Create Ballot Page [/app/ballots -> /app.html]
+## Create Ballot Page [/app/create -> /app.html]
 
 - 创建 - Edit Fields Page
 - 取消 - Home Page
-
-## Ballot Collection Page [/app/ballots/ -> /app.html]
-
-- 查看投票 - View Ballot Page
 
 ## View Ballot Page [/app/ballots/{bId} -> /app.html]
 

@@ -16,6 +16,19 @@ describe('slicer', () => {
     expect(slicer(fromJS(state)).toJS()).toEqual(state);
   });
 
+  it('should remove isLoading', () => {
+    const state = {
+      a: {
+        isLoading: 'val',
+      },
+    };
+    expect(slicer(fromJS(state)).toJS()).toEqual({
+      a: {
+        isLoading: false,
+      },
+    });
+  });
+
   it('should remove language', () => {
     const state = {
       language: 'val',

@@ -75,6 +75,6 @@ const mapStateToProps = createStructuredSelector({
 });
 
 export default compose(
-  injectSaga({ key: 'loginContainer', saga: sagas }),
+  injectSaga({ key: 'globalContainer', saga: sagas }),
   connect(mapStateToProps, mapDispatchToProps),
 )(GlobalContainer);

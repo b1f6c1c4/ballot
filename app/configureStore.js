@@ -2,6 +2,7 @@
  * Create the store with dynamic reducers
  */
 
+import _ from 'lodash';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
@@ -14,33 +15,17 @@ import createReducer from './reducers';
 const sagaMiddleware = createSagaMiddleware();
 
 export const slicer = () => (rawState) => {
-  const state = rawState.set('language', undefined);
-  const forms = state.get('form');
-  if (!forms) {
-    return state;
-  }
+  const state = rawState.toJS();
+  _.unset(state, 'language');
 
-  return state.set('form', forms.map((form) => {
-    const fields = form.get('registeredFields');
-    if (!fields) {
-      return form;
-    }
+  _.forIn(state, (k) => _.get(k, 'isLoading') && _.set(k, 'isLoading', false));
 
-    const values = form.get('values');
-    if (!values) {
-      return form;
-    }
+  _.forIn(state.form, (form) => {
+    const sens = _.keys(form.registeredFields).filter((k) => k.toLowerCase().includes('password'));
+    sens.forEach((k) => _.unset(form, `values.${k}`));
+  });
 
-    const sensitives = fields.filter((field) => field.get('name').toLowerCase().includes('password')).keys();
-    return form.set('values', values.withMutations((vals) => {
-      let val = vals;
-      // eslint-disable-next-line no-restricted-syntax
-      for (const v of sensitives) {
-        val = val.remove(v);
-      }
-      return val;
-    }));
-  }));
+  return fromJS(state);
 };
 
 export default function configureStore(initialState = {}, history) {

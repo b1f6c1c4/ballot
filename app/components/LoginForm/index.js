@@ -56,7 +56,7 @@ class LoginForm extends React.PureComponent {
             <Button
               type="submit"
               color="primary"
-              disabled={this.props.isLoading}
+              disabled={isLoading}
             >
               <FormattedMessage {...messages.login} />
             </Button>
