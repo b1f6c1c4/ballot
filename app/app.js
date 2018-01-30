@@ -11,7 +11,7 @@ import { Reboot } from 'material-ui';
 import 'typeface-roboto/index.css';
 
 // Import root app
-import App from 'containers/Global';
+import GlobalContainer from 'containers/GlobalContainer';
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
@@ -46,7 +46,7 @@ const render = (messages) => {
           <div>
             <Reboot />
             <MuiThemeProvider theme={theme}>
-              <App />
+              <GlobalContainer />
             </MuiThemeProvider>
           </div>
         </ConnectedRouter>

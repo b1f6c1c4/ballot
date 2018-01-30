@@ -10,16 +10,13 @@
 ## Login Page [/app/login -> /app.html]
 
 - 登录 - Home Page
-- 注册 - Register Page
+- 注册
 
-## Register Page [/app/register -> /app.html]
+## Change Password Page [/app/password -> /app.html]
 
-- 注册 - Login Page
-- 登录 - Login Page
+- 修改密码 - Home Page
 
 ## Home Page [/app/ -> /app.html]
-
-若无凭证则自动跳转至Login Page
 
 - 发起投票 - Create Ballot Page
 - 查看全部投票 - Ballot Collection Page
