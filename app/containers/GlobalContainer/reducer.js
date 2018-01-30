@@ -22,8 +22,15 @@ function globalContainerReducer(state = initialState, action) {
     case GLOBAL_CONTAINER.CLOSE_ACCOUNT_ACTION:
       return state.set('isAccountOpen', false);
     case GLOBAL_CONTAINER.LOGIN_ACTION:
-      return state;
+      return state.set('credential', action.credential);
     case GLOBAL_CONTAINER.LOGOUT_ACTION:
+      return state.set('credential', null);
+    // Sagas
+    case GLOBAL_CONTAINER.BALLOTS_REQUEST:
+      return state;
+    case GLOBAL_CONTAINER.BALLOTS_SUCCESS:
+      return state.set('listBallots', action.result.ballots);
+    case GLOBAL_CONTAINER.BALLOTS_FAILURE:
       return state;
     // Default
     default:

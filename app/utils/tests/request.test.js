@@ -1,4 +1,11 @@
-import { makeApi, postProcess, getClient, query, mutate } from '../request';
+import {
+  makeApi,
+  postProcess,
+  getClient,
+  makeContext,
+  query,
+  mutate,
+} from '../request';
 
 describe('makeApi', () => {
   it('should return default', () => {
@@ -74,6 +81,29 @@ describe('postProcess', () => {
       expect(res.raw).toBe(e);
       expect(res.codes).toEqual(['c', 'd']);
     }
+  });
+});
+
+describe('makeContext', () => {
+  it('should ignore empty', () => {
+    expect(makeContext('')).toBeUndefined();
+  });
+
+  it('should ignore null', () => {
+    expect(makeContext(null)).toBeUndefined();
+  });
+
+  it('should ignore undefined', () => {
+    expect(makeContext(undefined)).toBeUndefined();
+  });
+
+  it('should append bearer', () => {
+    expect(makeContext('aa')({}, {
+      headers: { key: 'val' },
+    }).headers).toEqual({
+      key: 'val',
+      authorization: 'Bearer aa',
+    });
   });
 });
 

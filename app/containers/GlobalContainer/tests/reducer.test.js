@@ -51,16 +51,42 @@ describe('globalContainerReducer', () => {
   });
 
   it('should handle login action', () => {
+    const credential = { key: 'val' };
     const originalState = state;
-    const expectedResult = state;
+    const expectedResult = state.set('credential', credential);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.login())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.login(credential))).toEqual(expectedResult);
   });
 
   it('should handle logout action', () => {
-    const originalState = state;
+    const originalState = state.set('credential', { key: 'val' });
     const expectedResult = state;
 
     expect(globalContainerReducer(originalState, globalContainerActions.logout())).toEqual(expectedResult);
+  });
+
+  // Sagas
+  it('should handle ballots request', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsRequest())).toEqual(expectedResult);
+  });
+
+  it('should handle ballots success', () => {
+    const ballots = [{ key: 'val' }];
+    const originalState = state;
+    const result = { ballots };
+    const expectedResult = state.set('listBallots', ballots);
+
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsSuccess(result))).toEqual(expectedResult);
+  });
+
+  it('should handle ballots failure', () => {
+    const originalState = state;
+    const error = { };
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEqual(expectedResult);
   });
 });
