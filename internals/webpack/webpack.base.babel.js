@@ -25,11 +25,17 @@ module.exports = (options) => ({
                       if (/Progress$/.test(name)) {
                         return `material-ui/Progress/${name}`;
                       }
-                      if (/^Dialog|Dialog$/.test(name)) {
+                      if (/^Dialog($|[A-Z])|Dialog$/.test(name)) {
                         return `material-ui/Dialog/${name}`;
                       }
-                      if (/^Tab/.test(name)) {
+                      if (/^Tab($|[A-Z])/.test(name)) {
                         return `material-ui/Tabs/${name}`;
+                      }
+                      if (/^Menu($|[A-Z])/.test(name)) {
+                        return `material-ui/Menu/${name}`;
+                      }
+                      if (/^Table($|[A-Z])/.test(name)) {
+                        return `material-ui/Table/${name}`;
                       }
                       if (/^[A-Z]/.test(name)) {
                         return `material-ui/${name}`;

@@ -10,8 +10,8 @@ import {
   Button,
   IconButton,
   Menu,
+  MenuItem,
 } from 'material-ui';
-import { MenuItem } from 'material-ui/Menu';
 import MenuIcon from 'material-ui-icons/Menu';
 import AccountCircle from 'material-ui-icons/AccountCircle';
 
