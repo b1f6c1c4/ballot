@@ -11,13 +11,14 @@
 
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.css) {
-        if (!/vendor/.test(key)) { %>
+        if (/index/.test(key) && !/vendor/.test(key)) { %>
           <link rel="stylesheet" href="<%= key %>">
       <% }
       }
     } %>
   </head>
   <body>
+
     <%= require('html-loader!./index.html') %>
 
     <% if (!htmlWebpackPlugin.options.inject) {
@@ -33,7 +34,7 @@
 </html>
 <% if (!htmlWebpackPlugin.options.inject) {
   for (let key of htmlWebpackPlugin.files.css) {
-    if (/vendor/.test(key)) { %>
+    if (/index/.test(key) && /vendor/.test(key)) { %>
       <link rel="stylesheet" href="<%= key %>">
   <% }
   }

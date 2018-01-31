@@ -12,7 +12,7 @@ const extractCss0 = new ExtractTextPlugin({
   allChunks: true,
 });
 const extractCss1 = new ExtractTextPlugin({
-  filename: '[name].vender.[contenthash].css',
+  filename: '[name].vendor.[contenthash].css',
   allChunks: true,
 });
 
