@@ -4,9 +4,21 @@ import messages from 'messages';
 export default {
   ...messages,
   ...defineMessages({
-    header: {
-      id: 'app.components.VoterCard.header',
-      defaultMessage: 'This is the VoterCard component!',
+    registered: {
+      id: 'app.components.VoterCard.registered',
+      defaultMessage: 'Registered',
+    },
+    unregistered: {
+      id: 'app.components.VoterCard.unregistered',
+      defaultMessage: 'Not registered',
+    },
+    iCode: {
+      id: 'app.components.VoterCard.iCode',
+      defaultMessage: 'Invitation Code',
+    },
+    publicKey: {
+      id: 'app.components.VoterCard.publicKey',
+      defaultMessage: 'Public Key',
     },
   }),
 };

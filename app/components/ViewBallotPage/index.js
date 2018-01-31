@@ -43,6 +43,7 @@ const styles = (theme) => ({
   cards: {
     display: 'flex',
     flexWrap: 'wrap',
+    alignItems: 'flex-start',
   },
   card: {
     margin: theme.spacing.unit,

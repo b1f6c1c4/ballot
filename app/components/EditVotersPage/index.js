@@ -28,6 +28,7 @@ const styles = (theme) => ({
   },
   cards: {
     display: 'flex',
+    alignItems: 'flex-start',
     flexWrap: 'wrap',
   },
 });
@@ -36,6 +37,8 @@ class EditVotersPage extends React.PureComponent {
   componentDidMount() {
     this.props.onRefresh();
   }
+
+  handleDelete = (iCode) => () => this.onDeleteVoter(iCode);
 
   render() {
     const {
@@ -68,6 +71,15 @@ class EditVotersPage extends React.PureComponent {
         </div>
         <ResultIndicator error={this.props.error} />
         <div className={classes.cards}>
+          {!isLoading && voters && voters.map((v) => (
+            <VoterCard
+              key={v.iCode}
+              voter={v}
+              disabled={!canEditVoters}
+              onDelete={this.handleDelete(v.iCode)}
+              {...{ bId }}
+            />
+          ))}
         </div>
       </div>
     );
@@ -83,6 +95,8 @@ EditVotersPage.propTypes = {
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onCreateVoter: PropTypes.func.isRequired,
+  onDeleteVoter: PropTypes.func.isRequired,
 };
 
 export const styledEditVotersPage = withStyles(styles)(EditVotersPage);

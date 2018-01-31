@@ -1,6 +1,55 @@
+const _ = require('lodash');
 const path = require('path');
 const webpack = require('webpack');
 const transformImports = require('babel-plugin-transform-imports');
+
+const materialUiGroups = _.fromPairs([
+  'BottomNavigation',
+  'Card',
+  'Dialog',
+  'ExpansionPanel',
+  'Form',
+  'Input',
+  'Gird',
+  'List',
+  'Menu',
+  'Progress',
+  'Radio',
+  'Snackbar',
+  'Step',
+  'Table',
+].map((g) => [g, new RegExp(`${g}($|[A-Z])|${g}$`)]));
+
+const materialUiMap = (name) => {
+  if (/^Tab($|[A-Z])/.test(name)) {
+    return `material-ui/Tabs/${name}`;
+  }
+  switch (name) {
+    case 'Backdrop':
+      return `material-ui/Modal/${name}`;
+    case 'Slide':
+    case 'Grow':
+    case 'Fase':
+    case 'Collapse':
+    case 'Zoom':
+      return `material-ui/transitions/${name}`;
+    case 'MuiThemeProvider':
+    case 'withStyles':
+    case 'withTheme':
+    case 'createMuiTheme':
+    case 'jssPreset':
+      return `material-ui/styles/${name}`;
+    default:
+      break;
+  }
+  const cans = _.keys(_.pickBy(materialUiGroups, (r) => r.test(name)));
+  if (cans.length === 1) {
+    return `material-ui/${cans[0]}/${name}`;
+  } else if (cans.length > 1) {
+    throw new Error(`Unknown ${name}`);
+  }
+  return `material-ui/${name}`;
+};
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -21,35 +70,7 @@ module.exports = (options) => ({
                 transformImports,
                 {
                   'material-ui': {
-                    transform(name) {
-                      if (/Progress$/.test(name)) {
-                        return `material-ui/Progress/${name}`;
-                      }
-                      if (/^Dialog($|[A-Z])|Dialog$/.test(name)) {
-                        return `material-ui/Dialog/${name}`;
-                      }
-                      if (/^Tab($|[A-Z])/.test(name)) {
-                        return `material-ui/Tabs/${name}`;
-                      }
-                      if (/^Menu($|[A-Z])/.test(name)) {
-                        return `material-ui/Menu/${name}`;
-                      }
-                      if (/^Table($|[A-Z])/.test(name)) {
-                        return `material-ui/Table/${name}`;
-                      }
-                      if (/^Card($|[A-Z])/.test(name)) {
-                        return `material-ui/Card/${name}`;
-                      }
-                      if (/^[A-Z]/.test(name)) {
-                        return `material-ui/${name}`;
-                      }
-                      switch (name) {
-                        case 'Zoom':
-                          return `material-ui/transitions/${name}`;
-                        default:
-                          return `material-ui/styles/${name}`;
-                      }
-                    },
+                    transform: materialUiMap,
                     preventFullImport: true,
                   },
                   'material-ui-icons': {

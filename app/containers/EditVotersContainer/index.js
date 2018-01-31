@@ -11,8 +11,8 @@ import EditVotersPage from 'components/EditVotersPage/Loadable';
 
 import {
   makeSelectEditVotersContainerBallot,
+  makeSelectEditVotersContainerVoters,
   makeSelectEditVotersContainerError,
-  makeSelectEditVotersContainerListVoters,
 } from './selectors';
 import * as editVotersContainerActions from './actions';
 import reducer from './reducer';
@@ -22,14 +22,12 @@ export class EditVotersContainer extends React.PureComponent {
   render() {
     const {
       match,
-      listVoters,
       ...other
     } = this.props;
 
     return (
       <EditVotersPage
         bId={match.params.bId}
-        voters={listVoters}
         {...other}
       />
     );
@@ -42,7 +40,9 @@ EditVotersContainer.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
-  listVoters: PropTypes.array,
+  voters: PropTypes.array,
+  onCreateVoter: PropTypes.func.isRequired,
+  onDeleteVoter: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch, { match }) {
@@ -50,6 +50,8 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
+    onCreateVoter: (name) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
+    onDeleteVoter: (iCode) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
   };
 }
 
@@ -58,7 +60,7 @@ const mapStateToProps = createStructuredSelector({
   isLoading: (state) => state.getIn(['editVotersContainer', 'isLoading']),
   ballot: makeSelectEditVotersContainerBallot(),
   error: makeSelectEditVotersContainerError(),
-  listVoters: makeSelectEditVotersContainerListVoters(),
+  voters: makeSelectEditVotersContainerVoters(),
 });
 
 export default compose(

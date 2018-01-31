@@ -1,28 +1,28 @@
 import { fromJS } from 'immutable';
 
 import {
-  makeSelectEditVotersContainerListVoters,
+  makeSelectEditVotersContainerVoters,
   makeSelectEditVotersContainerError,
   makeSelectEditVotersContainerBallot,
 } from '../selectors';
 
-describe('makeSelectEditVotersContainerListVoters', () => {
-  const selectEditVotersContainerListVoters = makeSelectEditVotersContainerListVoters();
+describe('makeSelectEditVotersContainerVoters', () => {
+  const selectEditVotersContainerVoters = makeSelectEditVotersContainerVoters();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectEditVotersContainerListVoters(mockedState)).not.toEqual(expect.anything());
+    expect(selectEditVotersContainerVoters(mockedState)).not.toEqual(expect.anything());
   });
 
-  it('should select listVoters', () => {
-    const listVoters = [{ key: 'value' }];
+  it('should select voters', () => {
+    const voters = [{ key: 'value' }];
     const state = fromJS({
-      listVoters,
+      voters,
     });
     const mockedState = fromJS({
       editVotersContainer: state,
     });
-    expect(selectEditVotersContainerListVoters(mockedState)).toEqual(listVoters);
+    expect(selectEditVotersContainerVoters(mockedState)).toEqual(voters);
   });
 });
 

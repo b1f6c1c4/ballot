@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
-export const makeSelectEditVotersContainerListVoters = () => createSelector(
-  (state) => state.getIn(['editVotersContainer', 'listVoters']),
+export const makeSelectEditVotersContainerVoters = () => createSelector(
+  (state) => state.getIn(['editVotersContainer', 'voters']),
   (state) => state && state.toJS(),
 );
 

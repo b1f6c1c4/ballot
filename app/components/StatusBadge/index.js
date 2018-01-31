@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import {
   withStyles,
 } from 'material-ui';
+import classnames from 'classnames';
 
 import messages from './messages';
 
@@ -55,14 +56,14 @@ class StatusBadge extends React.PureComponent {
 
     if (!messages[status]) {
       return (
-        <div className={[classes.default, classes.unknown].join(' ')}>
+        <div className={classnames(classes.default, classes.unknown)}>
           <FormattedMessage {...messages.unknown} />
         </div>
       );
     }
 
     return (
-      <div className={[classes.default, classes[status]].join(' ')}>
+      <div className={classnames(classes.default, classes[status])}>
         <FormattedMessage {...messages[status]} />
       </div>
     );

@@ -32,6 +32,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'flex-end',
   },
 });
