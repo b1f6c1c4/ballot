@@ -1,4 +1,3 @@
-<% var key %>
 <!DOCTYPE html>
 <html lang="en" <% if (htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>>
   <head>
@@ -9,23 +8,33 @@
     <meta content="ie=edge" http-equiv="x-ua-compatible">
 
     <title data-i18n="index.htmlTitle">Ballot</title>
-  </head>
-  <body>
-    <%= require('html-loader!./index.html') %>
+
     <% if (!htmlWebpackPlugin.options.inject) {
-      for (key in htmlWebpackPlugin.files.chunks) {
-        if (/index/.test(key)) { %>
-          <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"></script>
+      for (let key of htmlWebpackPlugin.files.css) {
+        if (!/vendor/.test(key)) { %>
+          <link rel="stylesheet" href="<%= key %>">
       <% }
       }
     } %>
+  </head>
+  <body>
+    <%= require('html-loader!./index.html') %>
 
     <% if (!htmlWebpackPlugin.options.inject) {
-      for (key in htmlWebpackPlugin.files.chunks) {
-        if (!/index/.test(key)) { %>
-          <link rel="prefetch" href="<%= htmlWebpackPlugin.files.chunks[key].entry %>">
+      for (let key of htmlWebpackPlugin.files.js) {
+        if (/index/.test(key)) { %>
+          <script type="text/javascript" src="<%= key %>"></script>
+      <% } else { %>
+          <link rel="prefetch" href="<%= key %>">
       <% }
       }
     } %>
   </body>
 </html>
+<% if (!htmlWebpackPlugin.options.inject) {
+  for (let key of htmlWebpackPlugin.files.css) {
+    if (/vendor/.test(key)) { %>
+      <link rel="stylesheet" href="<%= key %>">
+  <% }
+  }
+} %>

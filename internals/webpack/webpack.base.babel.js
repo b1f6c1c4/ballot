@@ -1,55 +1,5 @@
-const _ = require('lodash');
 const path = require('path');
 const webpack = require('webpack');
-const transformImports = require('babel-plugin-transform-imports');
-
-const materialUiGroups = _.fromPairs([
-  'BottomNavigation',
-  'Card',
-  'Dialog',
-  'ExpansionPanel',
-  'Form',
-  'Input',
-  'Gird',
-  'List',
-  'Menu',
-  'Progress',
-  'Radio',
-  'Snackbar',
-  'Step',
-  'Table',
-].map((g) => [g, new RegExp(`${g}($|[A-Z])|${g}$`)]));
-
-const materialUiMap = (name) => {
-  if (/^Tab($|[A-Z])/.test(name)) {
-    return `material-ui/Tabs/${name}`;
-  }
-  switch (name) {
-    case 'Backdrop':
-      return `material-ui/Modal/${name}`;
-    case 'Slide':
-    case 'Grow':
-    case 'Fase':
-    case 'Collapse':
-    case 'Zoom':
-      return `material-ui/transitions/${name}`;
-    case 'MuiThemeProvider':
-    case 'withStyles':
-    case 'withTheme':
-    case 'createMuiTheme':
-    case 'jssPreset':
-      return `material-ui/styles/${name}`;
-    default:
-      break;
-  }
-  const cans = _.keys(_.pickBy(materialUiGroups, (r) => r.test(name)));
-  if (cans.length === 1) {
-    return `material-ui/${cans[0]}/${name}`;
-  } else if (cans.length > 1) {
-    throw new Error(`Unknown ${name}`);
-  }
-  return `material-ui/${name}`;
-};
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -62,51 +12,32 @@ module.exports = (options) => ({
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
+        use: [{
           loader: 'babel-loader',
-          query: {
-            plugins: [
-              [
-                transformImports,
-                {
-                  'material-ui': {
-                    transform: materialUiMap,
-                    preventFullImport: true,
-                  },
-                  'material-ui-icons': {
-                    // eslint-disable-next-line no-template-curly-in-string
-                    transform: 'material-ui-icons/${member}',
-                    preventFullImport: true,
-                  },
-                },
-              ],
-            ],
-          },
-        },
+          options: options.babelOptions || {},
+        }],
       },
       {
-        // Preprocess our own .css files
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        use: options.cssLoaderVender || ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: options.cssLoaderApp || ['style-loader', 'css-loader'],
       },
       {
         test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
-        use: 'file-loader',
+        loader: 'file-loader',
       },
       {
         test: /\.(jpg|png|gif)$/,
-        use: 'file-loader',
+        loader: 'file-loader',
       },
       {
         test: /\.json$/,
-        use: 'json-loader',
+        loader: 'json-loader',
       },
       {
         test: /\.graphql$/,

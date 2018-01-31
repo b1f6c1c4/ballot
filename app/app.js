@@ -7,7 +7,11 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import { Reboot } from 'material-ui';
+import {
+  Reboot,
+  createMuiTheme,
+  MuiThemeProvider,
+} from 'material-ui';
 import 'typeface-roboto/index.css';
 
 // Import root app
@@ -15,9 +19,6 @@ import GlobalContainer from 'containers/GlobalContainer';
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
-
-import createMuiTheme from 'material-ui/styles/createMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-webpack-loader-syntax */

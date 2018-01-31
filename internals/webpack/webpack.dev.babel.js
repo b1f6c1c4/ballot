@@ -21,7 +21,9 @@ const plugins = [
     filename: 'index.html',
     template: 'app/index/index.ejs',
     inject: true,
+    chunksSortMode: 'manual',
     chunks: [
+      'indexStyle',
       'index',
     ],
   }),
@@ -56,6 +58,10 @@ module.exports = require('./webpack.base.babel')({
     index: [
       'webpack-hot-middleware/client?reload=true',
       path.join(process.cwd(), 'app/index/index.js'),
+    ],
+    indexStyle: [
+      'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/index/style.js'),
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
