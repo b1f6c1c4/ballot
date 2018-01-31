@@ -3,12 +3,10 @@ const _ = require('lodash');
 const fs = require('fs');
 const nodeGlob = require('glob');
 const { transform } = require('babel-core');
-
-const i18n = require('../../app/i18n');
-
-const { ROOT_LOCALE } = require('../../app/i18n');
-
 const { mkdir } = require('shelljs');
+const i18n = require('../../app/utils/i18n');
+
+const { ROOT_LOCALE } = i18n;
 
 // Glob to match all messages files
 const FILES_TO_PARSE = 'app/**/messages.js';

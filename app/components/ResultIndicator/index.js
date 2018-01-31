@@ -7,7 +7,7 @@ import {
   Typography,
 } from 'material-ui';
 
-import messages from 'messages';
+import messages from 'utils/messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({

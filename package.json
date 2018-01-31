@@ -29,14 +29,12 @@
     "clean": "shjs ./internals/scripts/clean.js",
     "clean:all": "yarn analyze:clean && yarn test:clean && yarn build:clean",
     "generate": "plop --plopfile internals/generators/index.js",
-    "lint": "yarn lint:js",
-    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals/scripts",
-    "lint:js": "yarn lint:eslint .",
+    "lint": "eslint --ignore-path .gitignore .",
     "lint:staged": "lint-staged",
     "pretest": "yarn test:clean && yarn lint",
     "test:clean": "rimraf ./coverage",
     "test": "cross-env NODE_ENV=test jest --coverage",
-    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "test:watch": "cross-env NODE_ENV=test jest --coverage --watchAll",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
@@ -93,14 +91,12 @@
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.js",
+      "!app/**/*.test.js",
       "!app/**/messages.js",
       "!app/components/**/index.js",
       "!app/containers/**/index.js",
-      "!app/**/*.test.js",
-      "!app/*/RbGenerated*/*.js",
-      "!app/index.js",
-      "!app/indexStyle.js",
       "!app/app.js",
+      "!app/index/*.js",
       "!app/*/*/Loadable.js",
       "!app/utils/makeLoadable.js"
     ],

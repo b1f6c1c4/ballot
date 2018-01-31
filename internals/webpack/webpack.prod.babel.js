@@ -35,7 +35,7 @@ module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
     index: [
-      path.join(process.cwd(), 'app/index.js'),
+      path.join(process.cwd(), 'app/index/index.js'),
     ],
     app: [
       path.join(process.cwd(), 'app/app.js'),
@@ -62,7 +62,7 @@ module.exports = require('./webpack.base.babel')({
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'app/index.ejs',
+      template: 'app/index/index.ejs',
       minify,
       inject: false, // manual inject
       chunks: [

@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-import messages from 'messages';
+import messages from 'utils/messages';
 
 export default {
   ...messages,

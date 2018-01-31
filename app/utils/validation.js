@@ -1,4 +1,4 @@
-import messages from 'messages';
+import messages from 'utils/messages';
 
 export const required = () => (value) => {
   if (value) return undefined;

@@ -19,7 +19,7 @@ const plugins = [
   new webpack.NoEmitOnErrorsPlugin(),
   new HtmlWebpackPlugin({
     filename: 'index.html',
-    template: 'app/index.ejs',
+    template: 'app/index/index.ejs',
     inject: true,
     chunks: [
       'index',
@@ -55,7 +55,7 @@ module.exports = require('./webpack.base.babel')({
   entry: {
     index: [
       'webpack-hot-middleware/client?reload=true',
-      path.join(process.cwd(), 'app/index.js'),
+      path.join(process.cwd(), 'app/index/index.js'),
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
