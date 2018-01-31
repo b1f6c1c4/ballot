@@ -5,7 +5,7 @@ import {
   withStyles,
 } from 'material-ui';
 
-import GlobalBar from 'components/GlobalBar/Loadable';
+import GlobalBar from 'components/GlobalBar';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({

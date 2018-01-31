@@ -10,10 +10,10 @@ import {
   Paper,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
-import TextField from 'components/TextField/Loadable';
-import ClearButton from 'components/ClearButton/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import ResultIndicator from 'components/ResultIndicator/Loadable';
+import TextField from 'components/TextField';
+import ClearButton from 'components/ClearButton';
+import LoadingButton from 'components/LoadingButton';
+import ResultIndicator from 'components/ResultIndicator';
 import make, { required, alphanumericDash, minChar } from 'utils/validation';
 
 import messages from './messages';

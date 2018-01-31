@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import ViewBallotPage from 'components/ViewBallotPage/Loadable';
+import ViewBallotPage from 'components/ViewBallotPage';
 
 import {
   makeSelectViewBallotContainerBallot,

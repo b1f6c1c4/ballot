@@ -7,8 +7,8 @@ import {
   Typography,
 } from 'material-ui';
 import Loading from 'components/Loading';
-import Abbreviation from 'components/Abbreviation/Loadable';
-import StatusBadge from 'components/StatusBadge/Loadable';
+import Abbreviation from 'components/Abbreviation';
+import StatusBadge from 'components/StatusBadge';
 
 import messages from './messages';
 

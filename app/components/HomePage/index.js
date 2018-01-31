@@ -13,11 +13,11 @@ import {
   TableRow,
   Paper,
 } from 'material-ui';
-import EmptyIndicator from 'components/EmptyIndicator/Loadable';
-import Abbreviation from 'components/Abbreviation/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import RefreshButton from 'components/RefreshButton/Loadable';
-import StatusBadge from 'components/StatusBadge/Loadable';
+import EmptyIndicator from 'components/EmptyIndicator';
+import Abbreviation from 'components/Abbreviation';
+import LoadingButton from 'components/LoadingButton';
+import RefreshButton from 'components/RefreshButton';
+import StatusBadge from 'components/StatusBadge';
 
 import messages from './messages';
 

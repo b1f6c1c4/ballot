@@ -6,7 +6,7 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import LoginPage from 'components/LoginPage/Loadable';
+import LoginPage from 'components/LoginPage';
 
 import * as loginContainerActions from './actions';
 import reducer from './reducer';

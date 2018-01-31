@@ -6,13 +6,13 @@ import * as Permission from 'utils/permission';
 import {
   withStyles,
 } from 'material-ui';
-import BallotMeta from 'components/BallotMeta/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import RefreshButton from 'components/RefreshButton/Loadable';
-import ResultIndicator from 'components/ResultIndicator/Loadable';
-import EmptyIndicator from 'components/EmptyIndicator/Loadable';
-import VoterCard from 'components/VoterCard/Loadable';
-import CreateVoterForm from 'components/CreateVoterForm/Loadable';
+import BallotMeta from 'components/BallotMeta';
+import LoadingButton from 'components/LoadingButton';
+import RefreshButton from 'components/RefreshButton';
+import ResultIndicator from 'components/ResultIndicator';
+import EmptyIndicator from 'components/EmptyIndicator';
+import VoterCard from 'components/VoterCard';
+import CreateVoterForm from 'components/CreateVoterForm';
 
 import messages from './messages'; // eslint-disable-line no-unused-vars
 

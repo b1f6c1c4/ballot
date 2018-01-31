@@ -7,8 +7,8 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import injectSaga from 'utils/injectSaga';
 
 import { Switch, Route } from 'react-router-dom';
-import GlobalPage from 'components/GlobalPage/Loadable';
-import NotFoundPage from 'components/NotFoundPage/Loadable';
+import GlobalPage from 'components/GlobalPage';
+import NotFoundPage from 'components/NotFoundPage';
 import HomeContainer from 'containers/HomeContainer/Loadable';
 import LoginContainer from 'containers/LoginContainer/Loadable';
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';

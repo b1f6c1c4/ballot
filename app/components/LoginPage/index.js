@@ -3,8 +3,8 @@ import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
-import LoginForm from 'components/LoginForm/Loadable';
-import RegisterForm from 'components/RegisterForm/Loadable';
+import LoginForm from 'components/LoginForm';
+import RegisterForm from 'components/RegisterForm';
 
 import SwipeableViews from 'react-swipeable-views';
 import {

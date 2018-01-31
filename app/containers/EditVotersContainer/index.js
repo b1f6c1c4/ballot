@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import EditVotersPage from 'components/EditVotersPage/Loadable';
+import EditVotersPage from 'components/EditVotersPage';
 
 import {
   makeSelectEditVotersContainerBallot,

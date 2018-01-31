@@ -12,11 +12,11 @@ import {
   Button,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
-import UsernameField from 'components/UsernameField/Loadable';
-import PasswordField from 'components/PasswordField/Loadable';
-import ClearButton from 'components/ClearButton/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import ResultIndicator from 'components/ResultIndicator/Loadable';
+import UsernameField from 'components/UsernameField';
+import PasswordField from 'components/PasswordField';
+import ClearButton from 'components/ClearButton';
+import LoadingButton from 'components/LoadingButton';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 

@@ -32,7 +32,7 @@ module.exports = {
   }, {
     type: 'confirm',
     name: 'wantLoadable',
-    default: true,
+    default: false,
     message: 'Do you want to load resources asynchronously?',
   }],
   actions: (data) => {

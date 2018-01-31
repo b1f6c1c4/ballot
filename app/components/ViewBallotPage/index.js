@@ -14,13 +14,13 @@ import {
   TableCell,
   TableRow,
 } from 'material-ui';
-import BallotMeta from 'components/BallotMeta/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import RefreshButton from 'components/RefreshButton/Loadable';
-import ViewButton from 'components/ViewButton/Loadable';
-import EditButton from 'components/EditButton/Loadable';
-import EmptyIndicator from 'components/EmptyIndicator/Loadable';
-import ResultIndicator from 'components/ResultIndicator/Loadable';
+import BallotMeta from 'components/BallotMeta';
+import LoadingButton from 'components/LoadingButton';
+import RefreshButton from 'components/RefreshButton';
+import ViewButton from 'components/ViewButton';
+import EditButton from 'components/EditButton';
+import EmptyIndicator from 'components/EmptyIndicator';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
