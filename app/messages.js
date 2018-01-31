@@ -27,6 +27,10 @@ export default defineMessages({
     id: 'app.error.unknown',
     defaultMessage: 'Unknown error happened.',
   },
+  error_uath: {
+    id: 'app.error.uath',
+    defaultMessage: 'Unauthorzied.',
+  },
   error_netw: {
     id: 'app.error.netw',
     defaultMessage: 'Network is bad.',

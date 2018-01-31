@@ -16,9 +16,7 @@ import watcher, {
 // Sagas
 describe('handleBallotsRequest Saga', () => {
   const state = fromJS({
-    globalContainer: {
-      credential: { token: 'cre' },
-    },
+    globalContainer: { credential: { token: 'cre' } },
   });
   const func = handleBallotsRequest;
   const dArgs = [api.query, gql.Ballots, undefined, 'cre'];

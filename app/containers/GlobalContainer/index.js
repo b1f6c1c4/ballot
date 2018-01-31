@@ -11,11 +11,9 @@ import GlobalPage from 'components/GlobalPage/Loadable';
 import NotFoundPage from 'components/NotFoundPage/Loadable';
 import HomeContainer from 'containers/HomeContainer/Loadable';
 import LoginContainer from 'containers/LoginContainer/Loadable';
+import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
 import StatusContainer from 'containers/StatusContainer/Loadable';
 
-import {
-  makeSelectGlobalContainerListBallots,
-} from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
 
@@ -33,6 +31,7 @@ export class GlobalContainer extends React.PureComponent {
         <ConnectedSwitch>
           <Route exact path="/app/" component={HomeContainer} />
           <Route exact path="/app/login" component={LoginContainer} />
+          <Route exact path="/app/create" component={CreateBallotContainer} />
           <Route exact path="/app/status" component={StatusContainer} />
           <Route component={NotFoundPage} />
         </ConnectedSwitch>
@@ -46,7 +45,6 @@ GlobalContainer.propTypes = {
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,
   username: PropTypes.string,
-  listBallots: PropTypes.array,
   onOpenDrawerAction: PropTypes.func.isRequired,
   onCloseDrawerAction: PropTypes.func.isRequired,
   onOpenAccountAction: PropTypes.func.isRequired,
@@ -71,7 +69,6 @@ const mapStateToProps = createStructuredSelector({
   isDrawerOpen: (state) => state.getIn(['globalContainer', 'isDrawerOpen']),
   isAccountOpen: (state) => state.getIn(['globalContainer', 'isAccountOpen']),
   username: (state) => state.getIn(['globalContainer', 'credential', 'username']),
-  listBallots: makeSelectGlobalContainerListBallots(),
 });
 
 export default compose(

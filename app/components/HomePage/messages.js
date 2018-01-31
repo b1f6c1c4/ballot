@@ -4,10 +4,6 @@ import messages from 'messages';
 export default {
   ...messages,
   ...defineMessages({
-    noCredential: {
-      id: 'app.components.HomePage.noCredential',
-      defaultMessage: 'Please login.',
-    },
     header: {
       id: 'app.components.HomePage.header',
       defaultMessage: 'Control panel',

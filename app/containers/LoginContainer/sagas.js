@@ -5,9 +5,7 @@ import {
   change,
   reset,
   destroy,
-  startSubmit,
   stopSubmit,
-  setSubmitSucceeded,
 } from 'redux-form';
 import { push } from 'react-router-redux';
 
@@ -27,14 +25,13 @@ export function* handleLoginRequest() {
       const e = new Error('Credential not accepted');
       e.codes = ['wgup'];
       throw e;
-    } else {
-      const decoded = jwtDecode(result.login);
-      decoded.token = result.login;
-      yield put(globalContainerActions.login(decoded));
-      yield put(loginContainerActions.loginSuccess(result));
-      yield put(destroy('loginForm'));
-      yield put(push('/app/'));
     }
+    const decoded = jwtDecode(result.login);
+    decoded.token = result.login;
+    yield put(globalContainerActions.login(decoded));
+    yield put(loginContainerActions.loginSuccess(result));
+    yield put(destroy('loginForm'));
+    yield put(push('/app/'));
   } catch (err) {
     yield put(loginContainerActions.loginFailure(err));
     yield put(stopSubmit('loginForm', { _error: err }));
@@ -45,11 +42,9 @@ export function* handleRegisterRequest() {
   const json = yield select((state) => state.getIn(['form', 'registerForm', 'values']));
   const { username, password } = json.toJS();
 
-  yield put(startSubmit('registerForm'));
   try {
     const result = yield call(api.mutate, gql.Register, { username, password });
     yield put(loginContainerActions.registerSuccess(result));
-    yield put(setSubmitSucceeded('registerForm'));
     yield put(destroy('registerForm'));
     yield put(loginContainerActions.changeActiveId(0));
     yield put(reset('loginForm'));

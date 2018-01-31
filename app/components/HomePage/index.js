@@ -54,14 +54,6 @@ class HomePage extends React.PureComponent {
     // eslint-disable-next-line no-unused-vars
     const { classes, isLoading, listBallots } = this.props;
 
-    if (!this.props.hasCredential) {
-      return (
-        <Typography type="display2">
-          <FormattedMessage {...messages.noCredential} />
-        </Typography>
-      );
-    }
-
     return (
       <div className={classes.container}>
         <Typography type="display2">
@@ -132,7 +124,6 @@ class HomePage extends React.PureComponent {
 HomePage.propTypes = {
   onPush: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  hasCredential: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   listBallots: PropTypes.array,
   onRefreshListBallots: PropTypes.func.isRequired,

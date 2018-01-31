@@ -15,10 +15,10 @@ import createReducer from './reducers';
 const sagaMiddleware = createSagaMiddleware();
 
 export const slicer = () => (rawState) => {
-  const state = rawState.toJS();
+  let state = rawState.toJS();
   _.unset(state, 'language');
 
-  _.forIn(state, (k) => _.get(k, 'isLoading') && _.set(k, 'isLoading', false));
+  state = _.mapValues(state, (k) => _.get(k, 'isLoading') ? _.set(k, 'isLoading', false) : k);
 
   _.forIn(state.form, (form) => {
     const sens = _.keys(form.registeredFields).filter((k) => k.toLowerCase().includes('password'));

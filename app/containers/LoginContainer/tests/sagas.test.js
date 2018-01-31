@@ -19,7 +19,9 @@ import watcher, {
 // Sagas
 describe('handleLoginRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
-  const state = fromJS({ form: { loginForm: { values: variables } } });
+  const state = fromJS({
+    form: { loginForm: { values: variables } },
+  });
   const func = handleLoginRequest;
   const dArgs = [api.mutate, gql.Login, variables];
 
@@ -82,7 +84,9 @@ describe('handleLoginRequest Saga', () => {
 
 describe('handleRegisterRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
-  const state = fromJS({ form: { registerForm: { values: variables } } });
+  const state = fromJS({
+    form: { registerForm: { values: variables } },
+  });
   const func = handleRegisterRequest;
   const dArgs = [api.mutate, gql.Register, variables];
 

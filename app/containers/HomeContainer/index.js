@@ -6,6 +6,7 @@ import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
 
 import HomePage from 'components/HomePage/Loadable';
+import AuthRequired from 'components/AuthRequired/Loadable';
 
 import {
   makeSelectGlobalContainerListBallots,
@@ -15,7 +16,9 @@ import * as globalContainerActions from 'containers/GlobalContainer/actions';
 export class HomeContainer extends React.PureComponent {
   render() {
     return (
-      <HomePage {...this.props} />
+      <AuthRequired hasCredential={this.props.hasCredential}>
+        <HomePage {...this.props} />
+      </AuthRequired>
     );
   }
 }
