@@ -1,5 +1,6 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
+import { reset } from 'redux-form';
 
 import * as EDIT_VOTERS_CONTAINER from './constants';
 import * as editVotersContainerActions from './actions';
@@ -12,6 +13,7 @@ export function* handleCreateVoterRequest({ bId, name }) {
   try {
     const result = yield call(api.mutate, gql.CreateVoter, { bId, name }, cred);
     yield put(editVotersContainerActions.createVoterSuccess(result));
+    yield put(reset('createVoterForm'));
   } catch (err) {
     yield put(editVotersContainerActions.createVoterFailure(err));
   }

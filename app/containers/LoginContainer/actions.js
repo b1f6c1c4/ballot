@@ -1,18 +1,6 @@
 import * as LOGIN_CONTAINER from './constants';
 
 // Actions
-export function submitLogin() {
-  return {
-    type: LOGIN_CONTAINER.SUBMIT_LOGIN_ACTION,
-  };
-}
-
-export function submitRegister() {
-  return {
-    type: LOGIN_CONTAINER.SUBMIT_REGISTER_ACTION,
-  };
-}
-
 export function changeActiveId(value) {
   return {
     type: LOGIN_CONTAINER.CHANGE_ACTIVE_ID_ACTION,
@@ -21,9 +9,11 @@ export function changeActiveId(value) {
 }
 
 // Sagas
-export function loginRequest() {
+export function loginRequest({ username, password }) {
   return {
     type: LOGIN_CONTAINER.LOGIN_REQUEST,
+    username,
+    password,
   };
 }
 
@@ -41,9 +31,11 @@ export function loginFailure(error) {
   };
 }
 
-export function registerRequest() {
+export function registerRequest({ username, password }) {
   return {
     type: LOGIN_CONTAINER.REGISTER_REQUEST,
+    username,
+    password,
   };
 }
 

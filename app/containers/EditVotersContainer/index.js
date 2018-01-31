@@ -38,6 +38,7 @@ EditVotersContainer.propTypes = {
   onPush: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  isCreateLoading: PropTypes.bool.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
   voters: PropTypes.array,
@@ -58,6 +59,7 @@ export function mapDispatchToProps(dispatch, { match }) {
 const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['editVotersContainer', 'isLoading']),
+  isCreateLoading: (state) => state.getIn(['editVotersContainer', 'isCreateLoading']),
   ballot: makeSelectEditVotersContainerBallot(),
   error: makeSelectEditVotersContainerError(),
   voters: makeSelectEditVotersContainerVoters(),

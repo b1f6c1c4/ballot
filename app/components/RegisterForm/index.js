@@ -25,6 +25,11 @@ const styles = (theme) => ({
 });
 
 class RegisterForm extends React.PureComponent {
+  handleRegister = (vals) => this.props.onRegister({
+    username: vals.get('username'),
+    password: vals.get('password'),
+  });
+
   render() {
     const {
       error,
@@ -34,7 +39,7 @@ class RegisterForm extends React.PureComponent {
     } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.props.onSubmitRegisterAction)}>
+      <form onSubmit={handleSubmit(this.handleRegister)}>
         <DialogTitle>
           <FormattedMessage {...messages.header} />
         </DialogTitle>
@@ -72,7 +77,7 @@ RegisterForm.propTypes = {
   ...propTypes,
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
-  onSubmitRegisterAction: PropTypes.func.isRequired,
+  onRegister: PropTypes.func.isRequired,
 };
 
 export const styledRegisterForm = withStyles(styles)(RegisterForm);

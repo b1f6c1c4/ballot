@@ -1,4 +1,4 @@
-export const CanEditFields = (status) => {
+export const CanEditFields = ({ status }) => {
   switch (status) {
     case 'creating':
     case 'inviting':
@@ -9,7 +9,7 @@ export const CanEditFields = (status) => {
   }
 };
 
-export const CanEditVoters = (status) => {
+export const CanEditVoters = ({ status }) => {
   switch (status) {
     case 'inviting':
       return true;
@@ -18,7 +18,7 @@ export const CanEditVoters = (status) => {
   }
 };
 
-export const CanViewStats = (status) => {
+export const CanViewStats = ({ status }) => {
   switch (status) {
     case 'voting':
     case 'finished':

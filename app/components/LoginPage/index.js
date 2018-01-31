@@ -63,7 +63,8 @@ LoginPage.propTypes = {
   activeId: PropTypes.number.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onChangeActiveIdAction: PropTypes.func.isRequired,
-  onSubmitRegisterAction: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
+  onRegister: PropTypes.func.isRequired,
 };
 
 export const styledLoginPage = withStyles(styles)(LoginPage);

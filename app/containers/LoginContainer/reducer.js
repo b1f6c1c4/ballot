@@ -10,10 +10,6 @@ const initialState = fromJS({
 function loginContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case LOGIN_CONTAINER.SUBMIT_LOGIN_ACTION:
-      return state;
-    case LOGIN_CONTAINER.SUBMIT_REGISTER_ACTION:
-      return state;
     case LOGIN_CONTAINER.CHANGE_ACTIVE_ID_ACTION:
       return state.set('activeId', action.value);
     // Sagas

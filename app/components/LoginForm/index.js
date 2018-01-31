@@ -25,6 +25,11 @@ const styles = (theme) => ({
 });
 
 class LoginForm extends React.PureComponent {
+  handleLogin = (vals) => this.props.onLogin({
+    username: vals.get('username'),
+    password: vals.get('password'),
+  });
+
   render() {
     const {
       reset,
@@ -33,7 +38,7 @@ class LoginForm extends React.PureComponent {
     } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.props.onSubmitLoginAction)}>
+      <form onSubmit={handleSubmit(this.handleLogin)}>
         <DialogTitle>
           <FormattedMessage {...messages.header} />
         </DialogTitle>
@@ -70,7 +75,7 @@ LoginForm.propTypes = {
   ...propTypes,
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
-  onSubmitLoginAction: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
 };
 
 export const styledLoginForm = withStyles(styles)(LoginForm);

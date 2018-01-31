@@ -12,6 +12,7 @@ import RefreshButton from 'components/RefreshButton/Loadable';
 import ResultIndicator from 'components/ResultIndicator/Loadable';
 import EmptyIndicator from 'components/EmptyIndicator/Loadable';
 import VoterCard from 'components/VoterCard/Loadable';
+import CreateVoterForm from 'components/CreateVoterForm/Loadable';
 
 import messages from './messages'; // eslint-disable-line no-unused-vars
 
@@ -69,6 +70,12 @@ class EditVotersPage extends React.PureComponent {
             />
           </LoadingButton>
         </div>
+        {!isLoading && canEditVoters && (
+          <CreateVoterForm
+            isLoading={this.props.isCreateLoading}
+            onCreateVoter={this.props.onCreateVoter}
+          />
+        )}
         <ResultIndicator error={this.props.error} />
         <EmptyIndicator isLoading={isLoading} list={voters && voters} />
         <div className={classes.cards}>
@@ -95,7 +102,9 @@ EditVotersPage.propTypes = {
   voters: PropTypes.array,
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
+  isCreateLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
 };
 

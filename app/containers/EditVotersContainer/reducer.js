@@ -5,6 +5,7 @@ import * as EDIT_VOTERS_CONTAINER from './constants';
 
 const initialState = fromJS({
   isLoading: false,
+  isCreateLoading: false,
   voters: null,
   error: null,
 });
@@ -14,13 +15,13 @@ function editVotersContainerReducer(state = initialState, action) {
     // Actions
     // Sagas
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_REQUEST:
-      return state.set('isLoading', true)
+      return state.set('isCreateLoading', true)
         .set('error', null);
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_SUCCESS:
-      return state.set('isLoading', false)
+      return state.set('isCreateLoading', false)
         .set('voters', state.get('voters').push(fromJS(action.result.createVoter)));
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_FAILURE:
-      return state.set('isLoading', false)
+      return state.set('isCreateLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
     case EDIT_VOTERS_CONTAINER.DELETE_VOTER_REQUEST:
       return state.set('isLoading', true)

@@ -1,5 +1,5 @@
 import jwtDecode from 'jwt-decode';
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import {
   change,
@@ -15,10 +15,7 @@ import * as loginContainerActions from './actions';
 import gql from './api.graphql';
 
 // Sagas
-export function* handleLoginRequest() {
-  const json = yield select((state) => state.getIn(['form', 'loginForm', 'values']));
-  const { username, password } = json.toJS();
-
+export function* handleLoginRequest({ username, password }) {
   try {
     const result = yield call(api.mutate, gql.Login, { username, password });
     if (!result.login) {
@@ -38,10 +35,7 @@ export function* handleLoginRequest() {
   }
 }
 
-export function* handleRegisterRequest() {
-  const json = yield select((state) => state.getIn(['form', 'registerForm', 'values']));
-  const { username, password } = json.toJS();
-
+export function* handleRegisterRequest({ username, password }) {
   try {
     const result = yield call(api.mutate, gql.Register, { username, password });
     yield put(loginContainerActions.registerSuccess(result));
@@ -60,11 +54,4 @@ export function* handleRegisterRequest() {
 export default function* watcher() {
   yield takeEvery(LOGIN_CONTAINER.LOGIN_REQUEST, handleLoginRequest);
   yield takeEvery(LOGIN_CONTAINER.REGISTER_REQUEST, handleRegisterRequest);
-
-  yield takeEvery(LOGIN_CONTAINER.SUBMIT_LOGIN_ACTION, function* () {
-    yield put(loginContainerActions.loginRequest());
-  });
-  yield takeEvery(LOGIN_CONTAINER.SUBMIT_REGISTER_ACTION, function* () {
-    yield put(loginContainerActions.registerRequest());
-  });
 }
