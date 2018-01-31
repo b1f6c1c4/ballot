@@ -39,7 +39,9 @@ class CreateVoterForm extends React.PureComponent {
     required(),
   );
 
-  handleCreate = (vals) => this.props.onCreateVoter(vals.get('name'));
+  handleCreate = (vals) => this.props.onCreateVoter({
+    name: vals.get('name'),
+  });
 
   render() {
     const {

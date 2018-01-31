@@ -9,6 +9,7 @@ describe('editVotersContainerReducer', () => {
   beforeEach(() => {
     state = fromJS({
       isLoading: false,
+      isCreateLoading: false,
       voters: null,
       error: null,
     });
@@ -23,27 +24,27 @@ describe('editVotersContainerReducer', () => {
 
   // Sagas
   it('should handle createVoter request', () => {
-    const originalState = state.set('isLoading', false).set('error', 'e');
+    const originalState = state.set('isCreateLoading', false).set('error', 'e');
     const param = { bId: '1', name: 'n' };
-    const expectedResult = state.set('isLoading', true);
+    const expectedResult = state.set('isCreateLoading', true);
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle createVoter success', () => {
-    const originalState = state.set('isLoading', true)
+    const originalState = state.set('isCreateLoading', true)
       .set('voters', fromJS([]));
     const result = { createVoter: { k: 'v' } };
-    const expectedResult = state.set('isLoading', false)
+    const expectedResult = state.set('isCreateLoading', false)
       .set('voters', fromJS([{ k: 'v' }]));
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterSuccess(result))).toEqual(expectedResult);
   });
 
   it('should handle createVoter failure', () => {
-    const originalState = state.set('isLoading', true);
+    const originalState = state.set('isCreateLoading', true);
     const error = { key: 'value' };
-    const expectedResult = state.set('isLoading', false)
+    const expectedResult = state.set('isCreateLoading', false)
       .set('error', fromJS(error));
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterFailure(error))).toEqual(expectedResult);

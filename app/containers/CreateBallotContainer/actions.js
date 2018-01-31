@@ -1,16 +1,12 @@
 import * as CREATE_BALLOT_CONTAINER from './constants';
 
 // Actions
-export function create() {
-  return {
-    type: CREATE_BALLOT_CONTAINER.CREATE_ACTION,
-  };
-}
 
 // Sagas
-export function createBallotRequest() {
+export function createBallotRequest({ name }) {
   return {
     type: CREATE_BALLOT_CONTAINER.CREATE_BALLOT_REQUEST,
+    name,
   };
 }
 

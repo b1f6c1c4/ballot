@@ -17,10 +17,9 @@ import watcher, {
 describe('handleCreateBallotRequest Saga', () => {
   const variables = { name: 'nm' };
   const state = fromJS({
-    form: { createBallotForm: { values: variables } },
     globalContainer: { credential: { token: 'cre' } },
   });
-  const func = handleCreateBallotRequest;
+  const func = () => handleCreateBallotRequest(variables);
   const dArgs = [api.mutate, gql.CreateBallot, variables, 'cre'];
 
   // eslint-disable-next-line arrow-body-style
@@ -48,7 +47,7 @@ describe('handleCreateBallotRequest Saga', () => {
   it('should dispatch createBallotFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleCreateBallotRequest)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([
@@ -56,18 +55,5 @@ describe('handleCreateBallotRequest Saga', () => {
       ])
       .put(createBallotContainerActions.createBallotFailure(error))
       .run();
-  });
-});
-
-// Watcher
-describe('watcher', () => {
-  // eslint-disable-next-line arrow-body-style
-  it('should forward create to createBallotRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(createBallotContainerActions.createBallotRequest())],
-      ])
-      .dispatch(createBallotContainerActions.create())
-      .silentRun();
   });
 });

@@ -39,7 +39,7 @@ class EditVotersPage extends React.PureComponent {
     this.props.onRefresh();
   }
 
-  handleDelete = (iCode) => () => this.props.onDeleteVoter(iCode);
+  handleDelete = (iCode) => () => this.props.onDeleteVoter({ iCode });
 
   render() {
     const {

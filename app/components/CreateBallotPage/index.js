@@ -45,6 +45,10 @@ class CreateBallotPage extends React.PureComponent {
     minChar(1),
   );
 
+  handleCreate = (vals) => this.props.onCreate({
+    name: vals.get('name'),
+  });
+
   render() {
     const {
       classes,
@@ -60,7 +64,7 @@ class CreateBallotPage extends React.PureComponent {
           <FormattedMessage {...messages.header} />
         </Typography>
         <Paper className={classes.root}>
-          <form onSubmit={handleSubmit(this.props.onCreateAction)}>
+          <form onSubmit={handleSubmit(this.handleCreate)}>
             <div>
               <TextField
                 name="name"
@@ -94,7 +98,7 @@ CreateBallotPage.propTypes = {
   ...propTypes,
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
-  onCreateAction: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
 };
 
 export const styledCreateBallotPage = withStyles(styles)(CreateBallotPage);

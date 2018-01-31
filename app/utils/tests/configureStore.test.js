@@ -24,6 +24,10 @@ describe('slicer', () => {
           isLoading: 'val',
         },
       },
+      c: [{
+        d: 'e',
+        isSthLoading: 'val',
+      }],
     };
     expect(slicer(fromJS(state)).toJS()).toEqual({
       a: {
@@ -32,6 +36,10 @@ describe('slicer', () => {
           isLoading: false,
         },
       },
+      c: [{
+        d: 'e',
+        isSthLoading: 'val',
+      }],
     });
   });
 

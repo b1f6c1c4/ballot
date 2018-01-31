@@ -1,5 +1,4 @@
 // Actions
-export const CREATE_ACTION = 'CreateBallotContainer/CREATE_ACTION';
 
 // Sagas
 export const CREATE_BALLOT_REQUEST = 'CreateBallotContainer/CREATE_BALLOT_REQUEST';

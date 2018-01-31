@@ -24,7 +24,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import configureStore from './configureStore';
+import configureStore from 'utils/configureStore';
 
 // Import i18n messages
 import { translationMessages } from './i18n';

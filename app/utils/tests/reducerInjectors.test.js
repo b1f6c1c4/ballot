@@ -6,7 +6,7 @@ import { memoryHistory } from 'react-router-dom';
 import { fromJS } from 'immutable';
 import _ from 'lodash';
 
-import configureStore from '../../configureStore';
+import configureStore from '../configureStore';
 
 import getInjectors, {
   injectReducerFactory,

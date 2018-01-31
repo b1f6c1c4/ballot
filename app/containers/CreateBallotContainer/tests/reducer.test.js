@@ -18,19 +18,14 @@ describe('createBallotContainerReducer', () => {
   });
 
   // Actions
-  it('should handle create action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(createBallotContainerReducer(originalState, createBallotContainerActions.create())).toEqual(expectedResult);
-  });
 
   // Sagas
   it('should handle createBallot request', () => {
     const originalState = state.set('isLoading', false);
+    const param = { name: 'n' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotRequest())).toEqual(expectedResult);
+    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle createBallot success', () => {

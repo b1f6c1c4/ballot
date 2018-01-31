@@ -20,9 +20,8 @@ import watcher, {
 describe('handleLoginRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
   const state = fromJS({
-    form: { loginForm: { values: variables } },
   });
-  const func = handleLoginRequest;
+  const func = () => handleLoginRequest(variables);
   const dArgs = [api.mutate, gql.Login, variables];
 
   // eslint-disable-next-line arrow-body-style
@@ -85,9 +84,8 @@ describe('handleLoginRequest Saga', () => {
 describe('handleRegisterRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
   const state = fromJS({
-    form: { registerForm: { values: variables } },
   });
-  const func = handleRegisterRequest;
+  const func = () => handleRegisterRequest(variables);
   const dArgs = [api.mutate, gql.Register, variables];
 
   // eslint-disable-next-line arrow-body-style
@@ -115,7 +113,7 @@ describe('handleRegisterRequest Saga', () => {
   it('should dispatch registerFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleRegisterRequest)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([
@@ -123,28 +121,5 @@ describe('handleRegisterRequest Saga', () => {
       ])
       .put(loginContainerActions.registerFailure(error))
       .run();
-  });
-});
-
-// Watcher
-describe('watcher', () => {
-  // eslint-disable-next-line arrow-body-style
-  it('should forward submitLogin to loginRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(loginContainerActions.loginRequest())],
-      ])
-      .dispatch(loginContainerActions.submitLogin())
-      .silentRun();
-  });
-
-  // eslint-disable-next-line arrow-body-style
-  it('should forward submitRegister to registerRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(loginContainerActions.registerRequest())],
-      ])
-      .dispatch(loginContainerActions.submitRegister())
-      .silentRun();
   });
 });

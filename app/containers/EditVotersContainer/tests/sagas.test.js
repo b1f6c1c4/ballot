@@ -143,12 +143,3 @@ describe('handleVotersRequest Saga', () => {
       .run();
   });
 });
-
-// Watcher
-describe('watcher', () => {
-  // eslint-disable-next-line arrow-body-style
-  it('should not throw', () => {
-    return expectSaga(watcher)
-      .silentRun();
-  });
-});

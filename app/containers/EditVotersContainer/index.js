@@ -51,8 +51,8 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
-    onCreateVoter: (name) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
-    onDeleteVoter: (iCode) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
+    onCreateVoter: ({ name }) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
+    onDeleteVoter: ({ iCode }) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
   };
 }
 

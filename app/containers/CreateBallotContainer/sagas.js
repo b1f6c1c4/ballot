@@ -12,10 +12,8 @@ import * as createBallotContainerActions from './actions';
 import gql from './api.graphql';
 
 // Sagas
-export function* handleCreateBallotRequest() {
+export function* handleCreateBallotRequest({ name }) {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
-  const json = yield select((state) => state.getIn(['form', 'createBallotForm', 'values']));
-  const { name } = json.toJS();
 
   try {
     const result = yield call(api.mutate, gql.CreateBallot, { name }, cred);
@@ -34,8 +32,4 @@ export function* handleCreateBallotRequest() {
 /* eslint-disable func-names */
 export default function* watcher() {
   yield takeEvery(CREATE_BALLOT_CONTAINER.CREATE_BALLOT_REQUEST, handleCreateBallotRequest);
-
-  yield takeEvery(CREATE_BALLOT_CONTAINER.CREATE_ACTION, function* () {
-    yield put(createBallotContainerActions.createBallotRequest());
-  });
 }

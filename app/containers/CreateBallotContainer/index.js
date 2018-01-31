@@ -25,12 +25,12 @@ export class CreateBallotContainer extends React.PureComponent {
 
 CreateBallotContainer.propTypes = {
   hasCredential: PropTypes.bool.isRequired,
-  onCreateAction: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onCreateAction: () => dispatch(createBallotContainerActions.create()),
+    onCreate: (param) => dispatch(createBallotContainerActions.createBallotRequest(param)),
   };
 }
 

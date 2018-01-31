@@ -9,8 +9,6 @@ const initialState = fromJS({
 function createBallotContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case CREATE_BALLOT_CONTAINER.CREATE_ACTION:
-      return state;
     // Sagas
     case CREATE_BALLOT_CONTAINER.CREATE_BALLOT_REQUEST:
       return state.set('isLoading', true);
