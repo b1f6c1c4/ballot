@@ -1,0 +1,26 @@
+query Ballot($bId: ID!) {
+  ballot(input: {
+    bId: $bId,
+  }) {
+    name
+    status
+    owner
+    fields {
+      prompt
+    }
+    voters {
+      name
+      publicKey
+    }
+  }
+}
+
+query BallotCrypto($bId: ID!) {
+  ballot(input: {
+    bId: $bId,
+  }) {
+    q
+    g
+    h
+  }
+}

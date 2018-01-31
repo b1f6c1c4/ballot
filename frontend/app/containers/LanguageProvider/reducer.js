@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 import browserLocale from 'browser-locale';
-import { DEFAULT_LOCALE } from 'i18n';
+import { DEFAULT_LOCALE } from 'utils/i18n';
 
 import * as LANGUAGE_PROVIDER from './constants';
 

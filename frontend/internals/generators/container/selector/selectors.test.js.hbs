@@ -1,8 +1,13 @@
 describe('makeSelect{{ properCase name }}{{ properCase mselectorName }}', () => {
   const select{{ properCase name }}{{ properCase mselectorName }} = makeSelect{{ properCase name }}{{ properCase mselectorName }}();
 
+  it('should handle null', () => {
+    const mockedState = fromJS({});
+    expect(select{{ properCase name }}{{ properCase mselectorName }}(mockedState)).not.toEqual(expect.anything());
+  });
+
   it('should select {{ camelCase mselectorName }}', () => {
-    const {{ camelCase mselectorName }} = 'value';
+    const {{ camelCase mselectorName }} = { key: 'value' };
     const state = fromJS({
       {{ camelCase mselectorName }},
     });

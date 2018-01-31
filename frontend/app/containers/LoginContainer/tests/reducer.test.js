@@ -19,20 +19,6 @@ describe('loginContainerReducer', () => {
   });
 
   // Actions
-  it('should handle submitLogin action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(loginContainerReducer(originalState, loginContainerActions.submitLogin())).toEqual(expectedResult);
-  });
-
-  it('should handle submitRegister action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(loginContainerReducer(originalState, loginContainerActions.submitRegister())).toEqual(expectedResult);
-  });
-
   it('should handle changeActiveId action', () => {
     const originalState = state;
     const expectedResult = state.set('activeId', 123);
@@ -43,9 +29,10 @@ describe('loginContainerReducer', () => {
   // Sagas
   it('should handle login request', () => {
     const originalState = state;
+    const param = { username: 'u', password: 'p' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(loginContainerReducer(originalState, loginContainerActions.loginRequest())).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.loginRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle login success', () => {
@@ -66,9 +53,10 @@ describe('loginContainerReducer', () => {
 
   it('should handle register request', () => {
     const originalState = state;
+    const param = { username: 'u', password: 'p' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(loginContainerReducer(originalState, loginContainerActions.registerRequest())).toEqual(expectedResult);
+    expect(loginContainerReducer(originalState, loginContainerActions.registerRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle register success', () => {

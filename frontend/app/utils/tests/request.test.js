@@ -1,4 +1,11 @@
-import { makeApi, postProcess, getClient, query, mutate } from '../request';
+import {
+  makeApi,
+  postProcess,
+  getClient,
+  makeContext,
+  query,
+  mutate,
+} from '../request';
 
 describe('makeApi', () => {
   it('should return default', () => {
@@ -77,6 +84,26 @@ describe('postProcess', () => {
   });
 });
 
+describe('makeContext', () => {
+  it('should ignore empty', () => {
+    expect(makeContext('')).toBeUndefined();
+  });
+
+  it('should ignore null', () => {
+    expect(makeContext(null)).toBeUndefined();
+  });
+
+  it('should ignore undefined', () => {
+    expect(makeContext(undefined)).toBeUndefined();
+  });
+
+  it('should append bearer', () => {
+    expect(makeContext('aa')).toEqual({
+      headers: { authorization: 'Bearer aa' },
+    });
+  });
+});
+
 describe('query', () => {
   it('should post process', async (done) => {
     getClient({
@@ -84,6 +111,7 @@ describe('query', () => {
         expect(opt).toEqual({
           query: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         return { data: 'v' };
       },
@@ -99,6 +127,7 @@ describe('query', () => {
         expect(opt).toEqual({
           query: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         throw new Error('ee');
       },
@@ -120,6 +149,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         return { data: 'v' };
       },
@@ -135,6 +165,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
+          fetchPolicy: 'network-only',
         });
         throw new Error('ee');
       },

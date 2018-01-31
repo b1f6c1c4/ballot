@@ -6,7 +6,7 @@ import * as api from 'utils/request';
 import { change } from 'redux-form';
 import { push } from 'react-router-redux';
 
-import * as globalActions from 'containers/Global/actions';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 import * as LOGIN_CONTAINER from '../constants';
 import * as loginContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -19,8 +19,9 @@ import watcher, {
 // Sagas
 describe('handleLoginRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
-  const state = fromJS({ form: { loginForm: { values: variables } } });
-  const func = handleLoginRequest;
+  const state = fromJS({
+  });
+  const func = () => handleLoginRequest(variables);
   const dArgs = [api.mutate, gql.Login, variables];
 
   // eslint-disable-next-line arrow-body-style
@@ -33,6 +34,13 @@ describe('handleLoginRequest Saga', () => {
   it('should dispatch loginSuccess', () => {
     const login = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTM4NjAxNzUsImV4cCI6MTUxMzg2NzM3NSwiYXVkIjoidHJ5LXJlYWN0IiwiaXNzIjoidHJ5LXJlYWN0In0.Y6li_4xDg4dQALJKFqUp0NxXjUH1skPEIg41Z0aN9LE';
     const response = { login };
+    const credential = {
+      iat: 1513860175,
+      exp: 1513867375,
+      aud: 'try-react',
+      iss: 'try-react',
+      token: login,
+    };
 
     return expectSaga(func)
       .withState(state)
@@ -40,7 +48,7 @@ describe('handleLoginRequest Saga', () => {
       .provide([
         [matchers.call(...dArgs), response],
       ])
-      .put(globalActions.updateCredential(login))
+      .put(globalContainerActions.login(credential))
       .put(loginContainerActions.loginSuccess(response))
       .put(push('/app/'))
       .run();
@@ -75,8 +83,9 @@ describe('handleLoginRequest Saga', () => {
 
 describe('handleRegisterRequest Saga', () => {
   const variables = { username: 'un', password: 'pw' };
-  const state = fromJS({ form: { registerForm: { values: variables } } });
-  const func = handleRegisterRequest;
+  const state = fromJS({
+  });
+  const func = () => handleRegisterRequest(variables);
   const dArgs = [api.mutate, gql.Register, variables];
 
   // eslint-disable-next-line arrow-body-style
@@ -104,7 +113,7 @@ describe('handleRegisterRequest Saga', () => {
   it('should dispatch registerFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleRegisterRequest)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([
@@ -112,28 +121,5 @@ describe('handleRegisterRequest Saga', () => {
       ])
       .put(loginContainerActions.registerFailure(error))
       .run();
-  });
-});
-
-// Watcher
-describe('watcher', () => {
-  // eslint-disable-next-line arrow-body-style
-  it('should forward submitLogin to loginRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(loginContainerActions.loginRequest())],
-      ])
-      .dispatch(loginContainerActions.submitLogin())
-      .silentRun();
-  });
-
-  // eslint-disable-next-line arrow-body-style
-  it('should forward submitRegister to registerRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(loginContainerActions.registerRequest())],
-      ])
-      .dispatch(loginContainerActions.submitRegister())
-      .silentRun();
   });
 });

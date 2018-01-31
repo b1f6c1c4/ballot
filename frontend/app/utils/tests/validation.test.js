@@ -1,4 +1,4 @@
-jest.mock('messages', () => ({
+jest.mock('utils/messages', () => ({
   required: 'req',
   minChar: 'min',
   alphanumericDash: 'and',

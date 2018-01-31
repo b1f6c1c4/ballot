@@ -59,11 +59,19 @@ export const getClient = /* istanbul ignore next */ (c) => {
   return client;
 };
 
-export const query = async (gql, vars) => {
+export const makeContext = (cred) => !cred ? undefined : {
+  headers: {
+    authorization: `Bearer ${cred}`,
+  },
+};
+
+export const query = async (gql, vars, cred) => {
   try {
     const response = await client.query({
       query: gql,
       variables: vars,
+      context: makeContext(cred),
+      fetchPolicy: 'network-only',
     });
     return postProcess(response);
   } catch (e) {
@@ -71,11 +79,13 @@ export const query = async (gql, vars) => {
   }
 };
 
-export const mutate = async (gql, vars) => {
+export const mutate = async (gql, vars, cred) => {
   try {
     const response = await client.mutate({
       mutation: gql,
       variables: vars,
+      context: makeContext(cred),
+      fetchPolicy: 'network-only',
     });
     return postProcess(response);
   } catch (e) {

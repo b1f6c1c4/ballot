@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const transformImports = require('babel-plugin-transform-imports');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -13,70 +12,32 @@ module.exports = (options) => ({
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
+        use: [{
           loader: 'babel-loader',
-          query: {
-            plugins: [
-              [
-                transformImports,
-                {
-                  'material-ui': {
-                    transform(name) {
-                      if (/Progress$/.test(name)) {
-                        return `material-ui/Progress/${name}`;
-                      }
-                      if (/^Dialog|Dialog$/.test(name)) {
-                        return `material-ui/Dialog/${name}`;
-                      }
-                      if (/^Tab/.test(name)) {
-                        return `material-ui/Tabs/${name}`;
-                      }
-                      if (/^[A-Z]/.test(name)) {
-                        return `material-ui/${name}`;
-                      }
-                      switch (name) {
-                        case 'Zoom':
-                          return `material-ui/transitions/${name}`;
-                        default:
-                          return `material-ui/styles/${name}`;
-                      }
-                    },
-                    preventFullImport: true,
-                  },
-                  'material-ui-icons': {
-                    // eslint-disable-next-line no-template-curly-in-string
-                    transform: 'material-ui-icons/${member}',
-                    preventFullImport: true,
-                  },
-                },
-              ],
-            ],
-          },
-        },
+          options: options.babelOptions || {},
+        }],
       },
       {
-        // Preprocess our own .css files
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        use: options.cssLoaderVender || ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: options.cssLoaderApp || ['style-loader', 'css-loader'],
       },
       {
         test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
-        use: 'file-loader',
+        loader: 'file-loader',
       },
       {
         test: /\.(jpg|png|gif)$/,
-        use: 'file-loader',
+        loader: 'file-loader',
       },
       {
         test: /\.json$/,
-        use: 'json-loader',
+        loader: 'json-loader',
       },
       {
         test: /\.graphql$/,

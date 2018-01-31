@@ -28,7 +28,7 @@ class Loading extends React.PureComponent {
         </div>
       );
     }
-    if (pastDelay) {
+    if (pastDelay !== false) {
       return (
         <div className={classes.wrapper}>
           <FormattedMessage {...messages.loading} />

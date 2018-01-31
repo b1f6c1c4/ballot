@@ -7,27 +7,28 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import { Reboot } from 'material-ui';
+import {
+  Reboot,
+  createMuiTheme,
+  MuiThemeProvider,
+} from 'material-ui';
 import 'typeface-roboto/index.css';
 
 // Import root app
-import App from 'containers/Global';
+import GlobalContainer from 'containers/GlobalContainer';
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
-
-import createMuiTheme from 'material-ui/styles/createMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 // Load the favicon, the manifest.json file
 /* eslint-disable import/no-webpack-loader-syntax */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import configureStore from './configureStore';
+import configureStore from 'utils/configureStore';
 
 // Import i18n messages
-import { translationMessages } from './i18n';
+import { translationMessages } from 'utils/i18n';
 
 // Create redux store with history
 const initialState = {};
@@ -46,7 +47,7 @@ const render = (messages) => {
           <div>
             <Reboot />
             <MuiThemeProvider theme={theme}>
-              <App />
+              <GlobalContainer />
             </MuiThemeProvider>
           </div>
         </ConnectedRouter>
@@ -60,7 +61,7 @@ if (module.hot) {
   // Hot reloadable React components and translation json files
   // modules.hot.accept does not accept dynamic dependencies,
   // have to be constants at compile-time
-  module.hot.accept(['./i18n', 'containers/Global'], () => {
+  module.hot.accept(['utils/i18n', 'containers/GlobalContainer'], () => {
     ReactDOM.unmountComponentAtNode(MOUNT_NODE);
     render(translationMessages);
   });

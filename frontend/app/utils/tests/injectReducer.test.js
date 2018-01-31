@@ -8,7 +8,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import _ from 'lodash';
 
-import configureStore from '../../configureStore';
+import configureStore from '../configureStore';
 import injectReducer from '../injectReducer';
 import * as reducerInjectors from '../reducerInjectors';
 

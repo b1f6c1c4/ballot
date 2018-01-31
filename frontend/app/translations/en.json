@@ -22,7 +22,7 @@
   "app.general.login": "Sign in",
   "app.general.register": "Sign up",
   "app.validation.alphanumericDash": "Alphabet, numbers, or dash (-) only.",
-  "app.validation.minChar": "At least {m, plural, =1 {character} other characters}",
+  "app.validation.minChar": "At least {m, number} {m, plural, one {character} other {characters}}",
   "app.validation.required": "This field is required",
   "index.cta.description": "Sign up as ballot organizer now to start a new anonymous ballot in minutes. If you are voter, please register by following the link given by your ballot organizer, instead of sign up here.",
   "index.cta.login": "Sign Up Here",

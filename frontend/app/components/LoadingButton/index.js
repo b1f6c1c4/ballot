@@ -40,7 +40,7 @@ class LoadingButton extends React.PureComponent {
 LoadingButton.propTypes = {
   classes: PropTypes.object.isRequired,
   children: PropTypes.element.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
 };
 
 export const styledLoadingButton = withStyles(styles)(LoadingButton);

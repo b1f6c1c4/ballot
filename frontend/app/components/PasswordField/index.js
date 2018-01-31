@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
 import { withStyles } from 'material-ui';
-import TextField from 'components/TextField/Loadable';
+import TextField from 'components/TextField';
 import make, { required, minChar } from 'utils/validation';
 
 import messages from './messages';

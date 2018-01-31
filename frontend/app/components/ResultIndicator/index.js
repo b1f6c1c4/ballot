@@ -7,7 +7,7 @@ import {
   Typography,
 } from 'material-ui';
 
-import messages from 'messages';
+import messages from 'utils/messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -25,7 +25,7 @@ class ResultIndicator extends React.PureComponent {
 
     if (!error.codes) {
       flag = false;
-      arr.push(<FormattedMessage key="unk" {...messages.unknownError} />);
+      arr.push(<FormattedMessage key="unk" {...messages.error_unknown} />);
     } else {
       error.codes.forEach((o) => {
         const idx = `error_${o}`;
@@ -37,11 +37,12 @@ class ResultIndicator extends React.PureComponent {
       });
     }
     if (!flag) {
-      arr.push(<span key="msg">{error.message}</span>);
+      const msg = error.message || error.raw.message;
+      arr.push(<span key="msg">{msg}</span>);
     }
 
     return arr.filter((a) => a !== null).map((a) => (
-      <Typography color="error">
+      <Typography key={a.key} color="error">
         {a}
       </Typography>
     ));

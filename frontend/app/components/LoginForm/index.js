@@ -12,11 +12,11 @@ import {
   Button,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
-import UsernameField from 'components/UsernameField/Loadable';
-import PasswordField from 'components/PasswordField/Loadable';
-import ClearButton from 'components/ClearButton/Loadable';
-import LoadingButton from 'components/LoadingButton/Loadable';
-import ResultIndicator from 'components/ResultIndicator/Loadable';
+import UsernameField from 'components/UsernameField';
+import PasswordField from 'components/PasswordField';
+import ClearButton from 'components/ClearButton';
+import LoadingButton from 'components/LoadingButton';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
@@ -25,16 +25,20 @@ const styles = (theme) => ({
 });
 
 class LoginForm extends React.PureComponent {
+  handleLogin = (vals) => this.props.onLogin({
+    username: vals.get('username'),
+    password: vals.get('password'),
+  });
+
   render() {
     const {
-      error,
       reset,
       handleSubmit,
       isLoading,
     } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.props.onSubmitLoginAction)}>
+      <form onSubmit={handleSubmit(this.handleLogin)}>
         <DialogTitle>
           <FormattedMessage {...messages.header} />
         </DialogTitle>
@@ -48,7 +52,7 @@ class LoginForm extends React.PureComponent {
           <div>
             <PasswordField name="password" fullWidth />
           </div>
-          <ResultIndicator {...{ error }} />
+          <ResultIndicator error={this.props.error} />
         </DialogContent>
         <DialogActions>
           <ClearButton {...{ reset, isLoading }} />
@@ -56,7 +60,7 @@ class LoginForm extends React.PureComponent {
             <Button
               type="submit"
               color="primary"
-              disabled={this.props.isLoading}
+              disabled={isLoading}
             >
               <FormattedMessage {...messages.login} />
             </Button>
@@ -71,7 +75,7 @@ LoginForm.propTypes = {
   ...propTypes,
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
-  onSubmitLoginAction: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
 };
 
 export const styledLoginForm = withStyles(styles)(LoginForm);

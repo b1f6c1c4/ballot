@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" <% if (htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>>
+  <head>
+    <!-- The first thing in any HTML file should be the charset -->
+    <meta charset="utf-8">
+    <!-- Make the page mobile compatible -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+
+    <title data-i18n="index.htmlTitle">Ballot</title>
+
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (let key of htmlWebpackPlugin.files.css) {
+        if (/index/.test(key) && !/vendor/.test(key)) { %>
+          <link rel="stylesheet" href="<%= key %>">
+      <% }
+      }
+    } %>
+  </head>
+  <body>
+
+    <%= require('html-loader!./index.html') %>
+
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (let key of htmlWebpackPlugin.files.js) {
+        if (/index/.test(key)) { %>
+          <script type="text/javascript" src="<%= key %>"></script>
+      <% } else { %>
+          <link rel="prefetch" href="<%= key %>">
+      <% }
+      }
+    } %>
+  </body>
+</html>
+<% if (!htmlWebpackPlugin.options.inject) {
+  for (let key of htmlWebpackPlugin.files.css) {
+    if (/index/.test(key) && /vendor/.test(key)) { %>
+      <link rel="stylesheet" href="<%= key %>">
+  <% }
+  }
+} %>
