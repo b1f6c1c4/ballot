@@ -10,6 +10,7 @@ describe('viewBallotContainerReducer', () => {
     state = fromJS({
       isLoading: false,
       ballot: null,
+      error: null,
     });
   });
 
@@ -22,10 +23,11 @@ describe('viewBallotContainerReducer', () => {
 
   // Sagas
   it('should handle ballot request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isLoading', false).set('error', 'e');
+    const param = { bId: '1' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotRequest())).toEqual(expectedResult);
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle ballot success', () => {
@@ -39,8 +41,9 @@ describe('viewBallotContainerReducer', () => {
 
   it('should handle ballot failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotFailure(error))).toEqual(expectedResult);
   });

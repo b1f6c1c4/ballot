@@ -37,11 +37,12 @@ class ResultIndicator extends React.PureComponent {
       });
     }
     if (!flag) {
-      arr.push(<span key="msg">{error.message}</span>);
+      const msg = error.message || error.raw.message;
+      arr.push(<span key="msg">{msg}</span>);
     }
 
     return arr.filter((a) => a !== null).map((a) => (
-      <Typography color="error">
+      <Typography key={a.key} color="error">
         {a}
       </Typography>
     ));

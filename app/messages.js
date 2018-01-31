@@ -31,6 +31,10 @@ export default defineMessages({
     id: 'app.error.uath',
     defaultMessage: 'Unauthorzied.',
   },
+  error_ntfd: {
+    id: 'app.error.ntfd',
+    defaultMessage: 'Not found.',
+  },
   error_netw: {
     id: 'app.error.netw',
     defaultMessage: 'Network is bad.',

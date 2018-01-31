@@ -11,6 +11,7 @@ import ViewBallotPage from 'components/ViewBallotPage/Loadable';
 
 import {
   makeSelectViewBallotContainerBallot,
+  makeSelectViewBallotContainerError,
 } from './selectors';
 import * as viewBallotContainerActions from './actions';
 import reducer from './reducer';
@@ -38,14 +39,16 @@ ViewBallotContainer.propTypes = {
   onPush: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   ballot: PropTypes.object,
+  error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch, { match }) {
+  const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
-    onRefresh: (bId) => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
+    onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
   };
 }
 
@@ -53,6 +56,7 @@ const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
   ballot: makeSelectViewBallotContainerBallot(),
+  error: makeSelectViewBallotContainerError(),
 });
 
 export default compose(

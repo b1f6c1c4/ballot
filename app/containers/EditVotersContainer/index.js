@@ -11,6 +11,7 @@ import EditVotersPage from 'components/EditVotersPage/Loadable';
 
 import {
   makeSelectEditVotersContainerBallot,
+  makeSelectEditVotersContainerError,
   makeSelectEditVotersContainerListVoters,
 } from './selectors';
 import * as editVotersContainerActions from './actions';
@@ -40,13 +41,15 @@ EditVotersContainer.propTypes = {
   match: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   ballot: PropTypes.object,
+  error: PropTypes.object,
   listVoters: PropTypes.array,
 };
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch, { match }) {
+  const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
-    onRefresh: (bId) => dispatch(editVotersContainerActions.votersRequest({ bId })),
+    onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
   };
 }
 
@@ -54,6 +57,7 @@ const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['editVotersContainer', 'isLoading']),
   ballot: makeSelectEditVotersContainerBallot(),
+  error: makeSelectEditVotersContainerError(),
   listVoters: makeSelectEditVotersContainerListVoters(),
 });
 

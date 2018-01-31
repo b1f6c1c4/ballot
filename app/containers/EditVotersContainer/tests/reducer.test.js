@@ -10,6 +10,7 @@ describe('editVotersContainerReducer', () => {
     state = fromJS({
       isLoading: false,
       voters: null,
+      error: null,
     });
   });
 
@@ -22,10 +23,11 @@ describe('editVotersContainerReducer', () => {
 
   // Sagas
   it('should handle createVoter request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isLoading', false).set('error', 'e');
+    const param = { bId: '1', name: 'n' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterRequest())).toEqual(expectedResult);
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle createVoter success', () => {
@@ -40,17 +42,19 @@ describe('editVotersContainerReducer', () => {
 
   it('should handle createVoter failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.createVoterFailure(error))).toEqual(expectedResult);
   });
 
   it('should handle deleteVoter request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isLoading', false).set('error', 'e');
+    const param = { bId: '1', iCode: 'i' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.deleteVoterRequest())).toEqual(expectedResult);
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.deleteVoterRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle deleteVoter success', () => {
@@ -66,17 +70,19 @@ describe('editVotersContainerReducer', () => {
 
   it('should handle deleteVoter failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.deleteVoterFailure(error))).toEqual(expectedResult);
   });
 
   it('should handle voters request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isLoading', false).set('error', 'e');
+    const param = { bId: '1' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.votersRequest())).toEqual(expectedResult);
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.votersRequest(param))).toEqual(expectedResult);
   });
 
   it('should handle voters success', () => {
@@ -93,8 +99,9 @@ describe('editVotersContainerReducer', () => {
 
   it('should handle voters failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(editVotersContainerReducer(originalState, editVotersContainerActions.votersFailure(error))).toEqual(expectedResult);
   });

@@ -2,6 +2,7 @@ import { fromJS } from 'immutable';
 
 import {
   makeSelectEditVotersContainerListVoters,
+  makeSelectEditVotersContainerError,
   makeSelectEditVotersContainerBallot,
 } from '../selectors';
 
@@ -42,5 +43,25 @@ describe('makeSelectEditVotersContainerBallot', () => {
       editVotersContainer: state,
     });
     expect(selectEditVotersContainerBallot(mockedState)).toEqual(ballot);
+  });
+});
+
+describe('makeSelectEditVotersContainerError', () => {
+  const selectEditVotersContainerError = makeSelectEditVotersContainerError();
+
+  it('should handle null', () => {
+    const mockedState = fromJS({});
+    expect(selectEditVotersContainerError(mockedState)).not.toEqual(expect.anything());
+  });
+
+  it('should select error', () => {
+    const error = { key: 'value' };
+    const state = fromJS({
+      error,
+    });
+    const mockedState = fromJS({
+      editVotersContainer: state,
+    });
+    expect(selectEditVotersContainerError(mockedState)).toEqual(error);
   });
 });

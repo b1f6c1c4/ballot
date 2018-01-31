@@ -10,6 +10,7 @@ import {
 import BallotMeta from 'components/BallotMeta/Loadable';
 import LoadingButton from 'components/LoadingButton/Loadable';
 import RefreshButton from 'components/RefreshButton/Loadable';
+import ResultIndicator from 'components/ResultIndicator/Loadable';
 import VoterCard from 'components/VoterCard/Loadable';
 
 import messages from './messages';
@@ -33,15 +34,12 @@ const styles = (theme) => ({
 
 class EditVotersPage extends React.PureComponent {
   componentDidMount() {
-    this.handleRefresh();
+    this.props.onRefresh();
   }
-
-  handleRefresh = () => this.props.onRefresh(this.props.bId);
 
   render() {
     const {
       classes,
-      onPush,
       bId,
       isLoading,
       ballot,
@@ -52,7 +50,14 @@ class EditVotersPage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
-        <BallotMeta {...{ onPush, bId, ballot, isLoading }} />
+        <BallotMeta
+          {...{
+            onPush: this.props.onPush,
+            bId,
+            ballot,
+            isLoading,
+          }}
+        />
         <div className={classes.actions}>
           <LoadingButton {...{ isLoading }}>
             <RefreshButton
@@ -61,10 +66,11 @@ class EditVotersPage extends React.PureComponent {
             />
           </LoadingButton>
         </div>
+        <ResultIndicator error={this.props.error} />
         <div className={classes.cards}>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -74,6 +80,7 @@ EditVotersPage.propTypes = {
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   voters: PropTypes.array,
+  error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
 };

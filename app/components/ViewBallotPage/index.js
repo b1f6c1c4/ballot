@@ -20,6 +20,7 @@ import RefreshButton from 'components/RefreshButton/Loadable';
 import ViewButton from 'components/ViewButton/Loadable';
 import EditButton from 'components/EditButton/Loadable';
 import EmptyIndicator from 'components/EmptyIndicator/Loadable';
+import ResultIndicator from 'components/ResultIndicator/Loadable';
 
 import messages from './messages';
 
@@ -52,10 +53,8 @@ const styles = (theme) => ({
 
 class ViewBallotPage extends React.PureComponent {
   componentDidMount() {
-    this.handleRefresh();
+    this.props.onRefresh();
   }
-
-  handleRefresh = () => this.props.onRefresh(this.props.bId);
 
   handleFieldsEdit = () => {
     const { bId } = this.props;
@@ -70,7 +69,6 @@ class ViewBallotPage extends React.PureComponent {
   render() {
     const {
       classes,
-      onPush,
       bId,
       isLoading,
       ballot,
@@ -106,21 +104,24 @@ class ViewBallotPage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
-        <BallotMeta {...{
-          onPush,
-          bId,
-          ballot,
-          isLoading,
-          onRefresh: this.handleRefresh,
-        }} />
+        <BallotMeta
+          {...{
+            onPush: this.props.onPush,
+            bId,
+            ballot,
+            isLoading,
+            onRefresh: this.props.onRefresh,
+          }}
+        />
         <div className={classes.actions}>
           <LoadingButton {...{ isLoading }}>
             <RefreshButton
               isLoading={isLoading}
-              onClick={this.handleRefresh}
+              onClick={this.props.onRefresh}
             />
           </LoadingButton>
         </div>
+        <ResultIndicator error={this.props.error} />
         <div className={classes.cards}>
           <Card className={classes.card}>
             <CardContent>
@@ -202,6 +203,7 @@ ViewBallotPage.propTypes = {
   bId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
+  error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
 };

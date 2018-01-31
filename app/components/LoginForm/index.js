@@ -27,7 +27,6 @@ const styles = (theme) => ({
 class LoginForm extends React.PureComponent {
   render() {
     const {
-      error,
       reset,
       handleSubmit,
       isLoading,
@@ -48,7 +47,7 @@ class LoginForm extends React.PureComponent {
           <div>
             <PasswordField name="password" fullWidth />
           </div>
-          <ResultIndicator {...{ error }} />
+          <ResultIndicator error={this.props.error} />
         </DialogContent>
         <DialogActions>
           <ClearButton {...{ reset, isLoading }} />
