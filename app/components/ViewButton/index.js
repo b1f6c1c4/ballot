@@ -41,7 +41,7 @@ class ViewButton extends React.PureComponent {
 ViewButton.propTypes = {
   onClick: PropTypes.func,
   classes: PropTypes.object.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
 };
 
 export const styledViewButton = withStyles(styles)(ViewButton);

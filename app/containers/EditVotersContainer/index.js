@@ -7,56 +7,58 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import ViewBallotPage from 'components/ViewBallotPage/Loadable';
+import EditVotersPage from 'components/EditVotersPage/Loadable';
 
 import {
-  makeSelectViewBallotContainerBallot,
+  makeSelectEditVotersContainerBallot,
+  makeSelectEditVotersContainerListVoters,
 } from './selectors';
-import * as viewBallotContainerActions from './actions';
+import * as editVotersContainerActions from './actions';
 import reducer from './reducer';
 import sagas from './sagas';
 
-export class ViewBallotContainer extends React.PureComponent {
+export class EditVotersContainer extends React.PureComponent {
   render() {
     const {
       match,
-      ballot,
+      listVoters,
       ...other
     } = this.props;
 
     return (
-      <ViewBallotPage
+      <EditVotersPage
         bId={match.params.bId}
-        ballot={ballot}
+        voters={listVoters}
         {...other}
       />
     );
   }
 }
 
-ViewBallotContainer.propTypes = {
+EditVotersContainer.propTypes = {
   onPush: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  ballot: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
-  onRefresh: PropTypes.func.isRequired,
+  ballot: PropTypes.object,
+  listVoters: PropTypes.array,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
-    onRefresh: (bId) => dispatch(viewBallotContainerActions.ballotRequest(bId)),
+    onRefresh: (bId) => dispatch(editVotersContainerActions.votersRequest(bId)),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
-  isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
-  ballot: makeSelectViewBallotContainerBallot(),
+  isLoading: (state) => state.getIn(['editVotersContainer', 'isLoading']),
+  ballot: makeSelectEditVotersContainerBallot(),
+  listVoters: makeSelectEditVotersContainerListVoters(),
 });
 
 export default compose(
-  injectSaga({ key: 'viewBallotContainer', saga: sagas }),
-  injectReducer({ key: 'viewBallotContainer', reducer }),
+  injectSaga({ key: 'editVotersContainer', saga: sagas }),
+  injectReducer({ key: 'editVotersContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
-)(ViewBallotContainer);
+)(EditVotersContainer);

@@ -63,6 +63,16 @@ class ViewBallotPage extends React.PureComponent {
 
   handleRefresh = () => this.props.onRefresh(this.props.bId);
 
+  handleFieldsEdit = () => {
+    const { bId } = this.props;
+    this.props.onPush(`/app/ballots/${bId}/fields`);
+  };
+
+  handleVotersEdit = () => {
+    const { bId } = this.props;
+    this.props.onPush(`/app/ballots/${bId}/voters`);
+  };
+
   render() {
     const {
       intl, // eslint-disable-line no-unused-vars
@@ -160,8 +170,8 @@ class ViewBallotPage extends React.PureComponent {
               <Typography type="subheading">
                 <FormattedMessage {...messages.fields} />
               </Typography>
-              <EmptyIndicator isLoading={isLoading} list={ballot.fields} />
-              {!isLoading && ballot.fields && (
+              <EmptyIndicator isLoading={isLoading} list={ballot && ballot.fields} />
+              {!isLoading && ballot && ballot.fields && (
                 <Table>
                   <TableBody>
                     {ballot.fields.map((b) => (
@@ -188,8 +198,8 @@ class ViewBallotPage extends React.PureComponent {
               <Typography type="subheading">
                 <FormattedMessage {...messages.voters} />
               </Typography>
-              <EmptyIndicator isLoading={isLoading} list={ballot.voters} />
-              {!isLoading && ballot.voters && (
+              <EmptyIndicator isLoading={isLoading} list={ballot && ballot.voters} />
+              {!isLoading && ballot && ballot.voters && (
                 <Table>
                   <TableBody>
                     {ballot.voters.map((b) => (
