@@ -45,7 +45,7 @@ ViewBallotContainer.propTypes = {
 export function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
-    onRefresh: (bId) => dispatch(viewBallotContainerActions.ballotRequest(bId)),
+    onRefresh: (bId) => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
   };
 }
 

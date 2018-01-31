@@ -3,9 +3,11 @@ import * as EDIT_VOTERS_CONTAINER from './constants';
 // Actions
 
 // Sagas
-export function createVoterRequest() {
+export function createVoterRequest({ bId, name }) {
   return {
     type: EDIT_VOTERS_CONTAINER.CREATE_VOTER_REQUEST,
+    bId,
+    name,
   };
 }
 
@@ -23,9 +25,11 @@ export function createVoterFailure(error) {
   };
 }
 
-export function deleteVoterRequest() {
+export function deleteVoterRequest({ bId, iCode }) {
   return {
     type: EDIT_VOTERS_CONTAINER.DELETE_VOTER_REQUEST,
+    bId,
+    iCode,
   };
 }
 
@@ -44,9 +48,10 @@ export function deleteVoterFailure(error) {
   };
 }
 
-export function votersRequest() {
+export function votersRequest({ bId }) {
   return {
     type: EDIT_VOTERS_CONTAINER.VOTERS_REQUEST,
+    bId,
   };
 }
 

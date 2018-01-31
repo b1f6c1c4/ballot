@@ -46,7 +46,7 @@ EditVotersContainer.propTypes = {
 export function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
-    onRefresh: (bId) => dispatch(editVotersContainerActions.votersRequest(bId)),
+    onRefresh: (bId) => dispatch(editVotersContainerActions.votersRequest({ bId })),
   };
 }
 

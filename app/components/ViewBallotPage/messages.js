@@ -4,10 +4,6 @@ import messages from 'messages';
 export default {
   ...messages,
   ...defineMessages({
-    bId: {
-      id: 'app.components.ViewBallotPage.bId',
-      defaultMessage: 'ID: ',
-    },
     fields: {
       id: 'app.components.ViewBallotPage.fields',
       defaultMessage: 'Fields',

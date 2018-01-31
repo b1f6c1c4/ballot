@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
+import * as Permission from 'utils/permission';
 
 import {
   withStyles,
@@ -13,14 +14,12 @@ import {
   TableCell,
   TableRow,
 } from 'material-ui';
-import Loading from 'components/Loading';
-import EmptyIndicator from 'components/EmptyIndicator/Loadable';
-import Abbreviation from 'components/Abbreviation/Loadable';
+import BallotMeta from 'components/BallotMeta/Loadable';
 import LoadingButton from 'components/LoadingButton/Loadable';
+import RefreshButton from 'components/RefreshButton/Loadable';
 import ViewButton from 'components/ViewButton/Loadable';
 import EditButton from 'components/EditButton/Loadable';
-import RefreshButton from 'components/RefreshButton/Loadable';
-import StatusBadge from 'components/StatusBadge/Loadable';
+import EmptyIndicator from 'components/EmptyIndicator/Loadable';
 
 import messages from './messages';
 
@@ -29,11 +28,6 @@ const styles = (theme) => ({
   container: {
     width: '100%',
     padding: theme.spacing.unit,
-  },
-  badge: {
-    display: 'inline-block',
-    verticalAlign: 'super',
-    marginLeft: theme.spacing.unit * 2,
   },
   root: {
     width: '100%',
@@ -75,45 +69,16 @@ class ViewBallotPage extends React.PureComponent {
 
   render() {
     const {
-      intl, // eslint-disable-line no-unused-vars
       classes,
+      onPush,
       bId,
       isLoading,
       ballot,
     } = this.props;
 
-    let canEditFields;
-    let canEditVoters;
-    let canViewStats;
-    if (ballot) {
-      switch (ballot.status) {
-        case 'creating':
-        case 'inviting':
-        case 'invited':
-          canEditFields = true;
-          break;
-        default:
-          canEditFields = false;
-          break;
-      }
-      switch (ballot.status) {
-        case 'inviting':
-          canEditVoters = true;
-          break;
-        default:
-          canEditVoters = false;
-          break;
-      }
-      switch (ballot.status) {
-        case 'voting':
-        case 'finished':
-          canViewStats = true;
-          break;
-        default:
-          canViewStats = false;
-          break;
-      }
-    }
+    const canEditFields = ballot && Permission.CanEditFields(ballot);
+    const canEditVoters = ballot && Permission.CanEditVoters(ballot);
+    const canViewStats = ballot && Permission.CanViewStats(ballot);
 
     const makeFieldType = (b) => {
       const type = b.__typename; // eslint-disable-line no-underscore-dangle
@@ -141,21 +106,13 @@ class ViewBallotPage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
-        {!isLoading && ballot && (
-          <Typography type="display2" gutterBottom>
-            {ballot.name}
-            <Typography className={classes.badge} type="subheading" component="span">
-              <StatusBadge status={ballot.status} />
-            </Typography>
-          </Typography>
-        )}
-        {isLoading && (
-          <Loading />
-        )}
-        <Typography type="caption">
-          <FormattedMessage {...messages.bId} />
-          <Abbreviation text={bId} allowExpand />
-        </Typography>
+        <BallotMeta {...{
+          onPush,
+          bId,
+          ballot,
+          isLoading,
+          onRefresh: this.handleRefresh,
+        }} />
         <div className={classes.actions}>
           <LoadingButton {...{ isLoading }}>
             <RefreshButton
@@ -243,7 +200,6 @@ class ViewBallotPage extends React.PureComponent {
 ViewBallotPage.propTypes = {
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
@@ -252,4 +208,4 @@ ViewBallotPage.propTypes = {
 
 export const styledViewBallotPage = withStyles(styles)(ViewBallotPage);
 
-export default injectIntl(styledViewBallotPage);
+export default styledViewBallotPage;

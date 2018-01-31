@@ -3,7 +3,7 @@ import * as VIEW_BALLOT_CONTAINER from './constants';
 // Actions
 
 // Sagas
-export function ballotRequest(bId) {
+export function ballotRequest({ bId }) {
   return {
     type: VIEW_BALLOT_CONTAINER.BALLOT_REQUEST,
     bId,
