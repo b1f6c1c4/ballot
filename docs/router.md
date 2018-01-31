@@ -24,7 +24,7 @@
 
 ## Create Ballot Page [/app/create -> /app.html]
 
-- 创建 - Edit Fields Page
+- 创建 - View Ballot Page
 - 取消 - Home Page
 
 ## View Ballot Page [/app/ballots/{bId} -> /app.html]
@@ -51,7 +51,7 @@
 - 导出
 - 确认投票者名单 - View Ballot Page
 
-##  View Stat Page [/app/ballots/{bId}/tickets/ -> /app.html]
+## View Stat Page [/app/ballots/{bId}/tickets/ -> /app.html]
 
 - 导出
 - 返回 - View Ballot Page

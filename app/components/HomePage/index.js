@@ -16,6 +16,7 @@ import {
 import Loading from 'components/Loading';
 import Abbreviation from 'components/Abbreviation/Loadable';
 import LoadingButton from 'components/LoadingButton/Loadable';
+import RefreshButton from 'components/RefreshButton/Loadable';
 import StatusBadge from 'components/StatusBadge/Loadable';
 
 import messages from './messages';
@@ -65,13 +66,10 @@ class HomePage extends React.PureComponent {
               <FormattedMessage {...messages.listBallots} />
             </Typography>
             <LoadingButton {...{ isLoading }}>
-              <Button
-                color="primary"
-                disabled={isLoading}
+              <RefreshButton
+                isLoading={isLoading}
                 onClick={this.props.onRefreshListBallots}
-              >
-                <FormattedMessage {...messages.refresh} />
-              </Button>
+              />
             </LoadingButton>
           </div>
           {!isLoading && listBallots && listBallots.length > 0 && (

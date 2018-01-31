@@ -6,7 +6,7 @@ import {
   withStyles,
   Button,
 } from 'material-ui';
-import { Delete } from 'material-ui-icons';
+import { Refresh } from 'material-ui-icons';
 
 import messages from './messages';
 
@@ -17,11 +17,11 @@ const styles = (theme) => ({
   },
 });
 
-class ClearButton extends React.PureComponent {
+class RefreshButton extends React.PureComponent {
   render() {
     const {
       classes,
-      reset,
+      onClick,
       isLoading,
       ...other
     } = this.props;
@@ -29,23 +29,23 @@ class ClearButton extends React.PureComponent {
     return (
       <Button
         {...other}
-        color="secondary"
+        color="primary"
         disabled={isLoading}
-        onClick={reset}
+        onClick={onClick}
       >
         <FormattedMessage {...messages.text} />
-        <Delete className={classes.rightIcon} />
+        <Refresh className={classes.rightIcon} />
       </Button>
     );
   }
 }
 
-ClearButton.propTypes = {
-  reset: PropTypes.func,
+RefreshButton.propTypes = {
+  onClick: PropTypes.func,
   classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
-export const styledClearButton = withStyles(styles)(ClearButton);
+export const styledRefreshButton = withStyles(styles)(RefreshButton);
 
-export default styledClearButton;
+export default styledRefreshButton;
