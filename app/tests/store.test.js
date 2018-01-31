@@ -20,11 +20,17 @@ describe('slicer', () => {
     const state = {
       a: {
         isLoading: 'val',
+        b: {
+          isLoading: 'val',
+        },
       },
     };
     expect(slicer(fromJS(state)).toJS()).toEqual({
       a: {
         isLoading: false,
+        b: {
+          isLoading: false,
+        },
       },
     });
   });

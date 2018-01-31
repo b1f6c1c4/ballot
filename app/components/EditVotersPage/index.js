@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl'; // eslint-disable-line no-unused-vars
 import * as Permission from 'utils/permission';
 
 import {
   withStyles,
-  Typography,
 } from 'material-ui';
 import BallotMeta from 'components/BallotMeta/Loadable';
 import LoadingButton from 'components/LoadingButton/Loadable';
 import RefreshButton from 'components/RefreshButton/Loadable';
 import ResultIndicator from 'components/ResultIndicator/Loadable';
+import EmptyIndicator from 'components/EmptyIndicator/Loadable';
 import VoterCard from 'components/VoterCard/Loadable';
 
-import messages from './messages';
+import messages from './messages'; // eslint-disable-line no-unused-vars
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -21,10 +21,10 @@ const styles = (theme) => ({
     width: '100%',
     padding: theme.spacing.unit,
   },
-  badge: {
-    display: 'inline-block',
-    verticalAlign: 'super',
-    marginLeft: theme.spacing.unit * 2,
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   cards: {
     display: 'flex',
@@ -38,7 +38,7 @@ class EditVotersPage extends React.PureComponent {
     this.props.onRefresh();
   }
 
-  handleDelete = (iCode) => () => this.onDeleteVoter(iCode);
+  handleDelete = (iCode) => () => this.props.onDeleteVoter(iCode);
 
   render() {
     const {
@@ -65,11 +65,12 @@ class EditVotersPage extends React.PureComponent {
           <LoadingButton {...{ isLoading }}>
             <RefreshButton
               isLoading={isLoading}
-              onClick={this.handleRefresh}
+              onClick={this.props.onRefresh}
             />
           </LoadingButton>
         </div>
         <ResultIndicator error={this.props.error} />
+        <EmptyIndicator isLoading={isLoading} list={voters && voters} />
         <div className={classes.cards}>
           {!isLoading && voters && voters.map((v) => (
             <VoterCard
@@ -95,7 +96,6 @@ EditVotersPage.propTypes = {
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
-  onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
 };
 

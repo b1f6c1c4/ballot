@@ -18,7 +18,21 @@ export const slicer = () => (rawState) => {
   let state = rawState.toJS();
   _.unset(state, 'language');
 
-  state = _.mapValues(state, (k) => _.get(k, 'isLoading') ? _.set(k, 'isLoading', false) : k);
+  function rm(v) {
+    if (_.isArray(v)) {
+      return _.map(v, rm);
+    }
+    if (!_.isObject(v)) return v;
+    // if (!_.isPlainObject(v)) throw new Error('Unsupported type');
+
+    let tmp = v;
+    if (_.get(v, 'isLoading')) {
+      tmp = _.set(v, 'isLoading', false);
+    }
+    return _.mapValues(tmp, rm);
+  }
+
+  state = rm(state);
 
   _.forIn(state.form, (form) => {
     const sens = _.keys(form.registeredFields).filter((k) => k.toLowerCase().includes('password'));

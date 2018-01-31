@@ -21,7 +21,7 @@ function editVotersContainerReducer(state = initialState, action) {
         .set('voters', state.get('voters').push(fromJS(action.result.createVoter)));
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_FAILURE:
       return state.set('isLoading', false)
-        .set('error', fromJS(action.error));
+        .set('error', fromJS(_.toPlainObject(action.error)));
     case EDIT_VOTERS_CONTAINER.DELETE_VOTER_REQUEST:
       return state.set('isLoading', true)
         .set('error', null);
@@ -30,7 +30,7 @@ function editVotersContainerReducer(state = initialState, action) {
         .set('voters', state.get('voters').filter((v) => v.get('iCode') !== action.iCode));
     case EDIT_VOTERS_CONTAINER.DELETE_VOTER_FAILURE:
       return state.set('isLoading', false)
-        .set('error', fromJS(action.error));
+        .set('error', fromJS(_.toPlainObject(action.error)));
     case EDIT_VOTERS_CONTAINER.VOTERS_REQUEST:
       return state.set('isLoading', true)
         .set('error', null);
