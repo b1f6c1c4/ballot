@@ -37,6 +37,9 @@ module.exports = (options) => ({
                       if (/^Table($|[A-Z])/.test(name)) {
                         return `material-ui/Table/${name}`;
                       }
+                      if (/^Card($|[A-Z])/.test(name)) {
+                        return `material-ui/Card/${name}`;
+                      }
                       if (/^[A-Z]/.test(name)) {
                         return `material-ui/${name}`;
                       }

@@ -15,9 +15,12 @@ import watcher, {
 // Sagas
 describe('handle{{ properCase sagaName }}Request Saga', () => {
   const variables = { key: 'value' };
-  const state = fromJS({ {{ camelCase name }}: { {{ camelCase selectorName }}: variables } });
+  const state = fromJS({
+    globalContainer: { credential: { token: 'cre' } },
+    {{ camelCase name }}: { {{ camelCase selectorName }}: variables },
+  });
   const func = handle{{ properCase sagaName }}Request;
-  const dArgs = [api.query, gql.FetchData, variables];
+  const dArgs = [api.query, gql.FetchData, variables, 'cre'];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {
@@ -43,7 +46,7 @@ describe('handle{{ properCase sagaName }}Request Saga', () => {
   it('should dispatch {{ camelCase sagaName }}Failure', () => {
     const error = new Error('value');
 
-    return expectSaga(handle{{ properCase sagaName }}Request)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([

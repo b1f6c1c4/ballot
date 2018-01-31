@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 {{#if wantMessages}}
+{{#if wantInjectIntl}}
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+{{else}}
+import { FormattedMessage } from 'react-intl';
+{{/if}}
 {{/if}}
 
 import {
@@ -19,7 +23,11 @@ const styles = (theme) => ({
 class {{ properCase name }} extends React.PureComponent {
   render() {
     // eslint-disable-next-line no-unused-vars
+{{#if wantInjectIntl}}
     const { intl, classes } = this.props;
+{{else}}
+    const { classes } = this.props;
+{{/if}}
 
     return (
       <div>
@@ -32,7 +40,7 @@ class {{ properCase name }} extends React.PureComponent {
 }
 
 {{ properCase name }}.propTypes = {
-{{#if wantMessages}}
+{{#if wantInjectIntl}}
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
 {{/if}}
   classes: PropTypes.object.isRequired,
@@ -40,7 +48,7 @@ class {{ properCase name }} extends React.PureComponent {
 
 export const styled{{ properCase name}} = withStyles(styles)({{ properCase name}});
 
-{{#if wantMessages}}
+{{#if wantInjectIntl}}
 export default injectIntl(styled{{ properCase name }});
 {{else}}
 export default styled{{ properCase name }};

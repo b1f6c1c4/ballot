@@ -99,7 +99,7 @@ export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ con
       method: 'lastOccurance',
       pattern: /^ {2}yield take.*REQUEST.*Request\);$/g,
       path: '../../app/containers/{{ properCase name }}/sagas.js',
-      template: 'yield takeEvery({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST, handle{{ properCase sagaName }}Request);',
+      template: '  yield takeEvery({{ constantCase name }}.{{ constantCase sagaName }}_REQUEST, handle{{ properCase sagaName }}Request);',
       abortOnFail: true,
     });
 

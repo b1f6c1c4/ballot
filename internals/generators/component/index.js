@@ -25,6 +25,12 @@ module.exports = {
     message: 'Do you want i18n messages (i.e. will this component use text)?',
   }, {
     type: 'confirm',
+    name: 'wantInjectIntl',
+    when: (ans) => ans.wantMessages,
+    default: false,
+    message: 'Do you want injected intl?',
+  }, {
+    type: 'confirm',
     name: 'wantLoadable',
     default: true,
     message: 'Do you want to load resources asynchronously?',
