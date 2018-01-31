@@ -43,4 +43,12 @@ export default defineMessages({
     id: 'app.error.wgup',
     defaultMessage: 'Username and/or password incorrect.',
   },
+  fieldType_StringField: {
+    id: 'app.fieldType.StringField',
+    defaultMessage: 'String',
+  },
+  fieldType_EnumField: {
+    id: 'app.fieldType.EnumField',
+    defaultMessage: 'Enum',
+  },
 });

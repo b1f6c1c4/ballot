@@ -45,7 +45,7 @@ describe('handleBallotsRequest Saga', () => {
   it('should dispatch ballotsFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleBallotsRequest)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([

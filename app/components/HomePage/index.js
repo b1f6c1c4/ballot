@@ -13,7 +13,7 @@ import {
   TableRow,
   Paper,
 } from 'material-ui';
-import Loading from 'components/Loading';
+import EmptyIndicator from 'components/EmptyIndicator/Loadable';
 import Abbreviation from 'components/Abbreviation/Loadable';
 import LoadingButton from 'components/LoadingButton/Loadable';
 import RefreshButton from 'components/RefreshButton/Loadable';
@@ -40,9 +40,6 @@ const styles = (theme) => ({
   actions: {
     display: 'flex',
     justifyContent: 'flex-end',
-  },
-  empty: {
-    textAlign: 'center',
   },
 });
 
@@ -72,8 +69,9 @@ class HomePage extends React.PureComponent {
               />
             </LoadingButton>
           </div>
+          <EmptyIndicator isLoading={isLoading} list={listBallots} />
           {!isLoading && listBallots && listBallots.length > 0 && (
-            <Table className={classes.table}>
+            <Table>
               <TableHead>
                 <TableRow>
                   <TableCell padding="none"><FormattedMessage {...messages.bId} /></TableCell>
@@ -93,14 +91,6 @@ class HomePage extends React.PureComponent {
                 ))}
               </TableBody>
             </Table>
-          )}
-          {!isLoading && !(listBallots && listBallots.length) && (
-            <Typography type="display1" className={classes.empty}>
-              <FormattedMessage {...messages.empty} />
-            </Typography>
-          )}
-          {isLoading && (
-            <Loading />
           )}
           <div className={classes.actions}>
             <LoadingButton>

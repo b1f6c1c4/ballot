@@ -14,10 +14,12 @@ import watcher, {
 
 // Sagas
 describe('handleBallotRequest Saga', () => {
-  const variables = { key: 'value' };
-  const state = fromJS({ viewBallotContainer: { name: variables } });
-  const func = handleBallotRequest;
-  const dArgs = [api.query, gql.FetchData, variables];
+  const variables = { bId: 'value' };
+  const state = fromJS({
+    globalContainer: { credential: { token: 'cre' } },
+  });
+  const func = () => handleBallotRequest(variables);
+  const dArgs = [api.query, gql.Ballot, variables, 'cre'];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen BALLOT_REQUEST in the watcher', () => {
@@ -43,7 +45,7 @@ describe('handleBallotRequest Saga', () => {
   it('should dispatch ballotFailure', () => {
     const error = new Error('value');
 
-    return expectSaga(handleBallotRequest)
+    return expectSaga(func)
       .withState(state)
       .call(...dArgs)
       .provide([
@@ -51,18 +53,5 @@ describe('handleBallotRequest Saga', () => {
       ])
       .put(viewBallotContainerActions.ballotFailure(error))
       .run();
-  });
-});
-
-// Watcher
-describe('watcher', () => {
-  // eslint-disable-next-line arrow-body-style
-  it('should forward refresh to ballotRequest', () => {
-    return expectSaga(watcher)
-      .provide([
-        [matchers.put(viewBallotContainerActions.ballotRequest())],
-      ])
-      .dispatch(viewBallotContainerActions.refresh())
-      .silentRun();
   });
 });

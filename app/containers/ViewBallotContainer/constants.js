@@ -1,5 +1,4 @@
 // Actions
-export const REFRESH_ACTION = 'ViewBallotContainer/REFRESH_ACTION';
 
 // Sagas
 export const BALLOT_REQUEST = 'ViewBallotContainer/BALLOT_REQUEST';

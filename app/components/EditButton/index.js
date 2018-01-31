@@ -6,7 +6,7 @@ import {
   withStyles,
   Button,
 } from 'material-ui';
-import { Refresh } from 'material-ui-icons';
+import { Edit } from 'material-ui-icons';
 
 import messages from './messages';
 
@@ -17,7 +17,7 @@ const styles = (theme) => ({
   },
 });
 
-class RefreshButton extends React.PureComponent {
+class EditButton extends React.PureComponent {
   render() {
     const {
       classes,
@@ -32,18 +32,18 @@ class RefreshButton extends React.PureComponent {
         disabled={isLoading}
       >
         <FormattedMessage {...messages.text} />
-        <Refresh className={classes.rightIcon} />
+        <Edit className={classes.rightIcon} />
       </Button>
     );
   }
 }
 
-RefreshButton.propTypes = {
+EditButton.propTypes = {
   onClick: PropTypes.func,
   classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
-export const styledRefreshButton = withStyles(styles)(RefreshButton);
+export const styledEditButton = withStyles(styles)(EditButton);
 
-export default styledRefreshButton;
+export default styledEditButton;

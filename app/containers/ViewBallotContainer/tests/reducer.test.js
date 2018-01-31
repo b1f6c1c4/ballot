@@ -9,6 +9,7 @@ describe('viewBallotContainerReducer', () => {
   beforeEach(() => {
     state = fromJS({
       isLoading: false,
+      ballot: null,
     });
   });
 
@@ -18,12 +19,6 @@ describe('viewBallotContainerReducer', () => {
   });
 
   // Actions
-  it('should handle refresh action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.refresh())).toEqual(expectedResult);
-  });
 
   // Sagas
   it('should handle ballot request', () => {
@@ -35,8 +30,9 @@ describe('viewBallotContainerReducer', () => {
 
   it('should handle ballot success', () => {
     const originalState = state.set('isLoading', true);
-    const result = { };
-    const expectedResult = state.set('isLoading', false);
+    const result = { ballot: 'aa' };
+    const expectedResult = state.set('isLoading', false)
+      .set('ballot', 'aa');
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotSuccess(result))).toEqual(expectedResult);
   });

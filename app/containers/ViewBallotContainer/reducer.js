@@ -10,8 +10,6 @@ const initialState = fromJS({
 function viewBallotContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case VIEW_BALLOT_CONTAINER.REFRESH_ACTION:
-      return state;
     // Sagas
     case VIEW_BALLOT_CONTAINER.BALLOT_REQUEST:
       return state.set('isLoading', true);
