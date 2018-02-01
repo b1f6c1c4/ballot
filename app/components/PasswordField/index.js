@@ -27,7 +27,7 @@ class PasswordField extends React.PureComponent {
       <TextField
         {...other}
         type="password"
-        label={messages.label}
+        label={this.props.label || messages.label}
         helperText={messages.helperText}
         validate={this.validate}
       />
@@ -38,6 +38,7 @@ class PasswordField extends React.PureComponent {
 PasswordField.propTypes = {
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
+  label: PropTypes.object,
 };
 
 export const styledPasswordField = withStyles(styles)(PasswordField);

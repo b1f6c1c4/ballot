@@ -11,6 +11,7 @@ import GlobalPage from 'components/GlobalPage';
 import NotFoundPage from 'components/NotFoundPage';
 import HomeContainer from 'containers/HomeContainer/Loadable';
 import LoginContainer from 'containers/LoginContainer/Loadable';
+import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable';
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
 import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
 import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
@@ -33,6 +34,7 @@ export class GlobalContainer extends React.PureComponent {
         <ConnectedSwitch>
           <Route exact path="/app/" component={HomeContainer} />
           <Route exact path="/app/login" component={LoginContainer} />
+          <Route exact path="/app/password" component={ChangePasswordContainer} />
           <Route exact path="/app/create" component={CreateBallotContainer} />
           <Route exact path="/app/ballots/:bId" component={ViewBallotContainer} />
           <Route exact path="/app/ballots/:bId/voters/" component={EditVotersContainer} />

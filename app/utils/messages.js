@@ -47,6 +47,10 @@ export default defineMessages({
     id: 'app.error.wgup',
     defaultMessage: 'Username and/or password incorrect.',
   },
+  error_wgpp: {
+    id: 'app.error.wgpp',
+    defaultMessage: 'Old password incorrect.',
+  },
   error_stna: {
     id: 'app.error.stna',
     defaultMessage: 'Ballot status incorrect.',
