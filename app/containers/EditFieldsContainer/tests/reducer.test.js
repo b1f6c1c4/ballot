@@ -60,6 +60,34 @@ describe('editFieldsContainerReducer', () => {
     expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveEdit())).toEqual(expectedResult);
   });
 
+  it('should handle startAdd action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startAdd())).toEqual(expectedResult);
+  });
+
+  it('should handle startCreate action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startCreate())).toEqual(expectedResult);
+  });
+
+  it('should handle cancelDialog action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.cancelDialog())).toEqual(expectedResult);
+  });
+
+  it('should handle submitDialog action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.submitDialog())).toEqual(expectedResult);
+  });
+
   // Sagas
   it('should handle save request', () => {
     const originalState = state.set('isLoading', false);

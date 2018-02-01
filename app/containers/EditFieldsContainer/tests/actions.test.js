@@ -45,4 +45,28 @@ describe('EditFieldsContainer actions', () => {
       expect(editFieldsContainerActions.saveEdit().type).toEqual(EDIT_FIELDS_CONTAINER.SAVE_EDIT_ACTION);
     });
   });
+
+  describe('startAdd action', () => {
+    it('has a type of START_ADD_ACTION', () => {
+      expect(editFieldsContainerActions.startAdd().type).toEqual(EDIT_FIELDS_CONTAINER.START_ADD_ACTION);
+    });
+  });
+
+  describe('startCreate action', () => {
+    it('has a type of START_CREATE_ACTION', () => {
+      expect(editFieldsContainerActions.startCreate().type).toEqual(EDIT_FIELDS_CONTAINER.START_CREATE_ACTION);
+    });
+  });
+
+  describe('cancelDialog action', () => {
+    it('has a type of CANCEL_DIALOG_ACTION', () => {
+      expect(editFieldsContainerActions.cancelDialog().type).toEqual(EDIT_FIELDS_CONTAINER.CANCEL_DIALOG_ACTION);
+    });
+  });
+
+  describe('submitDialog action', () => {
+    it('has a type of SUBMIT_DIALOG_ACTION', () => {
+      expect(editFieldsContainerActions.submitDialog().type).toEqual(EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION);
+    });
+  });
 });

@@ -1,12 +1,6 @@
 import * as EDIT_FIELDS_CONTAINER from './constants';
 
 // Actions
-export function add() {
-  return {
-    type: EDIT_FIELDS_CONTAINER.ADD_ACTION,
-  };
-}
-
 export function remove({ index }) {
   return {
     type: EDIT_FIELDS_CONTAINER.REMOVE_ACTION,
@@ -26,15 +20,22 @@ export function startEdit() {
   };
 }
 
-export function cancelEdit() {
+export function startCreate() {
   return {
-    type: EDIT_FIELDS_CONTAINER.CANCEL_EDIT_ACTION,
+    type: EDIT_FIELDS_CONTAINER.START_CREATE_ACTION,
   };
 }
 
-export function saveEdit() {
+export function cancelDialog() {
   return {
-    type: EDIT_FIELDS_CONTAINER.SAVE_EDIT_ACTION,
+    type: EDIT_FIELDS_CONTAINER.CANCEL_DIALOG_ACTION,
+  };
+}
+
+export function submitDialog(field) {
+  return {
+    type: EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION,
+    field,
   };
 }
 

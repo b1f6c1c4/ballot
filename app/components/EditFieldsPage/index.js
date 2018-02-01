@@ -5,7 +5,9 @@ import * as Permission from 'utils/permission';
 
 import {
   withStyles,
+  Button,
 } from 'material-ui';
+import { Clear, Save, Add } from 'material-ui-icons';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -38,6 +40,8 @@ class EditFieldsPage extends React.PureComponent {
       classes,
       bId,
       isLoading,
+      isPristine,
+      isOpen,
       ballot,
       fields,
     } = this.props;
@@ -55,18 +59,56 @@ class EditFieldsPage extends React.PureComponent {
           }}
         />
         <div className={classes.actions}>
-          <LoadingButton {...{ isLoading }}>
-            <RefreshButton
-              isLoading={isLoading}
-              onClick={this.props.onRefresh}
-            />
-          </LoadingButton>
+          {isPristine && (
+            <LoadingButton {...{ isLoading }}>
+              <RefreshButton
+                isLoading={isLoading}
+                onClick={this.props.onRefresh}
+              />
+            </LoadingButton>
+          )}
+          {!isPristine && (
+            <LoadingButton {...{ isLoading }}>
+              <Button
+                color="secondary"
+                disabled={isLoading}
+                onClick={this.props.onRefresh}
+              >
+                <FormattedMessage {...messages.drop} />
+                <Clear className={classes.rightIcon} />
+              </Button>
+            </LoadingButton>
+          )}
+          {!isPristine && (
+            <LoadingButton {...{ isLoading }}>
+              <Button
+                color="primary"
+                raised
+                disabled={isLoading}
+                onClick={this.props.onSave}
+              >
+                <FormattedMessage {...messages.save} />
+                <Save className={classes.rightIcon} />
+              </Button>
+            </LoadingButton>
+          )}
+          {!isLoading && canEditFields && (
+            <Button
+              color="primary"
+              raised
+              onClick={this.props.onStartCreateAction}
+            >
+              <FormattedMessage {...messages.create} />
+              <Add className={classes.rightIcon} />
+            </Button>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         <EditFieldDialog
-          isOpen
-          onCancel={this.props.onCancelEditAction}
-          onSubmit={this.props.onSaveEditAction}
+          isOpen={isOpen}
+          isCreate={this.props.isCreate}
+          onCancel={this.props.onCancelDialogAction}
+          onSubmit={this.props.onSubmitDialogAction}
         />
         <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
       </div>
@@ -78,18 +120,21 @@ EditFieldsPage.propTypes = {
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  isPristine: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  isCreate: PropTypes.bool.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
   fields: PropTypes.array,
-  isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  onAddAction: PropTypes.func.isRequired,
   onRemoveAction: PropTypes.func.isRequired,
   onReorderAction: PropTypes.func.isRequired,
   onStartEditAction: PropTypes.func.isRequired,
-  onCancelEditAction: PropTypes.func.isRequired,
-  onSaveEditAction: PropTypes.func.isRequired,
+  onStartCreateAction: PropTypes.func.isRequired,
+  onCancelDialogAction: PropTypes.func.isRequired,
+  onSubmitDialogAction: PropTypes.func.isRequired,
 };
 
 export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);

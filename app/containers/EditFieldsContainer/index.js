@@ -34,17 +34,20 @@ EditFieldsContainer.propTypes = {
   onPush: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  isPristine: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  isCreate: PropTypes.bool.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
   fields: PropTypes.array,
   onRefresh: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  onAddAction: PropTypes.func.isRequired,
   onRemoveAction: PropTypes.func.isRequired,
   onReorderAction: PropTypes.func.isRequired,
   onStartEditAction: PropTypes.func.isRequired,
-  onCancelEditAction: PropTypes.func.isRequired,
-  onSaveEditAction: PropTypes.func.isRequired,
+  onStartCreateAction: PropTypes.func.isRequired,
+  onCancelDialogAction: PropTypes.func.isRequired,
+  onSubmitDialogAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch, { match }) {
@@ -52,19 +55,22 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editFieldsContainerActions.refreshRequest({ bId })),
-    onAddAction: () => dispatch(editFieldsContainerActions.add()),
-    onRemoveAction: () => dispatch(editFieldsContainerActions.remove()),
+    onSave: () => dispatch(editFieldsContainerActions.saveRequest({ bId })),
+    onRemoveAction: (param) => dispatch(editFieldsContainerActions.remove(param)),
     onReorderAction: () => dispatch(editFieldsContainerActions.reorder()),
     onStartEditAction: () => dispatch(editFieldsContainerActions.startEdit()),
-    onCancelEditAction: () => dispatch(editFieldsContainerActions.cancelEdit()),
-    onSaveEditAction: () => dispatch(editFieldsContainerActions.saveEdit()),
-    onSave: () => dispatch(editFieldsContainerActions.saveRequest({ bId })),
+    onStartCreateAction: () => dispatch(editFieldsContainerActions.startCreate()),
+    onCancelDialogAction: () => dispatch(editFieldsContainerActions.cancelDialog()),
+    onSubmitDialogAction: (param) => dispatch(editFieldsContainerActions.submitDialog(param)),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['editFieldsContainer', 'isLoading']),
+  isPristine: (state) => state.getIn(['editFieldsContainer', 'isPristine']),
+  isOpen: (state) => state.getIn(['editFieldsContainer', 'isOpen']),
+  isCreate: (state) => state.getIn(['editFieldsContainer', 'isCreate']),
   ballot: editFieldsContainerSelectors.Ballot(),
   fields: editFieldsContainerSelectors.Fields(),
   error: editFieldsContainerSelectors.Error(),

@@ -5,6 +5,9 @@ import * as EDIT_FIELDS_CONTAINER from './constants';
 
 const initialState = fromJS({
   isLoading: false,
+  isPristine: true,
+  isOpen: false,
+  isCreate: false,
   ballot: null,
   fields: null,
   error: null,
@@ -39,18 +42,26 @@ const normalizeFields = (fs) => fs.map((f) => {
 function editFieldsContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case EDIT_FIELDS_CONTAINER.ADD_ACTION:
-      return state;
     case EDIT_FIELDS_CONTAINER.REMOVE_ACTION:
-      return state.set('fields', state.get('fields').delete(action.index));
+      return state.set('isPristine', false)
+        .set('fields', state.get('fields').delete(action.index));
     case EDIT_FIELDS_CONTAINER.REORDER_ACTION:
       return state;
     case EDIT_FIELDS_CONTAINER.START_EDIT_ACTION:
-      return state;
-    case EDIT_FIELDS_CONTAINER.CANCEL_EDIT_ACTION:
-      return state;
-    case EDIT_FIELDS_CONTAINER.SAVE_EDIT_ACTION:
-      return state;
+      return state.set('isOpen', true).set('isCreate', false)
+        .set('currentId', action.index);
+    case EDIT_FIELDS_CONTAINER.START_CREATE_ACTION:
+      return state.set('isOpen', true).set('isCreate', true);
+    case EDIT_FIELDS_CONTAINER.CANCEL_DIALOG_ACTION:
+      return state.set('isOpen', false);
+    case EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION:
+      if (!state.get('isCreate')) {
+        const id = state.get('currentId');
+        return state.set('isOpen', false).set('isPristine', false)
+          .set('fields', state.get('fields').set(id, fromJS(action.field)));
+      }
+      return state.set('isOpen', false).set('isPristine', false)
+        .set('fields', state.get('fields').push(fromJS(action.field)));
     // Sagas
     case EDIT_FIELDS_CONTAINER.SAVE_REQUEST:
       return state.set('isLoading', true)
@@ -58,7 +69,7 @@ function editFieldsContainerReducer(state = initialState, action) {
     case EDIT_FIELDS_CONTAINER.SAVE_SUCCESS: {
       try {
         const fields = normalizeFields(action.result.replaceFields);
-        return state.set('isLoading', false)
+        return state.set('isLoading', false).set('isPristine', true)
           .set('fields', fromJS(fields));
       } catch (e) {
         return state.set('isLoading', false)
@@ -74,7 +85,7 @@ function editFieldsContainerReducer(state = initialState, action) {
     case EDIT_FIELDS_CONTAINER.REFRESH_SUCCESS: {
       try {
         const fields = normalizeFields(action.result.ballot.fields);
-        return state.set('isLoading', false)
+        return state.set('isLoading', false).set('isPristine', true)
           .delete('ballot')
           .setIn(['ballot', 'name'], action.result.ballot.name)
           .setIn(['ballot', 'status'], action.result.ballot.status)

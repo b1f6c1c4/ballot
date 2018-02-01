@@ -22,6 +22,7 @@ import {
   reduxForm,
   propTypes,
   formValueSelector,
+  SubmissionError,
 } from 'redux-form/immutable';
 import ResultIndicator from 'components/ResultIndicator';
 import TextField from 'components/TextField';
@@ -51,13 +52,29 @@ class EditFieldDialog extends React.PureComponent {
   );
 
   handleDone = (vals) => {
-    const raw = vals.get('enumItems');
-    const enumItems = raw && raw.split('\n');
-    return this.props.onSubmit({
-      type: vals.get('type'),
-      stringDefault: vals.get('stringDefault'),
-      enumItems,
-    });
+    const type = vals.get('type');
+    const prompt = vals.get('prompt');
+    switch (type) {
+      case 'StringField':
+        return this.props.onSubmit({
+          type,
+          prompt,
+          stringDefault: vals.get('stringDefault'),
+        });
+      case 'EnumField': {
+        const raw = vals.get('enumItems');
+        const enumItems = raw && raw.split('\n');
+        return this.props.onSubmit({
+          type,
+          prompt,
+          enumItems,
+        });
+      }
+      default:
+        throw new SubmissionError({
+          type: 'www',
+        });
+    }
   };
 
   handleCancel = () => {
@@ -134,6 +151,7 @@ class EditFieldDialog extends React.PureComponent {
           </DialogContent>
           <DialogActions>
             <Button
+              raised={!pristine}
               color={pristine ? 'primary' : 'secondary'}
               onClick={this.handleCancel}
             >
@@ -141,7 +159,7 @@ class EditFieldDialog extends React.PureComponent {
             </Button>
             <Button
               type="submit"
-              raised
+              raised={!pristine}
               color="primary"
               onClick={this.handleSubmit}
             >
@@ -164,9 +182,9 @@ EditFieldDialog.propTypes = {
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   fullScreen: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   isCreate: PropTypes.bool.isRequired,
   type: PropTypes.string,
-  isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
