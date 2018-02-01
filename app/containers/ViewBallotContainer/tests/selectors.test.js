@@ -1,16 +1,13 @@
 import { fromJS } from 'immutable';
 
-import {
-  makeSelectViewBallotContainerBallot,
-  makeSelectViewBallotContainerError,
-} from '../selectors';
+import * as viewBallotContainerSelectors from '../selectors';
 
-describe('makeSelectViewBallotContainerBallot', () => {
-  const selectViewBallotContainerBallot = makeSelectViewBallotContainerBallot();
+describe('Ballot', () => {
+  const selector = viewBallotContainerSelectors.Ballot();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectViewBallotContainerBallot(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select ballot', () => {
@@ -21,16 +18,16 @@ describe('makeSelectViewBallotContainerBallot', () => {
     const mockedState = fromJS({
       viewBallotContainer: state,
     });
-    expect(selectViewBallotContainerBallot(mockedState)).toEqual(ballot);
+    expect(selector(mockedState)).toEqual(ballot);
   });
 });
 
-describe('makeSelectViewBallotContainerError', () => {
-  const selectViewBallotContainerError = makeSelectViewBallotContainerError();
+describe('Error', () => {
+  const selector = viewBallotContainerSelectors.Error();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectViewBallotContainerError(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select error', () => {
@@ -41,6 +38,6 @@ describe('makeSelectViewBallotContainerError', () => {
     const mockedState = fromJS({
       viewBallotContainer: state,
     });
-    expect(selectViewBallotContainerError(mockedState)).toEqual(error);
+    expect(selector(mockedState)).toEqual(error);
   });
 });

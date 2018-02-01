@@ -1,16 +1,16 @@
 import { createSelector } from 'reselect';
 
-export const makeSelectEditVotersContainerVoters = () => createSelector(
+export const Voters = () => createSelector(
   (state) => state.getIn(['editVotersContainer', 'voters']),
   (state) => state && state.toJS(),
 );
 
-export const makeSelectEditVotersContainerBallot = () => createSelector(
+export const Ballot = () => createSelector(
   (state) => state.getIn(['editVotersContainer', 'ballot']),
   (state) => state && state.toJS(),
 );
 
-export const makeSelectEditVotersContainerError = () => createSelector(
+export const Error = () => createSelector(
   (state) => state.getIn(['editVotersContainer', 'error']),
   (state) => state && state.toJS(),
 );

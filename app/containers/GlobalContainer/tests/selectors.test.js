@@ -1,15 +1,13 @@
 import { fromJS } from 'immutable';
 
-import {
-  makeSelectGlobalContainerListBallots,
-} from '../selectors';
+import * as globalContainerSelectors from '../selectors';
 
-describe('makeSelectGlobalContainerListBallots', () => {
-  const selectGlobalContainerListBallots = makeSelectGlobalContainerListBallots();
+describe('ListBallots', () => {
+  const selector = globalContainerSelectors.ListBallots();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectGlobalContainerListBallots(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select listBallots', () => {
@@ -20,6 +18,6 @@ describe('makeSelectGlobalContainerListBallots', () => {
     const mockedState = fromJS({
       globalContainer: state,
     });
-    expect(selectGlobalContainerListBallots(mockedState)).toEqual(listBallots);
+    expect(selector(mockedState)).toEqual(listBallots);
   });
 });

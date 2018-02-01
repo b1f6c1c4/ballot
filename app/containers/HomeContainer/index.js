@@ -8,9 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import HomePage from 'components/HomePage';
 import AuthRequired from 'components/AuthRequired';
 
-import {
-  makeSelectGlobalContainerListBallots,
-} from 'containers/GlobalContainer/selectors';
+import * as globalContainerSelectors from 'containers/GlobalContainer/selectors';
 import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
 export class HomeContainer extends React.PureComponent {
@@ -40,7 +38,7 @@ export function mapDispatchToProps(dispatch) {
 const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['globalContainer', 'isLoading']),
-  listBallots: makeSelectGlobalContainerListBallots(),
+  listBallots: globalContainerSelectors.ListBallots(),
 });
 
 export default compose(

@@ -1,17 +1,13 @@
 import { fromJS } from 'immutable';
 
-import {
-  makeSelectEditVotersContainerVoters,
-  makeSelectEditVotersContainerError,
-  makeSelectEditVotersContainerBallot,
-} from '../selectors';
+import * as editVotersContainerSelectors from '../selectors';
 
-describe('makeSelectEditVotersContainerVoters', () => {
-  const selectEditVotersContainerVoters = makeSelectEditVotersContainerVoters();
+describe('Voters', () => {
+  const selector = editVotersContainerSelectors.Voters();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectEditVotersContainerVoters(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select voters', () => {
@@ -22,16 +18,16 @@ describe('makeSelectEditVotersContainerVoters', () => {
     const mockedState = fromJS({
       editVotersContainer: state,
     });
-    expect(selectEditVotersContainerVoters(mockedState)).toEqual(voters);
+    expect(selector(mockedState)).toEqual(voters);
   });
 });
 
-describe('makeSelectEditVotersContainerBallot', () => {
-  const selectEditVotersContainerBallot = makeSelectEditVotersContainerBallot();
+describe('Ballot', () => {
+  const selector = editVotersContainerSelectors.Ballot();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectEditVotersContainerBallot(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select ballot', () => {
@@ -42,16 +38,16 @@ describe('makeSelectEditVotersContainerBallot', () => {
     const mockedState = fromJS({
       editVotersContainer: state,
     });
-    expect(selectEditVotersContainerBallot(mockedState)).toEqual(ballot);
+    expect(selector(mockedState)).toEqual(ballot);
   });
 });
 
-describe('makeSelectEditVotersContainerError', () => {
-  const selectEditVotersContainerError = makeSelectEditVotersContainerError();
+describe('Error', () => {
+  const selector = editVotersContainerSelectors.Error();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
-    expect(selectEditVotersContainerError(mockedState)).not.toEqual(expect.anything());
+    expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
   it('should select error', () => {
@@ -62,6 +58,6 @@ describe('makeSelectEditVotersContainerError', () => {
     const mockedState = fromJS({
       editVotersContainer: state,
     });
-    expect(selectEditVotersContainerError(mockedState)).toEqual(error);
+    expect(selector(mockedState)).toEqual(error);
   });
 });

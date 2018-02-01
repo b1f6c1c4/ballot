@@ -9,11 +9,7 @@ import injectSaga from 'utils/injectSaga';
 
 import EditVotersPage from 'components/EditVotersPage';
 
-import {
-  makeSelectEditVotersContainerBallot,
-  makeSelectEditVotersContainerVoters,
-  makeSelectEditVotersContainerError,
-} from './selectors';
+import * as editVotersContainerSelectors from './selectors';
 import * as editVotersContainerActions from './actions';
 import reducer from './reducer';
 import sagas from './sagas';
@@ -60,9 +56,9 @@ const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['editVotersContainer', 'isLoading']),
   isCreateLoading: (state) => state.getIn(['editVotersContainer', 'isCreateLoading']),
-  ballot: makeSelectEditVotersContainerBallot(),
-  error: makeSelectEditVotersContainerError(),
-  voters: makeSelectEditVotersContainerVoters(),
+  ballot: editVotersContainerSelectors.Ballot(),
+  error: editVotersContainerSelectors.Error(),
+  voters: editVotersContainerSelectors.Voters(),
 });
 
 export default compose(
