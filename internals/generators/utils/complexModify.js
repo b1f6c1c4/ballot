@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const co = require('co');
 const path = require('path');
 const fspp = require('node-plop/lib/fs-promise-proxy');
@@ -49,11 +50,14 @@ module.exports = co.wrap(function* complexModify(data, cfg, plop) {
           } else {
             location = nxt;
           }
+          if (cfg.prePadding === false) {
+            location -= 1;
+          }
           break;
         }
         case 'lastOccurance': {
           // Find last occurance
-          const lastId = lines.findIndex((l) => cfg.pattern.test(l));
+          const lastId = _.findLastIndex(lines, (l) => cfg.pattern.test(l));
 
           if (lastId === -1) {
             throw new Error('Occurance not found');
@@ -62,11 +66,22 @@ module.exports = co.wrap(function* complexModify(data, cfg, plop) {
           }
           break;
         }
+        case 'by': {
+          // Find first occurance
+          const firstId = _.findIndex(lines, (l) => cfg.pattern.test(l));
+
+          if (firstId === -1) {
+            throw new Error('Occurance not found');
+          } else {
+            location = firstId;
+          }
+          break;
+        }
         default:
           throw new Error('Method not allowed');
       }
 
-      if (cfg.postpadding === false) {
+      if (cfg.postPadding === false) {
         template = template.trimRight();
       }
 

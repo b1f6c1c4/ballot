@@ -42,7 +42,7 @@ module.exports = {
     actions.push({
       type: 'add',
       path: '../../app/components/{{properCase name}}/index.js',
-      templateFile: './component/class.js.hbs',
+      templateFile: './component/index.js.hbs',
       abortOnFail: true,
     });
 

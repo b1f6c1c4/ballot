@@ -1,11 +1,10 @@
 describe('handle{{ properCase sagaName }}Request Saga', () => {
-  const variables = { key: 'value' };
+  const variables = {{curly true}} {{ camelCase sagaParam }}: 'val' {{curly false}};
   const state = fromJS({
     globalContainer: { credential: { token: 'cre' } },
-    {{ camelCase name }}: { {{ camelCase selectorName }}: variables },
   });
-  const func = handle{{ properCase sagaName }}Request;
-  const dArgs = [api.query, gql.FetchData, variables, 'cre'];
+  const func = () => handle{{ properCase sagaName }}Request(variables);
+  const dArgs = [api.query, gql.{{ properCase sagaName }}, variables, 'cre'];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen {{ constantCase sagaName }}_REQUEST in the watcher', () => {

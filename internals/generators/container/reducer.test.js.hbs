@@ -8,7 +8,9 @@ describe('{{ camelCase name }}Reducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
-      {{ camelCase selectorName }}: 'the {{ camelCase selectorName }}',
+{{#if wantSagas}}
+      isLoading: false,
+{{/if}}
     });
   });
 
@@ -18,36 +20,12 @@ describe('{{ camelCase name }}Reducer', () => {
   });
 
   // Actions
-  it('should handle {{ camelCase actionName }} action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase actionName }}())).toEqual(expectedResult);
-  });
+{{#if wantActions}}
+{{> actionReducerTest }}
+{{/if}}
 {{#if wantSagas}}
 
   // Sagas
-  it('should handle {{ camelCase sagaName }} request', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Request())).toEqual(expectedResult);
-  });
-
-  it('should handle {{ camelCase sagaName }} success', () => {
-    const originalState = state;
-    const result = { };
-    const expectedResult = state;
-
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result))).toEqual(expectedResult);
-  });
-
-  it('should handle {{ camelCase sagaName }} failure', () => {
-    const originalState = state;
-    const error = { };
-    const expectedResult = state;
-
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))).toEqual(expectedResult);
-  });
+{{> sagaReducerTest }}
 {{/if}}
 });

@@ -1,6 +1,7 @@
-export function {{ camelCase sagaName }}Request() {
+export function {{ camelCase sagaName }}Request({{curly true}} {{ camelCase sagaParam }} {{curly false}}) {
   return {
     type: {{ constantCase name }}.{{ constantCase sagaName }}_REQUEST,
+    {{ camelCase sagaParam }},
   };
 }
 

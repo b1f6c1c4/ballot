@@ -1,6 +1,6 @@
     case {{ constantCase name }}.{{ constantCase sagaName }}_REQUEST:
-      return state;
+      return state.set('isLoading', true);
     case {{ constantCase name }}.{{ constantCase sagaName }}_SUCCESS:
-      return state;
+      return state.set('isLoading', false);
     case {{ constantCase name }}.{{ constantCase sagaName }}_FAILURE:
-      return state;
+      return state.set('isLoading', false);

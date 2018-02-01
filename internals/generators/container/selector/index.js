@@ -49,14 +49,6 @@ module.exports = {
     // selectors.test.js
     actions.push({
       type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /^ {2}makeSelect[a-zA-Z]+,$/g,
-      path: '../../app/containers/{{ properCase name }}/tests/selectors.test.js',
-      template: '  makeSelect{{ properCase name }}{{ properCase mselectorName }},',
-      abortOnFail: true,
-    });
-    actions.push({
-      type: 'complexModify',
       method: 'sectionEnd',
       indent: 0,
       section: /.*/g,
@@ -70,25 +62,9 @@ module.exports = {
     actions.push({
       type: 'complexModify',
       method: 'lastOccurance',
-      pattern: /^ {2}makeSelect[a-zA-Z]+,$/g,
+      pattern: /^ {2}[a-zA-Z]+: [a-zA-Z]+Selectors.[a-zA-Z]+\(\),$/g,
       path: '../../app/containers/{{ properCase name }}/index.js',
-      template: '  makeSelect{{ properCase name }}{{ properCase mselectorName }},',
-      abortOnFail: true,
-    });
-    actions.push({
-      type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /^ {2}[a-np-z][a-mn-zA-Z]?[a-zA-Z]*: PropTypes/g,
-      path: '../../app/containers/{{ properCase name }}/index.js',
-      template: '  {{ camelCase mselectorName }}: PropTypes.string.isRequired,',
-      abortOnFail: true,
-    });
-    actions.push({
-      type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /^ {2}[a-zA-Z]+: makeSelect[a-zA-Z]+\(\),$/g,
-      path: '../../app/containers/{{ properCase name }}/index.js',
-      template: '  {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),',
+      template: '  {{ camelCase mselectorName }}: {{ camelCase name }}Selectors.{{ properCase mselectorName }}(),',
       abortOnFail: true,
     });
 

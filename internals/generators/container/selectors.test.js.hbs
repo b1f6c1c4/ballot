@@ -1,25 +1,5 @@
 import { fromJS } from 'immutable';
 
-import {
-  makeSelect{{ properCase name }}{{ properCase mselectorName }},
-} from '../selectors';
+import * as {{ camelCase name }}Selectors from '../selectors';
 
-describe('makeSelect{{ properCase name }}{{ properCase mselectorName }}', () => {
-  const select{{ properCase name }}{{ properCase mselectorName }} = makeSelect{{ properCase name }}{{ properCase mselectorName }}();
-
-  it('should handle null', () => {
-    const mockedState = fromJS({});
-    expect(select{{ properCase name }}{{ properCase mselectorName }}(mockedState)).not.toEqual(expect.anything());
-  });
-
-  it('should select {{ camelCase mselectorName }}', () => {
-    const {{ camelCase mselectorName }} = { key: 'value' };
-    const state = fromJS({
-      {{ camelCase mselectorName }},
-    });
-    const mockedState = fromJS({
-      {{ camelCase name }}: state,
-    });
-    expect(select{{ properCase name }}{{ properCase mselectorName }}(mockedState)).toEqual({{ camelCase mselectorName }});
-  });
-});
+{{> selectorSelectorsTest }}

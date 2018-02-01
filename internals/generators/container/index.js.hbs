@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-{{#if wantSelectors}}
 import { createStructuredSelector } from 'reselect';
-{{/if}}
-{{#if wantActionsAndReducer}}
+{{#if wantReducer}}
 {{#if wantLoadable}}
 import injectReducer from 'utils/injectReducer';
 {{/if}}
@@ -15,11 +13,9 @@ import injectSaga from 'utils/injectSaga';
 {{/if}}
 
 {{#if wantMSelectors}}
-import {
-  makeSelect{{ properCase name }}{{ properCase mselectorName }},
-} from './selectors';
+import * as {{ camelCase name }}Selectors from './selectors';
 {{/if}}
-{{#if wantActionsAndReducer}}
+{{#if wantReducer}}
 import * as {{ camelCase name }}Actions from './actions';
 {{#if wantLoadable}}
 import reducer from './reducer';
@@ -32,64 +28,58 @@ import sagas from './sagas';
 export class {{ properCase name }} extends React.PureComponent {
   render() {
     return (
-      <div>
-{{#if wantSelectors}}
-        <p>{{curly true}}this.props.{{ camelCase selectorName }}{{curly false}}</p>
-{{/if}}
-{{#if wantMSelectors}}
-        <p>{{curly true}}this.props.{{ camelCase mselectorName }}{{curly false}}</p>
-{{/if}}
-{{#if wantActionsAndReducer}}
-        <input type="button" onClick={this.props.on{{ properCase actionName }}Action} />
-{{/if}}
-      </div>
+      <div {...this.props}></div>
     );
   }
 }
 
 {{ properCase name }}.propTypes = {
-{{#if wantSelectors}}
-  {{ camelCase selectorName }}: PropTypes.string.isRequired,
+{{#if wantSagas}}
+  isLoading: PropTypes.bool.isRequired,
 {{/if}}
 {{#if wantMSelectors}}
   {{ camelCase mselectorName }}: PropTypes.string.isRequired,
 {{/if}}
-{{#if wantActionsAndReducer}}
+{{#if wantActions}}
   on{{ properCase actionName }}Action: PropTypes.func.isRequired,
+{{/if}}
+{{#if wantSagas}}
+  on{{ properCase sagaName }}: PropTypes.func.isRequired,
 {{/if}}
 };
 
-{{#if wantActionsAndReducer}}
+{{#if wantReducer}}
 export function mapDispatchToProps(dispatch) {
   return {
+{{#if wantActions}}
     on{{ properCase actionName }}Action: () => dispatch({{ camelCase name }}Actions.{{ camelCase actionName }}()),
+{{/if}}
+{{#if wantSagas}}
+    on{{ properCase sagaName }}: (param) => dispatch({{ camelCase name }}Actions.{{ camelCase sagaName }}Request(param)),
+{{/if}}
   };
 }
 
 {{/if}}
-{{#if wantSelectors}}
 const mapStateToProps = createStructuredSelector({
-  {{ camelCase selectorName }}: (state) => state.getIn(['{{ camelCase name }}', '{{ camelCase selectorName }}']),
+{{#if wantSagas}}
+  isLoading: (state) => state.getIn(['{{ camelCase name }}', 'isLoading']),
+{{/if}}
 {{#if wantMSelectors}}
-  {{ camelCase mselectorName }}: makeSelect{{ properCase name }}{{ properCase mselectorName }}(),
+  {{ camelCase mselectorName }}: {{ camelCase name }}Selectors.{{ properCase mselectorName }}(),
 {{/if}}
 });
-{{/if}}
 
 export default compose(
 {{#if wantSagas}}
   injectSaga({ key: '{{ camelCase name }}', saga: sagas }),
 {{/if}}
-{{#if wantActionsAndReducer}}
+{{#if wantReducer}}
 {{#if wantLoadable}}
   injectReducer({ key: '{{ camelCase name }}', reducer }),
 {{/if}}
   connect(mapStateToProps, mapDispatchToProps),
 {{else}}
-{{#if wantSelectors}}
   connect(mapStateToProps, null),
-{{else}}
-  connect(null, null),
-{{/if}}
 {{/if}}
 )({{ properCase name }});
