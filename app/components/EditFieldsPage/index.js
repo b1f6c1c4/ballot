@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl'; // eslint-disable-line no-unused-vars
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
@@ -11,10 +11,8 @@ import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
 import EmptyIndicator from 'components/EmptyIndicator';
-import VoterCard from 'components/VoterCard';
-import CreateVoterForm from 'components/CreateVoterForm';
 
-import messages from './messages'; // eslint-disable-line no-unused-vars
+import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -27,19 +25,12 @@ const styles = (theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  cards: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-  },
 });
 
-class EditVotersPage extends React.PureComponent {
+class EditFieldsPage extends React.PureComponent {
   componentDidMount() {
     this.props.onRefresh();
   }
-
-  handleDelete = (iCode) => () => this.props.onDeleteVoter({ iCode });
 
   render() {
     const {
@@ -47,10 +38,10 @@ class EditVotersPage extends React.PureComponent {
       bId,
       isLoading,
       ballot,
-      voters,
+      fields,
     } = this.props;
 
-    const canEditVoters = ballot && Permission.CanEditVoters(ballot);
+    const canEditFields = ballot && Permission.CanEditFields(ballot);
 
     return (
       <div className={classes.container}>
@@ -70,44 +61,32 @@ class EditVotersPage extends React.PureComponent {
             />
           </LoadingButton>
         </div>
-        {!isLoading && canEditVoters && (
-          <CreateVoterForm
-            isLoading={this.props.isCreateLoading}
-            onCreateVoter={this.props.onCreateVoter}
-          />
-        )}
         <ResultIndicator error={this.props.error} />
-        <EmptyIndicator isLoading={isLoading} list={ballot && voters} />
-        <div className={classes.cards}>
-          {!isLoading && voters && voters.map((v) => (
-            <VoterCard
-              key={v.iCode}
-              voter={v}
-              disabled={!canEditVoters}
-              onDelete={this.handleDelete(v.iCode)}
-              {...{ bId }}
-            />
-          ))}
-        </div>
+        <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
       </div>
     );
   }
 }
 
-EditVotersPage.propTypes = {
+EditFieldsPage.propTypes = {
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
-  voters: PropTypes.array,
   error: PropTypes.object,
+  fields: PropTypes.array,
   isLoading: PropTypes.bool.isRequired,
-  isCreateLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
-  onCreateVoter: PropTypes.func.isRequired,
-  onDeleteVoter: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onAddAction: PropTypes.func.isRequired,
+  onRemoveAction: PropTypes.func.isRequired,
+  onReorderAction: PropTypes.func.isRequired,
+  onStartEditAction: PropTypes.func.isRequired,
+  onCancelEditAction: PropTypes.func.isRequired,
+  onSaveEditAction: PropTypes.func.isRequired,
 };
 
-export const styledEditVotersPage = withStyles(styles)(EditVotersPage);
+export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);
 
-export default styledEditVotersPage;
+export default injectIntl(styledEditFieldsPage);

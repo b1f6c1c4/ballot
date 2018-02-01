@@ -15,6 +15,7 @@ import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
 import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
 import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
+import EditFieldsContainer from 'containers/EditFieldsContainer/Loadable';
 import StatusContainer from 'containers/StatusContainer/Loadable';
 
 import * as globalContainerActions from './actions';
@@ -38,6 +39,7 @@ export class GlobalContainer extends React.PureComponent {
           <Route exact path="/app/create" component={CreateBallotContainer} />
           <Route exact path="/app/ballots/:bId" component={ViewBallotContainer} />
           <Route exact path="/app/ballots/:bId/voters/" component={EditVotersContainer} />
+          <Route exact path="/app/ballots/:bId/fields/" component={EditFieldsContainer} />
           <Route exact path="/app/status" component={StatusContainer} />
           <Route component={NotFoundPage} />
         </ConnectedSwitch>

@@ -17,7 +17,7 @@ export class ChangePasswordContainer extends React.PureComponent {
   render() {
     return (
       <AuthRequired hasCredential={this.props.hasCredential}>
-        <ChangePasswordPage {...this.props}></ChangePasswordPage>
+        <ChangePasswordPage {...this.props} />
       </AuthRequired>
     );
   }

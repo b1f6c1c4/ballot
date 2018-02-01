@@ -5,6 +5,7 @@ import * as EDIT_VOTERS_CONTAINER from './constants';
 
 const initialState = fromJS({
   isLoading: false,
+  ballot: null,
   isCreateLoading: false,
   voters: null,
   error: null,
@@ -37,6 +38,7 @@ function editVotersContainerReducer(state = initialState, action) {
         .set('error', null);
     case EDIT_VOTERS_CONTAINER.VOTERS_SUCCESS:
       return state.set('isLoading', false)
+        .delete('ballot')
         .setIn(['ballot', 'name'], action.result.ballot.name)
         .setIn(['ballot', 'status'], action.result.ballot.status)
         .set('voters', fromJS(action.result.ballot.voters));
