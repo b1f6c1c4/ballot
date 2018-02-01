@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
@@ -11,6 +11,7 @@ import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
 import EmptyIndicator from 'components/EmptyIndicator';
+import EditFieldDialog from 'components/EditFieldDialog';
 
 import messages from './messages';
 
@@ -62,6 +63,11 @@ class EditFieldsPage extends React.PureComponent {
           </LoadingButton>
         </div>
         <ResultIndicator error={this.props.error} />
+        <EditFieldDialog
+          isOpen
+          onCancel={this.props.onCancelEditAction}
+          onSubmit={this.props.onSaveEditAction}
+        />
         <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
       </div>
     );
@@ -71,7 +77,6 @@ class EditFieldsPage extends React.PureComponent {
 EditFieldsPage.propTypes = {
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
@@ -89,4 +94,4 @@ EditFieldsPage.propTypes = {
 
 export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);
 
-export default injectIntl(styledEditFieldsPage);
+export default styledEditFieldsPage;

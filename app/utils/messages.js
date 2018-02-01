@@ -9,6 +9,19 @@ export default defineMessages({
     id: 'app.general.register',
     defaultMessage: 'Sign up',
   },
+  cancel: {
+    id: 'app.general.cancel',
+    defaultMessage: 'Cancel',
+  },
+  // Fields
+  stringField: {
+    id: 'app.fields.stringField',
+    defaultMessage: 'Custom string',
+  },
+  enumField: {
+    id: 'app.fields.enumField',
+    defaultMessage: 'Enumeration',
+  },
   // Validation
   required: {
     id: 'app.validation.required',
@@ -21,6 +34,14 @@ export default defineMessages({
   alphanumericDash: {
     id: 'app.validation.alphanumericDash',
     defaultMessage: 'Number, alphabet, or dash only.',
+  },
+  noEmptyLines: {
+    id: 'app.validation.noEmptyLines',
+    defaultMessage: 'No empty lines.',
+  },
+  noDupLines: {
+    id: 'app.validation.DupLines',
+    defaultMessage: 'No duplication values.',
   },
   // Error
   error_unknown: {
