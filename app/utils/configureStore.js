@@ -17,6 +17,7 @@ const sagaMiddleware = createSagaMiddleware();
 export const slicer = () => (rawState) => {
   let state = rawState.toJS();
   _.unset(state, 'language');
+  _.unset(state, 'route');
 
   function rm(v) {
     if (_.isArray(v)) {
@@ -25,11 +26,11 @@ export const slicer = () => (rawState) => {
     if (!_.isObject(v)) return v;
 
     let tmp = v;
-    if (_.get(v, 'isLoading')) {
-      tmp = _.set(v, 'isLoading', false);
+    if (_.get(tmp, 'isLoading')) {
+      tmp = _.set(tmp, 'isLoading', false);
     }
-    if (_.get(v, 'privateKey')) {
-      tmp = _.set(v, 'privateKey', null);
+    if (_.get(tmp, 'privateKey')) {
+      tmp = _.set(tmp, 'privateKey', null);
     }
     return _.mapValues(tmp, rm);
   }

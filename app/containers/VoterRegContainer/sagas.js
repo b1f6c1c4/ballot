@@ -9,18 +9,17 @@ import gql from './api.graphql';
 
 // Sagas
 export function* handleRegisterRequest({ bId, iCode, comment }) {
-  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
   const { q, g } = yield select(voterRegContainerSelectors.Ballot());
 
   try {
-    const { publicKey, privateKey } = generateKeyPair({ q, g });
+    const { publicKey, privateKey } = yield call(generateKeyPair, { q, g });
     const vars = {
       bId,
       iCode,
       comment,
       publicKey,
     };
-    const result = yield call(api.mutate, gql.Register, vars, cred);
+    const result = yield call(api.mutate, gql.Register, vars);
     yield put(voterRegContainerActions.registerSuccess(result, { privateKey }));
   } catch (err) {
     yield put(voterRegContainerActions.registerFailure(err));
@@ -28,10 +27,8 @@ export function* handleRegisterRequest({ bId, iCode, comment }) {
 }
 
 export function* handleRefreshRequest({ bId }) {
-  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
-
   try {
-    const result = yield call(api.query, gql.Refresh, { bId }, cred);
+    const result = yield call(api.query, gql.Refresh, { bId });
     yield put(voterRegContainerActions.refreshSuccess(result));
   } catch (err) {
     yield put(voterRegContainerActions.refreshFailure(err));
