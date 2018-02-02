@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
+import shortid from 'shortid';
 
 import * as EDIT_FIELDS_CONTAINER from './constants';
 
@@ -16,19 +17,17 @@ const initialState = fromJS({
 
 const normalizeFields = (fs) => fs.map((f) => {
   // eslint-disable-next-line no-underscore-dangle
-  const type = f.__typename;
-  const { prompt } = f;
+  const { __typename: type, prompt } = f;
+  const common = { type, prompt, key: shortid.generate() };
   switch (type) {
     case 'StringField':
       return {
-        type,
-        prompt,
+        ...common,
         stringDefault: f.default,
       };
     case 'EnumField':
       return {
-        type,
-        prompt,
+        ...common,
         enumItems: f.items,
       };
     default: {
@@ -45,8 +44,13 @@ function editFieldsContainerReducer(state = initialState, action) {
     case EDIT_FIELDS_CONTAINER.REMOVE_ACTION:
       return state.set('isPristine', false)
         .set('fields', state.get('fields').delete(action.index));
-    case EDIT_FIELDS_CONTAINER.REORDER_ACTION:
-      return state;
+    case EDIT_FIELDS_CONTAINER.REORDER_ACTION: {
+      const field = state.getIn(['fields', action.from]);
+      const fields = state.get('fields')
+        .delete(action.from).insert(action.to, field);
+      return state.set('isPristine', false)
+        .set('fields', fields);
+    }
     case EDIT_FIELDS_CONTAINER.START_EDIT_ACTION:
       return state.set('isOpen', true).set('isCreate', false)
         .set('currentId', action.index);
@@ -54,14 +58,18 @@ function editFieldsContainerReducer(state = initialState, action) {
       return state.set('isOpen', true).set('isCreate', true);
     case EDIT_FIELDS_CONTAINER.CANCEL_DIALOG_ACTION:
       return state.set('isOpen', false);
-    case EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION:
+    case EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION: {
       if (!state.get('isCreate')) {
         const id = state.get('currentId');
+        const key = state.getIn(['fields', id, 'key']);
+        const field = fromJS(action.field).set('key', key);
         return state.set('isOpen', false).set('isPristine', false)
-          .set('fields', state.get('fields').set(id, fromJS(action.field)));
+          .set('fields', state.get('fields').set(id, field));
       }
+      const field = fromJS(action.field).set('key', shortid.generate());
       return state.set('isOpen', false).set('isPristine', false)
-        .set('fields', state.get('fields').push(fromJS(action.field)));
+        .set('fields', state.get('fields').push(field));
+    }
     // Sagas
     case EDIT_FIELDS_CONTAINER.SAVE_REQUEST:
       return state.set('isLoading', true)

@@ -11,7 +11,7 @@ import gql from './api.graphql';
 export function* handleSaveRequest({ bId }) {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
   const rawFields = yield select((state) => state.getIn(['editFieldsContainer', 'fields']));
-  const fields = rawFields.toJS().map((f) => _.omit(f, 'type'));
+  const fields = rawFields.toJS().map((f) => _.omit(f, ['type', 'key']));
 
   try {
     const result = yield call(api.mutate, gql.ReplaceFields, { bId, fields }, cred);

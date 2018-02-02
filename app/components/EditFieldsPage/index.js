@@ -6,14 +6,21 @@ import * as Permission from 'utils/permission';
 import {
   withStyles,
   Button,
+  IconButton,
+  Card,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
 } from 'material-ui';
-import { Clear, Save, Add } from 'material-ui-icons';
+import { Clear, Save, Add, Edit, Delete } from 'material-ui-icons';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
 import EmptyIndicator from 'components/EmptyIndicator';
 import EditFieldDialog from 'components/EditFieldDialog';
+import ReorderableList from 'components/ReorderableList';
+import ReorderableListItem from 'components/ReorderableListItem';
 
 import messages from './messages';
 
@@ -35,6 +42,10 @@ class EditFieldsPage extends React.PureComponent {
     this.props.onRefresh();
   }
 
+  handleEdit = (index) => () => this.props.onStartEditAction({ index });
+
+  handleDelete = (index) => () => this.props.onRemoveAction({ index });
+
   render() {
     const {
       classes,
@@ -47,6 +58,19 @@ class EditFieldsPage extends React.PureComponent {
     } = this.props;
 
     const canEditFields = ballot && Permission.CanEditFields(ballot);
+
+    const makeFieldType = (b) => {
+      const { type } = b; // eslint-disable-line no-underscore-dangle
+      const key = `fieldType_${type}`;
+      if (messages[key]) {
+        return (
+          <FormattedMessage {...messages[key]} />
+        );
+      }
+      return (
+        <span>{type}</span>
+      );
+    };
 
     return (
       <div className={classes.container}>
@@ -111,6 +135,34 @@ class EditFieldsPage extends React.PureComponent {
           onSubmit={this.props.onSubmitDialogAction}
         />
         <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
+        {!isLoading && ballot && fields && (
+          <ReorderableList>
+            {fields.map((f, i) => (
+              <ReorderableListItem
+                onReorder={this.props.onReorderAction}
+                key={f.key}
+                index={i}
+              >
+                <Card>
+                  <ListItem>
+                    <ListItemText
+                      primary={f.prompt}
+                      secondary={makeFieldType(f)}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton>
+                        <Edit onClick={this.handleEdit(i)} />
+                      </IconButton>
+                      <IconButton>
+                        <Delete onClick={this.handleDelete(i)} />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                </Card>
+              </ReorderableListItem>
+            ))}
+          </ReorderableList>
+        )}
       </div>
     );
   }

@@ -8,15 +8,18 @@ export function remove({ index }) {
   };
 }
 
-export function reorder() {
+export function reorder({ from, to }) {
   return {
     type: EDIT_FIELDS_CONTAINER.REORDER_ACTION,
+    from,
+    to,
   };
 }
 
-export function startEdit() {
+export function startEdit({ index }) {
   return {
     type: EDIT_FIELDS_CONTAINER.START_EDIT_ACTION,
+    index,
   };
 }
 

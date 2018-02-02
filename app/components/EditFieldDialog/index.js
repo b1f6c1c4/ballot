@@ -53,20 +53,21 @@ class EditFieldDialog extends React.PureComponent {
 
   handleDone = (vals) => {
     const type = vals.get('type');
-    const prompt = vals.get('prompt');
+    const common = {
+      type,
+      prompt: vals.get('prompt'),
+    };
     switch (type) {
       case 'StringField':
         return this.props.onSubmit({
-          type,
-          prompt,
+          ...common,
           stringDefault: vals.get('stringDefault'),
         });
       case 'EnumField': {
         const raw = vals.get('enumItems');
         const enumItems = raw && raw.split('\n');
         return this.props.onSubmit({
-          type,
-          prompt,
+          ...common,
           enumItems,
         });
       }
