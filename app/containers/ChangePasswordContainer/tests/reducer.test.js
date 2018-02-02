@@ -14,7 +14,7 @@ describe('changePasswordContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(changePasswordContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(changePasswordContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -25,7 +25,7 @@ describe('changePasswordContainerReducer', () => {
     const param = { oldPassword: 'val', newPassword: 'val2' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordRequest(param))).toEqual(expectedResult);
+    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordRequest(param))).toEq(expectedResult);
   });
 
   it('should handle password success', () => {
@@ -33,7 +33,7 @@ describe('changePasswordContainerReducer', () => {
     const result = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordSuccess(result))).toEqual(expectedResult);
+    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle password failure', () => {
@@ -41,6 +41,6 @@ describe('changePasswordContainerReducer', () => {
     const error = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordFailure(error))).toEqual(expectedResult);
+    expect(changePasswordContainerReducer(originalState, changePasswordContainerActions.passwordFailure(error))).toEq(expectedResult);
   });
 });

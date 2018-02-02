@@ -14,7 +14,7 @@ describe('createBallotContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(createBallotContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(createBallotContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -25,7 +25,7 @@ describe('createBallotContainerReducer', () => {
     const param = { name: 'n' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotRequest(param))).toEqual(expectedResult);
+    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotRequest(param))).toEq(expectedResult);
   });
 
   it('should handle createBallot success', () => {
@@ -33,7 +33,7 @@ describe('createBallotContainerReducer', () => {
     const result = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotSuccess(result))).toEqual(expectedResult);
+    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle createBallot failure', () => {
@@ -41,6 +41,6 @@ describe('createBallotContainerReducer', () => {
     const error = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotFailure(error))).toEqual(expectedResult);
+    expect(createBallotContainerReducer(originalState, createBallotContainerActions.createBallotFailure(error))).toEq(expectedResult);
   });
 });

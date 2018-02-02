@@ -15,7 +15,7 @@ describe('normalizeFields', () => {
     const result = normalizeFields([
       { __typename: 'StringField', default: 'def' },
     ]);
-    expect(result).toEqual([
+    expect(result).toEq([
       { type: 'StringField', key: 'id', stringDefault: 'def' },
     ]);
   });
@@ -24,7 +24,7 @@ describe('normalizeFields', () => {
     const result = normalizeFields([
       { __typename: 'EnumField', items: ['def'] },
     ]);
-    expect(result).toEqual([
+    expect(result).toEq([
       { type: 'EnumField', key: 'id', enumItems: ['def'] },
     ]);
   });
@@ -51,7 +51,7 @@ describe('editFieldsContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(editFieldsContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -67,7 +67,7 @@ describe('editFieldsContainerReducer', () => {
         { key: 'f2' },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.remove(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.remove(param))).toEq(expectedResult);
   });
 
   it('should handle reorder action', () => {
@@ -85,7 +85,7 @@ describe('editFieldsContainerReducer', () => {
         { key: 'f1' },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.reorder(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.reorder(param))).toEq(expectedResult);
   });
 
   it('should handle startEdit action', () => {
@@ -96,7 +96,7 @@ describe('editFieldsContainerReducer', () => {
       .set('isCreate', false)
       .set('currentId', 123);
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startEdit(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startEdit(param))).toEq(expectedResult);
   });
 
   it('should handle startCreate action', () => {
@@ -105,14 +105,14 @@ describe('editFieldsContainerReducer', () => {
       .set('isOpen', true)
       .set('isCreate', true);
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startCreate())).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.startCreate())).toEq(expectedResult);
   });
 
   it('should handle cancelDialog action', () => {
     const originalState = state.set('isOpen', true);
     const expectedResult = state;
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.cancelDialog())).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.cancelDialog())).toEq(expectedResult);
   });
 
   it('should handle submitDialog action for create', () => {
@@ -131,7 +131,7 @@ describe('editFieldsContainerReducer', () => {
         { key: 'id', prompt: 'p' },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.submitDialog(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.submitDialog(param))).toEq(expectedResult);
   });
 
   it('should handle submitDialog action for edit', () => {
@@ -152,7 +152,7 @@ describe('editFieldsContainerReducer', () => {
         { key: 'f2' },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.submitDialog(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.submitDialog(param))).toEq(expectedResult);
   });
 
   // Sagas
@@ -161,7 +161,7 @@ describe('editFieldsContainerReducer', () => {
     const param = { bId: 'val' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveRequest(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveRequest(param))).toEq(expectedResult);
   });
 
   it('should handle save success', () => {
@@ -187,7 +187,7 @@ describe('editFieldsContainerReducer', () => {
         },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle save success error', () => {
@@ -200,7 +200,7 @@ describe('editFieldsContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('error', { codes: ['tpns'] });
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle save failure', () => {
@@ -209,7 +209,7 @@ describe('editFieldsContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('error', fromJS(error));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveFailure(error))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.saveFailure(error))).toEq(expectedResult);
   });
 
   it('should handle refresh request', () => {
@@ -217,7 +217,7 @@ describe('editFieldsContainerReducer', () => {
     const param = { bId: 'val' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshRequest(param))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshRequest(param))).toEq(expectedResult);
   });
 
   it('should handle refresh success', () => {
@@ -248,7 +248,7 @@ describe('editFieldsContainerReducer', () => {
         },
       ]));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshSuccess(result))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle refresh success error', () => {
@@ -263,7 +263,7 @@ describe('editFieldsContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('error', { codes: ['tpns'] });
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshSuccess(result))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle refresh failure', () => {
@@ -272,6 +272,6 @@ describe('editFieldsContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('error', fromJS(error));
 
-    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshFailure(error))).toEqual(expectedResult);
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.refreshFailure(error))).toEq(expectedResult);
   });
 });

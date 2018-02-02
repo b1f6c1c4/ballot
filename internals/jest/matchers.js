@@ -26,7 +26,7 @@ const purify = (o) => _.cloneDeepWith(o, (v) => {
 });
 
 expect.extend({
-  toEqual(received, expected) {
+  toEq(received, expected) {
     const rec = purify(received);
     const exp = purify(expected);
 

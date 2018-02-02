@@ -10,7 +10,7 @@ describe('languageProviderReducer', () => {
   it('should return browser locale', () => {
     jest.mock('browser-locale', () => jest.fn(() => 'zh-CN'));
     const languageProviderReducer = require('../reducer').default; // eslint-disable-line global-require
-    expect(languageProviderReducer(undefined, {}).toJS()).toEqual({
+    expect(languageProviderReducer(undefined, {}).toJS()).toEq({
       locale: 'zh',
     });
   });
@@ -18,7 +18,7 @@ describe('languageProviderReducer', () => {
   it('should fallback to DEFAULT_LOCALE', () => {
     jest.mock('browser-locale', () => jest.fn(() => null));
     const languageProviderReducer = require('../reducer').default; // eslint-disable-line global-require
-    expect(languageProviderReducer(undefined, {}).toJS()).toEqual({
+    expect(languageProviderReducer(undefined, {}).toJS()).toEq({
       locale: DEFAULT_LOCALE,
     });
   });
@@ -29,7 +29,7 @@ describe('languageProviderReducer', () => {
     expect(languageProviderReducer(undefined, {
       type: LANGUAGE_PROVIDER.CHANGE_LOCALE_ACTION,
       locale: 'de',
-    }).toJS()).toEqual({
+    }).toJS()).toEq({
       locale: 'de',
     });
   });

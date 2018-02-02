@@ -3,7 +3,7 @@
     const param = {{curly true}} {{ camelCase sagaParam }}: 'val' {{curly false}};
     const expectedResult = state.set('isLoading', true);
 
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Request(param))).toEqual(expectedResult);
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Request(param))).toEq(expectedResult);
   });
 
   it('should handle {{ camelCase sagaName }} success', () => {
@@ -11,7 +11,7 @@
     const result = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result))).toEqual(expectedResult);
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Success(result))).toEq(expectedResult);
   });
 
   it('should handle {{ camelCase sagaName }} failure', () => {
@@ -19,5 +19,5 @@
     const error = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))).toEqual(expectedResult);
+    expect({{ camelCase name }}Reducer(originalState, {{ camelCase name }}Actions.{{ camelCase sagaName }}Failure(error))).toEq(expectedResult);
   });

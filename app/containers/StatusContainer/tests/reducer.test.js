@@ -17,7 +17,7 @@ describe('statusContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(statusContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(statusContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -25,7 +25,7 @@ describe('statusContainerReducer', () => {
     const originalState = state;
     const expectedResult = state;
 
-    expect(statusContainerReducer(originalState, statusContainerActions.fetchStatus())).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.fetchStatus())).toEq(expectedResult);
   });
 
   // Sagas
@@ -33,7 +33,7 @@ describe('statusContainerReducer', () => {
     const originalState = state;
     const expectedResult = state;
 
-    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusRequest())).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusRequest())).toEq(expectedResult);
   });
 
   it('should handle checkStatus success', () => {
@@ -44,7 +44,7 @@ describe('statusContainerReducer', () => {
     };
     const expectedResult = state.set('status', fromJS(result));
 
-    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusSuccess(result))).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle checkStatus failure', () => {
@@ -52,6 +52,6 @@ describe('statusContainerReducer', () => {
     const error = { };
     const expectedResult = state;
 
-    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusFailure(error))).toEqual(expectedResult);
+    expect(statusContainerReducer(originalState, statusContainerActions.checkStatusFailure(error))).toEq(expectedResult);
   });
 });
