@@ -58,7 +58,7 @@
 
 # Voter
 
-## Voter Reg Page [/app/vreg -> /app.html]
+## Voter Reg Page [/app/vreg/{bId}/{iCode} -> /app.html]
 
 - 确认注册
 

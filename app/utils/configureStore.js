@@ -23,11 +23,13 @@ export const slicer = () => (rawState) => {
       return _.map(v, rm);
     }
     if (!_.isObject(v)) return v;
-    // if (!_.isPlainObject(v)) throw new Error('Unsupported type');
 
     let tmp = v;
     if (_.get(v, 'isLoading')) {
       tmp = _.set(v, 'isLoading', false);
+    }
+    if (_.get(v, 'privateKey')) {
+      tmp = _.set(v, 'privateKey', null);
     }
     return _.mapValues(tmp, rm);
   }

@@ -1,0 +1,29 @@
+mutation Register($bId: ID!, $iCode: ID!, $comment: String, $publicKey: Crypto!) {
+  registerVoter(input: {
+    bId: $bId,
+    iCode: $iCode,
+    comment: $comment,
+    publicKey: $publicKey,
+  })
+}
+
+query Refresh($bId: ID!) {
+  ballot(input: {
+    bId: $bId,
+  }) {
+    name
+    status
+    q
+    g
+    h
+    voters {
+      name
+      comment
+      publicKey
+    }
+  }
+}
+
+# Hack graphql-tag/loader
+# [bug](https://github.com/apollographql/graphql-tag/issues/137)
+query Hack { hack }
