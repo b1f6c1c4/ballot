@@ -1,6 +1,7 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
@@ -12,7 +13,15 @@ import {
   ListItemText,
   ListItemSecondaryAction,
 } from 'material-ui';
-import { Clear, Save, Add, Edit, Delete } from 'material-ui-icons';
+import {
+  Clear,
+  Save,
+  Add,
+  Edit,
+  Visibility,
+  Delete,
+} from 'material-ui-icons';
+import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -34,6 +43,9 @@ const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  flex: {
+    flex: 1,
   },
 });
 
@@ -82,6 +94,7 @@ class EditFieldsPage extends React.PureComponent {
             isLoading,
           }}
         />
+        <LeavePrompt isPristine={isPristine} />
         <div className={classes.actions}>
           {isPristine && (
             <LoadingButton {...{ isLoading }}>
@@ -94,20 +107,7 @@ class EditFieldsPage extends React.PureComponent {
           {!isPristine && (
             <LoadingButton {...{ isLoading }}>
               <Button
-                color="secondary"
-                disabled={isLoading}
-                onClick={this.props.onRefresh}
-              >
-                <FormattedMessage {...messages.drop} />
-                <Clear className={classes.rightIcon} />
-              </Button>
-            </LoadingButton>
-          )}
-          {!isPristine && (
-            <LoadingButton {...{ isLoading }}>
-              <Button
                 color="primary"
-                raised
                 disabled={isLoading}
                 onClick={this.props.onSave}
               >
@@ -126,10 +126,23 @@ class EditFieldsPage extends React.PureComponent {
               <Add className={classes.rightIcon} />
             </Button>
           )}
+          {!isPristine && (
+            <LoadingButton {...{ isLoading }}>
+              <Button
+                color="secondary"
+                disabled={isLoading}
+                onClick={this.props.onRefresh}
+              >
+                <FormattedMessage {...messages.drop} />
+                <Clear className={classes.rightIcon} />
+              </Button>
+            </LoadingButton>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         <EditFieldDialog
           isOpen={isOpen}
+          disabled={!canEditFields}
           isCreate={this.props.isCreate}
           onCancel={this.props.onCancelDialogAction}
           onSubmit={this.props.onSubmitDialogAction}
@@ -138,28 +151,40 @@ class EditFieldsPage extends React.PureComponent {
         {!isLoading && ballot && fields && (
           <ReorderableList>
             {fields.map((f, i) => (
+                <Card>
+                  <ListItem>
               <ReorderableListItem
                 onReorder={this.props.onReorderAction}
                 key={f.key}
                 index={i}
+                disabled={!canEditFields}
               >
-                <Card>
-                  <ListItem>
+                <div
+                className={classes.flex}
+              >
                     <ListItemText
                       primary={f.prompt}
                       secondary={makeFieldType(f)}
                     />
+                  </div>
+              </ReorderableListItem>
                     <ListItemSecondaryAction>
                       <IconButton>
-                        <Edit onClick={this.handleEdit(i)} />
+                        {canEditFields && (
+                          <Edit onClick={this.handleEdit(i)} />
+                        )}
+                        {!canEditFields && (
+                          <Visibility onClick={this.handleEdit(i)} />
+                        )}
                       </IconButton>
-                      <IconButton>
-                        <Delete onClick={this.handleDelete(i)} />
-                      </IconButton>
+                      {canEditFields && (
+                        <IconButton>
+                          <Delete onClick={this.handleDelete(i)} />
+                        </IconButton>
+                      )}
                     </ListItemSecondaryAction>
                   </ListItem>
                 </Card>
-              </ReorderableListItem>
             ))}
           </ReorderableList>
         )}
@@ -169,6 +194,7 @@ class EditFieldsPage extends React.PureComponent {
 }
 
 EditFieldsPage.propTypes = {
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
@@ -191,4 +217,4 @@ EditFieldsPage.propTypes = {
 
 export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);
 
-export default styledEditFieldsPage;
+export default injectIntl(styledEditFieldsPage);

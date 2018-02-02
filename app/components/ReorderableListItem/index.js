@@ -12,16 +12,10 @@ class ReorderableListItem extends React.PureComponent {
       connectDropTarget,
     } = this.props;
 
-    const content = (
-      <div>
-        {children}
-      </div>
-    );
-
     return compose(
       connectDropTarget,
       connectDragSource,
-    )(content);
+    )(children);
   }
 }
 
@@ -33,6 +27,7 @@ ReorderableListItem.propTypes = {
 
 const itemSource = {
   beginDrag: ({ index }) => ({ index }),
+  canDrag: ({ disabled }) => !disabled,
 };
 
 const itemTarget = {

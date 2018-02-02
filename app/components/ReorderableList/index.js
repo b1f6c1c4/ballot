@@ -6,7 +6,8 @@ import {
   List,
 } from 'material-ui';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import MultiBackend from 'react-dnd-multi-backend';
+import HTML5toTouch from 'react-dnd-multi-backend/lib/HTML5toTouch';
 
 class ReorderableList extends React.PureComponent {
   render() {
@@ -22,10 +23,9 @@ class ReorderableList extends React.PureComponent {
 }
 
 ReorderableList.propTypes = {
-  classes: PropTypes.object.isRequired,
   children: PropTypes.any,
 };
 
 export default compose(
-  DragDropContext(HTML5Backend),
+  DragDropContext(MultiBackend(HTML5toTouch)),
 )(ReorderableList);

@@ -13,6 +13,10 @@ export default defineMessages({
     id: 'app.general.cancel',
     defaultMessage: 'Cancel',
   },
+  beforeLeave: {
+    id: 'app.general.beforeLeave',
+    defaultMessage: 'Leave without save?',
+  },
   // Fields
   stringField: {
     id: 'app.fields.stringField',

@@ -4,6 +4,10 @@ import messages from 'utils/messages';
 export default {
   ...messages,
   ...defineMessages({
+    viewHeader: {
+      id: 'app.components.EditFieldDialog.viewHeader',
+      defaultMessage: 'View field',
+    },
     createHeader: {
       id: 'app.components.EditFieldDialog.createHeader',
       defaultMessage: 'Create field',
@@ -39,6 +43,10 @@ export default {
     enumHelperText: {
       id: 'app.components.EditFieldDialog.enumHelperText',
       defaultMessage: 'Per line.',
+    },
+    close: {
+      id: 'app.components.EditFieldDialog.close',
+      defaultMessage: 'Close',
     },
     create: {
       id: 'app.components.EditFieldDialog.create',

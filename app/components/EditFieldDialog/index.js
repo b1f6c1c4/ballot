@@ -88,6 +88,7 @@ class EditFieldDialog extends React.PureComponent {
       pristine,
       classes,
       isCreate,
+      disabled,
       type,
       handleSubmit,
     } = this.props;
@@ -96,17 +97,21 @@ class EditFieldDialog extends React.PureComponent {
       <Dialog fullScreen={this.props.fullScreen} open={this.props.isOpen}>
         <form onSubmit={handleSubmit(this.handleDone)}>
           <DialogTitle className={classes.width}>
-            {isCreate && (
+            {!disabled && isCreate && (
               <FormattedMessage {...messages.createHeader} />
             )}
-            {!isCreate && (
+            {!disabled && !isCreate && (
               <FormattedMessage {...messages.editHeader} />
+            )}
+            {disabled && (
+              <FormattedMessage {...messages.viewHeader} />
             )}
           </DialogTitle>
           <DialogContent>
             <div>
               <TextField
                 name="prompt"
+                disabled={disabled}
                 label={messages.promptLabel}
                 helperText={messages.promptHelperText}
                 validate={this.validate}
@@ -118,6 +123,7 @@ class EditFieldDialog extends React.PureComponent {
               </InputLabel>
               <Field
                 name="type"
+                disabled={disabled}
                 component={Select}
               >
                 <MenuItem value="EnumField">
@@ -132,6 +138,7 @@ class EditFieldDialog extends React.PureComponent {
               <div>
                 <TextField
                   name="stringDefault"
+                  disabled={disabled}
                   label={messages.defaultLabel}
                   helperText={messages.defaultHelperText}
                 />
@@ -141,6 +148,7 @@ class EditFieldDialog extends React.PureComponent {
               <div>
                 <TextField
                   name="enumItems"
+                  disabled={disabled}
                   multiline
                   label={messages.enumLabel}
                   helperText={messages.enumHelperText}
@@ -156,21 +164,28 @@ class EditFieldDialog extends React.PureComponent {
               color={pristine ? 'primary' : 'secondary'}
               onClick={this.handleCancel}
             >
-              <FormattedMessage {...messages.cancel} />
-            </Button>
-            <Button
-              type="submit"
-              raised={!pristine}
-              color="primary"
-              onClick={this.handleSubmit}
-            >
-              {isCreate && (
-                <FormattedMessage {...messages.create} />
+              {!disabled && (
+                <FormattedMessage {...messages.cancel} />
               )}
-              {!isCreate && (
-                <FormattedMessage {...messages.save} />
+              {disabled && (
+                <FormattedMessage {...messages.close} />
               )}
             </Button>
+            {!disabled && (
+              <Button
+                type="submit"
+                raised={!pristine}
+                color="primary"
+                onClick={this.handleSubmit}
+              >
+                {isCreate && (
+                  <FormattedMessage {...messages.create} />
+                )}
+                {!isCreate && (
+                  <FormattedMessage {...messages.save} />
+                )}
+              </Button>
+            )}
           </DialogActions>
         </form>
       </Dialog>
@@ -185,6 +200,7 @@ EditFieldDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   isCreate: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
   type: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
