@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
@@ -151,40 +150,40 @@ class EditFieldsPage extends React.PureComponent {
         {!isLoading && ballot && fields && (
           <ReorderableList>
             {fields.map((f, i) => (
-                <Card>
-                  <ListItem>
-              <ReorderableListItem
-                onReorder={this.props.onReorderAction}
-                key={f.key}
-                index={i}
-                disabled={!canEditFields}
-              >
-                <div
-                className={classes.flex}
-              >
-                    <ListItemText
-                      primary={f.prompt}
-                      secondary={makeFieldType(f)}
-                    />
-                  </div>
-              </ReorderableListItem>
-                    <ListItemSecondaryAction>
-                      <IconButton>
-                        {canEditFields && (
-                          <Edit onClick={this.handleEdit(i)} />
-                        )}
-                        {!canEditFields && (
-                          <Visibility onClick={this.handleEdit(i)} />
-                        )}
-                      </IconButton>
+              <Card>
+                <ListItem>
+                  <ReorderableListItem
+                    onReorder={this.props.onReorderAction}
+                    key={f.key}
+                    index={i}
+                    disabled={!canEditFields}
+                  >
+                    <div
+                      className={classes.flex}
+                    >
+                      <ListItemText
+                        primary={f.prompt}
+                        secondary={makeFieldType(f)}
+                      />
+                    </div>
+                  </ReorderableListItem>
+                  <ListItemSecondaryAction>
+                    <IconButton>
                       {canEditFields && (
-                        <IconButton>
-                          <Delete onClick={this.handleDelete(i)} />
-                        </IconButton>
+                        <Edit onClick={this.handleEdit(i)} />
                       )}
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                </Card>
+                      {!canEditFields && (
+                        <Visibility onClick={this.handleEdit(i)} />
+                      )}
+                    </IconButton>
+                    {canEditFields && (
+                      <IconButton>
+                        <Delete onClick={this.handleDelete(i)} />
+                      </IconButton>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </Card>
             ))}
           </ReorderableList>
         )}

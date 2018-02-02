@@ -108,13 +108,14 @@
       "app"
     ],
     "moduleNameMapper": {
-      ".*\\.(css|less|styl|scss|sass)$": "<rootDir>/internals/mocks/cssModule.js",
-      ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/mocks/image.js"
+      ".*\\.(css|less|styl|scss|sass)$": "<rootDir>/internals/jest/cssModule.js",
+      ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/jest/image.js"
     },
     "transform": {
       "\\.graphql$": "jest-transform-graphql",
       ".*": "babel-jest"
     },
+    "setupTestFrameworkScriptFile": "<rootDir>/internals/jest/matchers.js",
     "testRegex": "tests/.*\\.test\\.js$"
   },
   "dependencies": {
@@ -135,7 +136,7 @@
     "hoist-non-react-statics": "2.3.1",
     "i18next": "10.3.0",
     "i18next-browser-languagedetector": "2.1.0",
-    "immutable": "3.8.2",
+    "immutable": "4.0.0-rc.9",
     "intl": "1.2.5",
     "invariant": "2.2.2",
     "ionicons": "2.0.1",

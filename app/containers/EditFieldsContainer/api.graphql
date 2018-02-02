@@ -1,4 +1,4 @@
-mutation ReplaceFields($bId: ID!, $fields: [FieldInput!]!) {
+mutation Save($bId: ID!, $fields: [FieldInput!]!) {
   replaceFields(input: {
     bId: $bId,
     fields: $fields,

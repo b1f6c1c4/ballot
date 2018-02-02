@@ -35,7 +35,7 @@ export function cancelDialog() {
   };
 }
 
-export function submitDialog(field) {
+export function submitDialog({ field }) {
   return {
     type: EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION,
     field,

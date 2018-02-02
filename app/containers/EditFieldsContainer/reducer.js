@@ -15,7 +15,7 @@ const initialState = fromJS({
   currentId: null,
 });
 
-const normalizeFields = (fs) => fs.map((f) => {
+export const normalizeFields = (fs) => fs.map((f) => {
   // eslint-disable-next-line no-underscore-dangle
   const { __typename: type, prompt } = f;
   const common = { type, prompt, key: shortid.generate() };
@@ -42,69 +42,93 @@ function editFieldsContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
     case EDIT_FIELDS_CONTAINER.REMOVE_ACTION:
-      return state.set('isPristine', false)
+      return state
+        .set('isPristine', false)
         .set('fields', state.get('fields').delete(action.index));
     case EDIT_FIELDS_CONTAINER.REORDER_ACTION: {
       const field = state.getIn(['fields', action.from]);
       const fields = state.get('fields')
         .delete(action.from).insert(action.to, field);
-      return state.set('isPristine', false)
+      return state
+        .set('isPristine', false)
         .set('fields', fields);
     }
     case EDIT_FIELDS_CONTAINER.START_EDIT_ACTION:
-      return state.set('isOpen', true).set('isCreate', false)
+      return state
+        .set('isOpen', true)
+        .set('isCreate', false)
         .set('currentId', action.index);
     case EDIT_FIELDS_CONTAINER.START_CREATE_ACTION:
-      return state.set('isOpen', true).set('isCreate', true);
+      return state
+        .set('isOpen', true)
+        .set('isCreate', true);
     case EDIT_FIELDS_CONTAINER.CANCEL_DIALOG_ACTION:
-      return state.set('isOpen', false);
+      return state
+        .set('isOpen', false)
+        .set('currentId', null);
     case EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION: {
       if (!state.get('isCreate')) {
         const id = state.get('currentId');
         const key = state.getIn(['fields', id, 'key']);
         const field = fromJS(action.field).set('key', key);
-        return state.set('isOpen', false).set('isPristine', false)
+        return state
+          .set('isOpen', false)
+          .set('isPristine', false)
+          .set('currentId', null)
           .set('fields', state.get('fields').set(id, field));
       }
       const field = fromJS(action.field).set('key', shortid.generate());
-      return state.set('isOpen', false).set('isPristine', false)
+      return state
+        .set('isOpen', false)
+        .set('isCreate', false)
+        .set('isPristine', false)
         .set('fields', state.get('fields').push(field));
     }
     // Sagas
     case EDIT_FIELDS_CONTAINER.SAVE_REQUEST:
-      return state.set('isLoading', true)
+      return state
+        .set('isLoading', true)
         .set('error', null);
     case EDIT_FIELDS_CONTAINER.SAVE_SUCCESS: {
       try {
         const fields = normalizeFields(action.result.replaceFields);
-        return state.set('isLoading', false).set('isPristine', true)
+        return state
+          .set('isLoading', false)
+          .set('isPristine', true)
           .set('fields', fromJS(fields));
       } catch (e) {
-        return state.set('isLoading', false)
+        return state
+          .set('isLoading', false)
           .set('error', fromJS(_.toPlainObject(e)));
       }
     }
     case EDIT_FIELDS_CONTAINER.SAVE_FAILURE:
-      return state.set('isLoading', false)
+      return state
+        .set('isLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
     case EDIT_FIELDS_CONTAINER.REFRESH_REQUEST:
-      return state.set('isLoading', true)
+      return state
+        .set('isLoading', true)
         .set('error', null);
     case EDIT_FIELDS_CONTAINER.REFRESH_SUCCESS: {
       try {
         const fields = normalizeFields(action.result.ballot.fields);
-        return state.set('isLoading', false).set('isPristine', true)
+        return state
+          .set('isLoading', false)
+          .set('isPristine', true)
           .delete('ballot')
           .setIn(['ballot', 'name'], action.result.ballot.name)
           .setIn(['ballot', 'status'], action.result.ballot.status)
           .set('fields', fromJS(fields));
       } catch (e) {
-        return state.set('isLoading', false)
+        return state
+          .set('isLoading', false)
           .set('error', fromJS(_.toPlainObject(e)));
       }
     }
     case EDIT_FIELDS_CONTAINER.REFRESH_FAILURE:
-      return state.set('isLoading', false)
+      return state
+        .set('isLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
     // Default
     default:

@@ -10,6 +10,7 @@ describe('editVotersContainerReducer', () => {
     state = fromJS({
       isLoading: false,
       isCreateLoading: false,
+      ballot: null,
       voters: null,
       error: null,
     });

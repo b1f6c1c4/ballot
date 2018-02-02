@@ -4,12 +4,6 @@ import * as editFieldsContainerActions from '../actions';
 
 describe('EditFieldsContainer actions', () => {
   // Actions
-  describe('add action', () => {
-    it('has a type of ADD_ACTION', () => {
-      expect(editFieldsContainerActions.add().type).toEqual(EDIT_FIELDS_CONTAINER.ADD_ACTION);
-    });
-  });
-
   describe('remove action', () => {
     const param = { index: 1 };
 
@@ -17,38 +11,33 @@ describe('EditFieldsContainer actions', () => {
       expect(editFieldsContainerActions.remove(param).type).toEqual(EDIT_FIELDS_CONTAINER.REMOVE_ACTION);
     });
 
-    it('should forward index', () => {
+    it('should forward params', () => {
       expect(editFieldsContainerActions.remove(param).index).toEqual(1);
     });
   });
 
   describe('reorder action', () => {
+    const param = { from: 1, to: 2 };
+
     it('has a type of REORDER_ACTION', () => {
-      expect(editFieldsContainerActions.reorder().type).toEqual(EDIT_FIELDS_CONTAINER.REORDER_ACTION);
+      expect(editFieldsContainerActions.reorder(param).type).toEqual(EDIT_FIELDS_CONTAINER.REORDER_ACTION);
+    });
+
+    it('should forward params', () => {
+      expect(editFieldsContainerActions.reorder(param).from).toEqual(1);
+      expect(editFieldsContainerActions.reorder(param).to).toEqual(2);
     });
   });
 
   describe('startEdit action', () => {
+    const param = { index: 1 };
+
     it('has a type of START_EDIT_ACTION', () => {
-      expect(editFieldsContainerActions.startEdit().type).toEqual(EDIT_FIELDS_CONTAINER.START_EDIT_ACTION);
+      expect(editFieldsContainerActions.startEdit(param).type).toEqual(EDIT_FIELDS_CONTAINER.START_EDIT_ACTION);
     });
-  });
 
-  describe('cancelEdit action', () => {
-    it('has a type of CANCEL_EDIT_ACTION', () => {
-      expect(editFieldsContainerActions.cancelEdit().type).toEqual(EDIT_FIELDS_CONTAINER.CANCEL_EDIT_ACTION);
-    });
-  });
-
-  describe('saveEdit action', () => {
-    it('has a type of SAVE_EDIT_ACTION', () => {
-      expect(editFieldsContainerActions.saveEdit().type).toEqual(EDIT_FIELDS_CONTAINER.SAVE_EDIT_ACTION);
-    });
-  });
-
-  describe('startAdd action', () => {
-    it('has a type of START_ADD_ACTION', () => {
-      expect(editFieldsContainerActions.startAdd().type).toEqual(EDIT_FIELDS_CONTAINER.START_ADD_ACTION);
+    it('should forward params', () => {
+      expect(editFieldsContainerActions.startEdit(param).index).toEqual(1);
     });
   });
 
@@ -65,8 +54,15 @@ describe('EditFieldsContainer actions', () => {
   });
 
   describe('submitDialog action', () => {
+    const field = { key: 'val' };
+    const param = { field };
+
     it('has a type of SUBMIT_DIALOG_ACTION', () => {
-      expect(editFieldsContainerActions.submitDialog().type).toEqual(EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION);
+      expect(editFieldsContainerActions.submitDialog(param).type).toEqual(EDIT_FIELDS_CONTAINER.SUBMIT_DIALOG_ACTION);
+    });
+
+    it('should forward params', () => {
+      expect(editFieldsContainerActions.submitDialog(param).field).toEqual(field);
     });
   });
 });
