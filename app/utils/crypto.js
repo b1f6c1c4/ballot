@@ -6,16 +6,18 @@ import stringify from 'json-stringify-deterministic';
 const parse = (str) => bigInt(str, 16);
 const toStr = (val) => val.toString(16).padStart(2048 / 4, '0');
 
-export const random = (q) => bigInt.randBetween(q.shiftRight(4), q);
+const random = (q) => bigInt.randBetween(q.shiftRight(4), q);
 
-export const groupHash = async (param, ...vals) => {
+const groupHashInt = async (param, buf) => {
   const { q, g } = param;
-
-  const str = vals.map(toStr).join('');
-  const h2 = sha3(Buffer.from(str, 'hex'));
+  const h2 = sha3(buf);
   const h0 = parse(h2);
-
   return g.modPow(h0, q);
+};
+
+const groupHash = async (param, ...vals) => {
+  const str = vals.map(toStr).join('');
+  return groupHashInt(param, Buffer.from(str, 'hex'));
 };
 
 export const generateKeyPair = async (param) => {
@@ -29,6 +31,14 @@ export const generateKeyPair = async (param) => {
     privateKey: toStr(x),
     publicKey: toStr(y),
   };
+};
+
+const toUtf8 = (str) => {
+  /* istanbul ignore if */
+  if (process.env.NODE_ENV !== 'test') {
+    return (new TextEncoder('utf-8')).encode(str);
+  }
+  return Buffer.from(str, 'utf-8');
 };
 
 export const signMessage = async (payload, param) => {
@@ -63,29 +73,13 @@ export const signMessage = async (payload, param) => {
   us[k] = g.modPow(ss[k], q);
   vs[k] = h.modPow(ss[k], q);
 
-  const rawS = ss.map(toStr);
-  const rawC = cs.map(toStr);
-
   const pld = stringify(payload);
-  const pldData = (new TextEncoder('utf-8')).encode(pld);
-  const m = await groupHash({ q, g }, pldData);
+  const pldData = toUtf8(pld);
+  const m = await groupHashInt({ q, g }, pldData);
   const h1 = await groupHash({ q, g }, m, t, ...us, ...vs);
   const sum = _.reduce(cs, (sm, c) => sm.add(c)).mod(qm1);
   cs[k] = cs[k].add(h1).add(qm1).minus(sum).mod(qm1);
   ss[k] = ss[k].add(qm1).minus(cs[k].multiply(x).mod(qm1)).mod(qm1);
-
-  console.log(JSON.stringify({
-    t: toStr(t),
-    m: toStr(m),
-    h1: toStr(h1),
-    payload,
-    rawS,
-    rawC,
-    s: ss.map(toStr),
-    c: cs.map(toStr),
-    u: us.map(toStr),
-    v: vs.map(toStr),
-  }, null, 2));
 
   return {
     t: toStr(t),
