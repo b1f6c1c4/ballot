@@ -95,9 +95,12 @@ const extractFromFile = async (fileName) => {
   await Promise.all(files.map((fileName) => extractFromFile(fileName)));
   extractTaskDone();
 
-  const appendIndexTaskDone = task('Merge /^index\\./ messages');
+  const appendIndexTaskDone = task('Merge index and secret messages');
   for (const locale of locales) {
-    _.merge(localeMappings[locale], _.pickBy(oldLocaleMappings[locale], (v, k) => /^index\./.test(k)));
+    _.merge(
+      localeMappings[locale],
+      _.pickBy(oldLocaleMappings[locale], (v, k) => /^(index|secret)\./.test(k)),
+    );
   }
   appendIndexTaskDone();
 

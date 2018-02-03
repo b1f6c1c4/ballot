@@ -94,16 +94,19 @@ class NetlifyRedirectsPlugin {
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
-    index: [
-      path.join(process.cwd(), 'app/index/index.js'),
+    shit: [
+      path.join(process.cwd(), 'app/utils/validation.js'),
     ],
-    indexStyle: [
-      path.join(process.cwd(), 'app/index/style.js'),
-    ],
-    app: [
-      'redux-form',
-      path.join(process.cwd(), 'app/app.js'),
-    ],
+    // index: [
+    //   path.join(process.cwd(), 'app/index/index.js'),
+    // ],
+    // indexStyle: [
+    //   path.join(process.cwd(), 'app/index/style.js'),
+    // ],
+    // app: [
+    //   'redux-form',
+    //   path.join(process.cwd(), 'app/app.js'),
+    // ],
   },
 
   babelOptions: {
@@ -190,6 +193,14 @@ module.exports = require('./webpack.base.babel')({
       chunks: [
         'app',
       ],
+    }),
+
+    // Copy the secret/index.html
+    new HtmlWebpackPlugin({
+      filename: 'secret/index.html',
+      template: 'app/secret/index.ejs',
+      minify: false,
+      inject: false,
     }),
 
   ],

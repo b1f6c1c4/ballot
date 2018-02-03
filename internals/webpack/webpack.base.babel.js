@@ -59,6 +59,7 @@ module.exports = (options) => ({
     ],
   },
   plugins: options.plugins.concat([
+    new webpack.NamedModulesPlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       jQuery: 'jquery',
@@ -75,7 +76,6 @@ module.exports = (options) => ({
         API_URL: JSON.stringify(process.env.API_URL),
       },
     }),
-    new webpack.NamedModulesPlugin(),
   ]),
   resolve: {
     modules: ['app', 'node_modules'],
