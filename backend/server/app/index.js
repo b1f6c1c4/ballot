@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const cors = require('cors');
 const nocache = require('nocache');
@@ -51,12 +52,13 @@ router.use(
     },
     tracing: process.env.NODE_ENV !== 'production',
     formatError: (err) => {
-      if (err.originalError && err.originalError.error_message) {
-        // eslint-disable-next-line no-param-reassign
-        err.message = err.originalError.error_message;
-      }
-
-      return err;
+      const e = {
+        message: err.message,
+        statusCode: _.get(err, 'originalError.statusCode'),
+        errorCode: _.get(err, 'originalError.errorCode'),
+      };
+      logger.trace('Return err', e);
+      return e;
     },
   })),
 );
@@ -97,7 +99,7 @@ router.post('/secret/tickets', async (req, res, next) => {
       case 'html': {
         logger.debug('Requesting html');
         const buf = Buffer.from(req.body.enc, 'base64');
-        const j = JSON.stringify(buf.toString('utf8'));
+        const j = JSON.parse(buf.toString('utf8'));
         logger.trace('Parsing base64 succeed');
         const rst = await submitTicket(j);
         logger.debug('Resposne status', rst.status);
