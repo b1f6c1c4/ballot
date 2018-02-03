@@ -6,6 +6,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const i18n = require('./i18n');
 
 const extractCss0 = new ExtractTextPlugin({
   filename: '[name].[contenthash:8].css',
@@ -94,19 +95,16 @@ class NetlifyRedirectsPlugin {
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
-    shit: [
-      path.join(process.cwd(), 'app/utils/validation.js'),
+    index: [
+      path.join(process.cwd(), 'app/index/index.js'),
     ],
-    // index: [
-    //   path.join(process.cwd(), 'app/index/index.js'),
-    // ],
-    // indexStyle: [
-    //   path.join(process.cwd(), 'app/index/style.js'),
-    // ],
-    // app: [
-    //   'redux-form',
-    //   path.join(process.cwd(), 'app/app.js'),
-    // ],
+    indexStyle: [
+      path.join(process.cwd(), 'app/index/style.js'),
+    ],
+    app: [
+      'redux-form',
+      path.join(process.cwd(), 'app/app.js'),
+    ],
   },
 
   babelOptions: {
@@ -199,9 +197,19 @@ module.exports = require('./webpack.base.babel')({
     new HtmlWebpackPlugin({
       filename: 'secret/index.html',
       template: 'app/secret/index.ejs',
-      minify: false,
-      inject: false,
+      inject: true,
+      chunks: [],
+      i18n,
     }),
+
+    // I18n the secret/index.ejs
+    ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
+      filename: `secret/${k}.html`,
+      template: 'app/secret/locale.ejs',
+      inject: true,
+      chunks: [],
+      i18n: v,
+    })).value(),
 
   ],
 

@@ -76,21 +76,18 @@ if (dllPlugin) {
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
   entry: {
-    secret: [
+    index: [
       'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/index/index.js'),
     ],
-    // index: [
-    //   'webpack-hot-middleware/client?reload=true',
-    //   path.join(process.cwd(), 'app/index/index.js'),
-    // ],
-    // indexStyle: [
-    //   'webpack-hot-middleware/client?reload=true',
-    //   path.join(process.cwd(), 'app/index/style.js'),
-    // ],
-    // app: [
-    //   'webpack-hot-middleware/client?reload=true',
-    //   path.join(process.cwd(), 'app/app.js'),
-    // ],
+    indexStyle: [
+      'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/index/style.js'),
+    ],
+    app: [
+      'webpack-hot-middleware/client?reload=true',
+      path.join(process.cwd(), 'app/app.js'),
+    ],
   },
 
   // Don't use hashes in dev mode for better performance
