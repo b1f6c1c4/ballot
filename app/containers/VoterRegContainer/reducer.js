@@ -5,6 +5,7 @@ import * as VOTER_REG_CONTAINER from './constants';
 
 const initialState = fromJS({
   isLoading: false,
+  isRegLoading: false,
   ballot: null,
   error: null,
   privateKey: null,
@@ -15,16 +16,15 @@ function voterRegContainerReducer(state = initialState, action) {
     // Actions
     // Sagas
     case VOTER_REG_CONTAINER.REGISTER_REQUEST:
-      return state.set('isLoading', true);
+      return state.set('isRegLoading', true);
     case VOTER_REG_CONTAINER.REGISTER_SUCCESS:
-      return state.set('isLoading', false)
-        .set('privateKey', action.privateKey)
-        .set('error', null);
+      return state.set('isRegLoading', false)
+        .set('privateKey', action.privateKey);
     case VOTER_REG_CONTAINER.REGISTER_FAILURE:
-      return state.set('isLoading', false)
-        .set('error', fromJS(_.toPlainObject(action.error)));
+      return state.set('isRegLoading', false);
     case VOTER_REG_CONTAINER.REFRESH_REQUEST:
-      return state.set('isLoading', true);
+      return state.set('isLoading', true)
+        .set('error', null);
     case VOTER_REG_CONTAINER.REFRESH_SUCCESS:
       return state.set('isLoading', false)
         .set('ballot', fromJS(action.result.ballot));

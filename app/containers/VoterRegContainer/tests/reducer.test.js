@@ -9,6 +9,10 @@ describe('voterRegContainerReducer', () => {
   beforeEach(() => {
     state = fromJS({
       isLoading: false,
+      isRegLoading: false,
+      ballot: null,
+      error: null,
+      privateKey: null,
     });
   });
 
@@ -21,25 +25,25 @@ describe('voterRegContainerReducer', () => {
 
   // Sagas
   it('should handle register request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isRegLoading', false);
     const param = { bId: 'val' };
-    const expectedResult = state.set('isLoading', true);
+    const expectedResult = state.set('isRegLoading', true);
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerRequest(param))).toEq(expectedResult);
   });
 
   it('should handle register success', () => {
-    const originalState = state.set('isLoading', true);
+    const originalState = state.set('isRegLoading', true);
     const result = { };
-    const expectedResult = state.set('isLoading', false);
+    const expectedResult = state.set('isRegLoading', false);
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle register failure', () => {
-    const originalState = state.set('isLoading', true);
+    const originalState = state.set('isRegLoading', true);
     const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const expectedResult = state.set('isRegLoading', false);
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerFailure(error))).toEq(expectedResult);
   });

@@ -92,6 +92,8 @@ function dependencyHandlers() {
   // Don't do anything during the DLL Build step
   if (process.env.BUILDING_DLL) { return []; }
 
+  if (!dllPlugin) return [];
+
   const dllPath = path.resolve(process.cwd(), dllPlugin.path);
 
   const manifestPath = path.resolve(dllPath, 'main.json');

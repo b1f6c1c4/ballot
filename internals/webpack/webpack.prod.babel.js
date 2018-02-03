@@ -8,11 +8,11 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const extractCss0 = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css',
+  filename: '[name].[contenthash:8].css',
   allChunks: true,
 });
 const extractCss1 = new ExtractTextPlugin({
-  filename: '[name].vendor.[contenthash].css',
+  filename: '[name].vendor.[contenthash:8].css',
   allChunks: true,
 });
 
@@ -137,8 +137,8 @@ module.exports = require('./webpack.base.babel')({
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
+    filename: '[name].[chunkhash:8].js',
+    chunkFilename: '[name].[chunkhash:8].chunk.js',
   },
 
   plugins: [
@@ -161,7 +161,6 @@ module.exports = require('./webpack.base.babel')({
         output: {
           comments: false,
           beautify: false,
-          drop_console: true,
         },
       },
     }),

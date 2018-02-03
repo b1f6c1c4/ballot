@@ -3,6 +3,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
+import { generateKeyPair } from 'utils/crypto';
 
 import * as VOTER_REG_CONTAINER from '../constants';
 import * as voterRegContainerActions from '../actions';
@@ -15,12 +16,15 @@ import watcher, {
 
 // Sagas
 describe('handleRegisterRequest Saga', () => {
-  const variables = { bId: 'val' };
+  const variables = { bId: 'val', iCode: 'ic', comment: 'cmt' };
   const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
+    voterRegContainer: { ballot: { q: 'q', g: 'g' } },
   });
   const func = () => handleRegisterRequest(variables);
-  const dArgs = [api.query, gql.Register, variables, 'cre'];
+  const dArgs0 = [generateKeyPair, { q: 'q', g: 'g' }];
+  const dResp0 = { publicKey: 'pk', privateKey: 'pv' };
+  const vars = { ...variables, publicKey: 'pk' };
+  const dArgs1 = [api.mutate, gql.Register, vars];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen REGISTER_REQUEST in the watcher', () => {
@@ -35,22 +39,39 @@ describe('handleRegisterRequest Saga', () => {
 
     return expectSaga(func)
       .withState(state)
-      .call(...dArgs)
+      .call(...dArgs0)
+      .call(...dArgs1)
       .provide([
-        [matchers.call(...dArgs), response],
+        [matchers.call(...dArgs0), dResp0],
+        [matchers.call(...dArgs1), response],
       ])
-      .put(voterRegContainerActions.registerSuccess(response))
+      .put(voterRegContainerActions.registerSuccess(response, { privateKey: 'pv' }))
       .run();
   });
 
-  it('should dispatch registerFailure', () => {
+  it('should dispatch registerFailure 0', () => {
     const error = new Error('value');
 
     return expectSaga(func)
       .withState(state)
-      .call(...dArgs)
+      .call(...dArgs0)
       .provide([
-        [matchers.call(...dArgs), throwError(error)],
+        [matchers.call(...dArgs0), throwError(error)],
+      ])
+      .put(voterRegContainerActions.registerFailure(error))
+      .run();
+  });
+
+  it('should dispatch registerFailure 1', () => {
+    const error = new Error('value');
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .provide([
+        [matchers.call(...dArgs0), dResp0],
+        [matchers.call(...dArgs1), throwError(error)],
       ])
       .put(voterRegContainerActions.registerFailure(error))
       .run();
@@ -59,11 +80,8 @@ describe('handleRegisterRequest Saga', () => {
 
 describe('handleRefreshRequest Saga', () => {
   const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
   const func = () => handleRefreshRequest(variables);
-  const dArgs = [api.query, gql.Refresh, variables, 'cre'];
+  const dArgs = [api.query, gql.Refresh, variables];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen REFRESH_REQUEST in the watcher', () => {
@@ -77,7 +95,6 @@ describe('handleRefreshRequest Saga', () => {
     const response = { refresh };
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), response],
@@ -90,7 +107,6 @@ describe('handleRefreshRequest Saga', () => {
     const error = new Error('value');
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), throwError(error)],

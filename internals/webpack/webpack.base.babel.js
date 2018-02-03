@@ -18,6 +18,18 @@ module.exports = (options) => ({
         }],
       },
       {
+        test: /\.worker\.js$/,
+        use: [{
+          loader: 'worker-loader',
+          options: {
+            name: '[chunkhash:8].worker.js',
+          },
+        }, {
+          loader: 'babel-loader',
+          options: options.babelOptions || {},
+        }],
+      },
+      {
         test: /\.css$/,
         include: /node_modules/,
         use: options.cssLoaderVender || ['style-loader', 'css-loader'],

@@ -65,7 +65,7 @@
       "jquery-i18next",
       "jquery.easing",
       "js-sha3",
-      "json-stringify-deterministic",
+      "json-stable-stringify",
       "jwt-decode",
       "lodash",
       "material-ui",
@@ -103,6 +103,8 @@
       "!app/containers/**/index.js",
       "!app/app.js",
       "!app/index/*.js",
+      "!app/utils/crypto/index.js",
+      "!app/utils/crypto/core.worker.js",
       "!app/*/*/Loadable.js",
       "!app/utils/makeLoadable.js"
     ],
@@ -149,7 +151,7 @@
     "jquery-i18next": "1.2.1",
     "jquery.easing": "1.4.1",
     "js-sha3": "0.7.0",
-    "json-stringify-deterministic": "1.0.1",
+    "json-stable-stringify": "1.0.1",
     "jwt-decode": "2.2.0",
     "lodash": "4.17.4",
     "material-ui": "1.0.0-beta.30",
@@ -235,6 +237,7 @@
     "style-loader": "0.20.1",
     "webpack": "3.10.0",
     "webpack-dev-middleware": "2.0.4",
-    "webpack-hot-middleware": "2.21.0"
+    "webpack-hot-middleware": "2.21.0",
+    "worker-loader": "1.1.0"
   }
 }

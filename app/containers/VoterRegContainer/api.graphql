@@ -12,15 +12,10 @@ query Refresh($bId: ID!) {
     bId: $bId,
   }) {
     name
+    owner
     status
     q
     g
-    h
-    voters {
-      name
-      comment
-      publicKey
-    }
   }
 }
 

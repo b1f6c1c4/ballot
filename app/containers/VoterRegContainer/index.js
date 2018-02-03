@@ -7,6 +7,8 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
+import VoterRegPage from 'components/VoterRegPage';
+
 import * as voterRegContainerSelectors from './selectors';
 import * as voterRegContainerActions from './actions';
 import reducer from './reducer';
@@ -16,20 +18,25 @@ export class VoterRegContainer extends React.PureComponent {
   render() {
     const {
       match,
-      ballot,
+      error,
       ...other
     } = this.props;
 
     return (
-      <div style={{ wordWrap: 'break-word' }}>
-        {match.params.bId}
-        <br />
-        {match.params.iCode}
-        <br />
-        <pre>{JSON.stringify(ballot, null, 2)}</pre>
-        <br />
-        <pre>{JSON.stringify(other, null, 2)}</pre>
-      </div>
+      <React.Fragment>
+        <VoterRegPage
+          bId={match.params.bId}
+          refreshError={error}
+          {...other}
+        />
+        <div style={{ wordWrap: 'break-word' }}>
+          {match.params.bId}
+          <br />
+          {match.params.iCode}
+          <br />
+          <pre>{JSON.stringify(other, null, 2)}</pre>
+        </div>
+      </React.Fragment>
     );
   }
 }
@@ -40,6 +47,7 @@ VoterRegContainer.propTypes = {
   ballot: PropTypes.object,
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
+  isRegLoading: PropTypes.bool.isRequired,
   onRegister: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
   privateKey: PropTypes.string,
@@ -60,6 +68,7 @@ export function mapDispatchToProps(dispatch, { match }) {
 
 const mapStateToProps = createStructuredSelector({
   isLoading: (state) => state.getIn(['voterRegContainer', 'isLoading']),
+  isRegLoading: (state) => state.getIn(['voterRegContainer', 'isRegLoading']),
   ballot: voterRegContainerSelectors.Ballot(),
   error: voterRegContainerSelectors.Error(),
   privateKey: (state) => state.getIn(['voterRegContainer', 'privateKey']),

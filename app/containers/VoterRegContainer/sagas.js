@@ -1,5 +1,6 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
+import { stopSubmit } from 'redux-form';
 import { generateKeyPair } from 'utils/crypto';
 
 import * as VOTER_REG_CONTAINER from './constants';
@@ -23,6 +24,7 @@ export function* handleRegisterRequest({ bId, iCode, comment }) {
     yield put(voterRegContainerActions.registerSuccess(result, { privateKey }));
   } catch (err) {
     yield put(voterRegContainerActions.registerFailure(err));
+    yield put(stopSubmit('voterRegForm', { _error: err }));
   }
 }
 

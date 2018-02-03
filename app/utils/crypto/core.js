@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import bigInt from 'big-integer';
 import { sha3_512 as sha3 } from 'js-sha3';
-import stringify from 'json-stringify-deterministic';
+import stringify from 'json-stable-stringify';
 
 const parse = (str) => bigInt(str, 16);
 const toStr = (val) => val.toString(16).padStart(2048 / 4, '0');

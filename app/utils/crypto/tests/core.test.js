@@ -3,7 +3,7 @@ import bigInt from 'big-integer';
 import {
   generateKeyPair,
   signMessage,
-} from '../crypto';
+} from '../core';
 
 let counter = 123;
 bigInt.randBetween = () => {
