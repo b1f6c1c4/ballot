@@ -1,4 +1,4 @@
-const stringify = require('json-stringify-deterministic');
+const stringify = require('json-stable-stringify');
 const crypto = require('crypto');
 const rpc = require('../rpc');
 const finalizeNewRing = require('./newRing');
