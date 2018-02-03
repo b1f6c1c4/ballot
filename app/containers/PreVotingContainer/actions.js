@@ -1,11 +1,6 @@
 import * as PRE_VOTING_CONTAINER from './constants';
 
 // Actions
-export function sign() {
-  return {
-    type: PRE_VOTING_CONTAINER.SIGN_ACTION,
-  };
-}
 
 // Sagas
 export function refreshRequest({ bId }) {

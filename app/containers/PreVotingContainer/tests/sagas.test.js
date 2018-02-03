@@ -3,6 +3,8 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
+import { initialize } from 'redux-form';
+import { signMessage } from 'utils/crypto';
 
 import * as PRE_VOTING_CONTAINER from '../constants';
 import * as preVotingContainerActions from '../actions';
@@ -16,11 +18,8 @@ import watcher, {
 // Sagas
 describe('handleRefreshRequest Saga', () => {
   const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
   const func = () => handleRefreshRequest(variables);
-  const dArgs = [api.query, gql.Refresh, variables, 'cre'];
+  const dArgs = [api.query, gql.Refresh, variables];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen REFRESH_REQUEST in the watcher', () => {
@@ -30,16 +29,21 @@ describe('handleRefreshRequest Saga', () => {
   });
 
   it('should dispatch refreshSuccess', () => {
-    const refresh = 'resp';
-    const response = { refresh };
+    const fields = [
+      { __typename: 'StringField', default: 'v' },
+      { __typename: 'EnumField', items: ['x'] },
+    ];
+    const response = { ballot: { fields } };
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), response],
       ])
       .put(preVotingContainerActions.refreshSuccess(response))
+      .put(initialize('preVotingForm', { 0: 'v', 1: undefined }, {
+        updateUnregisteredFields: true,
+      }))
       .run();
   });
 
@@ -47,7 +51,6 @@ describe('handleRefreshRequest Saga', () => {
     const error = new Error('value');
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), throwError(error)],
@@ -58,12 +61,26 @@ describe('handleRefreshRequest Saga', () => {
 });
 
 describe('handleSignRequest Saga', () => {
-  const variables = { payload: 'val' };
+  const variables = { payload: 'val', privateKey: 'pv' };
+  const ballot = { q: 'q', g: 'g', h: 'h' };
   const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
+    preVotingContainer: {
+      ballot: {
+        ...ballot,
+        voters: [
+          { publicKey: 'k1' },
+          { publicKey: 'k2' },
+        ],
+      },
+    },
   });
   const func = () => handleSignRequest(variables);
-  const dArgs = [api.query, gql.Sign, variables, 'cre'];
+  const vars = {
+    ...ballot,
+    x: 'pv',
+    ys: ['k1', 'k2'],
+  };
+  const dArgs = [signMessage, 'val', vars];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen SIGN_REQUEST in the watcher', () => {

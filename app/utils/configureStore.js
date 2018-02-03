@@ -19,6 +19,7 @@ export const slicer = () => (rawState) => {
   _.unset(state, 'language');
   _.unset(state, 'route');
   _.unset(state, 'preVotingContainer');
+  _.unset(state, 'form.preVotingForm');
 
   const makeFilter = ({ reg, def = null }) => (o) => _.mapValues(o, (v, k) => {
     if (!reg.test(k)) return v;

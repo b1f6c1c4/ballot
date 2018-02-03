@@ -1,5 +1,4 @@
 // Actions
-export const SIGN_ACTION = 'PreVotingContainer/SIGN_ACTION';
 
 // Sagas
 export const REFRESH_REQUEST = 'PreVotingContainer/REFRESH_REQUEST';

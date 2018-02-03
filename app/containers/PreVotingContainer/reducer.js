@@ -42,6 +42,7 @@ function preVotingContainerReducer(state = initialState, action) {
     // Sagas
     case PRE_VOTING_CONTAINER.REFRESH_REQUEST:
       return state.set('isLoading', true)
+        .set('error', null)
         .set('ticket', null);
     case PRE_VOTING_CONTAINER.REFRESH_SUCCESS: {
       try {

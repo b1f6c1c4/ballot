@@ -24,17 +24,5 @@ export default {
       id: 'app.components.PreVotingPage.ticket',
       defaultMessage: 'Signed ticket',
     },
-    header: {
-      id: 'app.components.PreVotingPage.header',
-      defaultMessage: 'Pre Voting',
-    },
-    header: {
-      id: 'app.components.PreVotingPage.header',
-      defaultMessage: 'Pre Voting',
-    },
-    header: {
-      id: 'app.components.PreVotingPage.header',
-      defaultMessage: 'Pre Voting',
-    },
   }),
 };

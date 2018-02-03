@@ -76,6 +76,42 @@ describe('properLiens', () => {
   });
 });
 
+describe('hexChar', () => {
+  const func = validation.hexChar();
+
+  it('should allow', () => {
+    expect(func('1BcDfa32121')).toBeUndefined();
+  });
+
+  it('should allow null', () => {
+    expect(func(null)).toBeUndefined();
+  });
+
+  it('should allow undefined', () => {
+    expect(func(undefined)).toBeUndefined();
+  });
+
+  it('should allow empty', () => {
+    expect(func('')).toBeUndefined();
+  });
+
+  it('should not allow symbol', () => {
+    expect(func('-')).toBeUndefined();
+  });
+
+  it('should not allow space', () => {
+    expect(func('124 7af')).toBeUndefined();
+  });
+
+  it('should not allow non-hex alphabet', () => {
+    expect(func('1bcdfa32g21')).toBeUndefined();
+  });
+
+  it('should not allow other', () => {
+    expect(func('1bcdf\n32121')).toBeUndefined();
+  });
+});
+
 describe('make', () => {
   const make = validation.default;
   const intl = { formatMessage: (...args) => args };
