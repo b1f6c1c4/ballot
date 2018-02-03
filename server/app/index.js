@@ -99,7 +99,7 @@ router.post('/secret/tickets', async (req, res, next) => {
       case 'html': {
         logger.debug('Requesting html');
         const buf = Buffer.from(req.body.enc, 'base64');
-        const j = JSON.stringify(buf.toString('utf8'));
+        const j = JSON.parse(buf.toString('utf8'));
         logger.trace('Parsing base64 succeed');
         const rst = await submitTicket(j);
         logger.debug('Resposne status', rst.status);
