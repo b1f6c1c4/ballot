@@ -18,6 +18,7 @@ export const slicer = () => (rawState) => {
   let state = rawState.toJS();
   _.unset(state, 'language');
   _.unset(state, 'route');
+  _.unset(state, 'preVotingContainer');
 
   const makeFilter = ({ reg, def = null }) => (o) => _.mapValues(o, (v, k) => {
     if (!reg.test(k)) return v;

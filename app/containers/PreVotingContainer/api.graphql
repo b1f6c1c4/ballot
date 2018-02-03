@@ -3,6 +3,7 @@ query Refresh($bId: ID!) {
     bId: $bId,
   }) {
     name
+    owner
     status
     q
     g
@@ -22,12 +23,6 @@ query Refresh($bId: ID!) {
       publicKey
     }
   }
-}
-
-query Sign($payload: String!) {
-  data(input: {
-    payload: $payload,
-  })
 }
 
 # Hack graphql-tag/loader

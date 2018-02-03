@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import _ from 'lodash';
 import * as core from './core';
 
 const process = async ({ method, param }) => {
@@ -14,7 +15,9 @@ onmessage = ({ data }) => {
       close();
     })
     .catch((error) => {
-      postMessage({ error });
+      postMessage({
+        error: _.assign(_.toPlainObject(error), { message: error.message }),
+      });
       close();
     });
 };

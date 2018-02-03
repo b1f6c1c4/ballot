@@ -47,6 +47,10 @@ export default defineMessages({
     id: 'app.validation.DupLines',
     defaultMessage: 'No duplication values.',
   },
+  hexChar: {
+    id: 'app.validation.hexChar',
+    defaultMessage: '0-9, a-f, A-F only.',
+  },
   // Error
   error_unknown: {
     id: 'app.error.unknown',

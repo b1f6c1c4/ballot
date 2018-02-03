@@ -42,6 +42,26 @@ describe('Error', () => {
   });
 });
 
+describe('Fields', () => {
+  const selector = preVotingContainerSelectors.Fields();
+
+  it('should handle null', () => {
+    const mockedState = fromJS({});
+    expect(selector(mockedState)).not.toEqual(expect.anything());
+  });
+
+  it('should select fields', () => {
+    const fields = { key: 'value' };
+    const state = fromJS({
+      fields,
+    });
+    const mockedState = fromJS({
+      preVotingContainer: state,
+    });
+    expect(selector(mockedState)).toEqual(fields);
+  });
+});
+
 describe('Ticket', () => {
   const selector = preVotingContainerSelectors.Ticket();
 

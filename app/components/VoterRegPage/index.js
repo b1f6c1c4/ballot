@@ -82,7 +82,7 @@ class VoterRegPage extends React.PureComponent {
         <div className={classes.actions}>
           <LoadingButton {...{ isLoading }}>
             <RefreshButton
-              isLoading={isLoading}
+              isLoading={isLoading || isRegLoading}
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
@@ -99,7 +99,7 @@ class VoterRegPage extends React.PureComponent {
                   name="comment"
                   label={messages.commentLabel}
                   helperText={messages.commentHelperText}
-                  disabled={!!privateKey}
+                  disabled={isRegLoading || privateKey}
                   fullWidth
                 />
                 <ResultIndicator {...{ error }} />

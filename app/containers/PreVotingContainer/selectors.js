@@ -10,6 +10,11 @@ export const Error = () => createSelector(
   (state) => state && state.toJS(),
 );
 
+export const Fields = () => createSelector(
+  (state) => state.getIn(['preVotingContainer', 'fields']),
+  (state) => state && state.toJS(),
+);
+
 export const Ticket = () => createSelector(
   (state) => state.getIn(['preVotingContainer', 'ticket']),
   (state) => state && state.toJS(),

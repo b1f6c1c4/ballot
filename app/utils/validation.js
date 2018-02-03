@@ -23,6 +23,12 @@ export const properLines = () => (value) => {
   return undefined;
 };
 
+export const hexChar = () => (value) => {
+  if (!value) return undefined;
+  if (/^[0-9a-fA-F]*$/.test(value)) return undefined;
+  return messages.hexChar;
+};
+
 export default (intl, ...os) => os.map((o) => (v) => {
   const res = o(v);
   if (!res) return undefined;
