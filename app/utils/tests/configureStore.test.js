@@ -13,33 +13,39 @@ describe('slicer', () => {
     const state = {
       key: 'value',
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual(state);
+    expect(slicer(fromJS(state))).toEq(state);
   });
 
   it('should remove isLoading', () => {
     const state = {
-      a: {
-        isLoading: 'val',
-        b: {
-          isLoading: 'val',
-        },
-      },
-      c: [{
-        d: 'e',
-        isSthLoading: 'val',
-      }],
+      a: { isLoading: 'val', b: { isLoading: 'val' } },
+      c: [{ d: 'e', isSthLoading: 'val' }],
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual({
-      a: {
-        isLoading: false,
-        b: {
-          isLoading: false,
-        },
-      },
-      c: [{
-        d: 'e',
-        isSthLoading: 'val',
-      }],
+    expect(slicer(fromJS(state))).toEq({
+      a: { isLoading: false, b: { isLoading: false } },
+      c: [{ d: 'e', isSthLoading: false }],
+    });
+  });
+
+  it('should remove private key', () => {
+    const state = {
+      a: { privateKey: 'val', b: { privateKeys: 'val' } },
+      c: [{ d: 'e', thePrivateKey: 'val' }],
+    };
+    expect(slicer(fromJS(state))).toEq({
+      a: { privateKey: null, b: { privateKeys: null } },
+      c: [{ d: 'e', thePrivateKey: null }],
+    });
+  });
+
+  it('should remove error', () => {
+    const state = {
+      a: { err: 'val', b: { loadingError: 'val' } },
+      c: [{ d: 'e', error: 'val' }],
+    };
+    expect(slicer(fromJS(state))).toEq({
+      a: { err: 'val', b: { loadingError: null } },
+      c: [{ d: 'e', error: null }],
     });
   });
 
@@ -47,7 +53,7 @@ describe('slicer', () => {
     const state = {
       language: 'val',
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual({});
+    expect(slicer(fromJS(state))).toEq({});
   });
 
   it('should respect null form', () => {
@@ -57,7 +63,7 @@ describe('slicer', () => {
         theForm: { },
       },
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual(state);
+    expect(slicer(fromJS(state))).toEq(state);
   });
 
   it('should respect empty form', () => {
@@ -73,7 +79,7 @@ describe('slicer', () => {
         },
       },
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual(state);
+    expect(slicer(fromJS(state))).toEq(state);
   });
 
   it('should respect normal form values', () => {
@@ -91,7 +97,7 @@ describe('slicer', () => {
         },
       },
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual(state);
+    expect(slicer(fromJS(state))).toEq(state);
   });
 
   it('should obliterate password form values', () => {
@@ -123,7 +129,7 @@ describe('slicer', () => {
         },
       },
     };
-    expect(slicer(fromJS(state)).toJS()).toEqual(expectedState);
+    expect(slicer(fromJS(state))).toEq(expectedState);
   });
 });
 

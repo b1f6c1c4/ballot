@@ -23,20 +23,11 @@ export class VoterRegContainer extends React.PureComponent {
     } = this.props;
 
     return (
-      <React.Fragment>
-        <VoterRegPage
-          bId={match.params.bId}
-          refreshError={error}
-          {...other}
-        />
-        <div style={{ wordWrap: 'break-word' }}>
-          {match.params.bId}
-          <br />
-          {match.params.iCode}
-          <br />
-          <pre>{JSON.stringify(other, null, 2)}</pre>
-        </div>
-      </React.Fragment>
+      <VoterRegPage
+        bId={match.params.bId}
+        refreshError={error}
+        {...other}
+      />
     );
   }
 }

@@ -1,6 +1,6 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
-import { stopSubmit } from 'redux-form';
+import { reset, stopSubmit } from 'redux-form';
 import { generateKeyPair } from 'utils/crypto';
 
 import * as VOTER_REG_CONTAINER from './constants';
@@ -29,6 +29,7 @@ export function* handleRegisterRequest({ bId, iCode, comment }) {
 }
 
 export function* handleRefreshRequest({ bId }) {
+  yield put(reset('voterRegForm'));
   try {
     const result = yield call(api.query, gql.Refresh, { bId });
     yield put(voterRegContainerActions.refreshSuccess(result));

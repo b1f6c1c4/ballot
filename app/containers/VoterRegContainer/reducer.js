@@ -24,6 +24,7 @@ function voterRegContainerReducer(state = initialState, action) {
       return state.set('isRegLoading', false);
     case VOTER_REG_CONTAINER.REFRESH_REQUEST:
       return state.set('isLoading', true)
+        .set('privateKey', null)
         .set('error', null);
     case VOTER_REG_CONTAINER.REFRESH_SUCCESS:
       return state.set('isLoading', false)

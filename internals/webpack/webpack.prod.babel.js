@@ -126,6 +126,7 @@ module.exports = require('./webpack.base.babel')({
     ],
   },
 
+  workerName: '[chunkhash:8].worker.js',
   cssLoaderVender: extractCss1.extract({
     fallback: 'style-loader',
     use: 'css-loader',

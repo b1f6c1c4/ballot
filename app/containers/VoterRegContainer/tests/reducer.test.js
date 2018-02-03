@@ -25,9 +25,9 @@ describe('voterRegContainerReducer', () => {
 
   // Sagas
   it('should handle register request', () => {
-    const originalState = state.set('isRegLoading', false);
+    const originalState = state.set('isRegLoading', false).set('error', 'e');
     const param = { bId: 'val' };
-    const expectedResult = state.set('isRegLoading', true);
+    const expectedResult = state.set('isRegLoading', true).set('error', 'e');
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerRequest(param))).toEq(expectedResult);
   });
@@ -35,21 +35,23 @@ describe('voterRegContainerReducer', () => {
   it('should handle register success', () => {
     const originalState = state.set('isRegLoading', true);
     const result = { };
-    const expectedResult = state.set('isRegLoading', false);
+    const param = { privateKey: 'pk' };
+    const expectedResult = state.set('isRegLoading', false)
+      .set('privateKey', 'pk');
 
-    expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerSuccess(result))).toEq(expectedResult);
+    expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerSuccess(result, param))).toEq(expectedResult);
   });
 
   it('should handle register failure', () => {
-    const originalState = state.set('isRegLoading', true);
-    const error = { };
-    const expectedResult = state.set('isRegLoading', false);
+    const originalState = state.set('isRegLoading', true).set('error', 'e');
+    const error = { key: 'value' };
+    const expectedResult = state.set('isRegLoading', false).set('error', 'e');
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.registerFailure(error))).toEq(expectedResult);
   });
 
   it('should handle refresh request', () => {
-    const originalState = state.set('isLoading', false);
+    const originalState = state.set('isLoading', false).set('error', 'e');
     const param = { bId: 'val' };
     const expectedResult = state.set('isLoading', true);
 
@@ -58,16 +60,19 @@ describe('voterRegContainerReducer', () => {
 
   it('should handle refresh success', () => {
     const originalState = state.set('isLoading', true);
-    const result = { };
-    const expectedResult = state.set('isLoading', false);
+    const ballot = { name: 'nm', owner: 'ow', status: 'st' };
+    const result = { ballot };
+    const expectedResult = state.set('isLoading', false)
+      .set('ballot', ballot);
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.refreshSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle refresh failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(voterRegContainerReducer(originalState, voterRegContainerActions.refreshFailure(error))).toEq(expectedResult);
   });

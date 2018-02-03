@@ -20,5 +20,9 @@ export default {
       id: 'app.components.VoterRegPage.commentHelperText',
       defaultMessage: 'Optional',
     },
+    privateKey: {
+      id: 'app.components.VoterRegPage.privateKey',
+      defaultMessage: 'Private Key:',
+    },
   }),
 };

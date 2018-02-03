@@ -77,7 +77,7 @@ describe('reducer injectors', () => {
       const actual = store.getState().get('test');
       const expected = initialState;
 
-      expect(actual.toJS()).toEqual(expected.toJS());
+      expect(actual).toEq(expected);
     });
 
     it('should not throw if already existing', () => {

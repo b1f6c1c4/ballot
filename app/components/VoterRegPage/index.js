@@ -41,6 +41,10 @@ const styles = (theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
+  secret: {
+    fontFamily: 'monospace',
+    overflowWrap: 'break-word',
+  },
 });
 
 class VoterRegPage extends React.PureComponent {
@@ -62,6 +66,7 @@ class VoterRegPage extends React.PureComponent {
       handleSubmit,
       isLoading,
       isRegLoading,
+      privateKey,
     } = this.props;
 
     return (
@@ -94,25 +99,36 @@ class VoterRegPage extends React.PureComponent {
                   name="comment"
                   label={messages.commentLabel}
                   helperText={messages.commentHelperText}
+                  disabled={!!privateKey}
                   fullWidth
                 />
                 <ResultIndicator {...{ error }} />
               </div>
-              <div className={classes.formActions}>
-                <ClearButton
-                  reset={reset}
-                  isLoading={isRegLoading}
-                />
-                <LoadingButton isLoading={isRegLoading}>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    disabled={isRegLoading}
-                  >
-                    <FormattedMessage {...messages.register} />
-                  </Button>
-                </LoadingButton>
-              </div>
+              {!privateKey && (
+                <div className={classes.formActions}>
+                  <ClearButton
+                    reset={reset}
+                    isLoading={isRegLoading}
+                  />
+                  <LoadingButton isLoading={isRegLoading}>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      disabled={isRegLoading}
+                    >
+                      <FormattedMessage {...messages.register} />
+                    </Button>
+                  </LoadingButton>
+                </div>
+              )}
+              {privateKey && (
+                <Typography component="p">
+                  <FormattedMessage {...messages.privateKey} />
+                </Typography>
+              )}
+              {privateKey && (
+                <span className={classes.secret}>{privateKey}</span>
+              )}
             </form>
           </Paper>
         )}

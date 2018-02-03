@@ -22,7 +22,7 @@ module.exports = (options) => ({
         use: [{
           loader: 'worker-loader',
           options: {
-            name: '[chunkhash:8].worker.js',
+            name: options.workerName,
           },
         }, {
           loader: 'babel-loader',

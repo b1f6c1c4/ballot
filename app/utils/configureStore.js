@@ -19,23 +19,22 @@ export const slicer = () => (rawState) => {
   _.unset(state, 'language');
   _.unset(state, 'route');
 
-  function rm(v) {
-    if (_.isArray(v)) {
-      return _.map(v, rm);
-    }
-    if (!_.isObject(v)) return v;
+  const makeFilter = ({ reg, def = null }) => (o) => _.mapValues(o, (v, k) => {
+    if (!reg.test(k)) return v;
+    return def;
+  });
+  const filt = _.reduce([
+    { reg: /^is.*Loading$/, def: false },
+    { reg: /[Pp]rivateKey/ },
+    { reg: /[Ee]rror/ },
+  ], (fs, rg) => (o) => makeFilter(rg)(fs(o)), _.identity);
 
-    let tmp = v;
-    if (_.get(tmp, 'isLoading')) {
-      tmp = _.set(tmp, 'isLoading', false);
-    }
-    if (_.get(tmp, 'privateKey')) {
-      tmp = _.set(tmp, 'privateKey', null);
-    }
-    return _.mapValues(tmp, rm);
+  function rm(v) {
+    if (!_.isPlainObject(v)) return undefined;
+    return _.mapValues(filt(v), (o) => _.cloneDeepWith(o, rm));
   }
 
-  state = rm(state);
+  state = _.cloneDeepWith(state, rm);
 
   _.forIn(state.form, (form) => {
     const sens = _.keys(form.registeredFields).filter((k) => k.toLowerCase().includes('password'));
