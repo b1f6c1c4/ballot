@@ -9,6 +9,23 @@ export default defineMessages({
     id: 'app.general.register',
     defaultMessage: 'Sign up',
   },
+  cancel: {
+    id: 'app.general.cancel',
+    defaultMessage: 'Cancel',
+  },
+  beforeLeave: {
+    id: 'app.general.beforeLeave',
+    defaultMessage: 'Leave without save?',
+  },
+  // Fields
+  stringField: {
+    id: 'app.fields.stringField',
+    defaultMessage: 'Custom string',
+  },
+  enumField: {
+    id: 'app.fields.enumField',
+    defaultMessage: 'Enumeration',
+  },
   // Validation
   required: {
     id: 'app.validation.required',
@@ -21,6 +38,18 @@ export default defineMessages({
   alphanumericDash: {
     id: 'app.validation.alphanumericDash',
     defaultMessage: 'Number, alphabet, or dash only.',
+  },
+  noEmptyLines: {
+    id: 'app.validation.noEmptyLines',
+    defaultMessage: 'No empty lines.',
+  },
+  noDupLines: {
+    id: 'app.validation.DupLines',
+    defaultMessage: 'No duplication values.',
+  },
+  hexChar: {
+    id: 'app.validation.hexChar',
+    defaultMessage: '0-9, a-f, A-F only.',
   },
   // Error
   error_unknown: {
@@ -46,6 +75,10 @@ export default defineMessages({
   error_wgup: {
     id: 'app.error.wgup',
     defaultMessage: 'Username and/or password incorrect.',
+  },
+  error_wgpp: {
+    id: 'app.error.wgpp',
+    defaultMessage: 'Old password incorrect.',
   },
   error_stna: {
     id: 'app.error.stna',

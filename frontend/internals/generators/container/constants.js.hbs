@@ -1,9 +1,9 @@
 // Actions
-export const {{ constantCase actionName }}_ACTION = '{{ properCase name }}/{{ constantCase actionName }}_ACTION';
+{{#if wantActions}}
+{{> actionConstants }}
+{{/if}}
 {{#if wantSagas}}
 
 // Sagas
-export const {{ constantCase sagaName }}_REQUEST = '{{ properCase name }}/{{ constantCase sagaName }}_REQUEST';
-export const {{ constantCase sagaName }}_SUCCESS = '{{ properCase name }}/{{ constantCase sagaName }}_SUCCESS';
-export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ constantCase sagaName }}_FAILURE';
+{{> sagaConstants }}
 {{/if}}

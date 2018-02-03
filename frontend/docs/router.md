@@ -58,11 +58,11 @@
 
 # Voter
 
-## Voter Reg Page [/app/vreg -> /app.html]
+## Voter Reg Page [/app/vreg/{bId}/{iCode} -> /app.html]
 
 - 确认注册
 
-## Pre Voting Page [/app/ballots/{bId}/tickets -> /app.html]
+## Pre Voting Page [/app/ballots/{bId}/preVoting -> /app.html]
 
 - 在本地进行签名
 

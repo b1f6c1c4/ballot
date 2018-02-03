@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -37,8 +38,10 @@ class ResultIndicator extends React.PureComponent {
       });
     }
     if (!flag) {
-      const msg = error.message || error.raw.message;
-      arr.push(<span key="msg">{msg}</span>);
+      const msg = _.get(error, 'message') || _.get(error, 'raw.message');
+      if (msg) {
+        arr.push(<span key="msg">{msg}</span>);
+      }
     }
 
     return arr.filter((a) => a !== null).map((a) => (

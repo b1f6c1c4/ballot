@@ -11,10 +11,13 @@ import GlobalPage from 'components/GlobalPage';
 import NotFoundPage from 'components/NotFoundPage';
 import HomeContainer from 'containers/HomeContainer/Loadable';
 import LoginContainer from 'containers/LoginContainer/Loadable';
+import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable';
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
 import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
 import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
-import StatusContainer from 'containers/StatusContainer/Loadable';
+import EditFieldsContainer from 'containers/EditFieldsContainer/Loadable';
+import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
+import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
 
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
@@ -33,10 +36,13 @@ export class GlobalContainer extends React.PureComponent {
         <ConnectedSwitch>
           <Route exact path="/app/" component={HomeContainer} />
           <Route exact path="/app/login" component={LoginContainer} />
+          <Route exact path="/app/password" component={ChangePasswordContainer} />
           <Route exact path="/app/create" component={CreateBallotContainer} />
           <Route exact path="/app/ballots/:bId" component={ViewBallotContainer} />
           <Route exact path="/app/ballots/:bId/voters/" component={EditVotersContainer} />
-          <Route exact path="/app/status" component={StatusContainer} />
+          <Route exact path="/app/ballots/:bId/fields/" component={EditFieldsContainer} />
+          <Route exact path="/app/vreg/:bId/:iCode" component={VoterRegContainer} />
+          <Route exact path="/app/ballots/:bId/preVoting" component={PreVotingContainer} />
           <Route component={NotFoundPage} />
         </ConnectedSwitch>
       </GlobalPage>

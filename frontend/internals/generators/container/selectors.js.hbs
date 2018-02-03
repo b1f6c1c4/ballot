@@ -1,7 +1,3 @@
 import { createSelector } from 'reselect';
 
-export const makeSelect{{ properCase name }}{{ properCase mselectorName }} = () => createSelector(
-  select{{ properCase name }},
-  (state) => state.getIn(['{{ camelCase name }}', '{{ camelCase mselectorName }}']),
-  (state) => state && state.toJS(),
-);
+{{> selectorSelectors }}

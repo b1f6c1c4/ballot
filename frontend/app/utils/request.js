@@ -1,5 +1,6 @@
 import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
+import fragmentTypes from './fragmentTypes.json';
 
 const apiUrl = (raw) => raw || '/api';
 
@@ -43,9 +44,13 @@ if (process.env.NODE_ENV !== 'test') {
   // eslint-disable-next-line global-require
   const { HttpLink } = require('apollo-link-http');
   /* istanbul ignore next */
+  const fragmentMatcher = new IntrospectionFragmentMatcher({
+    introspectionQueryResultData: fragmentTypes,
+  });
+  /* istanbul ignore next */
   client = new ApolloClient({
     link: new HttpLink({ uri: makeApi('/graphql') }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({ fragmentMatcher }),
   });
 }
 

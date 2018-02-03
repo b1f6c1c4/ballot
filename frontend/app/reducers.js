@@ -30,9 +30,7 @@ function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
     /* istanbul ignore next */
     case LOCATION_CHANGE:
-      return state.merge({
-        location: action.payload,
-      });
+      return state.set('location', fromJS(action.payload));
     default:
       return state;
   }

@@ -77,7 +77,7 @@ class EditVotersPage extends React.PureComponent {
           />
         )}
         <ResultIndicator error={this.props.error} />
-        <EmptyIndicator isLoading={isLoading} list={voters && voters} />
+        <EmptyIndicator isLoading={isLoading} list={ballot && voters} />
         <div className={classes.cards}>
           {!isLoading && voters && voters.map((v) => (
             <VoterCard

@@ -9,10 +9,7 @@ import injectSaga from 'utils/injectSaga';
 
 import ViewBallotPage from 'components/ViewBallotPage';
 
-import {
-  makeSelectViewBallotContainerBallot,
-  makeSelectViewBallotContainerError,
-} from './selectors';
+import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
 import reducer from './reducer';
 import sagas from './sagas';
@@ -55,8 +52,8 @@ export function mapDispatchToProps(dispatch, { match }) {
 const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
-  ballot: makeSelectViewBallotContainerBallot(),
-  error: makeSelectViewBallotContainerError(),
+  ballot: viewBallotContainerSelectors.Ballot(),
+  error: viewBallotContainerSelectors.Error(),
 });
 
 export default compose(

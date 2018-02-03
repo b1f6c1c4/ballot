@@ -6,13 +6,14 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const i18n = require('./i18n');
 
 const extractCss0 = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css',
+  filename: '[name].[contenthash:8].css',
   allChunks: true,
 });
 const extractCss1 = new ExtractTextPlugin({
-  filename: '[name].vendor.[contenthash].css',
+  filename: '[name].vendor.[contenthash:8].css',
   allChunks: true,
 });
 
@@ -126,6 +127,7 @@ module.exports = require('./webpack.base.babel')({
     ],
   },
 
+  workerName: '[chunkhash:8].worker.js',
   cssLoaderVender: extractCss1.extract({
     fallback: 'style-loader',
     use: 'css-loader',
@@ -137,8 +139,8 @@ module.exports = require('./webpack.base.babel')({
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
+    filename: '[name].[chunkhash:8].js',
+    chunkFilename: '[name].[chunkhash:8].chunk.js',
   },
 
   plugins: [
@@ -161,7 +163,6 @@ module.exports = require('./webpack.base.babel')({
         output: {
           comments: false,
           beautify: false,
-          drop_console: true,
         },
       },
     }),
@@ -191,6 +192,24 @@ module.exports = require('./webpack.base.babel')({
         'app',
       ],
     }),
+
+    // Copy the secret/index.html
+    new HtmlWebpackPlugin({
+      filename: 'secret/index.html',
+      template: 'app/secret/index.ejs',
+      inject: true,
+      chunks: [],
+      i18n,
+    }),
+
+    // I18n the secret/index.ejs
+    ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
+      filename: `secret/${k}.html`,
+      template: 'app/secret/locale.ejs',
+      inject: true,
+      chunks: [],
+      i18n: v,
+    })).value(),
 
   ],
 

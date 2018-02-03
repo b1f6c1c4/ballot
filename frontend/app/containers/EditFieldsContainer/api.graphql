@@ -1,0 +1,30 @@
+mutation Save($bId: ID!, $fields: [FieldInput!]!) {
+  replaceFields(input: {
+    bId: $bId,
+    fields: $fields,
+  }) {
+    ...Fields
+  }
+}
+
+query Refresh($bId: ID!) {
+  ballot(input: {
+    bId: $bId,
+  }) {
+    name
+    status
+    fields {
+      ...Fields
+    }
+  }
+}
+
+fragment Fields on BallotField {
+  prompt
+  ... on StringField {
+    default
+  }
+  ... on EnumField {
+    items
+  }
+}

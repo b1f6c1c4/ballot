@@ -1,12 +1,15 @@
+import * as validation from '../validation';
+
 jest.mock('utils/messages', () => ({
   required: 'req',
   minChar: 'min',
   alphanumericDash: 'and',
+  noEmptyLines: 'nel',
+  noDupLines: 'ndl',
 }));
 
 describe('required', () => {
-  // eslint-disable-next-line global-require
-  const func = require('../validation').required();
+  const func = validation.required();
 
   it('should allow', () => {
     expect(func('asdf')).toBeUndefined();
@@ -26,8 +29,7 @@ describe('required', () => {
 });
 
 describe('minChar', () => {
-  // eslint-disable-next-line global-require
-  const func = require('../validation').minChar(3);
+  const func = validation.minChar(3);
 
   it('should allow', () => {
     expect(func('sdf')).toBeUndefined();
@@ -39,8 +41,7 @@ describe('minChar', () => {
 });
 
 describe('alphanumericDash', () => {
-  // eslint-disable-next-line global-require
-  const func = require('../validation').alphanumericDash();
+  const func = validation.alphanumericDash();
 
   it('should allow', () => {
     expect(func('-1s')).toBeUndefined();
@@ -55,9 +56,64 @@ describe('alphanumericDash', () => {
   });
 });
 
+describe('properLiens', () => {
+  const func = validation.properLines();
+
+  it('should allow', () => {
+    expect(func('a\nb\nccc')).toBeUndefined();
+  });
+
+  it('should not allow empty', () => {
+    expect(func('a\nb\n\nccc')).toEqual('nel');
+  });
+
+  it('should not allow final empty', () => {
+    expect(func('a\nb\nccc\n')).toEqual('nel');
+  });
+
+  it('should not allow dup', () => {
+    expect(func('a\nb\na')).toEqual('ndl');
+  });
+});
+
+describe('hexChar', () => {
+  const func = validation.hexChar();
+
+  it('should allow', () => {
+    expect(func('1BcDfa32121')).toBeUndefined();
+  });
+
+  it('should allow null', () => {
+    expect(func(null)).toBeUndefined();
+  });
+
+  it('should allow undefined', () => {
+    expect(func(undefined)).toBeUndefined();
+  });
+
+  it('should allow empty', () => {
+    expect(func('')).toBeUndefined();
+  });
+
+  it('should not allow symbol', () => {
+    expect(func('-')).toBeUndefined();
+  });
+
+  it('should not allow space', () => {
+    expect(func('124 7af')).toBeUndefined();
+  });
+
+  it('should not allow non-hex alphabet', () => {
+    expect(func('1bcdfa32g21')).toBeUndefined();
+  });
+
+  it('should not allow other', () => {
+    expect(func('1bcdf\n32121')).toBeUndefined();
+  });
+});
+
 describe('make', () => {
-  // eslint-disable-next-line global-require
-  const make = require('../validation').default;
+  const make = validation.default;
   const intl = { formatMessage: (...args) => args };
 
   it('should make allow', () => {

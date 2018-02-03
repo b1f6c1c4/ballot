@@ -22,6 +22,11 @@ module.exports = {
     default: 'ext',
     message: 'Name of the saga?',
   }, {
+    type: 'input',
+    name: 'sagaParam',
+    default: 'id',
+    message: 'Param of the saga?',
+  }, {
     type: 'confirm',
     name: 'confirm',
     default: true,
@@ -37,12 +42,12 @@ module.exports = {
     // constants.js
     actions.push({
       type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /[A-Z_]+_FAILURE';$/g,
+      method: 'sectionEnd',
+      indent: 0,
+      section: /^\/\/ Sagas/g,
+      pattern: /^\/\/ [A-Z][a-zA-Z]*$/g,
       path: '../../app/containers/{{ properCase name }}/constants.js',
-      template: `export const {{ constantCase sagaName }}_REQUEST = '{{ properCase name }}/{{ constantCase sagaName }}_REQUEST';
-export const {{ constantCase sagaName }}_SUCCESS = '{{ properCase name }}/{{ constantCase sagaName }}_SUCCESS';
-export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ constantCase sagaName }}_FAILURE';`,
+      templateFile: './container/saga/constants.js.hbs',
       abortOnFail: true,
     });
 
@@ -63,7 +68,7 @@ export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ con
       type: 'complexModify',
       method: 'sectionEnd',
       indent: 4,
-      postpadding: false,
+      postPadding: false,
       section: /^ {4}\/\/ Sagas/g,
       pattern: /^ {4}\/\/ [A-Z][a-zA-Z]*$/g,
       path: '../../app/containers/{{ properCase name }}/reducer.js',
@@ -120,6 +125,16 @@ export const {{ constantCase sagaName }}_FAILURE = '{{ properCase name }}/{{ con
       pattern: /^\/\/ [A-Z][a-zA-Z]*$/g,
       path: '../../app/containers/{{ properCase name }}/tests/sagas.test.js',
       templateFile: './container/saga/sagas.test.js.hbs',
+      abortOnFail: true,
+    });
+
+    // api.graphql
+    actions.push({
+      type: 'complexModify',
+      method: 'by',
+      pattern: /^# Hack/g,
+      path: '../../app/containers/{{properCase name}}/api.graphql',
+      templateFile: './container/saga/api.graphql.hbs',
       abortOnFail: true,
     });
 

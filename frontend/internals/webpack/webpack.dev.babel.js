@@ -2,6 +2,7 @@
  * DEVELOPMENT WEBPACK CONFIGURATION
  */
 
+const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
@@ -9,6 +10,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
+const i18n = require('./i18n');
 const logger = require('../../server/logger');
 // eslint-disable-next-line import/no-dynamic-require
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
@@ -35,6 +37,25 @@ const plugins = [
       'app',
     ],
   }),
+
+  // Copy the secret/index.html
+  new HtmlWebpackPlugin({
+    filename: 'secret/index.html',
+    template: 'app/secret/index.ejs',
+    inject: true,
+    chunks: [],
+    i18n,
+  }),
+
+  // I18n the secret/index.ejs
+  ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
+    filename: `secret/${k}.html`,
+    template: 'app/secret/locale.ejs',
+    inject: true,
+    chunks: [],
+    i18n: v,
+  })).value(),
+
   new CircularDependencyPlugin({
     exclude: /a\.js|node_modules/, // exclude node_modules
     failOnError: false, // show a warning when there is a circular dependency
@@ -91,6 +112,8 @@ module.exports = require('./webpack.base.babel')({
 function dependencyHandlers() {
   // Don't do anything during the DLL Build step
   if (process.env.BUILDING_DLL) { return []; }
+
+  if (!dllPlugin) return [];
 
   const dllPath = path.resolve(process.cwd(), dllPlugin.path);
 

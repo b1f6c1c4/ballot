@@ -19,7 +19,7 @@ describe('globalContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(globalContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(globalContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -27,28 +27,28 @@ describe('globalContainerReducer', () => {
     const originalState = state.set('isDrawerOpen', false);
     const expectedResult = state.set('isDrawerOpen', true);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.openDrawer())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.openDrawer())).toEq(expectedResult);
   });
 
   it('should handle closeDrawer action', () => {
     const originalState = state.set('isDrawerOpen', true);
     const expectedResult = state.set('isDrawerOpen', false);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.closeDrawer())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.closeDrawer())).toEq(expectedResult);
   });
 
   it('should handle openAccount action', () => {
     const originalState = state.set('isAccountOpen', false);
     const expectedResult = state.set('isAccountOpen', true);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.openAccount())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.openAccount())).toEq(expectedResult);
   });
 
   it('should handle closeAccount action', () => {
     const originalState = state.set('isAccountOpen', true);
     const expectedResult = state.set('isAccountOpen', false);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.closeAccount())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.closeAccount())).toEq(expectedResult);
   });
 
   it('should handle login action', () => {
@@ -56,14 +56,14 @@ describe('globalContainerReducer', () => {
     const originalState = state;
     const expectedResult = state.set('credential', fromJS(credential));
 
-    expect(globalContainerReducer(originalState, globalContainerActions.login(credential))).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.login(credential))).toEq(expectedResult);
   });
 
   it('should handle logout action', () => {
     const originalState = state.set('credential', { key: 'val' });
     const expectedResult = state;
 
-    expect(globalContainerReducer(originalState, globalContainerActions.logout())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.logout())).toEq(expectedResult);
   });
 
   // Sagas
@@ -71,7 +71,7 @@ describe('globalContainerReducer', () => {
     const originalState = state.set('isLoading', false);
     const expectedResult = state.set('isLoading', true);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.ballotsRequest())).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsRequest())).toEq(expectedResult);
   });
 
   it('should handle ballots success', () => {
@@ -81,7 +81,7 @@ describe('globalContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('listBallots', fromJS(ballots));
 
-    expect(globalContainerReducer(originalState, globalContainerActions.ballotsSuccess(result))).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle ballots failure', () => {
@@ -89,6 +89,6 @@ describe('globalContainerReducer', () => {
     const error = { };
     const expectedResult = state.set('isLoading', false);
 
-    expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEqual(expectedResult);
+    expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEq(expectedResult);
   });
 });

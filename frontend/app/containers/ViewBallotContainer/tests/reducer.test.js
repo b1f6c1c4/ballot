@@ -16,7 +16,7 @@ describe('viewBallotContainerReducer', () => {
 
   it('should return the initial state', () => {
     const expectedResult = state;
-    expect(viewBallotContainerReducer(undefined, {})).toEqual(expectedResult);
+    expect(viewBallotContainerReducer(undefined, {})).toEq(expectedResult);
   });
 
   // Actions
@@ -27,7 +27,7 @@ describe('viewBallotContainerReducer', () => {
     const param = { bId: '1' };
     const expectedResult = state.set('isLoading', true);
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotRequest(param))).toEqual(expectedResult);
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotRequest(param))).toEq(expectedResult);
   });
 
   it('should handle ballot success', () => {
@@ -36,7 +36,7 @@ describe('viewBallotContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('ballot', 'aa');
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotSuccess(result))).toEqual(expectedResult);
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle ballot failure', () => {
@@ -45,6 +45,6 @@ describe('viewBallotContainerReducer', () => {
     const expectedResult = state.set('isLoading', false)
       .set('error', fromJS(error));
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotFailure(error))).toEqual(expectedResult);
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotFailure(error))).toEq(expectedResult);
   });
 });

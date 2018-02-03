@@ -37,10 +37,14 @@ module.exports = {
     // constants.js
     actions.push({
       type: 'complexModify',
-      method: 'lastOccurance',
-      pattern: /[A-Z_]+_ACTION';$/g,
+      method: 'sectionEnd',
+      indent: 0,
+      section: /^\/\/ Actions/g,
+      pattern: /^\/\/ [A-Z][a-zA-Z]*$/g,
       path: '../../app/containers/{{ properCase name }}/constants.js',
-      template: 'export const {{ constantCase actionName }}_ACTION = \'{{ properCase name }}/{{ constantCase actionName }}_ACTION\';',
+      templateFile: './container/action/constants.js.hbs',
+      prePadding: false,
+      postPadding: false,
       abortOnFail: true,
     });
 
@@ -73,7 +77,7 @@ module.exports = {
       type: 'complexModify',
       method: 'sectionEnd',
       indent: 4,
-      postpadding: false,
+      postPadding: false,
       section: /^ {4}\/\/ Actions/g,
       pattern: /^ {4}\/\/ [A-Z][a-zA-Z]*$/g,
       path: '../../app/containers/{{ properCase name }}/reducer.js',

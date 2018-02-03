@@ -20,20 +20,8 @@ module.exports = {
     },
   }, {
     type: 'confirm',
-    name: 'wantSelectors',
-    default: true,
-    message: 'Do you want selectors?',
-  }, {
-    type: 'input',
-    name: 'selectorName',
-    when: (ans) => ans.wantSelectors,
-    default: 'data',
-    message: 'Selector name?',
-  }, {
-    type: 'confirm',
     name: 'wantMSelectors',
-    when: (ans) => ans.wantSelectors,
-    default: true,
+    default: false,
     message: 'Do you want memorized selectors?',
   }, {
     type: 'input',
@@ -43,22 +31,26 @@ module.exports = {
     message: 'Memorized selector name?',
   }, {
     type: 'confirm',
-    name: 'wantActionsAndReducer',
-    when: (ans) => ans.wantSelectors,
+    name: 'wantReducer',
     default: true,
-    message: 'Do you want an actions/reducer tuple for this container?',
+    message: 'Do you want reducer? (Must enable for sagas or actions)',
+  }, {
+    type: 'confirm',
+    name: 'wantActions',
+    default: false,
+    message: 'Do you want actions?',
   }, {
     type: 'input',
     name: 'actionName',
-    when: (ans) => ans.wantActionsAndReducer,
-    default: 'change',
+    when: (ans) => ans.wantActions,
+    default: 'toggle',
     message: 'Action name?',
   }, {
     type: 'confirm',
     name: 'wantSagas',
-    when: (ans) => ans.wantActionsAndReducer,
+    when: (ans) => ans.wantReducer,
     default: true,
-    message: 'Do you want sagas for asynchronous flows? (e.g. fetching data)',
+    message: 'Do you want sagas?',
   }, {
     type: 'input',
     name: 'sagaName',
@@ -66,19 +58,29 @@ module.exports = {
     default: 'external',
     message: 'Saga name?',
   }, {
+    type: 'input',
+    name: 'sagaParam',
+    when: (ans) => ans.wantSagas,
+    default: 'id',
+    message: 'Param of the saga?',
+  }, {
     type: 'confirm',
     name: 'wantLoadable',
     default: true,
     message: 'Do you want to load resources asynchronously?',
   }],
   actions: (data) => {
+    if (data.wantReducer && !(data.wantActions || data.wantSagas)) {
+      throw new Error('Enable either action or saga, or both.');
+    }
+
     const actions = [];
 
     // Generate index.js
     actions.push({
       type: 'add',
       path: '../../app/containers/{{properCase name}}/index.js',
-      templateFile: './container/class.js.hbs',
+      templateFile: './container/index.js.hbs',
       abortOnFail: true,
     });
 
@@ -98,7 +100,7 @@ module.exports = {
       });
     }
 
-    if (data.wantActionsAndReducer) {
+    if (data.wantReducer) {
       // Generate constants.js
       actions.push({
         type: 'add',
@@ -114,12 +116,14 @@ module.exports = {
         templateFile: './container/actions.js.hbs',
         abortOnFail: true,
       });
-      actions.push({
-        type: 'add',
-        path: '../../app/containers/{{properCase name}}/tests/actions.test.js',
-        templateFile: './container/actions.test.js.hbs',
-        abortOnFail: true,
-      });
+      if (data.wantActions) {
+        actions.push({
+          type: 'add',
+          path: '../../app/containers/{{properCase name}}/tests/actions.test.js',
+          templateFile: './container/actions.test.js.hbs',
+          abortOnFail: true,
+        });
+      }
 
       // Generate reducer.js
       actions.push({
@@ -168,7 +172,7 @@ module.exports = {
         templateFile: './component/loadable.js.hbs',
         abortOnFail: true,
       });
-    } else if (data.wantActionsAndReducer) {
+    } else if (data.wantReducer) {
       actions.push({
         type: 'modify',
         pattern: /(from\s'containers\/[a-zA-Z]+\/reducer';\n)(?!.*from\s'containers\/[a-zA-Z]+\/reducer';)/g,

@@ -17,22 +17,26 @@ const sagaMiddleware = createSagaMiddleware();
 export const slicer = () => (rawState) => {
   let state = rawState.toJS();
   _.unset(state, 'language');
+  _.unset(state, 'route');
+  _.unset(state, 'preVotingContainer');
+  _.unset(state, 'form.preVotingForm');
+
+  const makeFilter = ({ reg, def = null }) => (o) => _.mapValues(o, (v, k) => {
+    if (!reg.test(k)) return v;
+    return def;
+  });
+  const filt = _.reduce([
+    { reg: /^is.*Loading$/, def: false },
+    { reg: /[Pp]rivateKey/ },
+    { reg: /[Ee]rror/ },
+  ], (fs, rg) => (o) => makeFilter(rg)(fs(o)), _.identity);
 
   function rm(v) {
-    if (_.isArray(v)) {
-      return _.map(v, rm);
-    }
-    if (!_.isObject(v)) return v;
-    // if (!_.isPlainObject(v)) throw new Error('Unsupported type');
-
-    let tmp = v;
-    if (_.get(v, 'isLoading')) {
-      tmp = _.set(v, 'isLoading', false);
-    }
-    return _.mapValues(tmp, rm);
+    if (!_.isPlainObject(v)) return undefined;
+    return _.mapValues(filt(v), (o) => _.cloneDeepWith(o, rm));
   }
 
-  state = rm(state);
+  state = _.cloneDeepWith(state, rm);
 
   _.forIn(state.form, (form) => {
     const sens = _.keys(form.registeredFields).filter((k) => k.toLowerCase().includes('password'));

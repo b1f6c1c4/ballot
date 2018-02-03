@@ -18,6 +18,18 @@ module.exports = (options) => ({
         }],
       },
       {
+        test: /\.worker\.js$/,
+        use: [{
+          loader: 'worker-loader',
+          options: {
+            name: options.workerName,
+          },
+        }, {
+          loader: 'babel-loader',
+          options: options.babelOptions || {},
+        }],
+      },
+      {
         test: /\.css$/,
         include: /node_modules/,
         use: options.cssLoaderVender || ['style-loader', 'css-loader'],
@@ -47,6 +59,7 @@ module.exports = (options) => ({
     ],
   },
   plugins: options.plugins.concat([
+    new webpack.NamedModulesPlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       jQuery: 'jquery',
@@ -63,7 +76,6 @@ module.exports = (options) => ({
         API_URL: JSON.stringify(process.env.API_URL),
       },
     }),
-    new webpack.NamedModulesPlugin(),
   ]),
   resolve: {
     modules: ['app', 'node_modules'],
