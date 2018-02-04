@@ -52,36 +52,6 @@ Reply message is tagged persist iff `id` starts with `{` or `[`.
             + `123` (number)
             + `{}` (string)
 
-# Group Password Hashing
-
-## Password [POST /password]
-
-+ Request
-
-    + Attributes
-        + jsonrpc (enum, required)
-            + `2.0` (string)
-        + method (enum, required)
-            + `password`
-        + param (object, required)
-            + password: `letmein` (string, required)
-            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
-        + id (enum, required)
-            + `123` (number)
-            + `{}` (string)
-
-+ Response 200
-
-    + Attributes
-        + jsonrpc (enum)
-            + `2.0` (string)
-        + result (object)
-            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
-            + hash: `7d98293897e5265b4d8e8817af18f6ac` (string)
-        + id (enum, required)
-            + `123` (number)
-            + `{}` (string)
-
 # Group Ring Signature
 
 ## Setup [POST /newRing]
