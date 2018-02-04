@@ -1,0 +1,28 @@
+language: generic
+
+notifications:
+  email: false
+
+branches:
+  only:
+    - frontend
+    - backend
+    - cryptor
+    - builder
+    - auth
+
+sudo: required
+
+before_install:
+  - docker --version || true
+  - curl -fsSL https://get.docker.com/ | sudo bash
+  - docker --version
+
+script:
+  - git describe --always > VERSION
+  - git rev-parse HEAD > COMMITHASH
+  - docker build -t b1f6c1c4/ballot-auth .
+
+after_success:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push b1f6c1c4/ballot-auth

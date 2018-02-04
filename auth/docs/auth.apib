@@ -1,0 +1,78 @@
+FORMAT: 1A
+
+# Auth
+
+Authentication middleware for Ballot.
+
+## Authentication
+
+This API doesn't use authentication.
+
+## Notational Conventions
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC2119](https://www.ietf.org/rfc/rfc2119).
+
+## Errors
+
+- `code`
+    - `-32700` - Parse error
+    - `-32600` - Invalid request
+    - `-32601` - Method not found
+    - `-32602` - Invalid params
+    - `-32603` - Internal error
+
+## Message Queue
+
+Reply message is never tagged persist.
+
+# Group Password Hashing
+
+## Hash Password [POST /hashPassword]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `hashPassword`
+        + param (object, required)
+            + password: `letmein` (string, required)
+        + id (enum, required)
+            + `123` (number)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + hash: `$2a$14$J6kowqYbm6lVn/PZGZ1Aru3YdT7zm/5akso/U0HuDvYD718FtKZ2q` (string)
+        + id (enum, required)
+            + `123` (number)
+
+## Verify Password [POST /verifyPassword]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `verifyPassword`
+        + param (object, required)
+            + password: `letmein` (string, required)
+            + hash: `$2a$14$J6kowqYbm6lVn/PZGZ1Aru3YdT7zm/5akso/U0HuDvYD718FtKZ2q` (string, required)
+        + id (enum, required)
+            + `123` (number)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + valid: 1 (number)
+        + id (enum, required)
+            + `123` (number)
+
