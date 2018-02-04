@@ -73,7 +73,7 @@ RUN \
     && rm -rf SimpleAmqpClient
 
 RUN \
-    curl -SL "https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp" \
+    curl -SL "https://raw.githubusercontent.com/nlohmann/json/master/single_include/nlohmann/json.hpp" \
         -o json.hpp \
     && mv json.hpp /usr/local/include
 
