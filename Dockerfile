@@ -6,11 +6,13 @@ RUN go get -d -v golang.org/x/crypto/bcrypt
 RUN go get -d -v github.com/juju/ansiterm
 RUN go get -d -v github.com/juju/loggo
 COPY *.go .
+COPY VERSION .
+COPY COMMITHASH .
 RUN CGO_ENABLED=0 GOOS=linux go build \
         -a \
         -installsuffix cgo \
         -o auth \
-        -ldflags "-X main.VERSION=$(git describe --always) -X main.COMMITHASH=$(git rev-parse HEAD)" \
+        -ldflags "-X main.VERSION=$(cat VERSION) -X main.COMMITHASH=$(cat VERSION)" \
         .
 
 FROM alpine:latest

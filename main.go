@@ -312,7 +312,6 @@ func main() {
                 false,     // mandatory
                 false,     // immediate
                 amqp.Publishing{
-                    ContentType: "application/json",
                     Body: str,
                 },
             )
