@@ -13,6 +13,8 @@ import (
 )
 
 var log = loggo.GetLogger("")
+var VERSION string
+var COMMITHASH string
 
 func failOnError(err error, msg string) {
     if err != nil {
@@ -150,6 +152,8 @@ func main() {
         log.SetLogLevel(loggo.INFO)
     }
     log.Infof("[Main] Verbosity: %s", verbosity)
+    log.Infof("[Main] VERSION: %s", VERSION)
+    log.Infof("[Main] COMMITHASH: %s", COMMITHASH)
 
     channelName := os.Args[1]
     log.Infof("[Main] Channel name: %s", channelName)
