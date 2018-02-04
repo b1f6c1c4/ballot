@@ -23,3 +23,24 @@ export function ballotFailure(error) {
     error,
   };
 }
+
+export function finalizeRequest({ bId }) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST,
+    bId,
+  };
+}
+
+export function finalizeSuccess(result) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.FINALIZE_SUCCESS,
+    result,
+  };
+}
+
+export function finalizeFailure(error) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.FINALIZE_FAILURE,
+    error,
+  };
+}

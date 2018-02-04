@@ -24,5 +24,21 @@ export default {
       id: 'app.components.ViewBallotPage.unregistered',
       defaultMessage: 'Not registered',
     },
+    finalizeVoters: {
+      id: 'app.components.ViewBallotPage.finalizeVoters',
+      defaultMessage: 'Stop inviting',
+    },
+    finalizeFields: {
+      id: 'app.components.ViewBallotPage.finalizeFields',
+      defaultMessage: 'Start pre voting',
+    },
+    finalizePreVoting: {
+      id: 'app.components.ViewBallotPage.finalizePreVoting',
+      defaultMessage: 'Start voting',
+    },
+    finalizeVoting: {
+      id: 'app.components.ViewBallotPage.finalizeVoting',
+      defaultMessage: 'Stop voting',
+    },
   }),
 };

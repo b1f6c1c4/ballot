@@ -47,4 +47,28 @@ describe('viewBallotContainerReducer', () => {
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotFailure(error))).toEq(expectedResult);
   });
+
+  it('should handle finalize request', () => {
+    const originalState = state.set('isLoading', false);
+    const param = { bId: 'val' };
+    const expectedResult = state.set('isLoading', true);
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.finalizeRequest(param))).toEq(expectedResult);
+  });
+
+  it('should handle finalize success', () => {
+    const originalState = state.set('isLoading', true);
+    const result = { };
+    const expectedResult = state.set('isLoading', false);
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.finalizeSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle finalize failure', () => {
+    const originalState = state.set('isLoading', true);
+    const error = { };
+    const expectedResult = state.set('isLoading', false);
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.finalizeFailure(error))).toEq(expectedResult);
+  });
 });

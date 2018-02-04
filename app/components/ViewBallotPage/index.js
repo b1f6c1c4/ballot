@@ -13,6 +13,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Button,
 } from 'material-ui';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
@@ -121,6 +122,42 @@ class ViewBallotPage extends React.PureComponent {
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
+          {!isLoading && ballot && ballot.status === 'inviting' && (
+            <Button
+              color="secondary"
+              isLoading={isLoading}
+              onClick={this.props.onFinalize}
+            >
+              <FormattedMessage {...messages.finalizeVoters} />
+            </Button>
+          )}
+          {!isLoading && ballot && ballot.status === 'invited' && (
+            <Button
+              color="secondary"
+              isLoading={isLoading}
+              onClick={this.props.onFinalize}
+            >
+              <FormattedMessage {...messages.finalizeFields} />
+            </Button>
+          )}
+          {!isLoading && ballot && ballot.status === 'preVoting' && (
+            <Button
+              color="secondary"
+              isLoading={isLoading}
+              onClick={this.props.onFinalize}
+            >
+              <FormattedMessage {...messages.finalizePreVoting} />
+            </Button>
+          )}
+          {!isLoading && ballot && ballot.status === 'voting' && (
+            <Button
+              color="secondary"
+              isLoading={isLoading}
+              onClick={this.props.onFinalize}
+            >
+              <FormattedMessage {...messages.finalizeVoting} />
+            </Button>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         <div className={classes.cards}>
@@ -207,6 +244,7 @@ ViewBallotPage.propTypes = {
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onFinalize: PropTypes.func.isRequired,
 };
 
 export const styledViewBallotPage = withStyles(styles)(ViewBallotPage);
