@@ -1,4 +1,5 @@
 # Artfact
+*.exe
 
 # Cruft
 *~
