@@ -1,10 +1,29 @@
 version: "3"
 services:
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+     - "80:80"
+     - "443:443"
+     - "8888:80"
+     - "4343:443"
+    networks:
+      - prod
+    environment:
+      SSL_POLICY: AWS-TLS-1-2-2017-01
+      HTTPS_METHOD: redirect
+    volumes:
+     - /root/ballot:/etc/nginx/certs
+     - /root/ballot/dhparam.pem:/etc/nginx/dhparam/dhparam.pem
+     - /var/run/docker.sock:/tmp/docker.sock:ro
+
   backend:
     image: b1f6c1c4/ballot-backend
     restart: always
     environment:
+      VIRTUAL_HOST: ballot-api.b1f6c1c4.info
       BACKEND_LOG: "${DEBUG_LEVEL}"
       NO_SHARD: 'true'
       ANONY_NO_STRICT: 'true'
