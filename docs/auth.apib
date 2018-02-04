@@ -25,34 +25,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 Reply message is never tagged persist.
 
-# Group Default
-
-## Check system status [POST /status]
-
-+ Request
-
-    + Attributes
-        + jsonrpc (enum, required)
-            + `2.0` (string)
-        + method (enum, required)
-            + `status`
-        + id (enum, required)
-            + `123` (number)
-
-+ Response 200
-
-    + Attributes
-        + jsonrpc (enum)
-            + `2.0` (string)
-        + result (object)
-            + version: `4907ca16`
-            + commitHash: `4907ca16faf693b76a71df0efd19ef9dcefaa309`
-        + id (enum, required)
-            + `123` (number)
-
 # Group Password Hashing
 
-## Password [POST /password]
+## Hash Password [POST /hashPassword]
 
 + Request
 
@@ -60,10 +35,9 @@ Reply message is never tagged persist.
         + jsonrpc (enum, required)
             + `2.0` (string)
         + method (enum, required)
-            + `password`
+            + `hashPassword`
         + param (object, required)
             + password: `letmein` (string, required)
-            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
         + id (enum, required)
             + `123` (number)
 
@@ -73,8 +47,32 @@ Reply message is never tagged persist.
         + jsonrpc (enum)
             + `2.0` (string)
         + result (object)
-            + salt: `51379997ba1004f2a47439abb5f2a471` (string)
-            + hash: `7d98293897e5265b4d8e8817af18f6ac` (string)
+            + hash: `$2a$14$J6kowqYbm6lVn/PZGZ1Aru3YdT7zm/5akso/U0HuDvYD718FtKZ2q` (string)
+        + id (enum, required)
+            + `123` (number)
+
+## Verify Password [POST /verifyPassword]
+
++ Request
+
+    + Attributes
+        + jsonrpc (enum, required)
+            + `2.0` (string)
+        + method (enum, required)
+            + `verifyPassword`
+        + param (object, required)
+            + password: `letmein` (string, required)
+            + hash: `$2a$14$J6kowqYbm6lVn/PZGZ1Aru3YdT7zm/5akso/U0HuDvYD718FtKZ2q` (string, required)
+        + id (enum, required)
+            + `123` (number)
+
++ Response 200
+
+    + Attributes
+        + jsonrpc (enum)
+            + `2.0` (string)
+        + result (object)
+            + valid: 1 (number)
         + id (enum, required)
             + `123` (number)
 
