@@ -54,7 +54,7 @@ Reply message is tagged persist iff `id` starts with `{` or `[`.
 
 # Group Password Hashing
 
-## Argon2i [POST /argon2i]
+## Password [POST /password]
 
 + Request
 
@@ -62,7 +62,7 @@ Reply message is tagged persist iff `id` starts with `{` or `[`.
         + jsonrpc (enum, required)
             + `2.0` (string)
         + method (enum, required)
-            + `argon2i`
+            + `password`
         + param (object, required)
             + password: `letmein` (string, required)
             + salt: `51379997ba1004f2a47439abb5f2a471` (string)
