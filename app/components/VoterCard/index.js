@@ -14,6 +14,7 @@ import {
 } from 'material-ui';
 import classnames from 'classnames';
 import { Delete, ExpandMore } from 'material-ui-icons';
+import QRCode from 'qrcode.react';
 
 import messages from './messages';
 
@@ -46,6 +47,9 @@ const styles = (theme) => ({
     fontFamily: 'monospace',
     overflowWrap: 'break-word',
   },
+  qrcode: {
+    textAlign: 'center',
+  },
 });
 
 class VoterCard extends React.PureComponent {
@@ -66,8 +70,14 @@ class VoterCard extends React.PureComponent {
   };
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { classes, voter, disabled } = this.props;
+    const {
+      classes,
+      bId,
+      voter,
+      disabled,
+    } = this.props;
+
+    const makeUrl = () => `${window.location.protocol}//${window.location.host}/app/vreg/${bId}/${voter.iCode}`;
 
     return (
       <Card className={classes.card}>
@@ -77,7 +87,7 @@ class VoterCard extends React.PureComponent {
         />
         <CardContent>
           <Typography component="p">
-            {voter.description}
+            {voter.comment}
           </Typography>
         </CardContent>
         <CardActions className={classes.actions} disableActionSpacing>
@@ -100,8 +110,20 @@ class VoterCard extends React.PureComponent {
             <Typography type="caption" className={classes.detailTitle}>
               <FormattedMessage {...messages.iCode} />
             </Typography>
-            <span className={classes.detail}>{voter.iCode}</span>
+            {voter.publicKey && (
+              <span className={classes.detail}>{voter.iCode}</span>
+            )}
+            {!voter.publicKey && (
+              <a href={makeUrl()}>
+                <span className={classes.detail}>{voter.iCode}</span>
+              </a>
+            )}
           </Typography>
+          {!voter.publicKey && (
+            <div className={classes.qrcode}>
+              <QRCode value={makeUrl()} size={256} />
+            </div>
+          )}
           {voter.publicKey && (
             <Typography component="p" className={classes.detailWrapper}>
               <Typography type="caption" className={classes.detailTitle}>

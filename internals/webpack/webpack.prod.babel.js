@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const i18n = require('./i18n');
 
@@ -148,7 +147,6 @@ module.exports = require('./webpack.base.babel')({
     new NetlifyRedirectsPlugin(),
     extractCss0,
     extractCss1,
-    new LodashModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'indexCommon',
       chunks: ['index', 'indexStyle'],
