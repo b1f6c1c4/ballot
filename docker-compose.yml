@@ -5,7 +5,7 @@ services:
     image: b1f6c1c4/ballot-backend
     restart: always
     environment:
-      BACKEND_LOG: debug
+      BACKEND_LOG: "${DEBUG_LEVEL}"
       NO_SHARD: 'true'
       ANONY_NO_STRICT: 'true'
       MONGO_HOST: mongo
@@ -13,7 +13,10 @@ services:
       RABBIT_USER: guest
       RABBIT_PASS: guest
       CRYPTOR_QUEUE: |
-        {}
+        {
+          "hashPassword": "auth",
+          "verifyPassword": "auth"
+        }
     ports:
       - 3001:3000
     networks:
@@ -25,10 +28,25 @@ services:
       - rabbit
       - mongo
 
+  auth:
+    image: b1f6c1c4/ballot-auth
+    restart: always
+    entrypoint: ["./auth", "auth", "${DEBUG_LEVEL}"]
+    environment:
+      RABBIT_HOST: rabbit
+      RABBIT_USER: guest
+      RABBIT_PASS: guest
+    networks:
+      - prod
+    depends_on:
+      - rabbit
+    links:
+      - rabbit
+
   cryptor:
     image: b1f6c1c4/ballot-cryptor
     restart: always
-    entrypoint: ["./cryptor", "-w", "2048", "-s", "cryptor"]
+    entrypoint: ["./cryptor", "-w", "2048", "-s", "cryptor", "-v", "${DEBUG_LEVEL}"]
     environment:
       RABBIT_HOST: rabbit
       RABBIT_USER: guest
