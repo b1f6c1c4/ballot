@@ -7,6 +7,7 @@ import (
     "encoding/json"
     "github.com/streadway/amqp"
     "gopkg.in/guregu/null.v3"
+    "golang.org/x/crypto/bcrypt"
 )
 
 func failOnError(err error, msg string) {
@@ -17,17 +18,21 @@ func failOnError(err error, msg string) {
 
 type PasswordParam struct {
     Password string `json:"password"`
-    Salt string `json:"salt"`
+    Hash null.String `json:"hash"`
 }
 
-type PasswordResult struct {
+type HashPasswordResult struct {
     Hash string `json:"hash"`
-    Salt string `json:"salt"`
+}
+
+type VerifyPasswordResult struct {
+    Valid int `json:"valid"`
 }
 
 type JsonRpcError struct {
     Code int `json:"code"`
     Message string `json:"message"`
+    Data null.String `json:"data"`
 }
 
 type JsonRpcRequest struct {
@@ -37,12 +42,13 @@ type JsonRpcRequest struct {
     Id null.Int `json:"id"`
 }
 
-type JsonRpcResponse interface {
-}
+type JsonRpcParam interface { }
+type JsonRpcResult interface { }
+type JsonRpcResponse interface { }
 
 type JsonRpcRes struct {
     JsonRpc string `json:"jsonrpc"`
-    Result PasswordResult `json:"result"`
+    Result JsonRpcResult `json:"result"`
     Id null.Int `json:"id"`
 }
 
@@ -50,6 +56,49 @@ type JsonRpcErr struct {
     JsonRpc string `json:"jsonrpc"`
     Error JsonRpcError `json:"error"`
     Id null.Int `json:"id"`
+}
+
+func ExecuteHash(param PasswordParam) (HashPasswordResult, *JsonRpcError) {
+    bytes, err := bcrypt.GenerateFromPassword([]byte(param.Password), 14)
+
+    var a HashPasswordResult
+    var e *JsonRpcError
+    if err == nil {
+        a = HashPasswordResult{
+            Hash: string(bytes),
+        }
+    } else {
+        e = &JsonRpcError{
+            Code: -32603,
+            Message: "Internal error",
+            Data: null.StringFrom(err.Error()),
+        }
+    }
+    return a, e
+}
+
+func ExecuteVerify(param PasswordParam) (VerifyPasswordResult, *JsonRpcError) {
+    hash := param.Hash.ValueOrZero()
+    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(param.Password))
+
+    var a VerifyPasswordResult
+    var e *JsonRpcError
+    if err == nil {
+        a = VerifyPasswordResult{
+            Valid: 1,
+        }
+    } else if err == bcrypt.ErrMismatchedHashAndPassword {
+        a = VerifyPasswordResult{
+            Valid: 0,
+        }
+    } else {
+        e = &JsonRpcError{
+            Code: -32603,
+            Message: "Internal error",
+            Data: null.StringFrom(err.Error()),
+        }
+    }
+    return a, e
 }
 
 func main() {
@@ -109,7 +158,12 @@ func main() {
     go func() {
         for d := range msgs {
             log.Printf("[Rpc] Message from %s", d.ReplyTo)
-            log.Printf("[Rpc] Request: %s", d.Body)
+
+            if d.ReplyTo == "" {
+                log.Printf("[Rpc] Rejecting")
+                d.Reject(false)
+                continue
+            }
 
             var m JsonRpcRequest
             var res JsonRpcResponse
@@ -132,21 +186,42 @@ func main() {
                     },
                     Id: m.Id,
                 }
-            } else if m.Method != "password" {
+            } else if m.Method == "hashPassword" {
+                r, err := ExecuteHash(m.Param)
+                if err == nil {
+                    res = JsonRpcRes{
+                        JsonRpc: "2.0",
+                        Result: r,
+                        Id: m.Id,
+                    }
+                } else {
+                    res = JsonRpcErr{
+                        JsonRpc: "2.0",
+                        Error: *err,
+                        Id: m.Id,
+                    }
+                }
+            } else if m.Method == "verifyPassword" {
+                r, err := ExecuteVerify(m.Param)
+                if err == nil {
+                    res = JsonRpcRes{
+                        JsonRpc: "2.0",
+                        Result: r,
+                        Id: m.Id,
+                    }
+                } else {
+                    res = JsonRpcErr{
+                        JsonRpc: "2.0",
+                        Error: *err,
+                        Id: m.Id,
+                    }
+                }
+            } else {
                 res = JsonRpcErr{
                     JsonRpc: "2.0",
                     Error: JsonRpcError{
                         Code: -32601,
                         Message: "Method not found",
-                    },
-                    Id: m.Id,
-                }
-            } else {
-                res = JsonRpcRes{
-                    JsonRpc: "2.0",
-                    Result: PasswordResult{
-                        Hash: "1",
-                        Salt: "2",
                     },
                     Id: m.Id,
                 }
