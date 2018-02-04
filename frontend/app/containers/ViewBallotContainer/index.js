@@ -39,6 +39,7 @@ ViewBallotContainer.propTypes = {
   error: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onFinalize: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch, { match }) {
@@ -46,6 +47,7 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
+    onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
   };
 }
 

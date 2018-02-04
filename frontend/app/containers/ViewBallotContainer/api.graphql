@@ -24,3 +24,27 @@ query BallotCrypto($bId: ID!) {
     h
   }
 }
+
+mutation FinalizeVoters($bId: ID!) {
+  finalizeVoters(input: {
+    bId: $bId,
+  })
+}
+
+mutation FinalizeFields($bId: ID!) {
+  finalizeFields(input: {
+    bId: $bId,
+  })
+}
+
+mutation FinalizePreVoting($bId: ID!) {
+  finalizePreVoting(input: {
+    bId: $bId,
+  })
+}
+
+mutation FinalizeVoting($bId: ID!) {
+  finalizeVoting(input: {
+    bId: $bId,
+  })
+}
