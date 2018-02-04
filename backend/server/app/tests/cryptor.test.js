@@ -67,46 +67,47 @@ describe('idGen', () => {
   });
 });
 
-describe('argon2i', () => {
+describe('hashPassword', () => {
   beforeEach(() => {
     rpcMock.call.mockReset();
   });
 
-  it('should resolve with out salt', () => {
+  it('should resolve', () => {
     rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('argon2i');
+      expect(n).toEqual('hashPassword');
       expect(o.password).toEqual('pwd');
-      expect(o.salt).toBeUndefined();
       return {
         hash: 'hah',
-        salt: 'sal',
       };
     });
 
     // eslint-disable-next-line global-require
-    const { argon2i } = require('../cryptor');
-    return expect(argon2i('pwd')).resolves.toEqual({
+    const { hashPassword } = require('../cryptor');
+    return expect(hashPassword('pwd')).resolves.toEqual({
       hash: 'hah',
-      salt: 'sal',
     });
   });
+});
 
-  it('should resolve with salt', () => {
+describe('verifyPassword', () => {
+  beforeEach(() => {
+    rpcMock.call.mockReset();
+  });
+
+  it('should resolve', () => {
     rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('argon2i');
+      expect(n).toEqual('verifyPassword');
       expect(o.password).toEqual('pwd');
-      expect(o.salt).toEqual('sal');
+      expect(o.hash).toEqual('hah');
       return {
-        hash: 'hah',
-        salt: 'sal',
+        valid: 123,
       };
     });
 
     // eslint-disable-next-line global-require
-    const { argon2i } = require('../cryptor');
-    return expect(argon2i('pwd', 'sal')).resolves.toEqual({
-      hash: 'hah',
-      salt: 'sal',
+    const { verifyPassword } = require('../cryptor');
+    return expect(verifyPassword('pwd', 'hah')).resolves.toEqual({
+      valid: 123,
     });
   });
 });

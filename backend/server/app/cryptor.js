@@ -45,10 +45,16 @@ module.exports = {
   iCodeGen: idGen(32),
   tIdGen: idGen(32),
 
-  async argon2i(password, salt) {
-    return rpc.call('argon2i', {
+  async hashPassword(password) {
+    return rpc.call('hashPassword', {
       password,
-      salt,
+    });
+  },
+
+  async verifyPassword(password, hash) {
+    return rpc.call('verifyPassword', {
+      password,
+      hash,
     });
   },
 
