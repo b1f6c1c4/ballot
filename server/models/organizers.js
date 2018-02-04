@@ -7,13 +7,8 @@ const OrganizerSchema = new Schema({
   _id: {
     type: String,
   },
-  salt: {
-    type: String,
-    lowercase: true,
-  },
   hash: {
     type: String,
-    lowercase: true,
   },
 }, {
   id: false,

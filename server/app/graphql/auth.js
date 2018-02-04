@@ -1,8 +1,7 @@
 const _ = require('lodash');
-const compare = require('secure-compare');
 const errors = require('./error');
 const { Organizer } = require('../../models/organizers');
-const { argon2i } = require('../cryptor');
+const { hashPassword, verifyPassword } = require('../cryptor');
 const { issue } = require('../auth');
 const logger = require('../../logger')('graphql/auth');
 
@@ -24,10 +23,9 @@ module.exports = {
         }
 
         try {
-          const { hash, salt } = await argon2i(password);
+          const { hash } = await hashPassword(password);
           const user = new Organizer();
           user._id = username;
-          user.salt = salt;
           user.hash = hash;
           await user.save();
           logger.info('User registered', user._id);
@@ -59,14 +57,12 @@ module.exports = {
         try {
           const tryFind = await Organizer.findById(username, { });
           logger.trace('tryFind', !!tryFind);
-          const salt = tryFind ? tryFind.salt : undefined;
-          const { hash } = await argon2i(password, salt);
-          const hash0 = tryFind ? tryFind.hash : hash;
-          let result = compare(hash0, hash);
           if (!tryFind) {
-            result = false;
+            logger.debug('Login failed, not found', username);
+            return null;
           }
-          if (!result) {
+          const { valid } = await verifyPassword(password, tryFind.hash);
+          if (!valid) {
             logger.info('Login failed', username);
             return null;
           }
@@ -103,15 +99,12 @@ module.exports = {
           if (!user) {
             return new errors.NotFoundError();
           }
-          const res = await argon2i(oldPassword, user.salt);
-          const oldHash = res.hash;
-          const result = compare(oldHash, user.hash);
-          if (!result) {
+          const { valid } = await verifyPassword(oldPassword, user.hash);
+          if (!valid) {
             logger.info('Change password failed', username);
             return false;
           }
-          const { hash, salt } = await argon2i(newPassword);
-          user.salt = salt;
+          const { hash } = await hashPassword(newPassword);
           user.hash = hash;
           await user.save();
           logger.info('Change password success', username);

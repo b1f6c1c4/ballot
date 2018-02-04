@@ -2,13 +2,14 @@ const { models, make, mer, check } = require('../../../tests/util');
 const errors = require('../error');
 
 jest.mock('../../cryptor', () => ({
-  argon2i(pw, st) {
+  hashPassword(pw) {
     expect(typeof pw).toEqual('string');
-    if (st) {
-      expect(typeof st).toEqual('string');
-      return { hash: pw + st, salt: st };
-    }
-    return { hash: `${pw}xx`, salt: 'xx' };
+    return { hash: `${pw}xx` };
+  },
+  verifyPassword(pw, hs) {
+    expect(typeof pw).toEqual('string');
+    expect(typeof hs).toEqual('string');
+    return { valid: !!hs.startsWith(pw) };
   },
 }));
 
@@ -23,7 +24,6 @@ describe('Mutation', () => {
   const dOrganizer = {
     _id: 'asdfqwer',
     hash: '66666666yy',
-    salt: 'yy',
   };
 
   describe('register', () => {
@@ -80,7 +80,6 @@ describe('Mutation', () => {
       await check.Organizer({
         _id: 'asdfqwer',
         hash: '66666666xx',
-        salt: 'xx',
       });
       done();
     });
@@ -199,7 +198,7 @@ describe('Mutation', () => {
       await make.Organizer(dOrganizer);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
-      await check.Organizer(dOrganizer, 'hash', '123456789xx', 'salt', 'xx');
+      await check.Organizer(dOrganizer, 'hash', '123456789xx');
       done();
     });
   });
