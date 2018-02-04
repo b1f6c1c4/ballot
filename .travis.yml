@@ -9,6 +9,7 @@ branches:
     - backend
     - cryptor
     - builder
+    - auth
 
 node_js:
   - 8
