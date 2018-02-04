@@ -132,7 +132,7 @@ func main() {
     loggo.RemoveWriter("default")
     loggo.RegisterWriter("default", loggocolor.NewWriter(os.Stdout))
 
-    verbosity := os.Args[1]
+    verbosity := os.Args[2]
     switch verbosity {
     case "fatal":
         log.SetLogLevel(loggo.CRITICAL)
@@ -149,8 +149,10 @@ func main() {
     default:
         log.SetLogLevel(loggo.INFO)
     }
-
     log.Infof("[Main] Verbosity: %s", verbosity)
+
+    channelName := os.Args[1]
+    log.Infof("[Main] Channel name: %s", channelName)
 
     rabbitUser := os.Getenv("RABBIT_USER")
     if rabbitUser == "" {
@@ -165,8 +167,8 @@ func main() {
         rabbitHost = "localhost"
     }
 
-    log.Infof("Rabbit host: %s", rabbitHost)
-    log.Infof("Rabbit user: %s", rabbitUser)
+    log.Infof("[Main] Rabbit host: %s", rabbitHost)
+    log.Infof("[Main] Rabbit user: %s", rabbitUser)
     rabbit := fmt.Sprintf("amqp://%s:%s@%s:5672/", rabbitUser, rabbitPass, rabbitHost)
 
     log.Debugf("[Main] amqp.Dial")
@@ -182,12 +184,12 @@ func main() {
 
     log.Debugf("[Main] ch.QueueDeclare")
     q, err := ch.QueueDeclare(
-        "auth", // name
-        true,  // durable
-        false,  // delete when unused
-        false,  // exclusive
-        false,  // no-wait
-        nil,    // arguments
+        channelName, // name
+        true,        // durable
+        false,       // delete when unused
+        false,       // exclusive
+        false,       // no-wait
+        nil,         // arguments
     )
     failOnError(err, "Failed to declare a queue")
 
