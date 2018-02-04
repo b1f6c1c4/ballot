@@ -3,16 +3,21 @@ package main
 import (
     "os"
     "fmt"
-    "log"
     "encoding/json"
     "github.com/streadway/amqp"
     "gopkg.in/guregu/null.v3"
     "golang.org/x/crypto/bcrypt"
+    "github.com/juju/ansiterm"
+    "github.com/juju/loggo"
+    "github.com/juju/loggo/loggocolor"
 )
+
+var log = loggo.GetLogger("")
 
 func failOnError(err error, msg string) {
     if err != nil {
-        log.Fatalf("%s: %s", msg, err)
+        log.Criticalf("%s: %s", msg, err)
+        panic(fmt.Sprintf("%s: %s", msg, err))
     }
 }
 
@@ -59,15 +64,19 @@ type JsonRpcErr struct {
 }
 
 func ExecuteHash(param PasswordParam) (HashPasswordResult, *JsonRpcError) {
+    log.Tracef("[Auth] ExecuteHash")
+
     bytes, err := bcrypt.GenerateFromPassword([]byte(param.Password), 14)
 
     var a HashPasswordResult
     var e *JsonRpcError
     if err == nil {
+        log.Infof("[Auth] Hash generated")
         a = HashPasswordResult{
             Hash: string(bytes),
         }
     } else {
+        log.Errorf("[Auth] Error during hash: %s", err)
         e = &JsonRpcError{
             Code: -32603,
             Message: "Internal error",
@@ -78,20 +87,25 @@ func ExecuteHash(param PasswordParam) (HashPasswordResult, *JsonRpcError) {
 }
 
 func ExecuteVerify(param PasswordParam) (VerifyPasswordResult, *JsonRpcError) {
+    log.Tracef("[Auth] ExecuteVerify")
+
     hash := param.Hash.ValueOrZero()
     err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(param.Password))
 
     var a VerifyPasswordResult
     var e *JsonRpcError
     if err == nil {
+        log.Infof("[Auth] Password verified")
         a = VerifyPasswordResult{
             Valid: 1,
         }
     } else if err == bcrypt.ErrMismatchedHashAndPassword {
+        log.Infof("[Auth] Password wrong")
         a = VerifyPasswordResult{
             Valid: 0,
         }
     } else {
+        log.Errorf("[Auth] Error during verify: %s", err)
         e = &JsonRpcError{
             Code: -32603,
             Message: "Internal error",
@@ -102,6 +116,42 @@ func ExecuteVerify(param PasswordParam) (VerifyPasswordResult, *JsonRpcError) {
 }
 
 func main() {
+    loggocolor.SeverityColor = map[loggo.Level]*ansiterm.Context{
+        loggo.TRACE:   ansiterm.Foreground(ansiterm.Cyan),
+        loggo.DEBUG:   ansiterm.Foreground(ansiterm.Cyan),
+        loggo.INFO:    ansiterm.Foreground(ansiterm.Green),
+        loggo.WARNING: ansiterm.Foreground(ansiterm.BrightYellow),
+        loggo.ERROR:   ansiterm.Foreground(ansiterm.BrightRed),
+        loggo.CRITICAL: &ansiterm.Context{
+            Foreground: ansiterm.White,
+            Background: ansiterm.Red,
+        },
+    }
+    loggocolor.LocationColor = ansiterm.Foreground(ansiterm.Default)
+
+    loggo.RemoveWriter("default")
+    loggo.RegisterWriter("default", loggocolor.NewWriter(os.Stdout))
+
+    verbosity := os.Args[1]
+    switch verbosity {
+    case "fatal":
+        log.SetLogLevel(loggo.CRITICAL)
+    case "error":
+        log.SetLogLevel(loggo.ERROR)
+    case "warn":
+        log.SetLogLevel(loggo.WARNING)
+    case "info":
+        log.SetLogLevel(loggo.INFO)
+    case "debug":
+        log.SetLogLevel(loggo.DEBUG)
+    case "trace":
+        log.SetLogLevel(loggo.TRACE)
+    default:
+        log.SetLogLevel(loggo.INFO)
+    }
+
+    log.Infof("[Main] Verbosity: %s", verbosity)
+
     rabbitUser := os.Getenv("RABBIT_USER")
     if rabbitUser == "" {
         rabbitUser = "guest"
@@ -114,17 +164,23 @@ func main() {
     if rabbitHost == "" {
         rabbitHost = "localhost"
     }
-    log.Printf("Rabbit host: %s", rabbitHost)
-    log.Printf("Rabbit user: %s", rabbitUser)
+
+    log.Infof("Rabbit host: %s", rabbitHost)
+    log.Infof("Rabbit user: %s", rabbitUser)
     rabbit := fmt.Sprintf("amqp://%s:%s@%s:5672/", rabbitUser, rabbitPass, rabbitHost)
+
+    log.Debugf("[Main] amqp.Dial")
+    log.Tracef("[Main] url: %s", rabbit)
     conn, err := amqp.Dial(rabbit)
     failOnError(err, "Failed to connect to RabbitMQ")
     defer conn.Close()
 
+    log.Debugf("[Main] conn.Channel")
     ch, err := conn.Channel()
     failOnError(err, "Failed to open a channel")
     defer ch.Close()
 
+    log.Debugf("[Main] ch.QueueDeclare")
     q, err := ch.QueueDeclare(
         "auth", // name
         true,  // durable
@@ -135,6 +191,7 @@ func main() {
     )
     failOnError(err, "Failed to declare a queue")
 
+    log.Debugf("[Main] ch.Qos")
     err = ch.Qos(
         1,     // prefetch count
         0,     // prefetch size
@@ -142,6 +199,7 @@ func main() {
     )
     failOnError(err, "Failed to set QoS")
 
+    log.Debugf("[Main] ch.Consume")
     msgs, err := ch.Consume(
         q.Name, // queue
         "",     // consumer
@@ -155,12 +213,14 @@ func main() {
 
     forever := make(chan bool)
 
+    log.Tracef("[Main] go func")
     go func() {
+        log.Infof("[Main] Listening auth")
         for d := range msgs {
-            log.Printf("[Rpc] Message from %s", d.ReplyTo)
+            log.Infof("[Rpc] Message from %s", d.ReplyTo)
 
             if d.ReplyTo == "" {
-                log.Printf("[Rpc] Rejecting")
+                log.Warningf("[Rpc] Rejecting")
                 d.Reject(false)
                 continue
             }
@@ -169,6 +229,7 @@ func main() {
             var res JsonRpcResponse
             err = json.Unmarshal(d.Body, &m)
             if err != nil {
+                log.Warningf("[Rpc] Json parse error: %s", err)
                 res = JsonRpcErr{
                     JsonRpc: "2.0",
                     Error: JsonRpcError{
@@ -178,6 +239,7 @@ func main() {
                     Id: null.Int{},
                 }
             } else if m.JsonRpc != "2.0" {
+                log.Warningf("[Rpc] Json rpc version incorrect")
                 res = JsonRpcErr{
                     JsonRpc: "2.0",
                     Error: JsonRpcError{
@@ -187,6 +249,7 @@ func main() {
                     Id: m.Id,
                 }
             } else if m.Method == "hashPassword" {
+                log.Debugf("[Rpc] Method called: %s", m.Method)
                 r, err := ExecuteHash(m.Param)
                 if err == nil {
                     res = JsonRpcRes{
@@ -202,6 +265,7 @@ func main() {
                     }
                 }
             } else if m.Method == "verifyPassword" {
+                log.Debugf("[Rpc] Method called: %s", m.Method)
                 r, err := ExecuteVerify(m.Param)
                 if err == nil {
                     res = JsonRpcRes{
@@ -217,6 +281,7 @@ func main() {
                     }
                 }
             } else {
+                log.Errorf("[Rpc] Method not found: %s", m.Method)
                 res = JsonRpcErr{
                     JsonRpc: "2.0",
                     Error: JsonRpcError{
@@ -229,11 +294,11 @@ func main() {
 
             str, err := json.Marshal(res)
             if err != nil {
-                log.Printf("[Rpc] Error during marshal: %s", err)
+                log.Errorf("[Rpc] Error during marshal: %s", err)
                 str = []byte(`{"jsonrpc":"2.0","error":{"code":-32603,"message":"Internal error"},"id":null}`)
             }
 
-            log.Printf("[Rpc] Response: %s", str)
+            log.Debugf("[Rpc] Response: %s", str)
 
             err = ch.Publish(
                 "",        // exchange
@@ -246,13 +311,12 @@ func main() {
                 },
             )
             if err != nil {
-                log.Printf("[Rpc] Error during reply: %s", err)
+                log.Errorf("[Rpc] Error during reply: %s", err)
             }
 
             d.Ack(false)
         }
     }()
 
-    log.Printf("[Main] Listening auth")
     <-forever
 }
