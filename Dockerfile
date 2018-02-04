@@ -1,5 +1,6 @@
 FROM golang:latest
 WORKDIR /go/src/github.com/b1f6c1c4/ballot/auth/
+RUN go get -d -v github.com/streadway/amqp
 COPY *.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth .
 
