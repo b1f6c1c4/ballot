@@ -1,4 +1,4 @@
-version: "3"
+version: "2.3"
 services:
 
   nginx-proxy:
@@ -9,8 +9,6 @@ services:
      - "443:443"
      - "8888:80"
      - "4343:443"
-    networks:
-      - prod
     environment:
       SSL_POLICY: AWS-TLS-1-2-2017-01
       HTTPS_METHOD: redirect
@@ -18,6 +16,8 @@ services:
      - /root/ballot:/etc/nginx/certs
      - /root/ballot/dhparam.pem:/etc/nginx/dhparam/dhparam.pem
      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - prod
 
   backend:
     image: b1f6c1c4/ballot-backend
@@ -38,11 +38,13 @@ services:
         }
     ports:
       - 3001:3000
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     networks:
       - prod
-    depends_on:
-      - rabbit
-      - mongo
     links:
       - rabbit
       - mongo
@@ -55,10 +57,11 @@ services:
       RABBIT_HOST: rabbit
       RABBIT_USER: guest
       RABBIT_PASS: guest
+    depends_on:
+      rabbit:
+        condition: service_healthy
     networks:
       - prod
-    depends_on:
-      - rabbit
     links:
       - rabbit
 
@@ -70,10 +73,11 @@ services:
       RABBIT_HOST: rabbit
       RABBIT_USER: guest
       RABBIT_PASS: guest
+    depends_on:
+      rabbit:
+        condition: service_healthy
     networks:
       - prod
-    depends_on:
-      - rabbit
     links:
       - rabbit
 
@@ -82,14 +86,26 @@ services:
     restart: always
     volumes:
       - /data/ballot/mongo:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'db.stats().ok' | mongo localhost:27017/ballot --quiet"]
+      interval: 60s
+      timeout: 10s
+      retries: 2
     networks:
       - prod
 
   rabbit:
-    image: rabbitmq:alpine
+    image: rabbitmq:management-alpine
     restart: always
+    ports:
+      - "15672:15672"
     volumes:
       - /data/ballot/rabbit:/var/lib/rabbitmq/mnesia
+    healthcheck:
+      test: ["CMD", "wget", "-O-", "http://localhost:15672"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
     networks:
       - prod
 
