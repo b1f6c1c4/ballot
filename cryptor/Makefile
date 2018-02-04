@@ -1,8 +1,8 @@
 CXX=g++
-TARGETS=main rpc ring ringImpl argon argonImpl
+TARGETS=main rpc ring ringImpl
 DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=-lboost_program_options -lrabbitmq -lSimpleAmqpClient -lcryptopp
-LIBSP=$(LIBS) -largon2
+LIBSP=$(LIBS)
 LIBST=$(LIBS)
 CFLAGS=-std=c++17 -Wall -pthread -DVERSION=\"$$(git describe --always)\" -DCOMMITHASH=\"$$(git rev-parse HEAD)\"
 CFLAGSP=$(CFLAGS) -O3

@@ -1,7 +1,6 @@
 #include "main.h"
 #include <iostream>
 #include "rpc.h"
-#include "argon.h"
 #include "ring.h"
 
 #ifndef IS_TEST
@@ -19,11 +18,6 @@ RpcAnswer Main::handler(const std::string &method, const json &data)
             j["version"] = VERSION;
             j["commitHash"] = COMMITHASH;
             return j;
-        }
-        else if (method == "argon2i")
-        {
-            logger->info("Method {} called", method);
-            return Argon::Inst().argon2i(data);
         }
         else if (method == "newRing")
         {

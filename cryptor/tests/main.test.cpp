@@ -2,7 +2,6 @@
 #include "common.test.h"
 #include "../main.h"
 
-#include "../argon.h"
 #include "../ring.h"
 
 bool g_throwStd;
@@ -33,15 +32,6 @@ void Rpc::runRpc(RpcHandler executer)
 
 // done
 
-json Argon::argon2i(const json &param)
-{
-    mayThrow();
-    return json{
-        { "key", "argon2i" },
-        { "echo", param.at("echo").get<std::string>() },
-    };
-}
-
 json Ring::newRing()
 {
     mayThrow();
@@ -71,7 +61,6 @@ BOOST_AUTO_TEST_SUITE(throws_test);
 
 auto &&listMethods = boost::unit_test::data::make({
     // "status",
-    "argon2i",
     "newRing",
     "genH",
     "verify",
@@ -83,7 +72,7 @@ BOOST_DATA_TEST_CASE(throws_std, listMethods)
     g_throwParam = false;
 
     json j;
-    BOOST_CHECK_THROW(Main::Inst().handler("argon2i", j), std::exception);
+    BOOST_CHECK_THROW(Main::Inst().handler("newRing", j), std::exception);
 }
 
 BOOST_DATA_TEST_CASE(throws_param, listMethods)
@@ -92,7 +81,7 @@ BOOST_DATA_TEST_CASE(throws_param, listMethods)
     g_throwParam = true;
 
     json j;
-    auto &&res = Main::Inst().handler("argon2i", j);
+    auto &&res = Main::Inst().handler("newRing", j);
     BOOST_TEST(res.code == -32602);
 }
 
@@ -108,19 +97,6 @@ BOOST_AUTO_TEST_CASE(status_test)
     BOOST_TEST(res.code == 0);
     BOOST_TEST(res.data["version"] == VERSION);
     BOOST_TEST(res.data["commitHash"] == COMMITHASH);
-}
-
-BOOST_AUTO_TEST_CASE(argon2i_test)
-{
-    g_throwStd = false;
-    g_throwParam = false;
-
-    json j;
-    j["echo"] = "val";
-    auto &&res = Main::Inst().handler("argon2i", j);
-    BOOST_TEST(res.code == 0);
-    BOOST_TEST(res.data["key"] == "argon2i");
-    BOOST_TEST(res.data["echo"] == "val");
 }
 
 BOOST_AUTO_TEST_CASE(newRing_test)
