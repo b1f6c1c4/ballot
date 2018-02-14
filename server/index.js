@@ -31,9 +31,6 @@ process.on('SIGTERM', () => {
   logger.fatalDie('SIGTERM received');
 });
 
-const isDev = process.env.NODE_ENV !== 'production';
-// eslint-disable-next-line import/newline-after-import
-const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false;
 const app = express();
 
 app.set('trust proxy', true);
@@ -71,19 +68,7 @@ function runApp() {
     // Add websocket
     const ws = makeServer(server);
 
-    // Connect to ngrok in dev mode
-    if (ngrok) {
-      ngrok.connect(port, (innerErr, url) => {
-        if (innerErr) {
-          logger.fatalDie(innerErr);
-          return;
-        }
-
-        appStarted(port, prettyHost, url);
-      });
-    } else {
-      appStarted(port, prettyHost);
-    }
+    appStarted(port, prettyHost);
 
     return ws;
   });
