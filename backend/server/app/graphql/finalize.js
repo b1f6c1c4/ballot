@@ -2,6 +2,7 @@ const _ = require('lodash');
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { genH } = require('../cryptor');
+const { updateBallotStatus } = require('../publish');
 const logger = require('../../logger')('graphql/finalize');
 
 module.exports = {
@@ -37,6 +38,7 @@ module.exports = {
           doc.status = 'preVoting';
           await doc.save();
           logger.info('Fields finalized', bId);
+          await updateBallotStatus(doc);
           return true;
         } catch (e) {
           logger.error('Finalize fields', e);
@@ -79,6 +81,7 @@ module.exports = {
           doc.status = 'invited';
           await doc.save();
           logger.info('Voters finalized', bId);
+          await updateBallotStatus(doc);
           return true;
         } catch (e) {
           logger.error('Finalize voters', e);
@@ -116,6 +119,7 @@ module.exports = {
           doc.status = 'voting';
           await doc.save();
           logger.info('PreVoting finalized', bId);
+          await updateBallotStatus(doc);
           return true;
         } catch (e) {
           logger.error('Finalize pre voting', e);
@@ -153,6 +157,7 @@ module.exports = {
           doc.status = 'finished';
           await doc.save();
           logger.info('Voting finalized', bId);
+          await updateBallotStatus(doc);
           return true;
         } catch (e) {
           logger.error('Finalize voting', e);

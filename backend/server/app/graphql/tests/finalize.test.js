@@ -9,6 +9,20 @@ jest.doMock('../../cryptor', () => ({
   },
 }));
 
+let updateBallotStatusCalled = false;
+
+jest.doMock('../../publish', () => ({
+  async updateBallotStatus(doc) {
+    expect(doc).toBeInstanceOf(models.Ballot);
+    expect(doc._id).toEqual('123');
+    updateBallotStatusCalled = true;
+  },
+}));
+
+beforeEach(() => {
+  updateBallotStatusCalled = false;
+});
+
 // eslint-disable-next-line global-require
 const { resolvers } = require('../finalize');
 
@@ -75,6 +89,7 @@ describe('Mutation', () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
+      expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'preVoting');
       done();
     });
@@ -129,10 +144,12 @@ describe('Mutation', () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
+      expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'invited', 'crypto.h', 'hhh');
       done();
     });
   });
+
   describe('finalizePreVoting', () => {
     const func = resolvers.Mutation.finalizePreVoting;
     const dArgs = [
@@ -182,10 +199,12 @@ describe('Mutation', () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
+      expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'voting');
       done();
     });
   });
+
   describe('finalizeVoting', () => {
     const func = resolvers.Mutation.finalizeVoting;
     const dArgs = [
@@ -235,6 +254,7 @@ describe('Mutation', () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
+      expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'finished');
       done();
     });

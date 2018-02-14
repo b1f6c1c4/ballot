@@ -5,6 +5,7 @@ let connection;
 let npName;
 let npCallId = 0;
 let pMessage;
+let sExchange;
 const npCallFulfills = new Map();
 
 function cbP(msg) {
@@ -69,6 +70,7 @@ function cbNP(msg) {
       logger.warn('Reply ID non-exist', reply);
       return;
     }
+    npCallFulfills.delete(reply);
     logger.trace('Get reply ID done', reply);
     const { resolve, reject } = fulfill;
     if (data.error) {
@@ -93,11 +95,11 @@ const makeQueueP = () => new Promise((resolve) => {
     noDeclare: false,
     closeChannelOnUnsubscribe: false,
   }, (q) => {
-    logger.debug('AMQP q.bind...');
+    logger.debug('P q.bind...');
     q.bind('#');
-    logger.debug('AMQP q.subscribe...');
+    logger.debug('P q.subscribe...');
     q.subscribe(cbP);
-    logger.info(`AMQP queue ${q.name} ready`);
+    logger.info(`P queue ${q.name} ready`);
     resolve();
   });
 });
@@ -111,11 +113,24 @@ const makeQueueNP = () => new Promise((resolve) => {
     closeChannelOnUnsubscribe: true,
   }, (q) => {
     npName = q.name;
-    logger.debug('AMQP q.bind...');
+    logger.debug('NP q.bind...');
     q.bind('#');
-    logger.debug('AMQP q.subscribe...');
+    logger.debug('NP q.subscribe...');
     q.subscribe(cbNP);
-    logger.info(`AMQP queue ${q.name} ready`);
+    logger.info(`NP queue ${q.name} ready`);
+    resolve();
+  });
+});
+
+const makeExchangeS = () => new Promise((resolve) => {
+  connection.exchange('topic_subscription', {
+    type: 'topic',
+    durable: true,
+    autoDelete: false,
+    noDeclare: false,
+  }, (ex) => {
+    logger.debug('S exchange created');
+    sExchange = ex;
     resolve();
   });
 });
@@ -144,8 +159,12 @@ const connect = () => new Promise((resolve, reject) => {
   connection.on('ready', () => {
     logger.info('AMQP connection ready');
 
-    Promise.all([makeQueueP(), makeQueueNP()])
-      .then(resolve)
+    makeExchangeS()
+      .then(() => {
+        Promise.all([makeQueueP(), makeQueueNP()])
+          .then(resolve)
+          .catch(reject);
+      })
       .catch(reject);
   });
 });
@@ -171,7 +190,7 @@ const resolveQueue = (method) => {
   return queues[method];
 };
 
-const publish = (method, param, options) => new Promise((resolve, reject) => {
+const publish = (method, param, options) => new Promise((resolve) => {
   const opt = Object.assign({
     reply: {},
   }, options);
@@ -189,15 +208,8 @@ const publish = (method, param, options) => new Promise((resolve, reject) => {
     contentType: 'application/json',
     deliveryMode: 2,
     replyTo: 'backend',
-  }, (e) => {
-    if (e) {
-      logger.error(e);
-      reject(e);
-      return;
-    }
-
-    npCallFulfills.set(body.id, { resolve, reject });
   });
+  resolve();
 });
 
 const call = (method, param) => new Promise((resolve, reject) => {
@@ -214,7 +226,7 @@ const call = (method, param) => new Promise((resolve, reject) => {
   npCallFulfills.set(body.id, { resolve, reject });
   const qu = resolveQueue(method);
   logger.trace('Method', method);
-  logger.debug('Publish to', qu);
+  logger.debug('Publish (call) to', qu);
   connection.publish(qu, JSON.stringify(body), {
     mandatory: true,
     contentType: 'application/json',
@@ -223,9 +235,49 @@ const call = (method, param) => new Promise((resolve, reject) => {
   });
 });
 
+const sPublish = (ex, body) => new Promise((resolve) => {
+  logger.trace('Publish (S) to', ex);
+  logger.trace('Body', body);
+  sExchange.publish(ex, body);
+  resolve();
+});
+
+const subscribe = (key, cb) => new Promise((resolve) => {
+  connection.queue('', {
+    durable: false,
+    exclusive: true,
+    autoDelete: true,
+    noDeclare: false,
+    closeChannelOnUnsubscribe: true,
+  }, (q) => {
+    logger.debug('S q.bind...', key);
+    q.bind(sExchange, key);
+    logger.debug('S q.subscribe...');
+    q.subscribe({
+      routingKeyInPayload: true,
+    }, (msg) => {
+      logger.debug('Message from S', key);
+      try {
+        const data = msg.data.toString('utf8');
+        cb(msg._routingKey, data);
+      } catch (e) {
+        logger.error('Error from S handler', e);
+      }
+    });
+    logger.info(`S queue ${q.name} ready`, key);
+    resolve(() => {
+      logger.debug(`Destroy queue ${q.name}`, key);
+      q.destroy();
+      logger.info(`S queue ${q.name} destroyed`, key);
+    });
+  });
+});
+
 module.exports = {
   connect,
   publish,
   call,
+  sPublish,
+  subscribe,
   onPMessage(cb) { pMessage = cb; },
 };

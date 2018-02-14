@@ -4,7 +4,7 @@ const errors = require('../error');
 jest.doMock('../../cryptor', () => ({
   bIdGen: () => 'bbb',
   iCodeGen: () => 'icc',
-  newRing(doc) {
+  async newRing(doc) {
     expect(doc).toBeInstanceOf(models.Ballot);
     expect(doc._id).toEqual('bbb');
   },
@@ -13,6 +13,20 @@ jest.doMock('../../cryptor', () => ({
 jest.mock('../../auth', () => ({
   issue: (payload) => payload,
 }));
+
+let updateBallotStatusCalled = false;
+
+jest.doMock('../../publish', () => ({
+  async updateBallotStatus(doc) {
+    expect(doc).toBeInstanceOf(models.Ballot);
+    expect(doc._id).toEqual('bbb');
+    updateBallotStatusCalled = true;
+  },
+}));
+
+beforeEach(() => {
+  updateBallotStatusCalled = false;
+});
 
 // eslint-disable-next-line global-require
 const { resolvers } = require('../ballot');
@@ -69,6 +83,7 @@ describe('Mutation', () => {
     it('should save if good', async (done) => {
       const res = await func(...dArgs);
       expect(res).toEqual(targ);
+      expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(targ);
       done();
     });

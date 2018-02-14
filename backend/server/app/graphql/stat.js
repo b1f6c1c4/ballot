@@ -1,0 +1,82 @@
+const { SignedTicket } = require('../../models/signedTickets');
+const { project } = require('./projection');
+const logger = require('../../logger')('graphql/stat');
+
+module.exports = {
+  resolvers: {
+    Query: {
+      async countTickets(parent, args, context) {
+        logger.debug('Query.countTickets', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        const { bId } = args.input;
+
+        try {
+          const res = await SignedTicket.count({ 'payload.bId': bId });
+          return res;
+        } catch (e) {
+          logger.error('Query countTickets', e);
+          return e;
+        }
+      },
+
+      async tickets(parent, args, context, info) {
+        logger.debug('Query.tickets', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        const { bId } = args.input;
+
+        try {
+          const proj = project(info);
+          logger.debug('Project', proj);
+
+          const docs = await SignedTicket.find({ 'payload.bId': bId }, proj);
+          const objs = docs.map((d) => d.toObject());
+          return objs;
+        } catch (e) {
+          logger.error('Query tickets', e);
+          return e;
+        }
+      },
+
+      async fieldStat(parent, args, context) {
+        logger.debug('Query.fieldStat', args);
+        logger.trace('parent', parent);
+        logger.trace('context', context);
+
+        const { bId, index } = args.input;
+
+        try {
+          const ress = await SignedTicket.aggregate([
+            { $match: { 'payload.bId': bId } },
+            {
+              $project: {
+                _id: false,
+                answer: { $arrayElemAt: ['$payload.result', index] },
+              },
+            },
+            {
+              $group: {
+                _id: '$answer',
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $sort: { count: -1 },
+            },
+          ]);
+          return ress;
+        } catch (e) {
+          logger.error('Query tickets', e);
+          return e;
+        }
+      },
+    },
+
+    FieldStat: {
+      answer: (parent) => parent._id,
+    },
+  },
+};

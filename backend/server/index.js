@@ -1,7 +1,9 @@
+const { createServer } = require('http');
 const express = require('express');
 const argv = require('minimist')(process.argv.slice(2));
 const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
+const { makeServer } = require('./app/graphql');
 const rpc = require('./rpc');
 const mongo = require('./mongo');
 const logger = require('./logger')('index');
@@ -29,24 +31,23 @@ process.on('SIGTERM', () => {
   logger.fatalDie('SIGTERM received');
 });
 
-const isDev = process.env.NODE_ENV !== 'production';
-// eslint-disable-next-line import/newline-after-import
-const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false;
 const app = express();
 
 app.set('trust proxy', true);
 app.use('/api', api);
-if (process.env.NODE_ENV !== 'production') {
-  app.get('/graphql', graphiqlExpress({
-    endpointURL: '/api/graphql',
-  }));
-}
 
 // get the intended host and port number, use localhost and port 3000 if not provided
 const customHost = argv.host || process.env.HOST;
 const host = customHost || null; // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost';
 const port = parseInt(argv.port || process.env.PORT || '3000', 10);
+
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/graphql', graphiqlExpress({
+    endpointURL: '/api/graphql',
+    subscriptionsEndpoint: `ws://${prettyHost}:${port}/api/subscriptions`,
+  }));
+}
 
 function appStarted(p, h, t) {
   logger.info(`Server started ${h}:${p}`);
@@ -56,25 +57,20 @@ function appStarted(p, h, t) {
 }
 
 function runApp() {
-  app.listen(port, host, (err) => {
+  logger.debug('http.createServer ...');
+  const server = createServer(app);
+  server.listen(port, host, (err) => {
     if (err) {
       logger.fatalDie(err);
-      return;
+      return undefined;
     }
 
-    // Connect to ngrok in dev mode
-    if (ngrok) {
-      ngrok.connect(port, (innerErr, url) => {
-        if (innerErr) {
-          logger.fatalDie(innerErr);
-          return;
-        }
+    // Add websocket
+    const ws = makeServer(server);
 
-        appStarted(port, prettyHost, url);
-      });
-    } else {
-      appStarted(port, prettyHost);
-    }
+    appStarted(port, prettyHost);
+
+    return ws;
   });
 }
 

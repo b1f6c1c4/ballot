@@ -1,4 +1,5 @@
 const { Ballot } = require('../models/ballots');
+const { updateBallotStatus } = require('./publish');
 const logger = require('../logger')('newRing');
 
 const newRing = async (res, con) => {
@@ -18,6 +19,12 @@ const newRing = async (res, con) => {
       upsert: false,
     });
     logger.info('Crypto param created', _id);
+    const doc = await Ballot.findById(_id, {
+      _id: 1,
+      owner: 1,
+      status: 1,
+    });
+    await updateBallotStatus(doc);
   } catch (e) {
     logger.error('Finalize newRing', e);
   }
