@@ -3,6 +3,7 @@ const { PubSub } = require('graphql-subscriptions');
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { subscribe: rpcSubscribe } = require('../../rpc');
+const { core } = require('../auth');
 const logger = require('../../logger')('graphql/subscription');
 
 const pubsub = new PubSub();
@@ -94,6 +95,11 @@ module.exports = {
     if (!ws.registry) {
       logger.debug('Assign registry to websocket');
       _.set(ws, 'registry', new Map());
+    }
+    const cred = _.get(params, 'variables.authorization');
+    if (cred) {
+      _.unset(params, 'variables.authorization');
+      _.set(params, 'context.auth', core(cred));
     }
     _.set(params, 'context.registry', ws.registry);
     _.set(params, 'context.opId', opId);

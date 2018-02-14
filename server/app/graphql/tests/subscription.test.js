@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { models, make, mer } = require('../../../tests/util');
 const errors = require('../error');
 
@@ -5,6 +6,10 @@ const rpcMock = {
   subscribe: jest.fn(),
 };
 jest.doMock('../../../rpc', () => rpcMock);
+
+jest.mock('../../auth.js', () => ({
+  core: (cred) => cred,
+}));
 
 // eslint-disable-next-line global-require
 const {
@@ -172,6 +177,16 @@ describe('onOperation', () => {
     expect(ws.registry).toBe(reg);
     expect(res.context.registry).toBe(ws.registry);
     expect(res.context.opId).toEqual('233');
+  });
+
+  it('should setup auth context', () => {
+    const ws = {};
+    const params = {
+      variables: { authorization: 'auth' },
+    };
+    const res = onOperation({ id: '233' }, params, ws);
+    expect(_.get(res, 'context.variables.authorization')).toBeUndefined();
+    expect(res.context.auth).toEqual('auth');
   });
 });
 

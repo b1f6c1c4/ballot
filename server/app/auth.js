@@ -18,6 +18,29 @@ const verifyOptions = {
 
 const secret = process.env.JWT_SECRET || 's3cReT';
 
+const core = (auth) => {
+  try {
+    logger.trace('Auth', auth);
+    if (!auth) {
+      return null;
+    }
+
+    const match = auth.match(/^(?:bearer|JWT) ([a-zA-Z0-9+/=]+\.[a-zA-Z0-9+/=]+\.[-_a-zA-Z0-9+/=]+)$/i);
+    if (!match) {
+      logger.debug('Malformed auth', auth);
+      return { error: 'hhmf' };
+    }
+
+    logger.trace('Verifing JWT...', match[1]);
+    const decoded = jwt.verify(match[1], secret, verifyOptions);
+    logger.info('JWT verified', decoded);
+    return decoded;
+  } catch (err) {
+    logger.debug('Verifing JWT error', err);
+    return { error: err };
+  }
+};
+
 class TryJWTStrategy extends Strategy {
   constructor() {
     super();
@@ -27,47 +50,16 @@ class TryJWTStrategy extends Strategy {
   }
 
   authenticate(req) {
-    try {
-      const auth = req.headers.authorization;
-      logger.trace('Auth', auth);
-      if (!auth) {
-        this.success(null);
-        return;
-      }
-
-      const match = auth.match(/^(?:bearer|JWT) ([a-zA-Z0-9+/=]+\.[a-zA-Z0-9+/=]+\.[-_a-zA-Z0-9+/=]+)$/i);
-      if (!match) {
-        logger.debug('Malformed auth', auth);
-        this.success({
-          error: 'hhmf',
-        });
-        return;
-      }
-
-      logger.trace('Verifing JWT...', match[1]);
-      jwt.verify(match[1], secret, verifyOptions, (err, decoded) => {
-        if (err) {
-          logger.debug('Verifing JWT error', err);
-          this.success({
-            error: err,
-          });
-        } else {
-          logger.info('JWT verified', decoded);
-          this.success(decoded);
-        }
-      });
-    } catch (err) {
-      /* istanbul ignore next */
-      logger.error('Auth', err);
-      /* istanbul ignore next */
-      this.error(err);
-    }
+    const cred = req.headers.authorization;
+    const auth = core(cred);
+    this.success(auth);
   }
 }
 
 passport.use(new TryJWTStrategy());
 
 module.exports = {
+  core,
   TryJWTStrategy,
   issue: (payload) => jwt.sign(payload, secret, signOptions),
   auth: passport.authenticate('try-jwt', { session: false }),
