@@ -265,10 +265,12 @@ const subscribe = (key, cb) => new Promise((resolve) => {
     logger.debug('S q.bind...', key);
     q.bind(sExchange, key);
     logger.debug('S q.subscribe...');
-    q.subscribe((msg) => {
+    q.subscribe({
+      routingKeyInPayload: true,
+    }, (msg) => {
       logger.debug('Message from S', key);
-      logger.warn('SHIT', msg);
-      cb(msg);
+      const data = msg.data.toString('utf8');
+      cb(msg._routingKey, data);
     });
     logger.info(`S queue ${q.name} ready`, key);
     resolve(() => {

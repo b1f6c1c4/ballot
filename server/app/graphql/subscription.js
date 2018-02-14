@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const errors = require('./error');
-const { PubSub, withFilter } = require('graphql-subscriptions');
+const { PubSub } = require('graphql-subscriptions');
 const logger = require('../../logger')('graphql/subscription');
 const rpc = require('../../rpc');
 
@@ -39,23 +39,50 @@ const unlock = (k) => {
   subsLib.delete(k);
 };
 
+const makeBallotSt = (key, data) => {
+  const [, owner, bId] = key.split('.');
+  return {
+    bId,
+    owner,
+    status: data,
+  };
+};
+
 const subscribeBallotStatus = async (bId) => {
   const k = `status.*.${bId}`;
-  await lock(k, (res) => {
-    logger.debug('Pubsub.publish', res);
+  await lock(k, (key, res) => {
+    logger.trace('Status data', res);
+    const bSt = makeBallotSt(key, res);
+    logger.debug('PubSub.publish', bSt);
+    const pk = `ballotStatus.${bId}`;
+    logger.debug('To', pk);
+    pubsub.publish(pk, { ballotStatus: bSt });
   });
   return () => unlock(k);
 };
 
 const subscribeBallotsStatus = async (owner) => {
   const k = `status.${owner}.*`;
-  await lock(k, (res) => {
-    logger.debug('Pubsub.publish', res);
+  await lock(k, (key, res) => {
+    logger.trace('Status data', res);
+    const bSt = makeBallotSt(key, res);
+    logger.debug('PubSub.publish', bSt);
+    const pk = `ballotsStatus.${owner}`;
+    logger.debug('To', pk);
+    pubsub.publish(pk, { ballotsStatus: bSt });
   });
   return () => unlock(k);
 };
 
 module.exports = {
+  subsLib,
+  pubsub,
+  lock,
+  unlock,
+  makeBallotSt,
+  subscribeBallotStatus,
+  subscribeBallotsStatus,
+
   async updateBallotStatus(ballot) {
     const { owner, bId, status } = ballot;
     await rpc.rawPublish(`status.${owner}.${bId}`, status);
@@ -90,7 +117,7 @@ module.exports = {
   resolvers: {
     Subscription: {
       ballotStatus: {
-        subscribe: async (parent, args, context, info) => {
+        subscribe: async (parent, args, context) => {
           logger.debug('Subscription.ballotStatus.subscribe', args);
           logger.trace('parent', parent);
           logger.trace('context', context);
@@ -101,15 +128,7 @@ module.exports = {
             const cb = await subscribeBallotStatus(bId);
             context.registry.set(context.opId, cb);
 
-            return withFilter(
-              () => pubsub.asyncIterator(`ballotStatus.${bId}`),
-              (p) => {
-                if (p && p.ballotStatus) {
-                  return p.ballotStatus.bId === bId;
-                }
-                return true;
-              },
-            )(parent, args, context, info);
+            return pubsub.asyncIterator(`ballotStatus.${bId}`);
           } catch (e) {
             logger.error('Subscribe ballotStatus', e);
             throw e;
@@ -117,7 +136,7 @@ module.exports = {
         },
       },
       ballotsStatus: {
-        subscribe: async (parent, args, context, info) => {
+        subscribe: async (parent, args, context) => {
           logger.debug('Subscription.ballotsStatus.subscribe', args);
           logger.trace('parent', parent);
           logger.trace('context', context);
@@ -132,15 +151,7 @@ module.exports = {
             const cb = await subscribeBallotsStatus(username);
             context.registry.set(context.opId, cb);
 
-            return withFilter(
-              () => pubsub.asyncIterator(`ballotsStatus.${username}`),
-              (p) => {
-                if (p && p.ballotStatus) {
-                  return p.ballotStatus.owner === username;
-                }
-                return true;
-              },
-            )(parent, args, context, info);
+            return pubsub.asyncIterator(`ballotsStatus.${username}`);
           } catch (e) {
             logger.error('Subscribe ballotsStatus', e);
             throw e;
