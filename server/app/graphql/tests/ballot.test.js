@@ -4,7 +4,7 @@ const errors = require('../error');
 jest.doMock('../../cryptor', () => ({
   bIdGen: () => 'bbb',
   iCodeGen: () => 'icc',
-  newRing(doc) {
+  async newRing(doc) {
     expect(doc).toBeInstanceOf(models.Ballot);
     expect(doc._id).toEqual('bbb');
   },

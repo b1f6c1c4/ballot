@@ -69,6 +69,7 @@ function cbNP(msg) {
       logger.warn('Reply ID non-exist', reply);
       return;
     }
+    npCallFulfills.delete(reply);
     logger.trace('Get reply ID done', reply);
     const { resolve, reject } = fulfill;
     if (data.error) {
@@ -195,8 +196,7 @@ const publish = (method, param, options) => new Promise((resolve, reject) => {
       reject(e);
       return;
     }
-
-    npCallFulfills.set(body.id, { resolve, reject });
+    resolve();
   });
 });
 

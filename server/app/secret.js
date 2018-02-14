@@ -122,7 +122,7 @@ const submitTicket = async (data) => {
     ticket.status = 'submitted';
     await ticket.save();
     logger.debug('Submitted ticket saved', tId);
-    verify(doc, ticket);
+    await verify(doc, ticket);
     logger.info('Ticket submitted', tId);
     return {
       status: 202,

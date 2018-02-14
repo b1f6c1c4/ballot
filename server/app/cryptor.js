@@ -58,9 +58,9 @@ module.exports = {
     });
   },
 
-  newRing(ballot) {
+  async newRing(ballot) {
     const { _id } = ballot;
-    rpc.publish('newRing', undefined, {
+    await rpc.publish('newRing', undefined, {
       reply: {
         method: 'newRing',
         _id,
@@ -78,13 +78,13 @@ module.exports = {
     });
   },
 
-  verify(ballot, submittedTicket) {
+  async verify(ballot, submittedTicket) {
     const { q, g, h } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
     const { _id, ticket } = submittedTicket;
     const { s, c } = ticket;
     const payload = stringify(ticket.payload);
-    rpc.publish('verify', {
+    await rpc.publish('verify', {
       q,
       g,
       h,

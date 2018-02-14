@@ -172,6 +172,7 @@ describe('submitTicket', () => {
   });
 
   it('should create if good', async (done) => {
+    verify.mockImplementationOnce(async () => undefined);
     await make.Ballot(dBallot);
     const res = await func(dArg);
     expect(res.status).toEqual(202);
