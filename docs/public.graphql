@@ -173,6 +173,14 @@ type Mutation {
   finalizeVoting(input: FinalizeVotingInput!): Boolean
 }
 
+type Subscription {
+
+  ballotStatus(input: BallotInput!): BallotSt
+
+  # Authentication is required
+  ballotsStatus: BallotSt
+}
+
 # Inputs
 
 input BallotInput {
@@ -255,6 +263,11 @@ input FinalizeVotingInput {
 type Status {
   version: String
   commitHash: String
+}
+
+type BallotSt {
+  bId: ID!
+  status: BallotStatus!
 }
 
 type Ballot {
