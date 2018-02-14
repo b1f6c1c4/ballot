@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { PubSub } = require('graphql-subscriptions');
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
-const rpc = require('../../rpc');
+const { subscribe: rpcSubscribe } = require('../../rpc');
 const logger = require('../../logger')('graphql/subscription');
 
 const pubsub = new PubSub();
@@ -17,7 +17,7 @@ const lock = async (k, cb) => {
     return;
   }
   logger.debug('Subs cache miss', k);
-  const diss = await rpc.subscribe(k, cb);
+  const diss = await rpcSubscribe(k, cb);
   subsLib.set(k, {
     num: 1,
     diss,
@@ -41,7 +41,11 @@ const unlock = (k) => {
 };
 
 const makeBallotSt = (key, data) => {
-  const [, owner, bId] = key.split('.');
+  const [status, owner, bId] = key.split('.');
+  if (status !== 'status') {
+    logger.error('Invalid routing key', key);
+    throw new Error('Invalid routing key');
+  }
   return {
     bId,
     owner,
@@ -83,11 +87,6 @@ module.exports = {
   makeBallotSt,
   subscribeBallotStatus,
   subscribeBallotsStatus,
-
-  async updateBallotStatus(ballot) {
-    const { owner, bId, status } = ballot;
-    await rpc.rawPublish(`status.${owner}.${bId}`, status);
-  },
 
   onOperation(message, params, ws) {
     const opId = message.id;

@@ -122,7 +122,7 @@ const makeQueueNP = () => new Promise((resolve) => {
   });
 });
 
-const makeQueueS = () => new Promise((resolve) => {
+const makeExchangeS = () => new Promise((resolve) => {
   connection.exchange('topic_subscription', {
     type: 'topic',
     durable: true,
@@ -159,8 +159,12 @@ const connect = () => new Promise((resolve, reject) => {
   connection.on('ready', () => {
     logger.info('AMQP connection ready');
 
-    Promise.all([makeQueueP(), makeQueueNP(), makeQueueS()])
-      .then(resolve)
+    makeExchangeS()
+      .then(() => {
+        Promise.all([makeQueueP(), makeQueueNP()])
+          .then(resolve)
+          .catch(reject);
+      })
       .catch(reject);
   });
 });
@@ -186,7 +190,7 @@ const resolveQueue = (method) => {
   return queues[method];
 };
 
-const publish = (method, param, options) => new Promise((resolve, reject) => {
+const publish = (method, param, options) => new Promise((resolve) => {
   const opt = Object.assign({
     reply: {},
   }, options);
@@ -204,15 +208,8 @@ const publish = (method, param, options) => new Promise((resolve, reject) => {
     contentType: 'application/json',
     deliveryMode: 2,
     replyTo: 'backend',
-  }, (e) => {
-    if (e) {
-      logger.error('Publish', e);
-      reject(e);
-      return;
-    }
-
-    resolve();
   });
+  resolve();
 });
 
 const call = (method, param) => new Promise((resolve, reject) => {
@@ -229,7 +226,7 @@ const call = (method, param) => new Promise((resolve, reject) => {
   npCallFulfills.set(body.id, { resolve, reject });
   const qu = resolveQueue(method);
   logger.trace('Method', method);
-  logger.debug('Publish to', qu);
+  logger.debug('Publish (call) to', qu);
   connection.publish(qu, JSON.stringify(body), {
     mandatory: true,
     contentType: 'application/json',
@@ -238,19 +235,11 @@ const call = (method, param) => new Promise((resolve, reject) => {
   });
 });
 
-const rawPublish = (ex, body) => new Promise((resolve, reject) => {
-  logger.debug('Raw Publish to', ex);
-  connection.publish(ex, body, {
-    deliveryMode: 1,
-  }, (e) => {
-    if (e) {
-      logger.error(e);
-      reject(e);
-      return;
-    }
-
-    resolve();
-  });
+const sPublish = (ex, body) => new Promise((resolve) => {
+  logger.trace('Publish (S) to', ex);
+  logger.trace('Body', body);
+  sExchange.publish(ex, body);
+  resolve();
 });
 
 const subscribe = (key, cb) => new Promise((resolve) => {
@@ -261,7 +250,6 @@ const subscribe = (key, cb) => new Promise((resolve) => {
     noDeclare: false,
     closeChannelOnUnsubscribe: true,
   }, (q) => {
-    npName = q.name;
     logger.debug('S q.bind...', key);
     q.bind(sExchange, key);
     logger.debug('S q.subscribe...');
@@ -269,8 +257,12 @@ const subscribe = (key, cb) => new Promise((resolve) => {
       routingKeyInPayload: true,
     }, (msg) => {
       logger.debug('Message from S', key);
-      const data = msg.data.toString('utf8');
-      cb(msg._routingKey, data);
+      try {
+        const data = msg.data.toString('utf8');
+        cb(msg._routingKey, data);
+      } catch (e) {
+        logger.error('Error from S handler', e);
+      }
     });
     logger.info(`S queue ${q.name} ready`, key);
     resolve(() => {
@@ -285,7 +277,7 @@ module.exports = {
   connect,
   publish,
   call,
-  rawPublish,
+  sPublish,
   subscribe,
   onPMessage(cb) { pMessage = cb; },
 };

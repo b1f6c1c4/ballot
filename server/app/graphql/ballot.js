@@ -2,6 +2,7 @@ const _ = require('lodash');
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { bIdGen, iCodeGen, newRing } = require('../cryptor');
+const { updateBallotStatus } = require('../publish');
 const logger = require('../../logger')('graphql/ballot');
 
 module.exports = {
@@ -32,6 +33,7 @@ module.exports = {
           await ballot.save();
           logger.info('Ballot created', ballot._id);
           await newRing(ballot);
+          await updateBallotStatus(ballot);
           const obj = ballot.toObject();
           delete obj.__v;
           delete obj.createdAt;
