@@ -8,7 +8,13 @@ type Query {
   ballot(input: BallotInput!): Ballot
 
   # Authentication is required
-  ballots: [Ballot]
+  ballots: [Ballot!]
+
+  countTickets(input: CountTicketsInput!): Int
+
+  tickets(input: TicketsInput!): [BallotTicket!]
+
+  fieldStat(input: FieldStatInput!): [FieldStat!]
 }
 
 type Mutation {
@@ -187,6 +193,19 @@ input BallotInput {
   bId: ID!
 }
 
+input TicketsInput {
+  bId: ID!
+}
+
+input CountTicketsInput {
+  bId: ID!
+}
+
+input FieldStatInput {
+  bId: ID!
+  index: Int!
+}
+
 input RegisterInput {
   # Must be unique.
   # Must have at least 5 characters.
@@ -333,11 +352,6 @@ type BallotTicket {
 type TicketPayload {
   bId: ID!
   result: [String]!
-}
-
-type TicketStat {
-  count: Int!
-  summary: [[FieldStat!]!]!
 }
 
 type FieldStat {
