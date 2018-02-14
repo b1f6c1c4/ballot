@@ -27,6 +27,7 @@ const thrower = (model) => {
     'findOneAndRemove',
     'findOneAndUpdate',
     'update',
+    'aggregate',
   ];
   verbs1.forEach((verb) => {
     logger.trace('Inject hacker for schema', verb);
@@ -54,7 +55,9 @@ const thrower = (model) => {
       const obj = _.get(toThrow, verb);
       if (obj !== undefined) {
         logger.warn('Hacked by', obj);
-        expect(this.op).toEqual(verb);
+        if (verb !== 'aggregate') {
+          expect(this.op).toEqual(verb);
+        }
       }
       if (obj) {
         next(obj);

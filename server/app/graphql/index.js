@@ -9,6 +9,7 @@ const status = require('../../status');
 
 const projs = require('./projection').resolvers;
 const query = require('./query').resolvers;
+const stat = require('./stat').resolvers;
 const auth = require('./auth').resolvers;
 const ballot = require('./ballot').resolvers;
 const finalize = require('./finalize').resolvers;
@@ -65,6 +66,7 @@ const schema = makeExecutableSchema({
     resolvers,
     projs,
     query,
+    stat,
     auth,
     ballot,
     finalize,
