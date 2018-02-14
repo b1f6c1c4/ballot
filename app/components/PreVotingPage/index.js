@@ -3,6 +3,8 @@ import React from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { TextEncoderLite } from 'text-encoder-lite';
+import base64js from 'base64-js';
 
 import {
   withStyles,
@@ -84,6 +86,11 @@ class PreVotingPage extends React.PureComponent {
     });
   };
 
+  base64Enc = (str) => {
+    const bytes = new (TextEncoder || TextEncoderLite)('utf-8').encode(str);
+    return base64js.fromByteArray(bytes);
+  };
+
   render() {
     const {
       classes,
@@ -105,7 +112,7 @@ class PreVotingPage extends React.PureComponent {
             <div key={f.key}>
               <TextField
                 name={String(i)}
-                disabled={isSignLoading || ticket}
+                disabled={isSignLoading || !!ticket}
                 label={f.prompt}
                 fullWidth
               />
@@ -120,7 +127,7 @@ class PreVotingPage extends React.PureComponent {
                 </InputLabel>
                 <Field
                   name={String(i)}
-                  disabled={isSignLoading || ticket}
+                  disabled={isSignLoading || !!ticket}
                   component={Select}
                   validate={this.validate}
                 >
@@ -173,7 +180,7 @@ class PreVotingPage extends React.PureComponent {
                   name="privateKey"
                   label={messages.pvLabel}
                   helperText={messages.pvHelperText}
-                  disabled={isSignLoading || ticket}
+                  disabled={isSignLoading || !!ticket}
                   fullWidth
                   validate={this.validatePrivateKey}
                 />
@@ -203,7 +210,7 @@ class PreVotingPage extends React.PureComponent {
               )}
               {ticket && (
                 <span className={classes.secret}>
-                  {btoa(JSON.stringify(ticket))}
+                  {this.base64Enc(JSON.stringify(ticket))}
                 </span>
               )}
             </form>
