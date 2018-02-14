@@ -5,6 +5,7 @@ let connection;
 let npName;
 let npCallId = 0;
 let pMessage;
+let sExchange;
 const npCallFulfills = new Map();
 
 function cbP(msg) {
@@ -94,11 +95,11 @@ const makeQueueP = () => new Promise((resolve) => {
     noDeclare: false,
     closeChannelOnUnsubscribe: false,
   }, (q) => {
-    logger.debug('AMQP q.bind...');
+    logger.debug('P q.bind...');
     q.bind('#');
-    logger.debug('AMQP q.subscribe...');
+    logger.debug('P q.subscribe...');
     q.subscribe(cbP);
-    logger.info(`AMQP queue ${q.name} ready`);
+    logger.info(`P queue ${q.name} ready`);
     resolve();
   });
 });
@@ -112,11 +113,24 @@ const makeQueueNP = () => new Promise((resolve) => {
     closeChannelOnUnsubscribe: true,
   }, (q) => {
     npName = q.name;
-    logger.debug('AMQP q.bind...');
+    logger.debug('NP q.bind...');
     q.bind('#');
-    logger.debug('AMQP q.subscribe...');
+    logger.debug('NP q.subscribe...');
     q.subscribe(cbNP);
-    logger.info(`AMQP queue ${q.name} ready`);
+    logger.info(`NP queue ${q.name} ready`);
+    resolve();
+  });
+});
+
+const makeQueueS = () => new Promise((resolve) => {
+  connection.exchange('topic_subscription', {
+    type: 'topic',
+    durable: true,
+    autoDelete: false,
+    noDeclare: false,
+  }, (ex) => {
+    logger.debug('S exchange created');
+    sExchange = ex;
     resolve();
   });
 });
@@ -145,7 +159,7 @@ const connect = () => new Promise((resolve, reject) => {
   connection.on('ready', () => {
     logger.info('AMQP connection ready');
 
-    Promise.all([makeQueueP(), makeQueueNP()])
+    Promise.all([makeQueueP(), makeQueueNP(), makeQueueS()])
       .then(resolve)
       .catch(reject);
   });
@@ -192,10 +206,11 @@ const publish = (method, param, options) => new Promise((resolve, reject) => {
     replyTo: 'backend',
   }, (e) => {
     if (e) {
-      logger.error(e);
+      logger.error('Publish', e);
       reject(e);
       return;
     }
+
     resolve();
   });
 });
@@ -223,9 +238,52 @@ const call = (method, param) => new Promise((resolve, reject) => {
   });
 });
 
+const rawPublish = (ex, body) => new Promise((resolve, reject) => {
+  logger.debug('Raw Publish to', ex);
+  connection.publish(ex, body, {
+    deliveryMode: 1,
+  }, (e) => {
+    if (e) {
+      logger.error(e);
+      reject(e);
+      return;
+    }
+
+    resolve();
+  });
+});
+
+const subscribe = (key, cb) => new Promise((resolve) => {
+  connection.queue('', {
+    durable: false,
+    exclusive: true,
+    autoDelete: true,
+    noDeclare: false,
+    closeChannelOnUnsubscribe: true,
+  }, (q) => {
+    npName = q.name;
+    logger.debug('S q.bind...', key);
+    q.bind(sExchange, key);
+    logger.debug('S q.subscribe...');
+    q.subscribe((msg) => {
+      logger.debug('Message from S', key);
+      logger.warn('SHIT', msg);
+      cb(msg);
+    });
+    logger.info(`S queue ${q.name} ready`, key);
+    resolve(() => {
+      logger.debug(`Destroy queue ${q.name}`, key);
+      q.destroy();
+      logger.info(`S queue ${q.name} destroyed`, key);
+    });
+  });
+});
+
 module.exports = {
   connect,
   publish,
   call,
+  rawPublish,
+  subscribe,
   onPMessage(cb) { pMessage = cb; },
 };

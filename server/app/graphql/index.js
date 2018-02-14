@@ -2,6 +2,8 @@ const _ = require('lodash');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const { makeExecutableSchema } = require('graphql-tools');
+const { execute, subscribe } = require('graphql');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
 const fs = require('fs');
 const status = require('../../status');
 
@@ -11,6 +13,11 @@ const auth = require('./auth').resolvers;
 const ballot = require('./ballot').resolvers;
 const finalize = require('./finalize').resolvers;
 const voter = require('./voter').resolvers;
+const {
+  onOperation,
+  onOperationComplete,
+  resolvers: subscription,
+} = require('./subscription');
 
 /* istanbul ignore next */
 const typeDefs = fs.readFileSync('./docs/public.graphql', 'utf8');
@@ -62,10 +69,21 @@ const schema = makeExecutableSchema({
     ballot,
     finalize,
     voter,
+    subscription,
   ),
 });
 
 module.exports = {
   resolvers,
   schema,
+  makeServer: /* istanbul ignore next */ (server) => new SubscriptionServer({
+    execute,
+    subscribe,
+    schema,
+    onOperation,
+    onOperationComplete,
+  }, {
+    server,
+    path: '/api/subscriptions',
+  }),
 };
