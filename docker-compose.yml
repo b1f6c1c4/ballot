@@ -7,7 +7,7 @@ services:
     ports:
      - "80:80"
      - "443:443"
-     - "8888:80"
+     - "8889:80"
      - "4343:443"
     environment:
       SSL_POLICY: AWS-TLS-1-2-2017-01
