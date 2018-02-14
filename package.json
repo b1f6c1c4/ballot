@@ -104,6 +104,7 @@
       "!app/containers/**/index.js",
       "!app/app.js",
       "!app/index/*.js",
+      "!app/utils/request-core.js",
       "!app/utils/crypto/index.js",
       "!app/utils/crypto/core.worker.js",
       "!app/*/*/Loadable.js",

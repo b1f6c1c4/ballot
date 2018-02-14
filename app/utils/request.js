@@ -11,7 +11,7 @@ export const makeApi = (url, isWs, g = window) => {
   const protocol = _.get(g, 'location.protocol') === 'https:' ? 'wss:' : 'ws:';
 
   if (api.startsWith('//')) {
-    return `${protocol}${api}${url}`;
+    return protocol + api + url;
   }
 
   if (api.startsWith('http:')) {
@@ -22,8 +22,8 @@ export const makeApi = (url, isWs, g = window) => {
     return api.replace(/^https:/, 'wss:') + url;
   }
 
-  const host = _.get(g, 'location.host') || 'localhost';
-  return `ws://${host}${api}${url}`;
+  const host = _.get(g, 'location.host');
+  return `${protocol}//${host}${api}${url}`;
 };
 
 export const postProcess = (raw) => {

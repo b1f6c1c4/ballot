@@ -11,15 +11,15 @@ export function* handleBallotsRequest() {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
 
   try {
-    const obs = yield call(api.subscribe, gql.BallotsStatus, undefined, cred);
-    obs.subscribe({
-      next(data) {
-        console.log(data);
-      },
-      error(err) {
-        console.error(err);
-      },
-    });
+    // const obs = yield call(api.subscribe, gql.BallotsStatus, undefined, cred);
+    // obs.subscribe({
+    //   next(data) {
+    //     console.log(data);
+    //   },
+    //   error(err) {
+    //     console.error(err);
+    //   },
+    // });
     const result = yield call(api.query, gql.Ballots, undefined, cred);
     yield put(globalContainerActions.ballotsSuccess(result));
   } catch (err) {

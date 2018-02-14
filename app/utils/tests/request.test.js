@@ -5,17 +5,70 @@ import {
   makeContext,
   query,
   mutate,
+  subscribe,
 } from '../request';
 
 describe('makeApi', () => {
-  it('should return default', () => {
-    process.env.API_URL = '';
-    expect(makeApi('val')).toBe('/apival');
+  describe('http', () => {
+    it('should return default', () => {
+      process.env.API_URL = '';
+      expect(makeApi('val')).toBe('/apival');
+    });
+
+    it('should return api', () => {
+      process.env.API_URL = 'sth';
+      expect(makeApi('val')).toBe('sthval');
+    });
   });
 
-  it('should return default', () => {
-    process.env.API_URL = 'sth';
-    expect(makeApi('val')).toBe('sthval');
+  describe('websocket', () => {
+    it('should respect http protocol if api is host', () => {
+      const g = { location: { protocol: 'http:' } };
+      process.env.API_URL = '//itst/';
+      expect(makeApi('val', true, g)).toEqual('ws://itst/val');
+    });
+
+    it('should respect https protocol if api is host', () => {
+      const g = { location: { protocol: 'https:' } };
+      process.env.API_URL = '//itst/';
+      expect(makeApi('val', true, g)).toEqual('wss://itst/val');
+    });
+
+    it('should respect http protocol if api is http', () => {
+      const g = { location: { protocol: 'http:' } };
+      process.env.API_URL = 'http://itst/';
+      expect(makeApi('val', true, g)).toEqual('ws://itst/val');
+    });
+
+    it('should not respect https protocol if api is http', () => {
+      const g = { location: { protocol: 'https:' } };
+      process.env.API_URL = 'http://itst/';
+      expect(makeApi('val', true, g)).toEqual('ws://itst/val');
+    });
+
+    it('should not respect http protocol if api is https', () => {
+      const g = { location: { protocol: 'http:' } };
+      process.env.API_URL = 'https://itst/';
+      expect(makeApi('val', true, g)).toEqual('wss://itst/val');
+    });
+
+    it('should respect https protocol if api is https', () => {
+      const g = { location: { protocol: 'https:' } };
+      process.env.API_URL = 'https://itst/';
+      expect(makeApi('val', true, g)).toEqual('wss://itst/val');
+    });
+
+    it('should respect protocol http if api is relative', () => {
+      const g = { location: { protocol: 'http:', host: 'haha' } };
+      process.env.API_URL = '/itst';
+      expect(makeApi('val', true, g)).toEqual('ws://haha/itstval');
+    });
+
+    it('should respect protocol https if api is relative', () => {
+      const g = { location: { protocol: 'https:', host: 'haha' } };
+      process.env.API_URL = '/itst';
+      expect(makeApi('val', true, g)).toEqual('wss://haha/itstval');
+    });
   });
 });
 
@@ -172,6 +225,60 @@ describe('mutate', () => {
     });
     try {
       await mutate('gql', 'vars');
+      expect(undefined).toBeDefined();
+    } catch (res) {
+      expect(res.raw.message).toEqual('ee');
+    }
+    done();
+  });
+});
+
+describe('subscribe', () => {
+  it('should not post process no cred', async (done) => {
+    getClient({
+      async subscribe(opt) {
+        expect(opt).toEqual({
+          query: 'gql',
+          variables: { v: 'vars' },
+          fetchPolicy: 'network-only',
+        });
+        return { data: 'v' };
+      },
+    });
+    const res = await subscribe('gql', { v: 'vars' });
+    expect(res).toEqual({ data: 'v' });
+    done();
+  });
+
+  it('should not post process', async (done) => {
+    getClient({
+      async subscribe(opt) {
+        expect(opt).toEqual({
+          query: 'gql',
+          variables: { v: 'vars', authorization: 'Bearer cre' },
+          fetchPolicy: 'network-only',
+        });
+        return { data: 'v' };
+      },
+    });
+    const res = await subscribe('gql', { v: 'vars' }, 'cre');
+    expect(res).toEqual({ data: 'v' });
+    done();
+  });
+
+  it('should catch error and post process', async (done) => {
+    getClient({
+      async subscribe(opt) {
+        expect(opt).toEqual({
+          query: 'gql',
+          variables: { v: 'vars' },
+          fetchPolicy: 'network-only',
+        });
+        throw new Error('ee');
+      },
+    });
+    try {
+      await subscribe('gql', { v: 'vars' });
       expect(undefined).toBeDefined();
     } catch (res) {
       expect(res.raw.message).toEqual('ee');
