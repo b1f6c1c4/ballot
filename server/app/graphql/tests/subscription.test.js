@@ -2,7 +2,6 @@ const { models, make, mer } = require('../../../tests/util');
 const errors = require('../error');
 
 const rpcMock = {
-  rawPublish: jest.fn(),
   subscribe: jest.fn(),
 };
 jest.doMock('../../../rpc', () => rpcMock);
@@ -76,6 +75,10 @@ describe('makeBallotSt', () => {
       owner: 'ow',
       status: 'st',
     });
+  });
+
+  it('should throw if wrong', () => {
+    expect(() => makeBallotSt('sta tus.ow.id', 'st')).toThrow();
   });
 });
 
