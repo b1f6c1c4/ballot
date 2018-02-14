@@ -1,4 +1,4 @@
-// const { models, make, mer, check } = require('../../../tests/util');
+const { models, make, mer } = require('../../../tests/util');
 const errors = require('../error');
 
 const rpcMock = {
@@ -53,7 +53,7 @@ describe('unlock', () => {
   });
 
   it('should handle not found', () => {
-    unlock('sth');
+    expect(() => unlock('sth')).not.toThrow();
   });
 
   it('should handle diss', () => {
@@ -196,6 +196,10 @@ describe('onOperationComplete', () => {
 });
 
 describe('Subscription', () => {
+  const dBallot = {
+    _id: '123',
+  };
+
   describe('ballotStatus', () => {
     const func = resolvers.Subscription.ballotStatus.subscribe;
     const dArgs = [
@@ -204,13 +208,29 @@ describe('Subscription', () => {
       { registry: new Map(), opId: 'a' },
     ];
 
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
     it('should return async iterator', async (done) => {
+      await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res.next).toBeDefined();
       done();
     });
 
     it('should use pubsub', async (done) => {
+      await make.Ballot(dBallot);
       const res = await func(...dArgs);
       pubsub.publish('ballotStatus.1234', { evil: true });
       pubsub.publish('ballotStatus.123', { evil: false });

@@ -1,8 +1,9 @@
 const _ = require('lodash');
-const errors = require('./error');
 const { PubSub } = require('graphql-subscriptions');
-const logger = require('../../logger')('graphql/subscription');
+const errors = require('./error');
+const { Ballot } = require('../../models/ballots');
 const rpc = require('../../rpc');
+const logger = require('../../logger')('graphql/subscription');
 
 const pubsub = new PubSub();
 
@@ -125,13 +126,18 @@ module.exports = {
           const { bId } = args.input;
 
           try {
+            const doc = await Ballot.findById(bId, { _id: 1 });
+            if (!doc) {
+              return new errors.NotFoundError();
+            }
+
             const cb = await subscribeBallotStatus(bId);
             context.registry.set(context.opId, cb);
 
             return pubsub.asyncIterator(`ballotStatus.${bId}`);
           } catch (e) {
             logger.error('Subscribe ballotStatus', e);
-            throw e;
+            return e;
           }
         },
       },
@@ -153,8 +159,10 @@ module.exports = {
 
             return pubsub.asyncIterator(`ballotsStatus.${username}`);
           } catch (e) {
+            /* istanbul ignore next */
             logger.error('Subscribe ballotsStatus', e);
-            throw e;
+            /* istanbul ignore next */
+            return e;
           }
         },
       },
