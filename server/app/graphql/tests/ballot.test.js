@@ -99,6 +99,7 @@ describe('Mutation', () => {
           fields: [
             { prompt: '1', stringDefault: 'sd' },
             { prompt: '2', enumItems: ['it', 'its'] },
+            { prompt: '3' },
           ],
         },
       },
@@ -107,6 +108,7 @@ describe('Mutation', () => {
     const targ = [
       { prompt: '1', type: 'string', data: ['sd'] },
       { prompt: '2', type: 'enum', data: ['it', 'its'] },
+      { prompt: '3', type: 'string', data: [null] },
     ];
 
     it('should throw unauthorized', async (done) => {
@@ -117,12 +119,6 @@ describe('Mutation', () => {
 
     it('should throw field type both malformed', async (done) => {
       const res = await func(...mer(dArgs, '[1].input.fields[1].stringDefault', 'df'));
-      expect(res).toBeInstanceOf(errors.FieldMalformedError);
-      done();
-    });
-
-    it('should throw field type neither malformed', async (done) => {
-      const res = await func(...mer(dArgs, '[1].input.fields[2].prompt', 3));
       expect(res).toBeInstanceOf(errors.FieldMalformedError);
       done();
     });
