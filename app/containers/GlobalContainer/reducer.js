@@ -8,7 +8,7 @@ const initialState = fromJS({
   isAccountOpen: false,
   credential: null,
   listBallots: null,
-  currentBallot: null,
+  statusObservable: null,
 });
 
 function globalContainerReducer(state = initialState, action) {
@@ -33,6 +33,15 @@ function globalContainerReducer(state = initialState, action) {
       const newList = list.update(id, (b) => b.set('status', action.status));
       return state.set('listBallots', newList);
     }
+    case GLOBAL_CONTAINER.STATUS_START_ACTION:
+      return state.set('statusObservable', action.obs);
+    case GLOBAL_CONTAINER.STATUS_STOP_ACTION: {
+      const obs = state.get('statusObservable');
+      if (obs) obs.unsubscribe();
+      return state.set('statusObservable', null);
+    }
+    case GLOBAL_CONTAINER.STATUS_REQUEST_ACTION:
+      return state;
     // Sagas
     case GLOBAL_CONTAINER.BALLOTS_REQUEST:
       return state.set('isLoading', true);

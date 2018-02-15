@@ -15,7 +15,9 @@ import createReducer from '../reducers';
 const sagaMiddleware = createSagaMiddleware();
 
 export const slicer = () => (rawState) => {
-  let state = rawState.toJS();
+  let state = rawState
+    .setIn(['globalContainer', 'statusObservable'], null)
+    .toJS();
   _.unset(state, 'language');
   _.unset(state, 'route');
   _.unset(state, 'preVotingContainer');

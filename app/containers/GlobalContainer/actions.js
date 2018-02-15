@@ -46,6 +46,25 @@ export function statusChange({ bId, status }) {
   };
 }
 
+export function statusStart(obs) {
+  return {
+    type: GLOBAL_CONTAINER.STATUS_START_ACTION,
+    obs,
+  };
+}
+
+export function statusStop() {
+  return {
+    type: GLOBAL_CONTAINER.STATUS_STOP_ACTION,
+  };
+}
+
+export function statusRequest() {
+  return {
+    type: GLOBAL_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
 // Sagas
 export function ballotsRequest() {
   return {

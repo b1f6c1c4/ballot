@@ -13,7 +13,6 @@ describe('globalContainerReducer', () => {
       isAccountOpen: false,
       credential: null,
       listBallots: null,
-      currentBallot: null,
     });
   });
 
@@ -92,6 +91,27 @@ describe('globalContainerReducer', () => {
     ]));
 
     expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle statusStart action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusStart())).toEq(expectedResult);
+  });
+
+  it('should handle statusStop action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusStop())).toEq(expectedResult);
+  });
+
+  it('should handle statusRequest action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusRequest())).toEq(expectedResult);
   });
 
   // Sagas

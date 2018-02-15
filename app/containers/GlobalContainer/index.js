@@ -30,6 +30,14 @@ const ConnectedSwitch = connect(createStructuredSelector({
 }))(Switch);
 
 export class GlobalContainer extends React.PureComponent {
+  componentDidMount() {
+    this.props.onStatusRequestAction();
+  }
+
+  componentWillUnmount() {
+    this.props.onStatusStopAction();
+  }
+
   render() {
     return (
       <GlobalPage {...this.props}>
@@ -61,7 +69,8 @@ GlobalContainer.propTypes = {
   onCloseAccountAction: PropTypes.func.isRequired,
   onLoginAction: PropTypes.func.isRequired,
   onLogoutAction: PropTypes.func.isRequired,
-  onStatusChangeAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch) {
@@ -73,7 +82,8 @@ export function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
-    onStatusChangeAction: () => dispatch(globalContainerActions.statusChange()),
+    onStatusStopAction: () => dispatch(globalContainerActions.statusStop()),
+    onStatusRequestAction: () => dispatch(globalContainerActions.statusRequest()),
   };
 }
 

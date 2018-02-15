@@ -58,4 +58,22 @@ describe('GlobalContainer actions', () => {
       expect(globalContainerActions.statusChange(param).status).toEqual('s');
     });
   });
+
+  describe('statusStart action', () => {
+    it('has a type of STATUS_START_ACTION', () => {
+      expect(globalContainerActions.statusStart().type).toEqual(GLOBAL_CONTAINER.STATUS_START_ACTION);
+    });
+  });
+
+  describe('statusStop action', () => {
+    it('has a type of STATUS_STOP_ACTION', () => {
+      expect(globalContainerActions.statusStop().type).toEqual(GLOBAL_CONTAINER.STATUS_STOP_ACTION);
+    });
+  });
+
+  describe('statusRequest action', () => {
+    it('has a type of STATUS_REQUEST_ACTION', () => {
+      expect(globalContainerActions.statusRequest().type).toEqual(GLOBAL_CONTAINER.STATUS_REQUEST_ACTION);
+    });
+  });
 });
