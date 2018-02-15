@@ -54,12 +54,12 @@ class HomePage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
-        <Typography type="display2">
+        <Typography variant="display2">
           <FormattedMessage {...messages.header} />
         </Typography>
         <Paper className={classes.root}>
           <div className={classes.actions}>
-            <Typography type="title" className={classes.title}>
+            <Typography variant="title" className={classes.title}>
               <FormattedMessage {...messages.listBallots} />
             </Typography>
             <LoadingButton {...{ isLoading }}>
@@ -96,7 +96,7 @@ class HomePage extends React.PureComponent {
             <LoadingButton>
               <Button
                 color="secondary"
-                raised
+                variant="raised"
                 onClick={this.handleCreate}
               >
                 <FormattedMessage {...messages.create} />

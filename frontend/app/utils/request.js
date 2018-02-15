@@ -1,10 +1,30 @@
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import fragmentTypes from './fragmentTypes.json';
+import _ from 'lodash';
 
 const apiUrl = (raw) => raw || '/api';
 
-export const makeApi = (url) => apiUrl(process.env.API_URL) + url;
+export const makeApi = (url, isWs, g = window) => {
+  const api = apiUrl(process.env.API_URL);
+  if (!isWs) {
+    return api + url;
+  }
+
+  const protocol = _.get(g, 'location.protocol') === 'https:' ? 'wss:' : 'ws:';
+
+  if (api.startsWith('//')) {
+    return protocol + api + url;
+  }
+
+  if (api.startsWith('http:')) {
+    return api.replace(/^http:/, 'ws:') + url;
+  }
+
+  if (api.startsWith('https:')) {
+    return api.replace(/^https:/, 'wss:') + url;
+  }
+
+  const host = _.get(g, 'location.host');
+  return `${protocol}//${host}${api}${url}`;
+};
 
 export const postProcess = (raw) => {
   if (!(raw instanceof Error)) {
@@ -42,16 +62,7 @@ let client;
 if (process.env.NODE_ENV !== 'test') {
   /* istanbul ignore next */
   // eslint-disable-next-line global-require
-  const { HttpLink } = require('apollo-link-http');
-  /* istanbul ignore next */
-  const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: fragmentTypes,
-  });
-  /* istanbul ignore next */
-  client = new ApolloClient({
-    link: new HttpLink({ uri: makeApi('/graphql') }),
-    cache: new InMemoryCache({ fragmentMatcher }),
-  });
+  client = require('./request-core').default(makeApi);
 }
 
 export const getClient = /* istanbul ignore next */ (c) => {
@@ -90,9 +101,25 @@ export const mutate = async (gql, vars, cred) => {
       mutation: gql,
       variables: vars,
       context: makeContext(cred),
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
     });
     return postProcess(response);
+  } catch (e) {
+    return postProcess(e);
+  }
+};
+
+export const subscribe = async (gql, vars, cred) => {
+  try {
+    const response = await client.subscribe({
+      query: gql,
+      variables: {
+        ...vars,
+        authorization: !cred ? undefined : `Bearer ${cred}`,
+      },
+      fetchPolicy: 'network-only',
+    });
+    return response;
   } catch (e) {
     return postProcess(e);
   }

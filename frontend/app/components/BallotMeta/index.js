@@ -42,12 +42,12 @@ class BallotMeta extends React.PureComponent {
       <div>
         {!isLoading && ballot && (
           <Typography
-            type="display2"
+            variant="display2"
             gutterBottom
             onClick={this.handleClick}
           >
             {ballot.name}
-            <Typography className={classes.badge} type="subheading" component="span">
+            <Typography className={classes.badge} variant="subheading" component="span">
               <StatusBadge status={ballot.status} />
             </Typography>
           </Typography>
@@ -55,7 +55,7 @@ class BallotMeta extends React.PureComponent {
         {isLoading && (
           <Loading />
         )}
-        <Typography type="caption">
+        <Typography variant="caption">
           <FormattedMessage {...messages.bId} />
           <Abbreviation text={bId} allowExpand />
         </Typography>

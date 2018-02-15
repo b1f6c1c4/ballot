@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
@@ -15,6 +16,16 @@ import reducer from './reducer';
 import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
+  componentWillMount() {
+    this.props.onRefresh();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      nextProps.onRefresh();
+    }
+  }
+
   render() {
     const {
       match,
@@ -37,6 +48,7 @@ ViewBallotContainer.propTypes = {
   match: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
+  count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
@@ -56,6 +68,7 @@ const mapStateToProps = createStructuredSelector({
   isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
   ballot: viewBallotContainerSelectors.Ballot(),
   error: viewBallotContainerSelectors.Error(),
+  count: (state) => state.getIn(['viewBallotContainer', 'count']),
 });
 
 export default compose(

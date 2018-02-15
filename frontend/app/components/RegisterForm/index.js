@@ -60,7 +60,7 @@ class RegisterForm extends React.PureComponent {
           <LoadingButton {...{ isLoading }}>
             <Button
               type="submit"
-              raised
+              variant="raised"
               color="primary"
               disabled={this.props.isLoading}
             >

@@ -52,7 +52,7 @@ class ChangePasswordPage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
-        <Typography type="display2">
+        <Typography variant="display2">
           <FormattedMessage {...messages.header} />
         </Typography>
         <Paper className={classes.root}>

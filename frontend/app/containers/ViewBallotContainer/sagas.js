@@ -51,9 +51,21 @@ export function* handleFinalizeRequest({ bId }) {
   }
 }
 
+export function* handleCountRequest({ bId }) {
+  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
+
+  try {
+    const result = yield call(api.query, gql.CountTickets, { bId }, cred);
+    yield put(viewBallotContainerActions.countSuccess(result));
+  } catch (err) {
+    yield put(viewBallotContainerActions.countFailure(err));
+  }
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
   yield takeEvery(VIEW_BALLOT_CONTAINER.BALLOT_REQUEST, handleBallotRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST, handleFinalizeRequest);
+  yield takeEvery(VIEW_BALLOT_CONTAINER.COUNT_REQUEST, handleCountRequest);
 }

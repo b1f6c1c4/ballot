@@ -20,7 +20,7 @@ class AuthRequired extends React.PureComponent {
 
     if (!this.props.hasCredential) {
       return (
-        <Typography type="display2">
+        <Typography variant="display2">
           <FormattedMessage {...messages.header} />
         </Typography>
       );

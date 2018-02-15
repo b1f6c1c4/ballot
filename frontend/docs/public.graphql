@@ -8,7 +8,13 @@ type Query {
   ballot(input: BallotInput!): Ballot
 
   # Authentication is required
-  ballots: [Ballot]
+  ballots: [Ballot!]
+
+  countTickets(input: CountTicketsInput!): Int
+
+  tickets(input: TicketsInput!): [BallotTicket!]
+
+  fieldStat(input: FieldStatInput!): [FieldStat!]
 }
 
 type Mutation {
@@ -173,10 +179,31 @@ type Mutation {
   finalizeVoting(input: FinalizeVotingInput!): Boolean
 }
 
+type Subscription {
+
+  ballotStatus(input: BallotInput!): BallotSt
+
+  # Authentication is required
+  ballotsStatus: BallotSt
+}
+
 # Inputs
 
 input BallotInput {
   bId: ID!
+}
+
+input TicketsInput {
+  bId: ID!
+}
+
+input CountTicketsInput {
+  bId: ID!
+}
+
+input FieldStatInput {
+  bId: ID!
+  index: Int!
 }
 
 input RegisterInput {
@@ -257,6 +284,11 @@ type Status {
   commitHash: String
 }
 
+type BallotSt {
+  bId: ID!
+  status: BallotStatus!
+}
+
 type Ballot {
   bId: ID!
   name: String!
@@ -320,11 +352,6 @@ type BallotTicket {
 type TicketPayload {
   bId: ID!
   result: [String]!
-}
-
-type TicketStat {
-  count: Int!
-  summary: [[FieldStat!]!]!
 }
 
 type FieldStat {

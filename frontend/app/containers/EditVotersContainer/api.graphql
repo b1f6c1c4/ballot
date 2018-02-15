@@ -2,6 +2,7 @@ query Voters($bId: ID!) {
   ballot(input: {
     bId: $bId,
   }) {
+    bId
     name
     status
     voters {

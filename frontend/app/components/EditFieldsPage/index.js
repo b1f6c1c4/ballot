@@ -49,10 +49,6 @@ const styles = (theme) => ({
 });
 
 class EditFieldsPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleEdit = (index) => () => this.props.onStartEditAction({ index });
 
   handleDelete = (index) => () => this.props.onRemoveAction({ index });
@@ -118,7 +114,7 @@ class EditFieldsPage extends React.PureComponent {
           {!isLoading && canEditFields && (
             <Button
               color="primary"
-              raised
+              variant="raised"
               onClick={this.props.onStartCreateAction}
             >
               <FormattedMessage {...messages.create} />

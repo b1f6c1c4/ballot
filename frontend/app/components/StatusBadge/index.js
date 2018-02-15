@@ -11,13 +11,21 @@ import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
-  default: {
+  major: {
     display: 'inline-block',
     paddingLeft: theme.spacing.unit,
     paddingRight: theme.spacing.unit,
     paddingTop: theme.spacing.unit / 2,
     paddingBottom: theme.spacing.unit / 2,
     borderRadius: theme.spacing.unit / 2,
+  },
+  minor: {
+    display: 'inline-block',
+    fontSize: 12,
+    marginLeft: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    borderRadius: theme.spacing.unit / 4,
   },
   unknown: {
     backgroundColor: '#3e2723',
@@ -52,18 +60,20 @@ const styles = (theme) => ({
 class StatusBadge extends React.PureComponent {
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { classes, status } = this.props;
+    const { classes, status, minor } = this.props;
+
+    const cls = minor ? classes.minor : classes.major;
 
     if (!messages[status]) {
       return (
-        <div className={classnames(classes.default, classes.unknown)}>
+        <div className={classnames(cls, classes.unknown)}>
           <FormattedMessage {...messages.unknown} />
         </div>
       );
     }
 
     return (
-      <div className={classnames(classes.default, classes[status])}>
+      <div className={classnames(cls, classes[status])}>
         <FormattedMessage {...messages[status]} />
       </div>
     );
@@ -73,6 +83,11 @@ class StatusBadge extends React.PureComponent {
 StatusBadge.propTypes = {
   classes: PropTypes.object.isRequired,
   status: PropTypes.string,
+  minor: PropTypes.bool,
+};
+
+StatusBadge.defaultValues = {
+  minor: false,
 };
 
 export const styledStatusBadge = withStyles(styles)(StatusBadge);

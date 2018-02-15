@@ -37,7 +37,7 @@ class EmptyIndicator extends React.PureComponent {
     if (list && list.length > 0) return null;
 
     return (
-      <Typography type="display1" className={classes.empty}>
+      <Typography variant="display1" className={classes.empty}>
         <FormattedMessage {...txt} />
       </Typography>
     );

@@ -107,7 +107,7 @@ class VoterCard extends React.PureComponent {
         </CardActions>
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <Typography component="p" className={classes.detailWrapper}>
-            <Typography type="caption" className={classes.detailTitle}>
+            <Typography variant="caption" className={classes.detailTitle}>
               <FormattedMessage {...messages.iCode} />
             </Typography>
             {voter.publicKey && (
@@ -126,7 +126,7 @@ class VoterCard extends React.PureComponent {
           )}
           {voter.publicKey && (
             <Typography component="p" className={classes.detailWrapper}>
-              <Typography type="caption" className={classes.detailTitle}>
+              <Typography variant="caption" className={classes.detailTitle}>
                 <FormattedMessage {...messages.publicKey} />
               </Typography>
               <span className={classes.detail}>{voter.publicKey}</span>

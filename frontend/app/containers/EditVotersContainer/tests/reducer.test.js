@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
 import editVotersContainerReducer from '../reducer';
 
@@ -22,6 +23,37 @@ describe('editVotersContainerReducer', () => {
   });
 
   // Actions
+  it('should handle valid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'b', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 'x',
+      evil: true,
+    }));
+
+    expect(editVotersContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle invalid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'x', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+
+    expect(editVotersContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
 
   // Sagas
   it('should handle createVoter request', () => {
@@ -89,7 +121,7 @@ describe('editVotersContainerReducer', () => {
 
   it('should handle voters success', () => {
     const originalState = state.set('isLoading', true);
-    const ballot = { name: 'nm', status: 'st' };
+    const ballot = { bId: 'b', name: 'nm', status: 'st' };
     const voters = [{ k: 'v' }];
     const result = { ballot: { ...ballot, voters } };
     const expectedResult = state.set('isLoading', false)

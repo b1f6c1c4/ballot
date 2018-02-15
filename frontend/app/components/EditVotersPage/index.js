@@ -35,10 +35,6 @@ const styles = (theme) => ({
 });
 
 class EditVotersPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleDelete = (iCode) => () => this.props.onDeleteVoter({ iCode });
 
   render() {

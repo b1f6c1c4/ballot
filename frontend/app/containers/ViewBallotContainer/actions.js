@@ -44,3 +44,24 @@ export function finalizeFailure(error) {
     error,
   };
 }
+
+export function countRequest({ bId }) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.COUNT_REQUEST,
+    bId,
+  };
+}
+
+export function countSuccess(result) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.COUNT_SUCCESS,
+    result,
+  };
+}
+
+export function countFailure(error) {
+  return {
+    type: VIEW_BALLOT_CONTAINER.COUNT_FAILURE,
+    error,
+  };
+}

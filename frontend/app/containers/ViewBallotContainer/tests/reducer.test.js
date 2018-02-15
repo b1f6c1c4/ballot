@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
 import viewBallotContainerReducer from '../reducer';
 
@@ -11,6 +12,7 @@ describe('viewBallotContainerReducer', () => {
       isLoading: false,
       ballot: null,
       error: null,
+      count: null,
     });
   });
 
@@ -20,6 +22,37 @@ describe('viewBallotContainerReducer', () => {
   });
 
   // Actions
+  it('should handle valid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'b', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 'x',
+      evil: true,
+    }));
+
+    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle invalid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'x', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+
+    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
 
   // Sagas
   it('should handle ballot request', () => {
@@ -66,9 +99,35 @@ describe('viewBallotContainerReducer', () => {
 
   it('should handle finalize failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.finalizeFailure(error))).toEq(expectedResult);
+  });
+
+  it('should handle count request', () => {
+    const originalState = state.set('isLoading', false);
+    const param = { bId: 'val' };
+    const expectedResult = state.set('isLoading', true);
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countRequest(param))).toEq(expectedResult);
+  });
+
+  it('should handle count success', () => {
+    const originalState = state.set('isLoading', true);
+    const result = { countTickets: 233 };
+    const expectedResult = state.set('isLoading', false).set('count', 233);
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle count failure', () => {
+    const originalState = state.set('isLoading', true);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countFailure(error))).toEq(expectedResult);
   });
 });

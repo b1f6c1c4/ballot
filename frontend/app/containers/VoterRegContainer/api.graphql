@@ -11,6 +11,7 @@ query Refresh($bId: ID!) {
   ballot(input: {
     bId: $bId,
   }) {
+    bId
     name
     owner
     status

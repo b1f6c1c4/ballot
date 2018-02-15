@@ -13,7 +13,6 @@ describe('globalContainerReducer', () => {
       isAccountOpen: false,
       credential: null,
       listBallots: null,
-      currentBallot: null,
     });
   });
 
@@ -64,6 +63,48 @@ describe('globalContainerReducer', () => {
     const expectedResult = state;
 
     expect(globalContainerReducer(originalState, globalContainerActions.logout())).toEq(expectedResult);
+  });
+
+  it('should handle statusChange action', () => {
+    const originalState = state.set('listBallots', fromJS([
+      { bId: 'b1', status: 's1', evil: true },
+      { bId: 'b2', status: 's2', evil: false },
+    ]));
+    const param = { bId: 'b2', status: 's3' };
+    const expectedResult = state.set('listBallots', fromJS([
+      { bId: 'b1', status: 's1', evil: true },
+      { bId: 'b2', status: 's3', evil: false },
+    ]));
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle statusChange action not found', () => {
+    const originalState = state.set('listBallots', fromJS([
+      { bId: 'b1', status: 's1', evil: true },
+      { bId: 'b2', status: 's2', evil: false },
+    ]));
+    const param = { bId: 'b3', status: 's3' };
+    const expectedResult = state.set('listBallots', fromJS([
+      { bId: 'b1', status: 's1', evil: true },
+      { bId: 'b2', status: 's2', evil: false },
+    ]));
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle statusStop action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusStop())).toEq(expectedResult);
+  });
+
+  it('should handle statusRequest action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, globalContainerActions.statusRequest())).toEq(expectedResult);
   });
 
   // Sagas

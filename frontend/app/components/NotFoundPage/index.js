@@ -20,10 +20,10 @@ class NotFoundPage extends React.PureComponent {
 
     return (
       <div>
-        <Typography type="display4">
+        <Typography variant="display4">
           <FormattedMessage {...messages.header} />
         </Typography>
-        <Typography type="display1">
+        <Typography variant="display1">
           <FormattedMessage {...messages.description} />
         </Typography>
       </div>

@@ -15,6 +15,7 @@ import {
   TableRow,
   Button,
 } from 'material-ui';
+import QRCode from 'qrcode.react';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -51,21 +52,32 @@ const styles = (theme) => ({
     minWidth: 280,
     flexGrow: 1,
   },
+  count: {
+    textAlign: 'center',
+  },
+  detail: {
+    fontFamily: 'monospace',
+    overflowWrap: 'break-word',
+  },
+  qrcode: {
+    textAlign: 'center',
+  },
 });
 
 class ViewBallotPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleFieldsEdit = () => {
     const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/fields`);
+    this.props.onPush(`/app/ballots/${bId}/fields/`);
   };
 
   handleVotersEdit = () => {
     const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/voters`);
+    this.props.onPush(`/app/ballots/${bId}/voters/`);
+  };
+
+  handleStatView = () => {
+    const { bId } = this.props;
+    this.props.onPush(`/app/ballots/${bId}/tickets/`);
   };
 
   render() {
@@ -74,11 +86,12 @@ class ViewBallotPage extends React.PureComponent {
       bId,
       isLoading,
       ballot,
+      count,
     } = this.props;
 
     const canEditFields = ballot && Permission.CanEditFields(ballot);
     const canEditVoters = ballot && Permission.CanEditVoters(ballot);
-    const canViewStats = ballot && Permission.CanViewStats(ballot);
+    const canViewStats = !isLoading && ballot && Permission.CanViewStats(ballot);
 
     const makeFieldType = (b) => {
       const type = b.__typename; // eslint-disable-line no-underscore-dangle
@@ -103,6 +116,9 @@ class ViewBallotPage extends React.PureComponent {
         <FormattedMessage {...messages.unregistered} />
       );
     };
+
+    const makeUrl = () => `${window.location.protocol}//${window.location.host}/app/ballots/${bId}/preVoting`;
+    const makeVUrl = () => `${window.location.protocol}//${window.location.host}/secret/`;
 
     return (
       <div className={classes.container}>
@@ -163,7 +179,7 @@ class ViewBallotPage extends React.PureComponent {
         <div className={classes.cards}>
           <Card className={classes.card}>
             <CardContent>
-              <Typography type="subheading">
+              <Typography variant="subheading">
                 <FormattedMessage {...messages.fields} />
               </Typography>
               <EmptyIndicator isLoading={isLoading} list={ballot && ballot.fields} />
@@ -191,7 +207,7 @@ class ViewBallotPage extends React.PureComponent {
           </Card>
           <Card className={classes.card}>
             <CardContent>
-              <Typography type="subheading">
+              <Typography variant="subheading">
                 <FormattedMessage {...messages.voters} />
               </Typography>
               <EmptyIndicator isLoading={isLoading} list={ballot && ballot.voters} />
@@ -217,13 +233,51 @@ class ViewBallotPage extends React.PureComponent {
               )}
             </CardActions>
           </Card>
+          {!isLoading && ballot && ballot.status === 'preVoting' && (
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography variant="subheading">
+                  <FormattedMessage {...messages.preVoting} />
+                </Typography>
+                <Typography component="p">
+                  <a href={makeUrl()}>
+                    <span className={classes.detail}>{makeUrl()}</span>
+                  </a>
+                </Typography>
+                <div className={classes.qrcode}>
+                  <QRCode value={makeUrl()} size={256} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {!isLoading && ballot && ballot.status === 'voting' && (
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography variant="subheading">
+                  <FormattedMessage {...messages.voting} />
+                </Typography>
+                <Typography component="p">
+                  <a href={makeVUrl()}>
+                    <span className={classes.detail}>{makeVUrl()}</span>
+                  </a>
+                </Typography>
+                <div className={classes.qrcode}>
+                  <QRCode value={makeVUrl()} size={256} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {canViewStats && (
             <Card className={classes.card}>
               <CardContent>
-                <Typography type="subheading">
+                <Typography variant="subheading">
                   <FormattedMessage {...messages.stats} />
                 </Typography>
-                <EmptyIndicator isLoading={isLoading} />
+                <Typography variant="display1" className={classes.count}>
+                  <FormattedMessage {...messages.count} />
+                  &nbsp;
+                  <span>{count}</span>
+                </Typography>
               </CardContent>
               <CardActions>
                 <ViewButton onClick={this.handleStatView} />
@@ -242,6 +296,7 @@ ViewBallotPage.propTypes = {
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
+  count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,

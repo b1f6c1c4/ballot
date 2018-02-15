@@ -3,6 +3,8 @@ import React from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { TextEncoderLite } from 'text-encoder-lite';
+import base64js from 'base64-js';
 
 import {
   withStyles,
@@ -58,10 +60,6 @@ const styles = (theme) => ({
 });
 
 class PreVotingPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   validate = make(
     this.props.intl,
     required(),
@@ -82,6 +80,11 @@ class PreVotingPage extends React.PureComponent {
       result,
       privateKey: vals.get('privateKey'),
     });
+  };
+
+  base64Enc = (str) => {
+    const bytes = new (TextEncoder || TextEncoderLite)('utf-8').encode(str);
+    return base64js.fromByteArray(bytes);
   };
 
   render() {
@@ -105,7 +108,7 @@ class PreVotingPage extends React.PureComponent {
             <div key={f.key}>
               <TextField
                 name={String(i)}
-                disabled={isSignLoading || ticket}
+                disabled={isSignLoading || !!ticket}
                 label={f.prompt}
                 fullWidth
               />
@@ -120,7 +123,7 @@ class PreVotingPage extends React.PureComponent {
                 </InputLabel>
                 <Field
                   name={String(i)}
-                  disabled={isSignLoading || ticket}
+                  disabled={isSignLoading || !!ticket}
                   component={Select}
                   validate={this.validate}
                 >
@@ -160,7 +163,7 @@ class PreVotingPage extends React.PureComponent {
         {!isLoading && (
           <Paper className={classes.root}>
             <form onSubmit={handleSubmit(this.handleSign)}>
-              <Typography type="title">
+              <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
               <EmptyIndicator
@@ -173,7 +176,7 @@ class PreVotingPage extends React.PureComponent {
                   name="privateKey"
                   label={messages.pvLabel}
                   helperText={messages.pvHelperText}
-                  disabled={isSignLoading || ticket}
+                  disabled={isSignLoading || !!ticket}
                   fullWidth
                   validate={this.validatePrivateKey}
                 />
@@ -203,7 +206,7 @@ class PreVotingPage extends React.PureComponent {
               )}
               {ticket && (
                 <span className={classes.secret}>
-                  {btoa(JSON.stringify(ticket))}
+                  {this.base64Enc(JSON.stringify(ticket))}
                 </span>
               )}
             </form>

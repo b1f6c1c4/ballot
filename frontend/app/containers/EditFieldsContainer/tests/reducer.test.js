@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
 import editFieldsContainerReducer, {
   normalizeFields,
@@ -55,6 +56,38 @@ describe('editFieldsContainerReducer', () => {
   });
 
   // Actions
+  it('should handle valid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'b', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 'x',
+      evil: true,
+    }));
+
+    expect(editFieldsContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle invalid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'x', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+
+    expect(editFieldsContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
   it('should handle remove action', () => {
     const originalState = state
       .set('fields', fromJS([
@@ -222,7 +255,7 @@ describe('editFieldsContainerReducer', () => {
 
   it('should handle refresh success', () => {
     const originalState = state.set('isLoading', true);
-    const ballot = { name: 'n', status: 's' };
+    const ballot = { bId: 'b', name: 'n', status: 's' };
     const result = {
       ballot: {
         ...ballot,

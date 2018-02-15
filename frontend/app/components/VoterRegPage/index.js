@@ -48,10 +48,6 @@ const styles = (theme) => ({
 });
 
 class VoterRegPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleRegister = (vals) => this.props.onRegister({
     comment: vals.get('comment'),
   });
@@ -91,7 +87,7 @@ class VoterRegPage extends React.PureComponent {
         {!isLoading && (
           <Paper className={classes.root}>
             <form onSubmit={handleSubmit(this.handleRegister)}>
-              <Typography type="title">
+              <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
               <div>
