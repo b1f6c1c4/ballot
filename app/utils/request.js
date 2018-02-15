@@ -101,7 +101,7 @@ export const mutate = async (gql, vars, cred) => {
       mutation: gql,
       variables: vars,
       context: makeContext(cred),
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
     });
     return postProcess(response);
   } catch (e) {

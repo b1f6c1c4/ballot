@@ -46,13 +46,6 @@ export function statusChange({ bId, status }) {
   };
 }
 
-export function statusStart(obs) {
-  return {
-    type: GLOBAL_CONTAINER.STATUS_START_ACTION,
-    obs,
-  };
-}
-
 export function statusStop() {
   return {
     type: GLOBAL_CONTAINER.STATUS_STOP_ACTION,
