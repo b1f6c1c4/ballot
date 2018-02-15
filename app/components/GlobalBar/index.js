@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -66,6 +67,9 @@ class GlobalBar extends React.PureComponent {
       isAccountOpen,
     } = this.props;
 
+    // eslint-disable-next-line react/no-find-dom-node
+    const anchorEl = ReactDOM.findDOMNode(this.anchorEl);
+
     return (
       <AppBar position="static">
         <Toolbar>
@@ -85,6 +89,7 @@ class GlobalBar extends React.PureComponent {
               <div>
                 <Button
                   className={classes.accountButton}
+                  ref={(obj) => { this.anchorEl = obj; }}
                   onClick={this.props.onOpenAccountAction}
                   color="inherit"
                 >
@@ -93,6 +98,7 @@ class GlobalBar extends React.PureComponent {
                 </Button>
                 <Menu
                   id="menu-appbar"
+                  anchorEl={anchorEl}
                   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                   open={isAccountOpen}

@@ -20,6 +20,7 @@ import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
 import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
 import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
 
+import * as globalContainerSelectors from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
 
@@ -65,6 +66,7 @@ GlobalContainer.propTypes = {
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,
   username: PropTypes.string,
+  listBallots: PropTypes.array,
   onOpenDrawerAction: PropTypes.func.isRequired,
   onCloseDrawerAction: PropTypes.func.isRequired,
   onOpenAccountAction: PropTypes.func.isRequired,
@@ -93,6 +95,7 @@ const mapStateToProps = createStructuredSelector({
   isDrawerOpen: (state) => state.getIn(['globalContainer', 'isDrawerOpen']),
   isAccountOpen: (state) => state.getIn(['globalContainer', 'isAccountOpen']),
   username: (state) => state.getIn(['globalContainer', 'credential', 'username']),
+  listBallots: globalContainerSelectors.ListBallots(),
 });
 
 export default compose(

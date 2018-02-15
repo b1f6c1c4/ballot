@@ -6,6 +6,7 @@ import {
 } from 'material-ui';
 
 import GlobalBar from 'components/GlobalBar';
+import GlobalDrawer from 'components/GlobalDrawer';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -20,6 +21,7 @@ class GlobalPage extends React.PureComponent {
       classes, // eslint-disable-line no-unused-vars
       onPush,
       username,
+      listBallots,
       isAccountOpen,
       isDrawerOpen,
       onOpenDrawerAction,
@@ -44,6 +46,15 @@ class GlobalPage extends React.PureComponent {
             onLogoutAction,
           }}
         />
+        <GlobalDrawer
+          {...{
+            onPush,
+            username,
+            listBallots,
+            isDrawerOpen,
+            onCloseDrawerAction,
+          }}
+        />
         {this.props.children}
       </div>
     );
@@ -55,6 +66,7 @@ GlobalPage.propTypes = {
   children: PropTypes.element,
   onPush: PropTypes.func.isRequired,
   username: PropTypes.string,
+  listBallots: PropTypes.array,
   isDrawerOpen: PropTypes.bool.isRequired,
   isAccountOpen: PropTypes.bool.isRequired,
   onOpenDrawerAction: PropTypes.func.isRequired,
