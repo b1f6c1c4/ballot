@@ -27,6 +27,7 @@ export const ballotsStatusChan = (obs0) => eventChannel((emit) => {
       }
     },
     error(err) {
+      /* istanbul ignore next */
       // eslint-disable-next-line no-console
       console.error(err);
     },
@@ -45,8 +46,12 @@ export function* handleStatusRequestAction() {
       yield put(globalContainerActions.statusChange(result));
     }
   } finally {
+    /* istanbul ignore else */
     if (yield cancelled()) {
-      chan.close();
+      /* istanbul ignore if */
+      if (_.isObject(chan)) {
+        chan.close();
+      }
     }
   }
 }
@@ -73,8 +78,10 @@ export function* watchStatus() {
     });
     if (request && !ob) {
       ob = yield fork(handleStatusRequestAction, request);
-    } else if (stop && ob) {
+    } /* istanbul ignore next */ else if (stop && ob) {
+      /* istanbul ignore next */
       yield cancel(ob);
+      /* istanbul ignore next */
       ob = undefined;
     }
   }

@@ -202,7 +202,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
         });
         return { data: 'v' };
       },
@@ -218,7 +218,7 @@ describe('mutate', () => {
         expect(opt).toEqual({
           mutation: 'gql',
           variables: 'vars',
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
         });
         throw new Error('ee');
       },

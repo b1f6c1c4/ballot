@@ -93,13 +93,6 @@ describe('globalContainerReducer', () => {
     expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
-  it('should handle statusStart action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(globalContainerReducer(originalState, globalContainerActions.statusStart())).toEq(expectedResult);
-  });
-
   it('should handle statusStop action', () => {
     const originalState = state;
     const expectedResult = state;
