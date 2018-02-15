@@ -63,12 +63,17 @@ class ViewBallotPage extends React.PureComponent {
 
   handleFieldsEdit = () => {
     const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/fields`);
+    this.props.onPush(`/app/ballots/${bId}/fields/`);
   };
 
   handleVotersEdit = () => {
     const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/voters`);
+    this.props.onPush(`/app/ballots/${bId}/voters/`);
+  };
+
+  handleStatView = () => {
+    const { bId } = this.props;
+    this.props.onPush(`/app/ballots/${bId}/tickets/`);
   };
 
   render() {

@@ -4,11 +4,13 @@ import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
+  Typography,
   MobileStepper,
   Button,
 } from 'material-ui';
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';
+import Loading from 'components/Loading';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -22,12 +24,25 @@ const styles = (theme) => ({
     width: '100%',
     padding: theme.spacing.unit,
   },
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
   wrapper: {
     textAlign: 'center',
   },
 });
 
 class ViewStatPage extends React.PureComponent {
+  componentDidMount() {
+    this.props.onRefresh();
+  }
+
+  handlePrev = () => this.props.onChangeFieldAction(this.props.fieldIndex - 1);
+
+  handleNext = () => this.props.onChangeFieldAction(this.props.fieldIndex + 1);
+
   render() {
     // eslint-disable-next-line no-unused-vars
     const {
@@ -42,17 +57,12 @@ class ViewStatPage extends React.PureComponent {
 
     const fieldsCount = ballot && ballot.fields.length;
 
-    // const data = {
-    //   label: ballot.fields[fieldIndex].prompt,
-    //   values: stat.map(({ answer, count }) => ({
-    //     x: answer,
-    //     y: count,
-    //   })),
-    // };
-
     const data = {
-      label: 'somethingA',
-      values: [{x: 'SomethingA', y: 10}, {x: 'SomethingB', y: 4}, {x: 'SomethingC', y: 3}]
+      label: ballot.fields[fieldIndex].prompt,
+      values: stat.map(({ answer, count }) => ({
+        x: answer,
+        y: count,
+      })),
     };
 
     return (
@@ -74,40 +84,49 @@ class ViewStatPage extends React.PureComponent {
           </LoadingButton>
         </div>
         <ResultIndicator error={this.props.error} />
-        <div className={classes.wrapper}>
-          <MobileStepper
-            variant="dots"
-            steps={fieldsCount}
-            position="static"
-            activeStep={fieldIndex}
-            backButton={
-              <Button size="small" onClick={this.handleBack} disabled={fieldIndex === 0}>
-                <KeyboardArrowLeft />
-                Back
-              </Button>
-            }
-            nextButton={
-              <Button size="small" onClick={this.handleNext} disabled={fieldIndex === fieldsCount - 1}>
-                Next
-                <KeyboardArrowRight />
-              </Button>
-            }
-          />
-          <PieChart
-            data={data}
-            width={600}
-            height={400}
-            viewBox="0 0 600 400"
-          />
-        </div>
+        {!isLoading && isStatsLoading && (
+          <Loading />
+        )}
+        {!isLoading && !isStatsLoading && ballot && (
+          <div className={classes.wrapper}>
+            <MobileStepper
+              variant="dots"
+              steps={fieldsCount}
+              position="static"
+              activeStep={fieldIndex}
+              backButton={
+                <Button size="small" onClick={this.handlePrev} disabled={fieldIndex === 0}>
+                  <KeyboardArrowLeft />
+                  <FormattedMessage {...messages.prev} />
+                </Button>
+              }
+              nextButton={
+                <Button size="small" onClick={this.handleNext} disabled={fieldIndex === fieldsCount - 1}>
+                  <FormattedMessage {...messages.next} />
+                  <KeyboardArrowRight />
+                </Button>
+              }
+            />
+            <Typography variant="title">
+              {ballot.fields[fieldIndex].prompt}
+            </Typography>
+            <PieChart
+              data={data}
+              width={600}
+              height={400}
+              viewBox="0 0 600 400"
+            />
+          </div>
+        )}
       </div>
     );
   }
 }
 
 ViewStatPage.propTypes = {
-  classes: PropTypes.object.isRequired,
   onPush: PropTypes.func.isRequired,
+  bId: PropTypes.string.isRequired,
+  classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isStatsLoading: PropTypes.bool.isRequired,
   ballot: PropTypes.object,

@@ -1,4 +1,3 @@
-import { fromJS } from 'immutable';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
@@ -16,11 +15,8 @@ import watcher, {
 // Sagas
 describe('handleBallotRequest Saga', () => {
   const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
   const func = () => handleBallotRequest(variables);
-  const dArgs = [api.query, gql.Ballot, variables, 'cre'];
+  const dArgs = [api.query, gql.Ballot, variables];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen BALLOT_REQUEST in the watcher', () => {
@@ -34,7 +30,6 @@ describe('handleBallotRequest Saga', () => {
     const response = { ballot };
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), response],
@@ -43,11 +38,25 @@ describe('handleBallotRequest Saga', () => {
       .run();
   });
 
+  it('should dispatch ballotSuccess and statsRequest', () => {
+    const ballot = { fields: ['a', 'b'] };
+    const response = { ballot };
+    const vars = { bId: 'val', max: 2 };
+
+    return expectSaga(func)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), response],
+      ])
+      .put(viewStatContainerActions.ballotSuccess(response))
+      .put(viewStatContainerActions.statsRequest(vars))
+      .run();
+  });
+
   it('should dispatch ballotFailure', () => {
     const error = new Error('value');
 
     return expectSaga(func)
-      .withState(state)
       .call(...dArgs)
       .provide([
         [matchers.call(...dArgs), throwError(error)],
@@ -58,12 +67,9 @@ describe('handleBallotRequest Saga', () => {
 });
 
 describe('handleStatsRequest Saga', () => {
-  const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
+  const variables = { bId: 'val', max: 2 };
   const func = () => handleStatsRequest(variables);
-  const dArgs = [api.query, gql.Stats, variables, 'cre'];
+  const dArgs = (index) => [api.query, gql.FieldStat, { bId: 'val', index }];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen STATS_REQUEST in the watcher', () => {
@@ -73,16 +79,18 @@ describe('handleStatsRequest Saga', () => {
   });
 
   it('should dispatch statsSuccess', () => {
-    const stats = 'resp';
-    const response = { stats };
+    const fieldStats = 'resp';
+    const response = { fieldStats };
+    const responses = [response, response];
 
     return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
+      .call(...dArgs(0))
+      .call(...dArgs(1))
       .provide([
-        [matchers.call(...dArgs), response],
+        [matchers.call(...dArgs(0)), response],
+        [matchers.call(...dArgs(1)), response],
       ])
-      .put(viewStatContainerActions.statsSuccess(response))
+      .put(viewStatContainerActions.statsSuccess(responses))
       .run();
   });
 
@@ -90,10 +98,9 @@ describe('handleStatsRequest Saga', () => {
     const error = new Error('value');
 
     return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
       .provide([
-        [matchers.call(...dArgs), throwError(error)],
+        [matchers.call(...dArgs(0)), throwError(error)],
+        [matchers.call(...dArgs(1)), throwError(error)],
       ])
       .put(viewStatContainerActions.statsFailure(error))
       .run();

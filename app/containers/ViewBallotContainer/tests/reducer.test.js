@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import * as globalContainerActions from 'containers/GlobalContainer/actions';
 
 import viewBallotContainerReducer from '../reducer';
 
@@ -21,6 +22,37 @@ describe('viewBallotContainerReducer', () => {
   });
 
   // Actions
+  it('should handle valid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'b', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 'x',
+      evil: true,
+    }));
+
+    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle invalid global status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'x', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+
+    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
 
   // Sagas
   it('should handle ballot request', () => {

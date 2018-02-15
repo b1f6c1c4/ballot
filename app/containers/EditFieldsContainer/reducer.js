@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { fromJS } from 'immutable';
 import shortid from 'shortid';
 
+import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
 import * as EDIT_FIELDS_CONTAINER from './constants';
 
 const initialState = fromJS({
@@ -41,6 +42,11 @@ export const normalizeFields = (fs) => fs.map((f) => {
 function editFieldsContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
+    case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION:
+      if (state.getIn(['ballot', 'bId']) === action.bId) {
+        return state.setIn(['ballot', 'status'], action.status);
+      }
+      return state;
     case EDIT_FIELDS_CONTAINER.REMOVE_ACTION:
       return state
         .set('isPristine', false)
@@ -116,9 +122,7 @@ function editFieldsContainerReducer(state = initialState, action) {
         return state
           .set('isLoading', false)
           .set('isPristine', true)
-          .delete('ballot')
-          .setIn(['ballot', 'name'], action.result.ballot.name)
-          .setIn(['ballot', 'status'], action.result.ballot.status)
+          .set('ballot', fromJS(_.omit(action.result.ballot, 'fields')))
           .set('fields', fromJS(fields));
       } catch (e) {
         return state

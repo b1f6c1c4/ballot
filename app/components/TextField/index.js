@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -22,13 +23,18 @@ class TextField extends React.PureComponent {
       ...other
     } = this.props;
 
+    let lbl = label;
+    if (_.isObject(label)) {
+      lbl = intl.formatMessage(label);
+    }
+
     return (
       <Field
         {...other}
         type={type || 'text'}
         component={RawTextField}
         margin="dense"
-        label={intl.formatMessage(label)}
+        label={lbl}
         helperText={helperText && intl.formatMessage(helperText)}
         fullWidth
       />

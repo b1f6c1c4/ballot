@@ -30,14 +30,25 @@ describe('Stat', () => {
     expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
-  it('should select stat', () => {
-    const stat = { key: 'value' };
+  it('should handle range', () => {
     const state = fromJS({
-      stat,
+      stats: [['a'], ['b']],
+      fieldIndex: 10,
     });
     const mockedState = fromJS({
       viewStatContainer: state,
     });
-    expect(selector(mockedState)).toEqual(stat);
+    expect(selector(mockedState)).not.toEqual(expect.anything());
+  });
+
+  it('should select stat', () => {
+    const state = fromJS({
+      stats: [['a'], ['b']],
+      fieldIndex: 1,
+    });
+    const mockedState = fromJS({
+      viewStatContainer: state,
+    });
+    expect(selector(mockedState)).toEqual(['b']);
   });
 });

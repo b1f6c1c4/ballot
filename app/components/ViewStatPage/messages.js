@@ -4,9 +4,13 @@ import messages from 'utils/messages';
 export default {
   ...messages,
   ...defineMessages({
-    header: {
-      id: 'app.components.ViewStatPage.header',
-      defaultMessage: 'This is the ViewStatPage component!',
+    prev: {
+      id: 'app.components.ViewStatPage.prev',
+      defaultMessage: 'Prev',
+    },
+    next: {
+      id: 'app.components.ViewStatPage.next',
+      defaultMessage: 'Next',
     },
   }),
 };
