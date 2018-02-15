@@ -91,7 +91,7 @@ class VoterRegPage extends React.PureComponent {
         {!isLoading && (
           <Paper className={classes.root}>
             <form onSubmit={handleSubmit(this.handleRegister)}>
-              <Typography type="title">
+              <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
               <div>

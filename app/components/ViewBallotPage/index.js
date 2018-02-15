@@ -167,7 +167,7 @@ class ViewBallotPage extends React.PureComponent {
         <div className={classes.cards}>
           <Card className={classes.card}>
             <CardContent>
-              <Typography type="subheading">
+              <Typography variant="subheading">
                 <FormattedMessage {...messages.fields} />
               </Typography>
               <EmptyIndicator isLoading={isLoading} list={ballot && ballot.fields} />
@@ -195,7 +195,7 @@ class ViewBallotPage extends React.PureComponent {
           </Card>
           <Card className={classes.card}>
             <CardContent>
-              <Typography type="subheading">
+              <Typography variant="subheading">
                 <FormattedMessage {...messages.voters} />
               </Typography>
               <EmptyIndicator isLoading={isLoading} list={ballot && ballot.voters} />
@@ -224,10 +224,10 @@ class ViewBallotPage extends React.PureComponent {
           {canViewStats && (
             <Card className={classes.card}>
               <CardContent>
-                <Typography type="subheading">
+                <Typography variant="subheading">
                   <FormattedMessage {...messages.stats} />
                 </Typography>
-                <Typography type="display1" className={classes.count}>
+                <Typography variant="display1" className={classes.count}>
                   <FormattedMessage {...messages.count} />
                   &nbsp;
                   <span>{count}</span>

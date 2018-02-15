@@ -54,7 +54,7 @@ class CreateVoterForm extends React.PureComponent {
 
     return (
       <Paper className={classes.root}>
-        <Typography type="headline">
+        <Typography variant="headline">
           <FormattedMessage {...messages.header} />
         </Typography>
         <form onSubmit={handleSubmit(this.handleCreate)}>

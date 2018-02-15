@@ -77,7 +77,7 @@ class GlobalBar extends React.PureComponent {
           >
             <MenuIcon />
           </IconButton>
-          <Typography type="title" color="inherit" className={classes.flex}>
+          <Typography variant="headline" color="inherit" className={classes.flex}>
             <FormattedMessage {...messages.header} />
           </Typography>
           {

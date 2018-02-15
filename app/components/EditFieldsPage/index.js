@@ -118,7 +118,7 @@ class EditFieldsPage extends React.PureComponent {
           {!isLoading && canEditFields && (
             <Button
               color="primary"
-              raised
+              variant="raised"
               onClick={this.props.onStartCreateAction}
             >
               <FormattedMessage {...messages.create} />

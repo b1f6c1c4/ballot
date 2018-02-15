@@ -167,7 +167,7 @@ class PreVotingPage extends React.PureComponent {
         {!isLoading && (
           <Paper className={classes.root}>
             <form onSubmit={handleSubmit(this.handleSign)}>
-              <Typography type="title">
+              <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
               <EmptyIndicator
