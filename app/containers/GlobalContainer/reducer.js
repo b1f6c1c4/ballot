@@ -26,6 +26,13 @@ function globalContainerReducer(state = initialState, action) {
       return state.set('credential', fromJS(action.credential));
     case GLOBAL_CONTAINER.LOGOUT_ACTION:
       return state.set('credential', null);
+    case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION: {
+      const list = state.get('listBallots');
+      const id = list.findIndex((b) => b.get('bId') === action.bId);
+      if (id === -1) return state;
+      const newList = list.update(id, (b) => b.set('status', action.status));
+      return state.set('listBallots', newList);
+    }
     // Sagas
     case GLOBAL_CONTAINER.BALLOTS_REQUEST:
       return state.set('isLoading', true);

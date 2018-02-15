@@ -61,6 +61,7 @@ GlobalContainer.propTypes = {
   onCloseAccountAction: PropTypes.func.isRequired,
   onLoginAction: PropTypes.func.isRequired,
   onLogoutAction: PropTypes.func.isRequired,
+  onStatusChangeAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch) {
@@ -72,6 +73,7 @@ export function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
+    onStatusChangeAction: () => dispatch(globalContainerActions.statusChange()),
   };
 }
 

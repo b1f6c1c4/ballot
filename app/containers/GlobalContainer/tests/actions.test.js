@@ -45,4 +45,17 @@ describe('GlobalContainer actions', () => {
       expect(globalContainerActions.logout().type).toEqual(GLOBAL_CONTAINER.LOGOUT_ACTION);
     });
   });
+
+  describe('statusChange action', () => {
+    const param = { bId: 'b', status: 's' };
+
+    it('has a type of STATUS_CHANGE_ACTION', () => {
+      expect(globalContainerActions.statusChange(param).type).toEqual(GLOBAL_CONTAINER.STATUS_CHANGE_ACTION);
+    });
+
+    it('should forward', () => {
+      expect(globalContainerActions.statusChange(param).bId).toEqual('b');
+      expect(globalContainerActions.statusChange(param).status).toEqual('s');
+    });
+  });
 });

@@ -5,6 +5,7 @@ export const LOGIN_ACTION = 'GlobalContainer/LOGIN_ACTION';
 export const CLOSE_DRAWER_ACTION = 'GlobalContainer/CLOSE_DRAWER_ACTION';
 export const OPEN_ACCOUNT_ACTION = 'GlobalContainer/OPEN_ACCOUNT_ACTION';
 export const CLOSE_ACCOUNT_ACTION = 'GlobalContainer/CLOSE_ACCOUNT_ACTION';
+export const STATUS_CHANGE_ACTION = 'GlobalContainer/STATUS_CHANGE_ACTION';
 
 // Sagas
 export const BALLOTS_REQUEST = 'GlobalContainer/BALLOTS_REQUEST';

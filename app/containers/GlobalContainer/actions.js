@@ -38,6 +38,14 @@ export function logout() {
   };
 }
 
+export function statusChange({ bId, status }) {
+  return {
+    type: GLOBAL_CONTAINER.STATUS_CHANGE_ACTION,
+    bId,
+    status,
+  };
+}
+
 // Sagas
 export function ballotsRequest() {
   return {
