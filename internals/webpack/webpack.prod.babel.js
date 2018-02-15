@@ -42,13 +42,15 @@ const materialUiGroups = _.fromPairs([
   'Progress',
   'Radio',
   'Snackbar',
-  'Step',
   'Table',
 ].map((g) => [g, new RegExp(`${g}($|[A-Z])|${g}$`)]));
 
 const materialUiMap = (name) => {
   if (/^Tab($|[A-Z])/.test(name)) {
     return `material-ui/Tabs/${name}`;
+  }
+  if (/^Step($|[A-Z])/.test(name)) {
+    return `material-ui/Step/${name}`;
   }
   switch (name) {
     case 'Backdrop':

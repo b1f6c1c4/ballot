@@ -7,6 +7,8 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
+import ViewStatPage from 'components/ViewStatPage';
+
 import * as viewStatContainerSelectors from './selectors';
 import * as viewStatContainerActions from './actions';
 import reducer from './reducer';
@@ -14,8 +16,16 @@ import sagas from './sagas';
 
 export class ViewStatContainer extends React.PureComponent {
   render() {
+    const {
+      match,
+      ...other
+    } = this.props;
+
     return (
-      <pre>{JSON.stringify(this.props, null, 2)}</pre>
+      <ViewStatPage
+        bId={match.params.bId}
+        {...other}
+      />
     );
   }
 }

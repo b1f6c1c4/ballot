@@ -11,6 +11,11 @@ export function* handleBallotRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.Ballot, { bId });
     yield put(viewStatContainerActions.ballotSuccess(result));
+    const fields = _.get(result, 'ballot.fields');
+    if (fields) {
+      const max = result.ballot.fields.length;
+      yield put(viewStatContainerActions.statsRequest({ bId, max }));
+    }
   } catch (err) {
     yield put(viewStatContainerActions.ballotFailure(err));
   }
