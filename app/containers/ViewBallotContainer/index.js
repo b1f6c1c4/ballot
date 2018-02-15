@@ -37,6 +37,7 @@ ViewBallotContainer.propTypes = {
   match: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
+  count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
@@ -56,6 +57,7 @@ const mapStateToProps = createStructuredSelector({
   isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
   ballot: viewBallotContainerSelectors.Ballot(),
   error: viewBallotContainerSelectors.Error(),
+  count: (state) => state.getIn(['viewBallotContainer', 'count']),
 });
 
 export default compose(

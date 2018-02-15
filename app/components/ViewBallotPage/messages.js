@@ -16,6 +16,10 @@ export default {
       id: 'app.components.ViewBallotPage.stats',
       defaultMessage: 'Statistics',
     },
+    count: {
+      id: 'app.components.ViewBallotPage.count',
+      defaultMessage: 'Submitted:',
+    },
     registered: {
       id: 'app.components.ViewBallotPage.registered',
       defaultMessage: 'Registered',

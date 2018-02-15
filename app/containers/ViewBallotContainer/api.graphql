@@ -15,6 +15,12 @@ query Ballot($bId: ID!) {
   }
 }
 
+query CountTickets($bId: ID!) {
+  countTickets(input: {
+    bId: $bId,
+  })
+}
+
 query BallotCrypto($bId: ID!) {
   ballot(input: {
     bId: $bId,

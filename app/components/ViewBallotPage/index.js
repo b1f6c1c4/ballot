@@ -51,6 +51,9 @@ const styles = (theme) => ({
     minWidth: 280,
     flexGrow: 1,
   },
+  count: {
+    textAlign: 'center',
+  },
 });
 
 class ViewBallotPage extends React.PureComponent {
@@ -74,11 +77,12 @@ class ViewBallotPage extends React.PureComponent {
       bId,
       isLoading,
       ballot,
+      count,
     } = this.props;
 
     const canEditFields = ballot && Permission.CanEditFields(ballot);
     const canEditVoters = ballot && Permission.CanEditVoters(ballot);
-    const canViewStats = ballot && Permission.CanViewStats(ballot);
+    const canViewStats = !isLoading && ballot && Permission.CanViewStats(ballot);
 
     const makeFieldType = (b) => {
       const type = b.__typename; // eslint-disable-line no-underscore-dangle
@@ -223,7 +227,11 @@ class ViewBallotPage extends React.PureComponent {
                 <Typography type="subheading">
                   <FormattedMessage {...messages.stats} />
                 </Typography>
-                <EmptyIndicator isLoading={isLoading} />
+                <Typography type="display1" className={classes.count}>
+                  <FormattedMessage {...messages.count} />
+                  &nbsp;
+                  <span>{count}</span>
+                </Typography>
               </CardContent>
               <CardActions>
                 <ViewButton onClick={this.handleStatView} />
@@ -242,6 +250,7 @@ ViewBallotPage.propTypes = {
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   error: PropTypes.object,
+  count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
