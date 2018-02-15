@@ -48,10 +48,6 @@ const styles = (theme) => ({
 });
 
 class VoterRegPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleRegister = (vals) => this.props.onRegister({
     comment: vals.get('comment'),
   });

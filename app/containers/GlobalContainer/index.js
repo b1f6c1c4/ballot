@@ -32,7 +32,7 @@ const ConnectedSwitch = connect(createStructuredSelector({
 }))(Switch);
 
 export class GlobalContainer extends React.PureComponent {
-  componentDidMount() {
+  componentWillMount() {
     this.props.onStatusRequestAction();
   }
 

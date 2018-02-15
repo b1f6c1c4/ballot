@@ -35,10 +35,6 @@ const styles = (theme) => ({
 });
 
 class ViewStatPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handlePrev = () => this.props.onChangeFieldAction(this.props.fieldIndex - 1);
 
   handleNext = () => this.props.onChangeFieldAction(this.props.fieldIndex + 1);

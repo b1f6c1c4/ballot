@@ -60,10 +60,6 @@ const styles = (theme) => ({
 });
 
 class PreVotingPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   validate = make(
     this.props.intl,
     required(),

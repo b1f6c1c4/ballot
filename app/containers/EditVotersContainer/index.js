@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
@@ -15,6 +16,16 @@ import reducer from './reducer';
 import sagas from './sagas';
 
 export class EditVotersContainer extends React.PureComponent {
+  componentWillMount() {
+    this.props.onRefresh();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      nextProps.onRefresh();
+    }
+  }
+
   render() {
     const {
       match,
@@ -38,6 +49,7 @@ EditVotersContainer.propTypes = {
   ballot: PropTypes.object,
   error: PropTypes.object,
   voters: PropTypes.array,
+  onRefresh: PropTypes.func.isRequired,
   onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
 };

@@ -49,10 +49,6 @@ const styles = (theme) => ({
 });
 
 class EditFieldsPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleEdit = (index) => () => this.props.onStartEditAction({ index });
 
   handleDelete = (index) => () => this.props.onRemoveAction({ index });

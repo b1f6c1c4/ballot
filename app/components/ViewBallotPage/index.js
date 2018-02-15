@@ -57,10 +57,6 @@ const styles = (theme) => ({
 });
 
 class ViewBallotPage extends React.PureComponent {
-  componentDidMount() {
-    this.props.onRefresh();
-  }
-
   handleFieldsEdit = () => {
     const { bId } = this.props;
     this.props.onPush(`/app/ballots/${bId}/fields/`);
