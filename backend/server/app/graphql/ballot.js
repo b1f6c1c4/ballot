@@ -81,7 +81,11 @@ module.exports = {
                 data: [stringDefault],
               };
             }
-            throw new errors.FieldMalformedError();
+            return {
+              prompt,
+              type: 'string',
+              data: [null],
+            };
           });
           logger.trace('Fields', flds);
 
