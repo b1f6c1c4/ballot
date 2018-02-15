@@ -12,6 +12,14 @@ export default {
       id: 'app.components.ViewBallotPage.voters',
       defaultMessage: 'Voters',
     },
+    preVoting: {
+      id: 'app.components.ViewBallotPage.preVoting',
+      defaultMessage: 'Pre-voting',
+    },
+    voting: {
+      id: 'app.components.ViewBallotPage.voting',
+      defaultMessage: 'Voting',
+    },
     stats: {
       id: 'app.components.ViewBallotPage.stats',
       defaultMessage: 'Statistics',

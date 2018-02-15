@@ -15,6 +15,7 @@ import {
   TableRow,
   Button,
 } from 'material-ui';
+import QRCode from 'qrcode.react';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -52,6 +53,13 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
   count: {
+    textAlign: 'center',
+  },
+  detail: {
+    fontFamily: 'monospace',
+    overflowWrap: 'break-word',
+  },
+  qrcode: {
     textAlign: 'center',
   },
 });
@@ -108,6 +116,9 @@ class ViewBallotPage extends React.PureComponent {
         <FormattedMessage {...messages.unregistered} />
       );
     };
+
+    const makeUrl = () => `${window.location.protocol}//${window.location.host}/app/ballots/${bId}/preVoting`;
+    const makeVUrl = () => `${window.location.protocol}//${window.location.host}/secret/`;
 
     return (
       <div className={classes.container}>
@@ -222,6 +233,40 @@ class ViewBallotPage extends React.PureComponent {
               )}
             </CardActions>
           </Card>
+          {!isLoading && ballot && ballot.status === 'preVoting' && (
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography variant="subheading">
+                  <FormattedMessage {...messages.preVoting} />
+                </Typography>
+                <Typography component="p">
+                  <a href={makeUrl()}>
+                    <span className={classes.detail}>{makeUrl()}</span>
+                  </a>
+                </Typography>
+                <div className={classes.qrcode}>
+                  <QRCode value={makeUrl()} size={256} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {!isLoading && ballot && ballot.status === 'voting' && (
+            <Card className={classes.card}>
+              <CardContent>
+                <Typography variant="subheading">
+                  <FormattedMessage {...messages.voting} />
+                </Typography>
+                <Typography component="p">
+                  <a href={makeVUrl()}>
+                    <span className={classes.detail}>{makeVUrl()}</span>
+                  </a>
+                </Typography>
+                <div className={classes.qrcode}>
+                  <QRCode value={makeVUrl()} size={256} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {canViewStats && (
             <Card className={classes.card}>
               <CardContent>
