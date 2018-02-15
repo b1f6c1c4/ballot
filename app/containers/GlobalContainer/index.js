@@ -20,6 +20,7 @@ import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
 import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
 import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
 
+import * as languageProviderActions from 'containers/LanguageProvider/actions';
 import * as globalContainerSelectors from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
@@ -65,6 +66,7 @@ GlobalContainer.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,
+  onLanguage: PropTypes.func.isRequired,
   username: PropTypes.string,
   listBallots: PropTypes.array,
   onOpenDrawerAction: PropTypes.func.isRequired,
@@ -80,6 +82,7 @@ GlobalContainer.propTypes = {
 export function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
+    onLanguage: (lo) => dispatch(languageProviderActions.changeLocale(lo)),
     onOpenDrawerAction: () => dispatch(globalContainerActions.openDrawer()),
     onCloseDrawerAction: () => dispatch(globalContainerActions.closeDrawer()),
     onOpenAccountAction: () => dispatch(globalContainerActions.openAccount()),
