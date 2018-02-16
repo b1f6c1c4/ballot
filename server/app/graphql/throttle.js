@@ -18,4 +18,3 @@ module.exports = (log, max, duration) => async (obj) => {
     throw e;
   }
 };
-

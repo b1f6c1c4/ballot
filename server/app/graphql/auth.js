@@ -36,6 +36,7 @@ module.exports = {
           logger.info('User registered', user._id);
           return true;
         } catch (e) {
+          /* istanbul ignore if */
           if (e.code === 11000) { // E11000 duplicate key
             logger.debug('Register', e);
             return new errors.UsernameExistsError();

@@ -125,14 +125,14 @@ router.post(
   },
   expressTh('GET tickets', { max: 1, duration: 60000 }, (req) => req.targetObj.t),
   async (req, res) => {
+    logger.debug('Call submitTicket', req.responseEnc);
     const rst = await submitTicket(req.targetObj);
-    switch (req.targetEnc) {
+    switch (req.responseEnc) {
       case 'json': {
         res.status(rst.status).json(rst.json);
         return;
       }
       case 'html': {
-        logger.debug('Resposne status', rst.status);
         if (rst.status === 202) {
           res.status(rst.status).send(`Ticket staged. Your tId is <pre>${rst.json.tId}</pre>`);
         } else {

@@ -3,6 +3,7 @@ const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { bIdGen, iCodeGen, newRing } = require('../cryptor');
 const { updateBallotStatus } = require('../publish');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/ballot');
 
 module.exports = {
@@ -25,6 +26,9 @@ module.exports = {
         }
 
         try {
+          await throttle('createBallot-1', 1, 30000)(context);
+          await throttle('createBallot-2', 1, 60000)(context);
+
           const ballot = new Ballot();
           ballot._id = await bIdGen();
           ballot.name = name;
@@ -40,6 +44,7 @@ module.exports = {
           delete obj.updatedAt;
           return obj;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Create ballot', e);
           return e;
         }
@@ -135,6 +140,8 @@ module.exports = {
         }
 
         try {
+          await throttle('createVoter', 3, 1000)(bId);
+
           const doc = await Ballot.findById(bId);
           if (!doc) {
             return new errors.NotFoundError();

@@ -34,6 +34,7 @@
     "collectCoverageFrom": [
       "server/app/**/*.js",
       "!server/app/index.js",
+      "!server/app/**/throttle.js",
       "!server/app/**/*.test.js"
     ],
     "moduleDirectories": [

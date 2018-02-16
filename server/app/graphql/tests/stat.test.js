@@ -1,4 +1,5 @@
 const { models, make, mer } = require('../../../tests/util');
+const errors = require('../error');
 
 jest.mock('../projection', () => ({
   project(info) {
@@ -8,6 +9,17 @@ jest.mock('../projection', () => ({
     return obj;
   },
 }));
+
+let throttleThrow = false;
+jest.doMock('../throttle', () => () => async () => {
+  if (throttleThrow) {
+    throw new errors.TooManyRequestsError(666);
+  }
+});
+
+beforeEach(() => {
+  throttleThrow = false;
+});
 
 // eslint-disable-next-line global-require
 const { resolvers } = require('../stat');
@@ -69,6 +81,13 @@ describe('Query', () => {
       done();
     });
 
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
+      done();
+    });
+
     it('should count if good', async (done) => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...dArgs);
@@ -100,6 +119,13 @@ describe('Query', () => {
       done();
     });
 
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
+      done();
+    });
+
     it('should query if good', async (done) => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...dArgs);
@@ -121,6 +147,13 @@ describe('Query', () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 

@@ -10,6 +10,17 @@ jest.mock('../projection', () => ({
   },
 }));
 
+let throttleThrow = false;
+jest.doMock('../throttle', () => () => async () => {
+  if (throttleThrow) {
+    throw new errors.TooManyRequestsError(666);
+  }
+});
+
+beforeEach(() => {
+  throttleThrow = false;
+});
+
 // eslint-disable-next-line global-require
 const { resolvers } = require('../query');
 
@@ -51,6 +62,13 @@ describe('Query', () => {
       done();
     });
 
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
+      done();
+    });
+
     it('should query if good', async (done) => {
       await make.Ballot(dBallot);
       const res = await func(...mer(dArgs, '[3].projs', ['name', 'owner']));
@@ -85,6 +103,13 @@ describe('Query', () => {
     it('should handle not found', async (done) => {
       const res = await func(...dArgs);
       expect(res).toEqual([]);
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 

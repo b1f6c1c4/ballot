@@ -4,6 +4,7 @@ const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { subscribe: rpcSubscribe } = require('../../rpc');
 const { core } = require('../auth');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/subscription');
 
 const pubsub = new PubSub();
@@ -131,6 +132,8 @@ module.exports = {
           const { bId } = args.input;
 
           try {
+            await throttle('ballotStatus', 2, 1000)(context);
+
             const doc = await Ballot.findById(bId, { _id: 1 });
             if (!doc) {
               return new errors.NotFoundError();
@@ -141,6 +144,7 @@ module.exports = {
 
             return pubsub.asyncIterator(`ballotStatus.${bId}`);
           } catch (e) {
+            if (e instanceof errors.TooManyRequestsError) return e;
             logger.error('Subscribe ballotStatus', e);
             return e;
           }
@@ -159,11 +163,15 @@ module.exports = {
           const { username } = context.auth;
 
           try {
+            await throttle('ballotStatus', 1, 2000)(context);
+
             const cb = await subscribeBallotsStatus(username);
             context.registry.set(context.opId, cb);
 
             return pubsub.asyncIterator(`ballotsStatus.${username}`);
           } catch (e) {
+            /* istanbul ignore else */
+            if (e instanceof errors.TooManyRequestsError) return e;
             /* istanbul ignore next */
             logger.error('Subscribe ballotsStatus', e);
             /* istanbul ignore next */

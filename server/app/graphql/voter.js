@@ -1,5 +1,6 @@
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/voter');
 
 module.exports = {
@@ -22,6 +23,8 @@ module.exports = {
         }
 
         try {
+          await throttle('registerVoter', 3, 1000)(context);
+
           const doc = await Ballot.findById(bId);
           if (!doc) {
             return new errors.NotFoundError();
@@ -46,6 +49,7 @@ module.exports = {
           logger.info('Voter registered', { bId, iCode });
           return true;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Register voter', e);
           return e;
         }

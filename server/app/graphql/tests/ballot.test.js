@@ -28,6 +28,17 @@ beforeEach(() => {
   updateBallotStatusCalled = false;
 });
 
+let throttleThrow = false;
+jest.doMock('../throttle', () => () => async () => {
+  if (throttleThrow) {
+    throw new errors.TooManyRequestsError(666);
+  }
+});
+
+beforeEach(() => {
+  throttleThrow = false;
+});
+
 // eslint-disable-next-line global-require
 const { resolvers } = require('../ballot');
 
@@ -77,6 +88,13 @@ describe('Mutation', () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('Some error');
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 
@@ -225,6 +243,13 @@ describe('Mutation', () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 
