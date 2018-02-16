@@ -123,10 +123,10 @@ class EditFieldDialog extends React.PureComponent {
                 component={Select}
               >
                 <MenuItem value="EnumField">
-                  <FormattedMessage {...messages.enumField} />
+                  <FormattedMessage {...messages.fieldType_EnumField} />
                 </MenuItem>
                 <MenuItem value="StringField">
-                  <FormattedMessage {...messages.stringField} />
+                  <FormattedMessage {...messages.fieldType_StringField} />
                 </MenuItem>
               </Field>
             </FormControl>

@@ -17,14 +17,14 @@ export default defineMessages({
     id: 'app.general.beforeLeave',
     defaultMessage: 'Leave without save?',
   },
-  // Fields
-  stringField: {
-    id: 'app.fields.stringField',
-    defaultMessage: 'Custom string',
+  // Field Type
+  fieldType_StringField: {
+    id: 'app.fieldType.StringField',
+    defaultMessage: 'String',
   },
-  enumField: {
-    id: 'app.fields.enumField',
-    defaultMessage: 'Enumeration',
+  fieldType_EnumField: {
+    id: 'app.fieldType.EnumField',
+    defaultMessage: 'Enum',
   },
   // Validation
   required: {
@@ -83,13 +83,5 @@ export default defineMessages({
   error_stna: {
     id: 'app.error.stna',
     defaultMessage: 'Ballot status incorrect.',
-  },
-  fieldType_StringField: {
-    id: 'app.fieldType.StringField',
-    defaultMessage: 'String',
-  },
-  fieldType_EnumField: {
-    id: 'app.fieldType.EnumField',
-    defaultMessage: 'Enum',
   },
 });

@@ -16,10 +16,6 @@ export default {
       id: 'app.components.HomePage.create',
       defaultMessage: 'Create',
     },
-    refresh: {
-      id: 'app.components.HomePage.refresh',
-      defaultMessage: 'Refresh',
-    },
     bId: {
       id: 'app.components.HomePage.bId',
       defaultMessage: 'ID',
@@ -31,10 +27,6 @@ export default {
     status: {
       id: 'app.components.HomePage.status',
       defaultMessage: 'Status',
-    },
-    empty: {
-      id: 'app.components.HomePage.empty',
-      defaultMessage: 'Empty',
     },
   }),
 };
