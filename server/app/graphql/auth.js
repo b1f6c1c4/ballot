@@ -3,6 +3,7 @@ const errors = require('./error');
 const { Organizer } = require('../../models/organizers');
 const { hashPassword, verifyPassword } = require('../cryptor');
 const { issue } = require('../auth');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/auth');
 
 module.exports = {
@@ -23,6 +24,10 @@ module.exports = {
         }
 
         try {
+          await throttle('register-1', 1, 5000)(context);
+          const doc = await Organizer.findById(username, { _id: 1 });
+          if (doc) return new errors.UsernameExistsError();
+          await throttle('register-2', 1, 60000)(context);
           const { hash } = await hashPassword(password);
           const user = new Organizer();
           user._id = username;
@@ -35,6 +40,7 @@ module.exports = {
             logger.debug('Register', e);
             return new errors.UsernameExistsError();
           }
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Register', e);
           return e;
         }
@@ -55,6 +61,9 @@ module.exports = {
         }
 
         try {
+          await throttle('login-1', 3, 5000)(context);
+          await throttle('login-2', 3, 5000)(username);
+
           const tryFind = await Organizer.findById(username, { });
           logger.trace('tryFind', !!tryFind);
           if (!tryFind) {
@@ -70,6 +79,7 @@ module.exports = {
           logger.info('Login success', username);
           return jwt;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Login', e);
           return e;
         }
@@ -95,6 +105,9 @@ module.exports = {
         }
 
         try {
+          await throttle('password-1', 1, 60000)(context);
+          await throttle('password-2', 1, 5000)(username);
+
           const user = await Organizer.findById(username, {});
           if (!user) {
             return new errors.NotFoundError();
@@ -110,6 +123,7 @@ module.exports = {
           logger.info('Change password success', username);
           return true;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Change password', e);
           return e;
         }

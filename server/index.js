@@ -6,6 +6,7 @@ const api = require('./app');
 const { makeServer } = require('./app/graphql');
 const rpc = require('./rpc');
 const mongo = require('./mongo');
+const redis = require('./redis');
 const logger = require('./logger')('index');
 
 logger.info('Versions', process.versions);
@@ -34,7 +35,7 @@ process.on('SIGTERM', () => {
 const app = express();
 
 app.set('trust proxy', true);
-app.use('/api', api);
+app.use('/api', api, (req, res) => res.status(404).send());
 
 // get the intended host and port number, use localhost and port 3000 if not provided
 const customHost = argv.host || process.env.HOST;
@@ -89,6 +90,12 @@ if (!process.env.NO_RABBIT) {
     }));
 } else {
   logger.warn('Rabbitmq omitted.');
+}
+
+if (!process.env.NO_REDIS) {
+  inits.push(redis.connect());
+} else {
+  logger.warn('Redis omitted.');
 }
 
 Promise.all(inits)

@@ -1,3 +1,11 @@
+class TooManyRequestsError extends Error {
+  constructor(after) {
+    super(`Rate limit exceeded, retry after ${after.toFixed(0)}s`);
+    this.statusCode = 429;
+    this.errorCode = 'tmrq';
+  }
+}
+
 class UnauthorizedError extends Error {
   constructor() {
     super('Unauthorized');
@@ -79,6 +87,7 @@ class VoterRegisteredError extends Error {
 }
 
 module.exports = {
+  TooManyRequestsError,
   UnauthorizedError,
   NotFoundError,
   UsernameMalformedError,
