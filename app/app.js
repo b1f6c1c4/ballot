@@ -1,7 +1,5 @@
-// Needed for redux-saga es6 generator support
 import 'babel-polyfill';
 
-// Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -14,10 +12,8 @@ import {
 } from 'material-ui';
 import 'typeface-roboto/index.css';
 
-// Import root app
 import GlobalContainer from 'containers/GlobalContainer';
-
-// Import Language Provider
+import ErrorBoundary from 'containers/ErrorBoundary';
 import LanguageProvider from 'containers/LanguageProvider';
 
 // Load the favicon, the manifest.json file
@@ -42,16 +38,20 @@ const theme = createMuiTheme({
 const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>
-      <LanguageProvider messages={messages}>
+      <ErrorBoundary>
         <ConnectedRouter history={history}>
-          <div>
-            <Reboot />
-            <MuiThemeProvider theme={theme}>
-              <GlobalContainer />
-            </MuiThemeProvider>
-          </div>
+          <ErrorBoundary>
+            <LanguageProvider messages={messages}>
+              <div>
+                <Reboot />
+                <MuiThemeProvider theme={theme}>
+                  <GlobalContainer />
+                </MuiThemeProvider>
+              </div>
+            </LanguageProvider>
+          </ErrorBoundary>
         </ConnectedRouter>
-      </LanguageProvider>
+      </ErrorBoundary>
     </Provider>,
     MOUNT_NODE,
   );
