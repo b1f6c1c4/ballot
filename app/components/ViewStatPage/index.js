@@ -54,11 +54,11 @@ class ViewStatPage extends React.PureComponent {
 
     const fieldsCount = ballot && ballot.fields.length;
 
-    const field = ballot.fields[fieldIndex];
+    const field = ballot && ballot.fields[fieldIndex];
 
-    const data = {
-      label: field && field.prompt,
-      values: stat && stat.map(({ answer, count }) => ({
+    const data = field && stat && {
+      label: field.prompt,
+      values: stat.map(({ answer, count }) => ({
         x: answer,
         y: count,
       })),
@@ -106,15 +106,15 @@ class ViewStatPage extends React.PureComponent {
                 </Button>
               }
             />
-            {!field && (
+            {!data && (
               <EmptyIndicator />
             )}
-            {field && (
+            {data && (
               <Typography variant="title">
                 {field.prompt}
               </Typography>
             )}
-            {field && (
+            {data && (
               <PieChart
                 data={data}
                 width={600}

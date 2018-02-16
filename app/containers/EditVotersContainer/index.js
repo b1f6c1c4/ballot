@@ -17,7 +17,9 @@ import sagas from './sagas';
 
 export class EditVotersContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onRefresh();
+    if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
+      this.props.onRefresh();
+    }
   }
 
   componentWillReceiveProps(nextProps) {

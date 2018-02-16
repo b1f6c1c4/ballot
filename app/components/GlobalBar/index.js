@@ -36,6 +36,17 @@ const styles = (theme) => ({
 });
 
 class GlobalBar extends React.PureComponent {
+  state = { anchorEl: null };
+
+  componentDidUpdate() {
+    // eslint-disable-next-line react/no-find-dom-node
+    const anchorEl = ReactDOM.findDOMNode(this.anchorEl);
+    if (this.state.anchorEl !== anchorEl) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ anchorEl });
+    }
+  }
+
   handleDrawer = () => this.props.isDrawerOpen
     ? this.props.onCloseDrawerAction()
     : this.props.onOpenDrawerAction();
@@ -67,9 +78,6 @@ class GlobalBar extends React.PureComponent {
       isAccountOpen,
     } = this.props;
 
-    // eslint-disable-next-line react/no-find-dom-node
-    const anchorEl = ReactDOM.findDOMNode(this.anchorEl);
-
     return (
       <AppBar position="static">
         <Toolbar>
@@ -81,7 +89,13 @@ class GlobalBar extends React.PureComponent {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="headline" color="inherit" className={classes.flex}>
+          <Typography
+            component="div"
+            onClick={this.handleProfile}
+            variant="headline"
+            color="inherit"
+            className={classes.flex}
+          >
             <FormattedMessage {...messages.header} />
           </Typography>
           {
@@ -98,7 +112,7 @@ class GlobalBar extends React.PureComponent {
                 </Button>
                 <Menu
                   id="menu-appbar"
-                  anchorEl={anchorEl}
+                  anchorEl={this.state.anchorEl}
                   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                   open={isAccountOpen}

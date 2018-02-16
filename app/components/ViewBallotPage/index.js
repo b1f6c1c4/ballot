@@ -141,7 +141,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'inviting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeVoters} />
@@ -150,7 +149,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'invited' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeFields} />
@@ -159,7 +157,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'preVoting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizePreVoting} />
@@ -168,7 +165,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'voting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeVoting} />

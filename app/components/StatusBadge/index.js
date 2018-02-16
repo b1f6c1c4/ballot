@@ -86,7 +86,7 @@ StatusBadge.propTypes = {
   minor: PropTypes.bool,
 };
 
-StatusBadge.defaultValues = {
+StatusBadge.defaultProps = {
   minor: false,
 };
 
