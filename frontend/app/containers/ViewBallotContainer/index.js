@@ -17,7 +17,9 @@ import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onRefresh();
+    if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
+      this.props.onRefresh();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,6 +53,7 @@ ViewBallotContainer.propTypes = {
   count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
 };
 
@@ -59,6 +62,7 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
+    onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
   };
 }

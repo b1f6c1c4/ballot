@@ -39,6 +39,13 @@ function viewBallotContainerReducer(state = initialState, action) {
     case VIEW_BALLOT_CONTAINER.FINALIZE_FAILURE:
       return state.set('isLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
+    case VIEW_BALLOT_CONTAINER.EXPORT_REQUEST:
+      return state;
+    case VIEW_BALLOT_CONTAINER.EXPORT_SUCCESS:
+      return state;
+    case VIEW_BALLOT_CONTAINER.EXPORT_FAILURE:
+      return state
+        .set('error', fromJS(_.toPlainObject(action.error)));
     // Default
     default:
       return state;

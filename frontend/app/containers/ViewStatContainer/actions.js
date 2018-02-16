@@ -51,3 +51,24 @@ export function statsFailure(error) {
     error,
   };
 }
+
+export function exportRequest({ bId }) {
+  return {
+    type: VIEW_STAT_CONTAINER.EXPORT_REQUEST,
+    bId,
+  };
+}
+
+export function exportSuccess(result) {
+  return {
+    type: VIEW_STAT_CONTAINER.EXPORT_SUCCESS,
+    result,
+  };
+}
+
+export function exportFailure(error) {
+  return {
+    type: VIEW_STAT_CONTAINER.EXPORT_FAILURE,
+    error,
+  };
+}

@@ -13,7 +13,9 @@ const styles = () => ({
   wrapper: {
     textAlign: 'center',
   },
-  progress: {},
+  progress: {
+    cursor: 'wait',
+  },
 });
 
 class Loading extends React.PureComponent {

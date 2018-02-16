@@ -14,6 +14,9 @@ import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
+  clickable: {
+    cursor: 'pointer',
+  },
   badge: {
     display: 'inline-block',
     verticalAlign: 'super',
@@ -45,6 +48,7 @@ class BallotMeta extends React.PureComponent {
             variant="display2"
             gutterBottom
             onClick={this.handleClick}
+            className={classes.clickable}
           >
             {ballot.name}
             <Typography className={classes.badge} variant="subheading" component="span">
@@ -55,6 +59,10 @@ class BallotMeta extends React.PureComponent {
         {isLoading && (
           <Loading />
         )}
+        <Typography variant="caption">
+          <FormattedMessage {...messages.owner} />
+          {ballot && ballot.owner}
+        </Typography>
         <Typography variant="caption">
           <FormattedMessage {...messages.bId} />
           <Abbreviation text={bId} allowExpand />

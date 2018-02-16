@@ -44,8 +44,9 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
   detail: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
   qrcode: {
     textAlign: 'center',

@@ -41,7 +41,11 @@ class EditButton extends React.PureComponent {
 EditButton.propTypes = {
   onClick: PropTypes.func,
   classes: PropTypes.object.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
+};
+
+EditButton.defaultProps = {
+  isLoading: false,
 };
 
 export const styledEditButton = withStyles(styles)(EditButton);

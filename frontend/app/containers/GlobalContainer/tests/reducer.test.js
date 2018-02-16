@@ -58,13 +58,6 @@ describe('globalContainerReducer', () => {
     expect(globalContainerReducer(originalState, globalContainerActions.login(credential))).toEq(expectedResult);
   });
 
-  it('should handle logout action', () => {
-    const originalState = state.set('credential', { key: 'val' });
-    const expectedResult = state;
-
-    expect(globalContainerReducer(originalState, globalContainerActions.logout())).toEq(expectedResult);
-  });
-
   it('should handle statusChange action', () => {
     const originalState = state.set('listBallots', fromJS([
       { bId: 'b1', status: 's1', evil: true },

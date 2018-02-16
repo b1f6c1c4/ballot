@@ -14,3 +14,8 @@ export const Stat = () => createSelector(
     return obj && obj.toJS();
   },
 );
+
+export const Error = () => createSelector(
+  (state) => state.getIn(['viewStatContainer', 'error']),
+  (state) => state && state.toJS(),
+);

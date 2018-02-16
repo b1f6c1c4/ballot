@@ -2,6 +2,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
+import downloadCsv from 'download-csv';
 
 import * as VIEW_STAT_CONTAINER from '../constants';
 import * as viewStatContainerActions from '../actions';
@@ -10,6 +11,7 @@ import gql from '../api.graphql';
 import watcher, {
   handleBallotRequest,
   handleStatsRequest,
+  handleExportRequest,
 } from '../sagas';
 
 // Sagas
@@ -103,6 +105,69 @@ describe('handleStatsRequest Saga', () => {
         [matchers.call(...dArgs(1)), throwError(error)],
       ])
       .put(viewStatContainerActions.statsFailure(error))
+      .run();
+  });
+});
+
+describe('handleExportRequest Saga', () => {
+  const variables = { bId: 'val' };
+  const func = () => handleExportRequest(variables);
+  const dArgs0 = [api.query, gql.Export, variables];
+  const dArgs1 = [
+    downloadCsv,
+    [
+      {
+        t: 't',
+        bId: 'b',
+        result_0: 'r0',
+        result_1: 'r1',
+        s_0: 's0',
+        c_0: 'c0',
+      },
+    ],
+    null,
+    'tickets.csv',
+  ];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen EXPORT_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take(VIEW_STAT_CONTAINER.EXPORT_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch exportSuccess', () => {
+    const tickets = [{
+      t: 't',
+      payload: {
+        bId: 'b',
+        result: ['r0', 'r1'],
+      },
+      s: ['s0'],
+      c: ['c0'],
+    }];
+    const response = { tickets };
+
+    return expectSaga(func)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .provide([
+        [matchers.call(...dArgs0), response],
+        [matchers.call(...dArgs1), undefined],
+      ])
+      .put(viewStatContainerActions.exportSuccess(response))
+      .run();
+  });
+
+  it('should dispatch exportFailure', () => {
+    const error = new Error('value');
+
+    return expectSaga(func)
+      .call(...dArgs0)
+      .provide([
+        [matchers.call(...dArgs0), throwError(error)],
+      ])
+      .put(viewStatContainerActions.exportFailure(error))
       .run();
   });
 });

@@ -23,8 +23,6 @@ function globalContainerReducer(state = initialState, action) {
       return state.set('isAccountOpen', false);
     case GLOBAL_CONTAINER.LOGIN_ACTION:
       return state.set('credential', fromJS(action.credential));
-    case GLOBAL_CONTAINER.LOGOUT_ACTION:
-      return state.set('credential', null);
     case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION: {
       const list = state.get('listBallots');
       const id = list.findIndex((b) => b.get('bId') === action.bId);

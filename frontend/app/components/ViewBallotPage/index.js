@@ -52,12 +52,18 @@ const styles = (theme) => ({
     minWidth: 280,
     flexGrow: 1,
   },
+  xcard: {
+    margin: theme.spacing.unit,
+    maxWidth: 300,
+    flexGrow: 1,
+  },
   count: {
     textAlign: 'center',
   },
   detail: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
   qrcode: {
     textAlign: 'center',
@@ -141,7 +147,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'inviting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeVoters} />
@@ -150,7 +155,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'invited' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeFields} />
@@ -159,7 +163,6 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'preVoting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizePreVoting} />
@@ -168,10 +171,17 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'voting' && (
             <Button
               color="secondary"
-              isLoading={isLoading}
               onClick={this.props.onFinalize}
             >
               <FormattedMessage {...messages.finalizeVoting} />
+            </Button>
+          )}
+          {!isLoading && (
+            <Button
+              color="secondary"
+              onClick={this.props.onExport}
+            >
+              <FormattedMessage {...messages.export} />
             </Button>
           )}
         </div>
@@ -234,7 +244,7 @@ class ViewBallotPage extends React.PureComponent {
             </CardActions>
           </Card>
           {!isLoading && ballot && ballot.status === 'preVoting' && (
-            <Card className={classes.card}>
+            <Card className={classes.xcard}>
               <CardContent>
                 <Typography variant="subheading">
                   <FormattedMessage {...messages.preVoting} />
@@ -251,7 +261,7 @@ class ViewBallotPage extends React.PureComponent {
             </Card>
           )}
           {!isLoading && ballot && ballot.status === 'voting' && (
-            <Card className={classes.card}>
+            <Card className={classes.xcard}>
               <CardContent>
                 <Typography variant="subheading">
                   <FormattedMessage {...messages.voting} />
@@ -299,6 +309,7 @@ ViewBallotPage.propTypes = {
   count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
 };
 

@@ -48,6 +48,13 @@ function viewStatContainerReducer(state = initialState, action) {
       return state
         .set('isStatsLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
+    case VIEW_STAT_CONTAINER.EXPORT_REQUEST:
+      return state;
+    case VIEW_STAT_CONTAINER.EXPORT_SUCCESS:
+      return state;
+    case VIEW_STAT_CONTAINER.EXPORT_FAILURE:
+      return state
+        .set('error', fromJS(_.toPlainObject(action.error)));
     // Default
     default:
       return state;

@@ -54,11 +54,11 @@ class ViewStatPage extends React.PureComponent {
 
     const fieldsCount = ballot && ballot.fields.length;
 
-    const field = ballot.fields[fieldIndex];
+    const field = ballot && ballot.fields[fieldIndex];
 
-    const data = {
-      label: field && field.prompt,
-      values: stat && stat.map(({ answer, count }) => ({
+    const data = field && stat && {
+      label: field.prompt,
+      values: stat.map(({ answer, count }) => ({
         x: answer,
         y: count,
       })),
@@ -81,6 +81,14 @@ class ViewStatPage extends React.PureComponent {
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
+          {!isLoading && (
+            <Button
+              color="secondary"
+              onClick={this.props.onExport}
+            >
+              <FormattedMessage {...messages.export} />
+            </Button>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         {!isLoading && isStatsLoading && (
@@ -106,15 +114,15 @@ class ViewStatPage extends React.PureComponent {
                 </Button>
               }
             />
-            {!field && (
+            {!data && (
               <EmptyIndicator />
             )}
-            {field && (
+            {data && (
               <Typography variant="title">
                 {field.prompt}
               </Typography>
             )}
-            {field && (
+            {data && (
               <PieChart
                 data={data}
                 width={600}
@@ -140,6 +148,7 @@ ViewStatPage.propTypes = {
   fieldIndex: PropTypes.number.isRequired,
   stat: PropTypes.array,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onChangeFieldAction: PropTypes.func.isRequired,
 };
 

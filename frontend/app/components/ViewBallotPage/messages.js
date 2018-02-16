@@ -52,5 +52,9 @@ export default {
       id: 'app.components.ViewBallotPage.finalizeVoting',
       defaultMessage: 'Stop voting',
     },
+    export: {
+      id: 'app.components.ViewBallotPage.export',
+      defaultMessage: 'Export Crypto',
+    },
   }),
 };

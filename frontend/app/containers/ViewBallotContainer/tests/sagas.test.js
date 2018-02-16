@@ -3,6 +3,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
+import downloadCsv from 'download-csv';
 
 import * as VIEW_BALLOT_CONTAINER from '../constants';
 import * as viewBallotContainerActions from '../actions';
@@ -11,6 +12,7 @@ import gql from '../api.graphql';
 import watcher, {
   handleBallotRequest,
   handleFinalizeRequest,
+  handleExportRequest,
 } from '../sagas';
 
 // Sagas
@@ -84,7 +86,6 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeVoters)), response],
       ])
       .put(viewBallotContainerActions.finalizeSuccess(response))
-      .put(viewBallotContainerActions.ballotRequest({ bId: 'val' }))
       .run();
   });
 
@@ -99,7 +100,6 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeFields)), response],
       ])
       .put(viewBallotContainerActions.finalizeSuccess(response))
-      .put(viewBallotContainerActions.ballotRequest({ bId: 'val' }))
       .run();
   });
 
@@ -114,7 +114,6 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizePreVoting)), response],
       ])
       .put(viewBallotContainerActions.finalizeSuccess(response))
-      .put(viewBallotContainerActions.ballotRequest({ bId: 'val' }))
       .run();
   });
 
@@ -129,7 +128,6 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeVoting)), response],
       ])
       .put(viewBallotContainerActions.finalizeSuccess(response))
-      .put(viewBallotContainerActions.ballotRequest({ bId: 'val' }))
       .run();
   });
 
@@ -151,6 +149,52 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeVoting)), throwError(error)],
       ])
       .put(viewBallotContainerActions.finalizeFailure(error))
+      .run();
+  });
+});
+
+describe('handleExportRequest Saga', () => {
+  const variables = { bId: 'val' };
+  const state = fromJS({
+    globalContainer: { credential: { token: 'cre' } },
+  });
+  const func = () => handleExportRequest(variables);
+  const dArgs0 = [api.query, gql.BallotCrypto, variables, 'cre'];
+  const dArgs1 = [downloadCsv, [{ k: 'v' }], null, 'crypto.csv'];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen EXPORT_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take(VIEW_BALLOT_CONTAINER.EXPORT_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch exportSuccess', () => {
+    const ballot = { k: 'v', __typename: 't' };
+    const response = { ballot };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .provide([
+        [matchers.call(...dArgs0), response],
+        [matchers.call(...dArgs1), undefined],
+      ])
+      .put(viewBallotContainerActions.exportSuccess(response))
+      .run();
+  });
+
+  it('should dispatch exportFailure', () => {
+    const error = new Error('value');
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .provide([
+        [matchers.call(...dArgs0), throwError(error)],
+      ])
+      .put(viewBallotContainerActions.exportFailure(error))
       .run();
   });
 });
