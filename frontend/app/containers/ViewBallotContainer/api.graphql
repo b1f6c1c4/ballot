@@ -14,9 +14,7 @@ query Ballot($bId: ID!) {
       publicKey
     }
   }
-}
 
-query CountTickets($bId: ID!) {
   countTickets(input: {
     bId: $bId,
   })

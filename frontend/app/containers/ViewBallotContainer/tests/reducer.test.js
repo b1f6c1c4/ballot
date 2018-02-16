@@ -65,9 +65,10 @@ describe('viewBallotContainerReducer', () => {
 
   it('should handle ballot success', () => {
     const originalState = state.set('isLoading', true);
-    const result = { ballot: 'aa' };
+    const result = { ballot: 'aa', countTickets: 213 };
     const expectedResult = state.set('isLoading', false)
-      .set('ballot', 'aa');
+      .set('ballot', 'aa')
+      .set('count', 213);
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.ballotSuccess(result))).toEq(expectedResult);
   });
@@ -104,30 +105,5 @@ describe('viewBallotContainerReducer', () => {
       .set('error', fromJS(error));
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.finalizeFailure(error))).toEq(expectedResult);
-  });
-
-  it('should handle count request', () => {
-    const originalState = state.set('isLoading', false);
-    const param = { bId: 'val' };
-    const expectedResult = state.set('isLoading', true);
-
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countRequest(param))).toEq(expectedResult);
-  });
-
-  it('should handle count success', () => {
-    const originalState = state.set('isLoading', true);
-    const result = { countTickets: 233 };
-    const expectedResult = state.set('isLoading', false).set('count', 233);
-
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countSuccess(result))).toEq(expectedResult);
-  });
-
-  it('should handle count failure', () => {
-    const originalState = state.set('isLoading', true);
-    const error = { key: 'value' };
-    const expectedResult = state.set('isLoading', false)
-      .set('error', fromJS(error));
-
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.countFailure(error))).toEq(expectedResult);
   });
 });

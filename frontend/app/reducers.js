@@ -7,6 +7,7 @@ import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { reducer as formReducer } from 'redux-form/immutable';
 
+import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import globalContainerReducer from 'containers/GlobalContainer/reducer';
 
@@ -40,11 +41,21 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the dynamically injected ones
  */
 export default function createReducer(injectedReducers) {
-  return combineReducers({
+  const appReducer = combineReducers({
     form: formReducer,
     route: routeReducer,
     language: languageProviderReducer,
     globalContainer: globalContainerReducer,
     ...injectedReducers,
   });
+
+  return (state, action) => {
+    switch (action.type) {
+      /* istanbul ignore next */
+      case GLOBAL_CONTAINER.LOGOUT_ACTION:
+        return appReducer(undefined, action);
+      default:
+        return appReducer(state, action);
+    }
+  };
 }
