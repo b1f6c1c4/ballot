@@ -53,6 +53,7 @@ ViewStatContainer.propTypes = {
   fieldIndex: PropTypes.number.isRequired,
   stat: PropTypes.array,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onChangeFieldAction: PropTypes.func.isRequired,
 };
 
@@ -61,6 +62,7 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewStatContainerActions.ballotRequest({ bId })),
+    onExport: () => dispatch(viewStatContainerActions.exportRequest({ bId })),
     onChangeFieldAction: (index) => dispatch(viewStatContainerActions.changeField(index)),
   };
 }
@@ -70,7 +72,9 @@ const mapStateToProps = createStructuredSelector({
   isStatsLoading: (state) => state.getIn(['viewStatContainer', 'isStatsLoading']),
   fieldIndex: (state) => state.getIn(['viewStatContainer', 'fieldIndex']),
   ballot: viewStatContainerSelectors.Ballot(),
+  error: viewStatContainerSelectors.Error(),
   stat: viewStatContainerSelectors.Stat(),
+  error: viewStatContainerSelectors.Error(),
 });
 
 export default compose(

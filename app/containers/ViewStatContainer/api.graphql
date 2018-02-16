@@ -22,6 +22,20 @@ query FieldStat($bId: ID!, $index: Int!) {
   }
 }
 
+query Export($bId: ID!) {
+  tickets(input: {
+    bId: $bId,
+  }) {
+    t
+    payload {
+      bId
+      result
+    }
+    s
+    c
+  }
+}
+
 # Hack graphql-tag/loader
 # [bug](https://github.com/apollographql/graphql-tag/issues/137)
 query Hack { hack }

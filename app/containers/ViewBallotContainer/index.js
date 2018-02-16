@@ -53,6 +53,7 @@ ViewBallotContainer.propTypes = {
   count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
 };
 
@@ -61,6 +62,7 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
+    onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
   };
 }

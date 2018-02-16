@@ -81,6 +81,14 @@ class ViewStatPage extends React.PureComponent {
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
+          {!isLoading && (
+            <Button
+              color="secondary"
+              onClick={this.props.onExport}
+            >
+              <FormattedMessage {...messages.export} />
+            </Button>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         {!isLoading && isStatsLoading && (
@@ -140,6 +148,7 @@ ViewStatPage.propTypes = {
   fieldIndex: PropTypes.number.isRequired,
   stat: PropTypes.array,
   onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onChangeFieldAction: PropTypes.func.isRequired,
 };
 

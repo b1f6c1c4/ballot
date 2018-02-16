@@ -1,10 +1,13 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl'; // eslint-disable-line no-unused-vars
+import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
+import downloadCsv from 'download-csv';
 
 import {
   withStyles,
+  Button,
 } from 'material-ui';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
@@ -14,7 +17,7 @@ import EmptyIndicator from 'components/EmptyIndicator';
 import VoterCard from 'components/VoterCard';
 import CreateVoterForm from 'components/CreateVoterForm';
 
-import messages from './messages'; // eslint-disable-line no-unused-vars
+import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -36,6 +39,14 @@ const styles = (theme) => ({
 
 class EditVotersPage extends React.PureComponent {
   handleDelete = (iCode) => () => this.props.onDeleteVoter({ iCode });
+
+  handleExport = () => {
+    downloadCsv(
+      this.props.voters.map((v) => _.omit(v, '__typename')),
+      null,
+      'voters.csv',
+    );
+  };
 
   render() {
     const {
@@ -65,6 +76,14 @@ class EditVotersPage extends React.PureComponent {
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
+          {!isLoading && (
+            <Button
+              color="secondary"
+              onClick={this.handleExport}
+            >
+              <FormattedMessage {...messages.export} />
+            </Button>
+          )}
         </div>
         {!isLoading && canEditVoters && (
           <CreateVoterForm

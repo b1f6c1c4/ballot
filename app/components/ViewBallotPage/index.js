@@ -176,6 +176,14 @@ class ViewBallotPage extends React.PureComponent {
               <FormattedMessage {...messages.finalizeVoting} />
             </Button>
           )}
+          {!isLoading && (
+            <Button
+              color="secondary"
+              onClick={this.props.onExport}
+            >
+              <FormattedMessage {...messages.export} />
+            </Button>
+          )}
         </div>
         <ResultIndicator error={this.props.error} />
         <div className={classes.cards}>
@@ -301,6 +309,8 @@ ViewBallotPage.propTypes = {
   count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
 };
 

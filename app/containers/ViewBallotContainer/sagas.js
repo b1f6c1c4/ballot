@@ -1,5 +1,7 @@
+import _ from 'lodash';
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
+import downloadCsv from 'download-csv';
 
 import * as VIEW_BALLOT_CONTAINER from './constants';
 import * as viewBallotContainerSelectors from './selectors';
@@ -45,9 +47,21 @@ export function* handleFinalizeRequest({ bId }) {
   try {
     const result = yield call(api.mutate, mutation, { bId }, cred);
     yield put(viewBallotContainerActions.finalizeSuccess(result));
-    yield put(viewBallotContainerActions.ballotRequest({ bId }));
   } catch (err) {
     yield put(viewBallotContainerActions.finalizeFailure(err));
+  }
+}
+
+export function* handleExportRequest({ bId }) {
+  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
+
+  try {
+    const result = yield call(api.query, gql.BallotCrypto, { bId }, cred);
+    const table = [_.omit(result.ballot, '__typename')];
+    yield call(downloadCsv, table, null, 'crypto');
+    yield put(viewBallotContainerActions.exportSuccess(result));
+  } catch (err) {
+    yield put(viewBallotContainerActions.exportFailure(err));
   }
 }
 
@@ -56,4 +70,5 @@ export function* handleFinalizeRequest({ bId }) {
 export default function* watcher() {
   yield takeEvery(VIEW_BALLOT_CONTAINER.BALLOT_REQUEST, handleBallotRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST, handleFinalizeRequest);
+  yield takeEvery(VIEW_BALLOT_CONTAINER.EXPORT_REQUEST, handleExportRequest);
 }

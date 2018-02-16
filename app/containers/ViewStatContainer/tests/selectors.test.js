@@ -52,3 +52,23 @@ describe('Stat', () => {
     expect(selector(mockedState)).toEqual(['b']);
   });
 });
+
+describe('Error', () => {
+  const selector = viewStatContainerSelectors.Error();
+
+  it('should handle null', () => {
+    const mockedState = fromJS({});
+    expect(selector(mockedState)).not.toEqual(expect.anything());
+  });
+
+  it('should select error', () => {
+    const error = { key: 'value' };
+    const state = fromJS({
+      error,
+    });
+    const mockedState = fromJS({
+      viewStatContainer: state,
+    });
+    expect(selector(mockedState)).toEqual(error);
+  });
+});

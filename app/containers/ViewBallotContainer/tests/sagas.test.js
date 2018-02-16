@@ -11,6 +11,7 @@ import gql from '../api.graphql';
 import watcher, {
   handleBallotRequest,
   handleFinalizeRequest,
+  handleExportRequest,
 } from '../sagas';
 
 // Sagas
@@ -151,6 +152,49 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeVoting)), throwError(error)],
       ])
       .put(viewBallotContainerActions.finalizeFailure(error))
+      .run();
+  });
+});
+
+describe('handleExportRequest Saga', () => {
+  const variables = { bId: 'val' };
+  const state = fromJS({
+    globalContainer: { credential: { token: 'cre' } },
+  });
+  const func = () => handleExportRequest(variables);
+  const dArgs = [api.query, gql.Export, variables, 'cre'];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen EXPORT_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take(VIEW_BALLOT_CONTAINER.EXPORT_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch exportSuccess', () => {
+    const export = 'resp';
+    const response = { export };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), response],
+      ])
+      .put(viewBallotContainerActions.exportSuccess(response))
+      .run();
+  });
+
+  it('should dispatch exportFailure', () => {
+    const error = new Error('value');
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), throwError(error)],
+      ])
+      .put(viewBallotContainerActions.exportFailure(error))
       .run();
   });
 });
