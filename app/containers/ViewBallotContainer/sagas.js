@@ -58,7 +58,7 @@ export function* handleExportRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.BallotCrypto, { bId }, cred);
     const table = [_.omit(result.ballot, '__typename')];
-    yield call(downloadCsv, table, null, 'crypto');
+    yield call(downloadCsv, table, null, 'crypto.csv');
     yield put(viewBallotContainerActions.exportSuccess(result));
   } catch (err) {
     yield put(viewBallotContainerActions.exportFailure(err));

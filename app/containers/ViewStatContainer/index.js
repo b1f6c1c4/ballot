@@ -74,7 +74,6 @@ const mapStateToProps = createStructuredSelector({
   ballot: viewStatContainerSelectors.Ballot(),
   error: viewStatContainerSelectors.Error(),
   stat: viewStatContainerSelectors.Stat(),
-  error: viewStatContainerSelectors.Error(),
 });
 
 export default compose(

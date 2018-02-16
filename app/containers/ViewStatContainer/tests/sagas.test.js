@@ -2,6 +2,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
+import downloadCsv from 'download-csv';
 
 import * as VIEW_STAT_CONTAINER from '../constants';
 import * as viewStatContainerActions from '../actions';
@@ -110,11 +111,23 @@ describe('handleStatsRequest Saga', () => {
 
 describe('handleExportRequest Saga', () => {
   const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
   const func = () => handleExportRequest(variables);
-  const dArgs = [api.query, gql.Export, variables, 'cre'];
+  const dArgs0 = [api.query, gql.Export, variables];
+  const dArgs1 = [
+    downloadCsv,
+    [
+      {
+        t: 't',
+        bId: 'b',
+        result_0: 'r0',
+        result_1: 'r1',
+        s_0: 's0',
+        c_0: 'c0',
+      },
+    ],
+    null,
+    'tickets.csv',
+  ];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen EXPORT_REQUEST in the watcher', () => {
@@ -124,14 +137,23 @@ describe('handleExportRequest Saga', () => {
   });
 
   it('should dispatch exportSuccess', () => {
-    const export = 'resp';
-    const response = { export };
+    const tickets = [{
+      t: 't',
+      payload: {
+        bId: 'b',
+        result: ['r0', 'r1'],
+      },
+      s: ['s0'],
+      c: ['c0'],
+    }];
+    const response = { tickets };
 
     return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
+      .call(...dArgs0)
+      .call(...dArgs1)
       .provide([
-        [matchers.call(...dArgs), response],
+        [matchers.call(...dArgs0), response],
+        [matchers.call(...dArgs1), undefined],
       ])
       .put(viewStatContainerActions.exportSuccess(response))
       .run();
@@ -141,10 +163,9 @@ describe('handleExportRequest Saga', () => {
     const error = new Error('value');
 
     return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
+      .call(...dArgs0)
       .provide([
-        [matchers.call(...dArgs), throwError(error)],
+        [matchers.call(...dArgs0), throwError(error)],
       ])
       .put(viewStatContainerActions.exportFailure(error))
       .run();

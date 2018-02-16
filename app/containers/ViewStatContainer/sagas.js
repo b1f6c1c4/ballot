@@ -48,7 +48,7 @@ export function* handleExportRequest({ bId }) {
       ...fork('s', s),
       ...fork('c', c),
     }));
-    yield call(downloadCsv, table, 'tickets');
+    yield call(downloadCsv, table, null, 'tickets.csv');
     yield put(viewStatContainerActions.exportSuccess(result));
   } catch (err) {
     yield put(viewStatContainerActions.exportFailure(err));

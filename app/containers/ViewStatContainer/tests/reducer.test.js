@@ -123,7 +123,7 @@ describe('viewStatContainerReducer', () => {
   it('should handle export request', () => {
     const originalState = state.set('isLoading', false);
     const param = { bId: 'val' };
-    const expectedResult = state.set('isLoading', true);
+    const expectedResult = state.set('isLoading', false);
 
     expect(viewStatContainerReducer(originalState, viewStatContainerActions.exportRequest(param))).toEq(expectedResult);
   });
@@ -131,15 +131,16 @@ describe('viewStatContainerReducer', () => {
   it('should handle export success', () => {
     const originalState = state.set('isLoading', true);
     const result = { };
-    const expectedResult = state.set('isLoading', false);
+    const expectedResult = state.set('isLoading', true);
 
     expect(viewStatContainerReducer(originalState, viewStatContainerActions.exportSuccess(result))).toEq(expectedResult);
   });
 
   it('should handle export failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', true)
+      .set('error', fromJS(error));
 
     expect(viewStatContainerReducer(originalState, viewStatContainerActions.exportFailure(error))).toEq(expectedResult);
   });

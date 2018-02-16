@@ -309,7 +309,6 @@ ViewBallotPage.propTypes = {
   count: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
-  onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
 };
