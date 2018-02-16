@@ -11,7 +11,6 @@ import gql from '../api.graphql';
 import watcher, {
   handleBallotRequest,
   handleFinalizeRequest,
-  handleCountRequest,
 } from '../sagas';
 
 // Sagas
@@ -152,49 +151,6 @@ describe('handleFinalizeRequest Saga', () => {
         [matchers.call(...dArgs(gql.FinalizeVoting)), throwError(error)],
       ])
       .put(viewBallotContainerActions.finalizeFailure(error))
-      .run();
-  });
-});
-
-describe('handleCountRequest Saga', () => {
-  const variables = { bId: 'val' };
-  const state = fromJS({
-    globalContainer: { credential: { token: 'cre' } },
-  });
-  const func = () => handleCountRequest(variables);
-  const dArgs = [api.query, gql.CountTickets, variables, 'cre'];
-
-  // eslint-disable-next-line arrow-body-style
-  it('should listen COUNT_REQUEST in the watcher', () => {
-    return expectSaga(watcher)
-      .take(VIEW_BALLOT_CONTAINER.COUNT_REQUEST)
-      .silentRun();
-  });
-
-  it('should dispatch countSuccess', () => {
-    const count = 'resp';
-    const response = { count };
-
-    return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
-      .provide([
-        [matchers.call(...dArgs), response],
-      ])
-      .put(viewBallotContainerActions.countSuccess(response))
-      .run();
-  });
-
-  it('should dispatch countFailure', () => {
-    const error = new Error('value');
-
-    return expectSaga(func)
-      .withState(state)
-      .call(...dArgs)
-      .provide([
-        [matchers.call(...dArgs), throwError(error)],
-      ])
-      .put(viewBallotContainerActions.countFailure(error))
       .run();
   });
 });

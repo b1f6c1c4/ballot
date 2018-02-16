@@ -11,6 +11,7 @@ import {
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';
 import Loading from 'components/Loading';
+import EmptyIndicator from 'components/EmptyIndicator';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -53,9 +54,11 @@ class ViewStatPage extends React.PureComponent {
 
     const fieldsCount = ballot && ballot.fields.length;
 
+    const field = ballot.fields[fieldIndex];
+
     const data = {
-      label: ballot.fields[fieldIndex].prompt,
-      values: stat.map(({ answer, count }) => ({
+      label: field && field.prompt,
+      values: stat && stat.map(({ answer, count }) => ({
         x: answer,
         y: count,
       })),
@@ -91,27 +94,34 @@ class ViewStatPage extends React.PureComponent {
               position="static"
               activeStep={fieldIndex}
               backButton={
-                <Button size="small" onClick={this.handlePrev} disabled={fieldIndex === 0}>
+                <Button size="small" onClick={this.handlePrev} disabled={fieldIndex <= 0}>
                   <KeyboardArrowLeft />
                   <FormattedMessage {...messages.prev} />
                 </Button>
               }
               nextButton={
-                <Button size="small" onClick={this.handleNext} disabled={fieldIndex === fieldsCount - 1}>
+                <Button size="small" onClick={this.handleNext} disabled={fieldIndex >= fieldsCount - 1}>
                   <FormattedMessage {...messages.next} />
                   <KeyboardArrowRight />
                 </Button>
               }
             />
-            <Typography variant="title">
-              {ballot.fields[fieldIndex].prompt}
-            </Typography>
-            <PieChart
-              data={data}
-              width={600}
-              height={400}
-              viewBox="0 0 600 400"
-            />
+            {!field && (
+              <EmptyIndicator />
+            )}
+            {field && (
+              <Typography variant="title">
+                {field.prompt}
+              </Typography>
+            )}
+            {field && (
+              <PieChart
+                data={data}
+                width={600}
+                height={400}
+                viewBox="0 0 600 400"
+              />
+            )}
           </div>
         )}
       </div>

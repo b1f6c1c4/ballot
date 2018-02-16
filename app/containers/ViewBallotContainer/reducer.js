@@ -25,10 +25,12 @@ function viewBallotContainerReducer(state = initialState, action) {
         .set('error', null);
     case VIEW_BALLOT_CONTAINER.BALLOT_SUCCESS:
       return state.set('isLoading', false)
-        .set('ballot', fromJS(action.result.ballot));
+        .set('ballot', fromJS(action.result.ballot))
+        .set('count', action.result.countTickets);
     case VIEW_BALLOT_CONTAINER.BALLOT_FAILURE:
       return state.set('isLoading', false)
         .set('ballot', null)
+        .set('count', null)
         .set('error', fromJS(_.toPlainObject(action.error)));
     case VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST:
       return state.set('isLoading', true);
@@ -36,15 +38,6 @@ function viewBallotContainerReducer(state = initialState, action) {
       return state.set('isLoading', false);
     case VIEW_BALLOT_CONTAINER.FINALIZE_FAILURE:
       return state.set('isLoading', false)
-        .set('error', fromJS(_.toPlainObject(action.error)));
-    case VIEW_BALLOT_CONTAINER.COUNT_REQUEST:
-      return state.set('isLoading', true);
-    case VIEW_BALLOT_CONTAINER.COUNT_SUCCESS:
-      return state.set('isLoading', false)
-        .set('count', action.result.countTickets);
-    case VIEW_BALLOT_CONTAINER.COUNT_FAILURE:
-      return state.set('isLoading', false)
-        .set('count', null)
         .set('error', fromJS(_.toPlainObject(action.error)));
     // Default
     default:
