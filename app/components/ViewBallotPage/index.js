@@ -52,12 +52,18 @@ const styles = (theme) => ({
     minWidth: 280,
     flexGrow: 1,
   },
+  xcard: {
+    margin: theme.spacing.unit,
+    maxWidth: 300,
+    flexGrow: 1,
+  },
   count: {
     textAlign: 'center',
   },
   detail: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
   qrcode: {
     textAlign: 'center',
@@ -230,7 +236,7 @@ class ViewBallotPage extends React.PureComponent {
             </CardActions>
           </Card>
           {!isLoading && ballot && ballot.status === 'preVoting' && (
-            <Card className={classes.card}>
+            <Card className={classes.xcard}>
               <CardContent>
                 <Typography variant="subheading">
                   <FormattedMessage {...messages.preVoting} />
@@ -247,7 +253,7 @@ class ViewBallotPage extends React.PureComponent {
             </Card>
           )}
           {!isLoading && ballot && ballot.status === 'voting' && (
-            <Card className={classes.card}>
+            <Card className={classes.xcard}>
               <CardContent>
                 <Typography variant="subheading">
                   <FormattedMessage {...messages.voting} />
