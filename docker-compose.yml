@@ -23,11 +23,13 @@ services:
     image: b1f6c1c4/ballot-backend
     restart: always
     environment:
+      CORS_ORIGIN: "https://ballot.b1f6c1c4.info"
       VIRTUAL_HOST: ballot-api.b1f6c1c4.info
       BACKEND_LOG: "${DEBUG_LEVEL}"
       NO_SHARD: 'true'
       ANONY_NO_STRICT: 'true'
       MONGO_HOST: mongo
+      REDIS_HOST: redis
       RABBIT_HOST: rabbit
       RABBIT_USER: guest
       RABBIT_PASS: guest
@@ -39,15 +41,18 @@ services:
     ports:
       - 3001:3000
     depends_on:
-      rabbit:
-        condition: service_healthy
       mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbit:
         condition: service_healthy
     networks:
       - prod
     links:
-      - rabbit
       - mongo
+      - redis
+      - rabbit
 
   auth:
     image: b1f6c1c4/ballot-auth
@@ -88,7 +93,18 @@ services:
       - /data/ballot/mongo:/data/db
     healthcheck:
       test: ["CMD-SHELL", "echo 'db.stats().ok' | mongo localhost:27017/ballot --quiet"]
-      interval: 60s
+      interval: 15s
+      timeout: 10s
+      retries: 2
+    networks:
+      - prod
+
+  redis:
+    image: redis
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "INFO"]
+      interval: 15s
       timeout: 10s
       retries: 2
     networks:
