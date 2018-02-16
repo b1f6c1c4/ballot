@@ -2,6 +2,7 @@ const _ = require('lodash');
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
 const { project } = require('./projection');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/query');
 
 module.exports = {
@@ -15,6 +16,8 @@ module.exports = {
         const { bId } = args.input;
 
         try {
+          await throttle('ballot', 5, 2000)(bId);
+
           const proj = project(info);
           logger.debug('Project', proj);
 
@@ -25,6 +28,7 @@ module.exports = {
           const obj = doc.toObject();
           return obj;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Query ballot', e);
           return e;
         }
@@ -42,6 +46,8 @@ module.exports = {
         const { username } = context.auth;
 
         try {
+          await throttle('ballots', 1, 5000)(username);
+
           const proj = project(info);
           logger.debug('Project', proj);
 
@@ -49,6 +55,7 @@ module.exports = {
           const objs = docs.map((d) => d.toObject());
           return objs;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Query ballots', e);
           return e;
         }

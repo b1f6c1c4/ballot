@@ -17,6 +17,17 @@ jest.mock('../../auth', () => ({
   issue: (payload) => payload,
 }));
 
+let throttleThrow = false;
+jest.doMock('../throttle', () => () => async () => {
+  if (throttleThrow) {
+    throw new errors.TooManyRequestsError(666);
+  }
+});
+
+beforeEach(() => {
+  throttleThrow = false;
+});
+
 // eslint-disable-next-line global-require
 const { resolvers } = require('../auth');
 
@@ -71,6 +82,13 @@ describe('Mutation', () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UsernameExistsError);
       await check.Organizer(dOrganizer);
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 
@@ -138,6 +156,13 @@ describe('Mutation', () => {
       done();
     });
 
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
+      done();
+    });
+
     it('should issue token if good', async (done) => {
       await make.Organizer(dOrganizer);
       const res = await func(...dArgs);
@@ -191,6 +216,13 @@ describe('Mutation', () => {
       const res = await func(...mer(dArgs, '[1].input.oldPassword', '77777777'));
       expect(res).toEqual(false);
       await check.Organizer(dOrganizer);
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
       done();
     });
 

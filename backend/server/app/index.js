@@ -10,18 +10,22 @@ const anony = require('./anonymity');
 const { submitTicket, checkTicket } = require('./secret');
 const { schema } = require('./graphql');
 const { auth } = require('./auth');
+const { expressTh } = require('./throttle');
 const logger = require('../logger')('index');
 
 const router = express.Router();
 
 router.use(cors({
-  origin: '*',
-  methods: ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  origin: [
+    process.env.CORS_ORIGIN,
+    /^https?:\/\/localhost(:\d+)?$/,
+  ],
+  methods: ['HEAD', 'GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
+  maxAge: 300000,
 }));
-
-router.use(nocache(), bodyParser.json(), passport.initialize());
 
 router.get('/', (req, res) => {
   logger.trace('GET /');
@@ -34,6 +38,10 @@ router.get('/', (req, res) => {
 
 router.use(
   '/graphql',
+  expressTh('graphql', { max: 10, duration: 5000 }, (req) => req.ip),
+  nocache(),
+  bodyParser.json(),
+  passport.initialize(),
   auth,
   bodyParser.text({
     type: 'application/graphql',
@@ -49,6 +57,7 @@ router.use(
     schema,
     context: {
       auth: req.user,
+      ip: req.ip,
     },
     tracing: process.env.NODE_ENV !== 'production',
     formatError: (err) => {
@@ -80,29 +89,50 @@ router.get('/secret', anony(false), (req, res) => {
   }
 });
 
-router.use('/secret', anony(), bodyParser.urlencoded({
-  extended: false,
-}));
-
-router.post('/secret/tickets', async (req, res, next) => {
-  logger.info('POST /secret/tickets');
-  logger.info('Anony', req.anony);
-  try {
-    switch (req.accepts(['json', 'html'])) {
+router.post(
+  '/secret/tickets',
+  anony(),
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: false }),
+  async (req, res, next) => {
+    logger.info('POST /secret/tickets');
+    logger.info('Anony', req.anony);
+    try {
+      switch (req.accepts(['json', 'html'])) {
+        case 'json': {
+          logger.debug('Requesting json');
+          req.targetObj = req.body;
+          req.responseEnc = 'json';
+          next();
+          return;
+        }
+        case 'html': {
+          logger.debug('Requesting html');
+          const buf = Buffer.from(req.body.enc, 'base64');
+          const j = JSON.parse(buf.toString('utf8'));
+          logger.trace('Parsing base64 succeed');
+          req.targetObj = j;
+          req.responseEnc = 'html';
+          next();
+          return;
+        }
+        default:
+          res.status(406).send();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+  expressTh('GET tickets', { max: 1, duration: 60000 }, (req) => req.targetObj.t),
+  async (req, res) => {
+    logger.debug('Call submitTicket', req.responseEnc);
+    const rst = await submitTicket(req.targetObj);
+    switch (req.responseEnc) {
       case 'json': {
-        logger.debug('Requesting json');
-        const rst = await submitTicket(req.body);
-        logger.debug('Resposne status', rst.status);
         res.status(rst.status).json(rst.json);
         return;
       }
       case 'html': {
-        logger.debug('Requesting html');
-        const buf = Buffer.from(req.body.enc, 'base64');
-        const j = JSON.parse(buf.toString('utf8'));
-        logger.trace('Parsing base64 succeed');
-        const rst = await submitTicket(j);
-        logger.debug('Resposne status', rst.status);
         if (rst.status === 202) {
           res.status(rst.status).send(`Ticket staged. Your tId is <pre>${rst.json.tId}</pre>`);
         } else {
@@ -115,46 +145,49 @@ router.post('/secret/tickets', async (req, res, next) => {
       default:
         res.status(406).send();
     }
-  } catch (e) {
-    next(e);
-  }
-});
+  },
+);
 
-router.get('/secret/tickets/', async (req, res, next) => {
-  logger.info('GET /secret/tickets/?tId=', req.query.tId);
-  logger.info('Anony', req.anony);
-  try {
-    switch (req.accepts(['json', 'html'])) {
-      case 'json': {
-        logger.debug('Requesting json');
-        const rst = await checkTicket(req.query.tId);
-        logger.debug('Resposne status', rst.status);
-        res.status(rst.status).json(rst.json);
-        return;
-      }
-      case 'html': {
-        logger.debug('Requesting html');
-        const rst = await checkTicket(req.query.tId);
-        logger.debug('Resposne status', rst.status);
-        if (rst.status === 202) {
-          res.status(rst.status).send('Still processing.');
-        } else if (rst.status === 204) {
-          res.status(200).send('Success.');
-        } else {
-          res.status(rst.status)
-            .send(`Error occured: <pre>${rst.json.error.code}</pre>
-<pre>${rst.json.error.message}</pre>`);
+router.get(
+  '/secret/tickets/',
+  expressTh('GET tickets', { max: 1, duration: 5000 }, (req) => req.query.tId),
+  anony(),
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: false }),
+  async (req, res, next) => {
+    logger.info('GET /secret/tickets/?tId=', req.query.tId);
+    logger.info('Anony', req.anony);
+    try {
+      switch (req.accepts(['json', 'html'])) {
+        case 'json': {
+          logger.debug('Requesting json');
+          const rst = await checkTicket(req.query.tId);
+          logger.debug('Resposne status', rst.status);
+          res.status(rst.status).json(rst.json);
+          return;
         }
-        return;
+        case 'html': {
+          logger.debug('Requesting html');
+          const rst = await checkTicket(req.query.tId);
+          logger.debug('Resposne status', rst.status);
+          if (rst.status === 202) {
+            res.status(rst.status).send('Still processing.');
+          } else if (rst.status === 204) {
+            res.status(200).send('Success.');
+          } else {
+            res.status(rst.status)
+              .send(`Error occured: <pre>${rst.json.error.code}</pre>
+<pre>${rst.json.error.message}</pre>`);
+          }
+          return;
+        }
+        default:
+          res.status(406).send();
       }
-      default:
-        res.status(406).send();
+    } catch (e) {
+      next(e);
     }
-  } catch (e) {
-    next(e);
-  }
-});
-
-router.get('*', (req, res) => res.status(404).send());
+  },
+);
 
 module.exports = router;

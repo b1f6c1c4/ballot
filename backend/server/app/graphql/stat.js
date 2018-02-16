@@ -1,5 +1,7 @@
+const errors = require('./error');
 const { SignedTicket } = require('../../models/signedTickets');
 const { project } = require('./projection');
+const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/stat');
 
 module.exports = {
@@ -13,9 +15,12 @@ module.exports = {
         const { bId } = args.input;
 
         try {
+          await throttle('countTickets', 1, 1000)(bId);
+
           const res = await SignedTicket.count({ 'payload.bId': bId });
           return res;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Query countTickets', e);
           return e;
         }
@@ -29,6 +34,8 @@ module.exports = {
         const { bId } = args.input;
 
         try {
+          await throttle('tickets', 1, 10000)(bId);
+
           const proj = project(info);
           logger.debug('Project', proj);
 
@@ -36,6 +43,7 @@ module.exports = {
           const objs = docs.map((d) => d.toObject());
           return objs;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Query tickets', e);
           return e;
         }
@@ -49,6 +57,8 @@ module.exports = {
         const { bId, index } = args.input;
 
         try {
+          await throttle('fieldStat', 1, 1000)(`${bId}:${index}`);
+
           const ress = await SignedTicket.aggregate([
             { $match: { 'payload.bId': bId } },
             {
@@ -69,6 +79,7 @@ module.exports = {
           ]);
           return ress;
         } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Query tickets', e);
           return e;
         }
