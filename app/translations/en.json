@@ -1,6 +1,7 @@
 {
   "app.components.AuthRequired.header": "Please login.",
   "app.components.BallotMeta.bId": "ID:",
+  "app.components.BallotMeta.owner": "Owner:",
   "app.components.ChangePasswordPage.change": "Change",
   "app.components.ChangePasswordPage.header": "Change password",
   "app.components.ChangePasswordPage.newPassword": "New password",

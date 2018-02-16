@@ -19,8 +19,9 @@ import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
-  flex: {
+  header: {
     flex: 1,
+    cursor: 'pointer',
   },
   menuButton: {
     marginLeft: -12,
@@ -94,7 +95,7 @@ class GlobalBar extends React.PureComponent {
             onClick={this.handleProfile}
             variant="headline"
             color="inherit"
-            className={classes.flex}
+            className={classes.header}
           >
             <FormattedMessage {...messages.header} />
           </Typography>

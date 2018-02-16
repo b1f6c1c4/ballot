@@ -1,6 +1,7 @@
 {
   "app.components.AuthRequired.header": "请先登录",
   "app.components.BallotMeta.bId": "编号：",
+  "app.components.BallotMeta.owner": "组织者：",
   "app.components.ChangePasswordPage.change": "修改",
   "app.components.ChangePasswordPage.header": "修改密钥",
   "app.components.ChangePasswordPage.newPassword": "新密钥",

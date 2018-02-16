@@ -25,7 +25,7 @@ const styles = (theme) => ({
     marginLeft: theme.spacing.unit,
     paddingLeft: theme.spacing.unit,
     paddingRight: theme.spacing.unit,
-    borderRadius: theme.spacing.unit / 4,
+    borderRadius: theme.spacing.unit / 2,
   },
   unknown: {
     backgroundColor: '#3e2723',

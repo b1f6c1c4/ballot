@@ -43,7 +43,8 @@ const styles = (theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  flex: {
+  reorder: {
+    cursor: 'ns-resize',
     flex: 1,
   },
 });
@@ -155,7 +156,7 @@ class EditFieldsPage extends React.PureComponent {
                     disabled={!canEditFields}
                   >
                     <div
-                      className={classes.flex}
+                      className={classes.reorder}
                     >
                       <ListItemText
                         primary={f.prompt}

@@ -8,5 +8,9 @@ export default {
       id: 'app.components.BallotMeta.bId',
       defaultMessage: 'ID: ',
     },
+    owner: {
+      id: 'app.components.BallotMeta.owner',
+      defaultMessage: 'Owner: ',
+    },
   }),
 };

@@ -4,9 +4,13 @@ import PropTypes from 'prop-types';
 import {
   withStyles,
 } from 'material-ui';
+import classnames from 'classnames';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
+  clickable: {
+    cursor: 'pointer',
+  },
   root: {
     display: 'inline',
   },
@@ -16,21 +20,19 @@ const styles = (theme) => ({
 });
 
 class Abbreviation extends React.PureComponent {
-  state = { expand: false, expandTime: null };
+  state = { expand: false };
+
+  componentWillReceiveProps() {
+    this.handleClose();
+  }
 
   handleExpand = () => {
-    if (this.state.expand) {
-      if (new Date() - this.state.expandTime > 5000) {
-        this.handleClose();
-      }
-    } else {
-      if (!this.props.allowExpand) return;
-      this.setState({ expand: true, expandTime: new Date() });
-    }
+    if (!this.props.allowExpand) return;
+    this.setState({ expand: true });
   };
 
   handleClose = () => {
-    this.setState({ expand: false, expandTime: null });
+    this.setState({ expand: false });
   }
 
   render() {
@@ -40,9 +42,8 @@ class Abbreviation extends React.PureComponent {
     return (
       // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
       <div
-        className={classes.root}
+        className={classnames(classes.root, { [classes.clickable]: !this.state.expand })}
         onClick={this.handleExpand}
-        onDoubleClick={this.handleClose}
       >
         {this.state.expand && (
           <span className={classes.pre}>{text}</span>
