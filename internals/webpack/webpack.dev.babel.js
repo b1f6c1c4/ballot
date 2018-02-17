@@ -87,7 +87,7 @@ module.exports = require('./webpack.base.babel')({
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
-      // path.join(process.cwd(), 'app/app.js'),
+      path.join(process.cwd(), 'app/app.js'),
     ],
   },
 

@@ -11,13 +11,6 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-@font-face {
-  font-family: "Noto Sans SC";
-  font-style: light;
-  src:
-    url("../images/NotoSansSC-Light.woff2") format("woff2");
-}
-
 .body-x-zh {
   font-family: "Noto Sans SC";
   font-style: light;

@@ -2,15 +2,19 @@ import 'babel-polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
+import { createStructuredSelector, createSelector } from 'reselect';
 import createHistory from 'history/createBrowserHistory';
 import {
   Reboot,
   createMuiTheme,
   MuiThemeProvider,
 } from 'material-ui';
+import Teal from 'material-ui/colors/teal';
+import Brown from 'material-ui/colors/brown';
 import 'typeface-roboto/index.css';
+import 'index/typeface-noto-sans.css';
 
 import GlobalContainer from 'containers/GlobalContainer';
 import ErrorBoundary from 'containers/ErrorBoundary';
@@ -27,8 +31,27 @@ const history = createHistory();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-const theme = createMuiTheme({
+const fonts = {
+  en: '"Roboto", "Helvetica", "Arial", sans-serif',
+  zh: '"Roboto", "Noto Sans SC", "Microsoft YaHei", sans-serif',
+};
+
+const makeTheme = (fontFamily) => createMuiTheme({
+  typography: {
+    fontFamily,
+  },
+  palette: {
+    primary: Teal,
+    secondary: Brown,
+  },
 });
+
+const ConnectedMuiThemeProvider = connect(createStructuredSelector({
+  theme: createSelector(
+    (state) => state.getIn(['language', 'locale']),
+    (state) => makeTheme(fonts[state]),
+  ),
+}))(MuiThemeProvider);
 
 const render = (messages) => {
   ReactDOM.render(
@@ -39,9 +62,9 @@ const render = (messages) => {
             <LanguageProvider messages={messages}>
               <div>
                 <Reboot />
-                <MuiThemeProvider theme={theme}>
+                <ConnectedMuiThemeProvider>
                   <GlobalContainer />
-                </MuiThemeProvider>
+                </ConnectedMuiThemeProvider>
               </div>
             </LanguageProvider>
           </ErrorBoundary>
