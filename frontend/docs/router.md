@@ -19,13 +19,11 @@
 ## Home Page [/app/ -> /app.html]
 
 - 发起投票 - Create Ballot Page
-- 查看全部投票 - Ballot Collection Page
 - 查看投票 - View Ballot Page
 
 ## Create Ballot Page [/app/create -> /app.html]
 
 - 创建 - View Ballot Page
-- 取消 - Home Page
 
 ## View Ballot Page [/app/ballots/{bId} -> /app.html]
 
@@ -40,21 +38,17 @@
 
 ## Edit Fields Page [/app/ballots/{bId}/fields/ -> /app.html]
 
-- 自动保存
 - 暂存 - View Ballot Page
-- 确认投票内容 - View Ballot Page
 
 ## Edit Voters Page [/app/ballots/{bId}/voters/ -> /app.html]
 
 - 添加
 - 删除
 - 导出
-- 确认投票者名单 - View Ballot Page
 
 ## View Stat Page [/app/ballots/{bId}/tickets/ -> /app.html]
 
 - 导出
-- 返回 - View Ballot Page
 
 # Voter
 

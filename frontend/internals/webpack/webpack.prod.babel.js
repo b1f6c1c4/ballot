@@ -97,6 +97,7 @@ module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
     index: [
+      'images/favicon.ico',
       path.join(process.cwd(), 'app/index/index.js'),
     ],
     indexStyle: [

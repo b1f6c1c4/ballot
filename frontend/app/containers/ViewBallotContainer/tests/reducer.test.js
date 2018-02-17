@@ -1,5 +1,7 @@
 import { fromJS } from 'immutable';
 import * as globalContainerActions from 'containers/GlobalContainer/actions';
+import * as editVotersContainerActions from 'containers/EditVotersContainer/actions';
+import * as editFieldsContainerActions from 'containers/EditFieldsContainer/actions';
 
 import viewBallotContainerReducer from '../reducer';
 
@@ -52,6 +54,80 @@ describe('viewBallotContainerReducer', () => {
     }));
 
     expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle voterRgRequest action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRgRequest({ bId: 'b' }))).toEq(expectedResult);
+  });
+
+  it('should handle voterRgStop action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRgStop())).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action not match', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+    const param = { bId: 'b3', iCode: '1' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action not found', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+    const param = { bId: 'b', iCode: '3' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action good', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+    const param = { bId: 'b', iCode: '1' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      voters: [
+        { iCode: '1', name: 'n1', publicKey: true },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ],
+    }));
+
+    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
   });
 
   // Sagas
@@ -130,5 +206,29 @@ describe('viewBallotContainerReducer', () => {
       .set('error', fromJS(error));
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.exportFailure(error))).toEq(expectedResult);
+  });
+
+  it('should handle voters create voter success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editVotersContainerActions.createVoterSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle voters delete voter success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editVotersContainerActions.deleteVoterSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle fields save success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEq(expectedResult);
   });
 });

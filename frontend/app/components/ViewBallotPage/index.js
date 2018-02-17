@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -23,6 +24,7 @@ import ViewButton from 'components/ViewButton';
 import EditButton from 'components/EditButton';
 import EmptyIndicator from 'components/EmptyIndicator';
 import ResultIndicator from 'components/ResultIndicator';
+import ConfirmDialog from 'components/ConfirmDialog';
 
 import messages from './messages';
 
@@ -71,6 +73,30 @@ const styles = (theme) => ({
 });
 
 class ViewBallotPage extends React.PureComponent {
+  state = {
+    isOpenFinalizeVoters: false,
+    isOpenFinalizeFields: false,
+    isOpenFinalizePreVoting: false,
+    isOpenFinalizeVoting: false,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.bId, this.props.bId)) {
+      this.handleConfirm()();
+    }
+  }
+
+  handleConfirm = (ac) => () => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac();
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
+
   handleFieldsEdit = () => {
     const { bId } = this.props;
     this.props.onPush(`/app/ballots/${bId}/fields/`);
@@ -147,35 +173,63 @@ class ViewBallotPage extends React.PureComponent {
           {!isLoading && ballot && ballot.status === 'inviting' && (
             <Button
               color="secondary"
-              onClick={this.props.onFinalize}
+              onClick={this.handleConfirm('isOpenFinalizeVoters')}
             >
               <FormattedMessage {...messages.finalizeVoters} />
             </Button>
           )}
+          <ConfirmDialog
+            title={messages.finalizeVotersTitle}
+            description={messages.finalizeVotersDescription}
+            isOpen={this.state.isOpenFinalizeVoters}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onFinalize)}
+          />
           {!isLoading && ballot && ballot.status === 'invited' && (
             <Button
               color="secondary"
-              onClick={this.props.onFinalize}
+              onClick={this.handleConfirm('isOpenFinalizeFields')}
             >
               <FormattedMessage {...messages.finalizeFields} />
             </Button>
           )}
+          <ConfirmDialog
+            title={messages.finalizeFieldsTitle}
+            description={messages.finalizeFieldsDescription}
+            isOpen={this.state.isOpenFinalizeFields}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onFinalize)}
+          />
           {!isLoading && ballot && ballot.status === 'preVoting' && (
             <Button
               color="secondary"
-              onClick={this.props.onFinalize}
+              onClick={this.handleConfirm('isOpenFinalizePreVoting')}
             >
               <FormattedMessage {...messages.finalizePreVoting} />
             </Button>
           )}
+          <ConfirmDialog
+            title={messages.finalizePreVotingTitle}
+            description={messages.finalizePreVotingDescription}
+            isOpen={this.state.isOpenFinalizePreVoting}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onFinalize)}
+          />
           {!isLoading && ballot && ballot.status === 'voting' && (
             <Button
               color="secondary"
-              onClick={this.props.onFinalize}
+              onClick={this.handleConfirm('isOpenFinalizeVoting')}
             >
               <FormattedMessage {...messages.finalizeVoting} />
             </Button>
           )}
+          <ConfirmDialog
+            title={messages.finalizeVotingTitle}
+            description={messages.finalizeVotingDescription}
+            isOpen={this.state.isOpenFinalizeVoting}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onFinalize)}
+          />
           {!isLoading && (
             <Button
               color="secondary"

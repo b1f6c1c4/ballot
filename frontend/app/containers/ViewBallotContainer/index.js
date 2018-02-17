@@ -17,6 +17,7 @@ import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
   componentWillMount() {
+    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
     }
@@ -25,7 +26,12 @@ export class ViewBallotContainer extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
+      nextProps.onVoterRgRequestAction();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onVoterRgStopAction();
   }
 
   render() {
@@ -55,6 +61,8 @@ ViewBallotContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
+  onVoterRgRequestAction: PropTypes.func.isRequired,
+  onVoterRgStopAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch, { match }) {
@@ -64,6 +72,8 @@ export function mapDispatchToProps(dispatch, { match }) {
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
+    onVoterRgRequestAction: () => dispatch(viewBallotContainerActions.voterRgRequest({ bId })),
+    onVoterRgStopAction: () => dispatch(viewBallotContainerActions.voterRgStop()),
   };
 }
 

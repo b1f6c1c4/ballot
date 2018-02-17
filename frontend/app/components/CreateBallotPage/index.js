@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
 import ResultIndicator from 'components/ResultIndicator';
+import ConfirmDialog from 'components/ConfirmDialog';
 import make, { required, alphanumericDash, minChar } from 'utils/validation';
 
 import messages from './messages';
@@ -38,6 +40,21 @@ const styles = (theme) => ({
 });
 
 class CreateBallotPage extends React.PureComponent {
+  state = {
+    isOpenCreate: false,
+  };
+
+  handleConfirm = (ac) => (...args) => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true, args }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac(...this.state.args);
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
+
   validate = make(
     this.props.intl,
     required(),
@@ -64,7 +81,7 @@ class CreateBallotPage extends React.PureComponent {
           <FormattedMessage {...messages.header} />
         </Typography>
         <Paper className={classes.root}>
-          <form onSubmit={handleSubmit(this.handleCreate)}>
+          <form onSubmit={handleSubmit(this.handleConfirm('isOpenCreate'))}>
             <div>
               <TextField
                 name="name"
@@ -89,6 +106,13 @@ class CreateBallotPage extends React.PureComponent {
             </div>
           </form>
         </Paper>
+        <ConfirmDialog
+          title={messages.createTitle}
+          description={messages.createDescription}
+          isOpen={this.state.isOpenCreate}
+          onCancel={this.handleConfirm()}
+          onAction={this.handleConfirm(this.handleCreate)}
+        />
       </div>
     );
   }

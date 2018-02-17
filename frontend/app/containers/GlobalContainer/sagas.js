@@ -23,7 +23,7 @@ export const ballotsStatusChan = (obs0) => eventChannel((emit) => {
     next(data) {
       const st = _.get(data, 'data.ballotsStatus');
       if (st) {
-        emit(globalContainerActions.statusChange(st));
+        emit(st);
       }
     },
     error(err) {

@@ -20,5 +20,13 @@ export default {
       id: 'app.components.VoterCard.publicKey',
       defaultMessage: 'Public Key',
     },
+    deleteTitle: {
+      id: 'app.components.VoterCard.deleteTitle',
+      defaultMessage: 'Are you sure',
+    },
+    deleteDescription: {
+      id: 'app.components.VoterCard.deleteDescription',
+      defaultMessage: 'Delete?',
+    },
   }),
 };

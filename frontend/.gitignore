@@ -4,6 +4,8 @@ build
 node_modules
 dll
 stats.json
+*.otf
+*.ttx
 
 # Cruft
 *~

@@ -77,6 +77,7 @@ module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
   entry: {
     index: [
+      'images/favicon.ico',
       'webpack-hot-middleware/client?reload=true',
       path.join(process.cwd(), 'app/index/index.js'),
     ],

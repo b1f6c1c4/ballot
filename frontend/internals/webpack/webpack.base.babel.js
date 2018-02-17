@@ -52,12 +52,25 @@ module.exports = (options) => ({
         })],
       },
       {
-        test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
+        test: /\.(svg)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(eot|otf|ttf|woff|woff2)$/,
         loader: 'file-loader',
       },
       {
         test: /\.(jpg|png|gif)$/,
         loader: 'file-loader',
+      },
+      {
+        test: /favicon\.ico$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
+        }],
       },
       {
         test: /\.json$/,

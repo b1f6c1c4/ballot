@@ -1,15 +1,19 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import 'animate.css/animate.min.css';
-import 'font-awesome/css/font-awesome.min.css';
-import 'typeface-montserrat/index.css';
-import 'ionicons/css/ionicons.min.css';
+import 'typeface-roboto/index.css';
 
 import jQuery from 'jquery';
 import { WOW } from 'wowjs';
 import 'jquery.easing';
 import 'superfish';
 import 'superfish/dist/js/hoverIntent';
+import '../images/favicon.ico';
+import svgMenu from '../images/icons/ic_menu_black_36px.svg';
+import svgClose from '../images/icons/ic_close_black_36px.svg';
+import svgUp from '../images/icons/ic_arrow_drop_up_black_36px.svg';
+import svgDown from '../images/icons/ic_arrow_drop_down_black_36px.svg';
+import './typeface-noto-sans.css';
 import './style.css';
 
 /* eslint-disable func-names */
@@ -28,7 +32,7 @@ jQuery(document).ready(($) => {
   $('.back-to-top').click(() => {
     $('html, body').animate({
       scrollTop: 0,
-    }, 1500, 'easeInOutExpo');
+    }, 1500, 'easeOutExpo');
     return false;
   });
 
@@ -40,7 +44,9 @@ jQuery(document).ready(($) => {
     animation: {
       opacity: 'show',
     },
-    speed: 400,
+    delay: 400,
+    speed: 50,
+    speedOut: 'fast',
   });
 
   // Mobile Navigation
@@ -52,26 +58,27 @@ jQuery(document).ready(($) => {
       class: '',
       id: '',
     });
+    const mobileNavToggle = $('<button type="button" id="mobile-nav-toggle"></button>').append(svgMenu).append($(svgClose).toggle());
     $('body').append(mobileNav);
-    $('body').prepend('<button type="button" id="mobile-nav-toggle"><i class="fa fa-bars"></i></button>');
+    $('body').prepend(mobileNavToggle);
     $('body').append('<div id="mobile-body-overly"></div>');
-    $('#mobile-nav').find('.menu-has-children').prepend('<i class="fa fa-chevron-down"></i>');
+    $('#mobile-nav').find('.menu-has-children').prepend($(svgUp).toggle()).prepend(svgDown);
 
     $(document).on('click', '.menu-has-children > a', function () {
       $(this).toggleClass('menu-item-active');
       $(this).nextAll('ul').eq(0).slideToggle();
-      $(this).prev().toggleClass('fa-chevron-up fa-chevron-down');
+      $(this).parent().children('svg').toggle();
     });
 
-    $(document).on('click', '.menu-has-children i', function () {
-      $(this).next().toggleClass('menu-item-active');
+    $(document).on('click', '.menu-has-children > svg', function () {
+      $(this).parent().children('a').toggleClass('menu-item-active');
       $(this).nextAll('ul').eq(0).slideToggle();
-      $(this).toggleClass('fa-chevron-up fa-chevron-down');
+      $(this).parent().children('svg').toggle();
     });
 
     $(document).on('click', '#mobile-nav-toggle', () => {
       $('body').toggleClass('mobile-nav-active');
-      $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
+      $('#mobile-nav-toggle svg').toggle();
       $('#mobile-body-overly').toggle();
     });
 
@@ -80,7 +87,7 @@ jQuery(document).ready(($) => {
       if (!container.is(e.target) && container.has(e.target).length === 0) {
         if ($('body').hasClass('mobile-nav-active')) {
           $('body').removeClass('mobile-nav-active');
-          $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
+          $('#mobile-nav-toggle svg').toggle();
           $('#mobile-body-overly').fadeOut();
         }
       }
@@ -89,12 +96,28 @@ jQuery(document).ready(($) => {
     $('#mobile-nav, #mobile-nav-toggle').hide();
   }
 
+  // Close mobile nav on click
+  $('#mobile-nav a').on('click', function () {
+    const li = $(this).closest('li');
+    const upli = li.parent().closest('li');
+    if (!li.hasClass('menu-has-children')) {
+      $('body').removeClass('mobile-nav-active');
+      $('#mobile-nav-toggle svg').toggle();
+      $('#mobile-body-overly').fadeOut();
+    }
+    if (upli.hasClass('menu-has-children')) {
+      upli.children('a').toggleClass('menu-item-active');
+      upli.children('ul').eq(0).slideToggle();
+      upli.children('svg').toggle();
+    }
+  });
+
   // Smoth scroll on page hash links
   $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function () {
     if (!this.hash) return undefined;
 
     const target = $(this.hash);
-    if (target.length) return undefined;
+    if (!target.length) return undefined;
 
     let topSpace = 0;
 
@@ -108,17 +131,11 @@ jQuery(document).ready(($) => {
 
     $('html, body').animate({
       scrollTop: target.offset().top - topSpace,
-    }, 1500, 'easeInOutExpo');
+    }, 1500, 'easeOutExpo');
 
     if ($(this).parents('.nav-menu').length) {
       $('.nav-menu .menu-active').removeClass('menu-active');
       $(this).closest('li').addClass('menu-active');
-    }
-
-    if ($('body').hasClass('mobile-nav-active')) {
-      $('body').removeClass('mobile-nav-active');
-      $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
-      $('#mobile-body-overly').fadeOut();
     }
 
     return false;

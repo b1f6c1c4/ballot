@@ -55,6 +55,68 @@ describe('editVotersContainerReducer', () => {
     expect(editVotersContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
+  it('should handle voterRgRequest action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRgRequest({ bId: 'b' }))).toEq(expectedResult);
+  });
+
+  it('should handle voterRgStop action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRgStop())).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action not match', () => {
+    const originalState = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+    const param = { iCode: '1' };
+    const expectedResult = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b3', param))).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action not found', () => {
+    const originalState = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+    const param = { iCode: '3' };
+    const expectedResult = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b', param))).toEq(expectedResult);
+  });
+
+  it('should handle voterRegistered action good', () => {
+    const originalState = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', publicKey: null },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+    const param = { iCode: '1', comment: 'x' };
+    const expectedResult = state.set('ballot', fromJS({ bId: 'b' }))
+      .set('voters', fromJS([
+        { iCode: '1', name: 'n1', comment: 'x' },
+        { iCode: '2', name: 'n2', publicKey: null },
+      ]));
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b', param))).toEq(expectedResult);
+  });
+
   // Sagas
   it('should handle createVoter request', () => {
     const originalState = state.set('isCreateLoading', false).set('error', 'e');

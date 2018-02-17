@@ -24,5 +24,13 @@ export default {
       id: 'app.components.VoterRegPage.privateKey',
       defaultMessage: 'Private Key:',
     },
+    registerTitle: {
+      id: 'app.components.VoterRegPage.registerTitle',
+      defaultMessage: 'Are you sure',
+    },
+    registerDescription: {
+      id: 'app.components.VoterRegPage.registerDescription',
+      defaultMessage: 'Register',
+    },
   }),
 };
