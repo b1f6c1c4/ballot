@@ -6,7 +6,12 @@ import _ from 'lodash';
 import rawResources from 'translations';
 
 function updateContent() {
-  $('#lng').val(i18next.language);
+  const k = i18next.language;
+  $('#lng').val(k);
+  $('body').removeClass();
+  $('body').addClass(`body-x-${k}`);
+  $('.nav-langs-x').removeClass('menu-item-active');
+  $(`.nav-langs-x-${k}`).addClass('menu-item-active');
   $('*').localize();
 }
 
@@ -19,18 +24,23 @@ i18next.use(LngDetector).init({
 }, (err) => {
   if (err) throw err;
   jqueryI18next.init(i18next, $);
-  updateContent();
 }).on('languageChanged', updateContent);
 
 _.mapValues(rawResources, (lo, k) => {
   const o = $('<li><a href="#"></a></li>');
   $('a', o)
+    .addClass('nav-langs-x')
+    .addClass(`nav-langs-x-${k}`)
     .attr('data-lang', k)
     .text(lo['index.lang']);
-  $('#nav-langs ul').append(o);
+  $('#nav-langs').append(o);
 });
 
 $(document).on('click', '#nav-langs a', function onLangClick() {
   const k = $(this).attr('data-lang');
   i18next.changeLanguage(k);
+});
+
+$(document).ready(() => {
+  updateContent();
 });

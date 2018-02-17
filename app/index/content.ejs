@@ -25,9 +25,10 @@
         <li><a href="#features" data-i18n="index.features"></a></li>
         <li><a href="#faq" data-i18n="index.faq"></a></li>
         <li><a href="/app/login" data-i18n="index.login"></a></li>
-        <li id="nav-langs" class="menu-has-children">
-          <%= require('images/icons/ic_language_black_18px.svg') %>
-          <ul></ul>
+        <li class="menu-has-children">
+          <a class="nav-langs" href="#">Language/语言</a>
+          <span class="nav-langs"><%= require('images/icons/ic_language_black_18px.svg') %></span>
+          <ul id="nav-langs"></ul>
         </li>
       </ul>
     </nav><!-- #nav-menu-container -->
@@ -69,22 +70,22 @@
           <div class="row">
 
             <div class="col-lg-6 col-md-6 box wow fadeInLeft">
-              <div class="icon"><%= require('images/icons/ic_person_black_48px.svg') %></div>
+              <div class="icon"><%= require('images/icons/ic_lock_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.security"></h4>
               <p class="description" data-i18n="index.features.security.description"></p>
             </div>
             <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.1s">
-              <div class="icon"><i class="ion-person"></i></div>
+              <div class="icon"><%= require('images/icons/ic_person_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.anonymity"></h4>
               <p class="description" data-i18n="index.features.anonymity.description"></p>
             </div>
             <div class="col-lg-6 col-md-6 box wow fadeInLeft" data-wow-delay="0.2s">
-              <div class="icon"><i class="ion-pricetag"></i></div>
+              <div class="icon"><%= require('images/icons/ic_remove_circle_outline_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.duplication"></h4>
               <p class="description" data-i18n="index.features.duplication.description"></p>
             </div>
             <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.3s">
-              <div class="icon"><i class="ion-checkmark"></i></div>
+              <div class="icon"><%= require('images/icons/ic_check_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.authenticity"></h4>
               <p class="description" data-i18n="index.features.authenticity.description"></p>
             </div>
@@ -133,28 +134,28 @@
 
         <div class="col-lg-6">
           <div class="box wow fadeInLeft">
-            <div class="icon"><i class="ion-edit"></i></div>
+            <div class="icon"><%= require('images/icons/ic_mode_edit_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.customizable"></h4>
             <p class="description" data-i18n="index.more.customizable.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInRight">
-            <div class="icon"><i class="ion-minus-circled"></i></div>
+            <div class="icon"><%= require('images/icons/ic_error_outline_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.immutable"></h4>
             <p class="description" data-i18n="index.more.immutable.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInLeft">
-            <div class="icon"><i class="ion-eye"></i></div>
+            <div class="icon"><%= require('images/icons/ic_visibility_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.visibility"></h4>
             <p class="description" data-i18n="index.more.visibility.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInRight">
-            <div class="icon"><i class="ion-ios-body"></i></div>
+            <div class="icon"><%= require('images/icons/ic_accessibility_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.userFriendly"></h4>
             <p class="description" data-i18n="index.more.userFriendly.description"></p>
           </div>
@@ -224,9 +225,9 @@
     <div class="row">
       <div class="col-lg-6">
         <nav class="footer-links text-lg-right text-center pt-2 pt-lg-0">
-          <a href="#intro" data-i18n="index.home"></a>
-          <a href="#features" data-i18n="index.features"></a>
-          <a href="#faq" data-i18n="index.faq"></a>
+          <a class="scrollto" href="#intro" data-i18n="index.home"></a>
+          <a class="scrollto" href="#features" data-i18n="index.features"></a>
+          <a class="scrollto" href="#faq" data-i18n="index.faq"></a>
           <a href="/app/login" data-i18n="index.login"></a>
         </nav>
       </div>

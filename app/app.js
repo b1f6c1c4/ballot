@@ -16,11 +16,6 @@ import GlobalContainer from 'containers/GlobalContainer';
 import ErrorBoundary from 'containers/ErrorBoundary';
 import LanguageProvider from 'containers/LanguageProvider';
 
-// Load the favicon, the manifest.json file
-/* eslint-disable import/no-webpack-loader-syntax */
-import '!file-loader?name=[name].[ext]!./images/favicon.ico';
-/* eslint-enable import/no-webpack-loader-syntax */
-
 import configureStore from 'utils/configureStore';
 
 // Import i18n messages

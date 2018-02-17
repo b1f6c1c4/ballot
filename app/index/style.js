@@ -8,10 +8,11 @@ import { WOW } from 'wowjs';
 import 'jquery.easing';
 import 'superfish';
 import 'superfish/dist/js/hoverIntent';
-import svgMenu from 'images/icons/ic_menu_black_36px.svg';
-import svgClose from 'images/icons/ic_close_black_36px.svg';
-import svgUp from 'images/icons/ic_arrow_drop_up_black_36px.svg';
-import svgDown from 'images/icons/ic_arrow_drop_down_black_36px.svg';
+import '../images/favicon.ico';
+import svgMenu from '../images/icons/ic_menu_black_36px.svg';
+import svgClose from '../images/icons/ic_close_black_36px.svg';
+import svgUp from '../images/icons/ic_arrow_drop_up_black_36px.svg';
+import svgDown from '../images/icons/ic_arrow_drop_down_black_36px.svg';
 import './style.css';
 
 /* eslint-disable func-names */
@@ -30,7 +31,7 @@ jQuery(document).ready(($) => {
   $('.back-to-top').click(() => {
     $('html, body').animate({
       scrollTop: 0,
-    }, 1500, 'easeInOutExpo');
+    }, 1500, 'easeOutExpo');
     return false;
   });
 
@@ -42,7 +43,9 @@ jQuery(document).ready(($) => {
     animation: {
       opacity: 'show',
     },
-    speed: 100,
+    delay: 400,
+    speed: 50,
+    speedOut: 'fast',
   });
 
   // Mobile Navigation
@@ -66,7 +69,7 @@ jQuery(document).ready(($) => {
       $(this).parent().children('svg').toggle();
     });
 
-    $(document).on('click', '.menu-has-children i', function () {
+    $(document).on('click', '.menu-has-children > svg', function () {
       $(this).parent().children('a').toggleClass('menu-item-active');
       $(this).nextAll('ul').eq(0).slideToggle();
       $(this).parent().children('svg').toggle();
@@ -94,10 +97,17 @@ jQuery(document).ready(($) => {
 
   // Close mobile nav on click
   $('#mobile-nav a').on('click', function () {
-    if (!$(this).parent().hasClass('menu-has-children')) {
+    const li = $(this).closest('li');
+    const upli = li.parent().closest('li');
+    if (!li.hasClass('menu-has-children')) {
       $('body').removeClass('mobile-nav-active');
       $('#mobile-nav-toggle svg').toggle();
       $('#mobile-body-overly').fadeOut();
+    }
+    if (upli.hasClass('menu-has-children')) {
+      upli.children('a').toggleClass('menu-item-active');
+      upli.children('ul').eq(0).slideToggle();
+      upli.children('svg').toggle();
     }
   });
 
@@ -120,7 +130,7 @@ jQuery(document).ready(($) => {
 
     $('html, body').animate({
       scrollTop: target.offset().top - topSpace,
-    }, 500, 'easeInOutSine');
+    }, 1500, 'easeOutExpo');
 
     if ($(this).parents('.nav-menu').length) {
       $('.nav-menu .menu-active').removeClass('menu-active');

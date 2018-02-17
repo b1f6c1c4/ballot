@@ -4,8 +4,23 @@
 body {
   background: #fff;
   color: #666666;
-  font-family: "Roboto", sans-serif;
   overflow-x: hidden;
+}
+
+.body-x-en {
+  font-family: "Roboto", sans-serif;
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: light;
+  src:
+    url("../images/NotoSansSC-Light.woff2") format("woff2");
+}
+
+.body-x-zh {
+  font-family: "Noto Sans SC";
+  font-style: light;
 }
 
 a {
@@ -25,10 +40,14 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Roboto", sans-serif;
   font-weight: 400;
   margin: 0 0 20px 0;
   padding: 0;
+}
+
+.icon svg {
+  fill: url(#gradient);
+  transition: 0.5s;
 }
 
 /* Back to top button */
@@ -82,7 +101,6 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
   line-height: 1;
   display: inline-block;
-  font-family: "Roboto", sans-serif;
   font-weight: 300;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -146,10 +164,10 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 384px) {
   #intro h2 {
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 36px;
+    line-height: 48px;
   }
 }
 
@@ -169,7 +187,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #intro .btn-get-started {
-  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 16px;
   letter-spacing: 1px;
@@ -190,6 +207,10 @@ h1, h2, h3, h4, h5, h6 {
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
+.menu-item-active {
+  color: #1dc8cd !important;
+}
+
 /* Nav Menu Essentials */
 .nav-menu, .nav-menu * {
   margin: 0;
@@ -201,7 +222,8 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   display: none;
   top: 100%;
-  left: 0;
+  right: 0;
+  max-width: 100px;
   z-index: 99;
 }
 
@@ -228,9 +250,13 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 180px;
 }
 
-#nav-langs svg {
+.nav-langs svg {
   fill: #fff;
   margin-top: 3.5px;
+}
+
+.nav-menu a.nav-langs {
+  display: none;
 }
 
 /* Nav Meu Container */
@@ -251,7 +277,6 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
   display: inline-block;
   color: #fff;
-  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 14px;
   outline: none;
@@ -279,10 +304,6 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 13px;
   text-transform: none;
-}
-
-.nav-menu ul li:hover > a {
-  color: #1dc8cd;
 }
 
 .nav-menu ul ul {
@@ -363,8 +384,8 @@ h1, h2, h3, h4, h5, h6 {
   fill: #fff;
 }
 
-#mobile-nav ul .menu-item-active {
-  color: #1dc8cd;
+#mobile-nav span.nav-langs {
+  display: none;
 }
 
 #mobile-body-overly {
@@ -446,11 +467,6 @@ body.mobile-nav-active #mobile-nav-toggle {
   margin-bottom: 10px;
 }
 
-#features .icon svg {
-  fill: url(#gradient);
-  transition: 0.5s;
-}
-
 #features .title {
   font-weight: 300;
   margin-bottom: 15px;
@@ -498,7 +514,6 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #call-to-action .cta-btn {
-  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 16px;
   letter-spacing: 1px;
@@ -532,21 +547,6 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 #more-features .icon {
   float: left;
-}
-
-#more-features .icon i {
-  color: #666666;
-  font-size: 80px;
-  transition: 0.5s;
-  line-height: 0;
-}
-
-#more-features .icon i:before {
-  background: #1dc8cd;
-  background: linear-gradient(45deg, #1dc8cd 0%, #55fabe 100%);
-  background-clip: border-box;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 #more-features h4 {
@@ -601,18 +601,10 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 18px 0;
   display: block;
   position: relative;
-  font-family: "Roboto", sans-serif;
   font-size: 22px;
   line-height: 1;
   font-weight: 300;
   padding-right: 20px;
-}
-
-#faq #faq-list i {
-  font-size: 24px;
-  position: absolute;
-  right: 0;
-  top: 16px;
 }
 
 #faq #faq-list p {
@@ -623,9 +615,6 @@ body.mobile-nav-active #mobile-nav-toggle {
   #faq #faq-list a {
     font-size: 18px;
   }
-  #faq #faq-list i {
-    top: 13px;
-  }
 }
 
 #faq #faq-list a.collapse {
@@ -634,10 +623,6 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 #faq #faq-list a.collapsed {
   color: #000;
-}
-
-#faq #faq-list a.collapsed i::before {
-  content: "\f2c7" !important;
 }
 
 
