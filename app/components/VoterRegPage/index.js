@@ -118,7 +118,7 @@ class VoterRegPage extends React.PureComponent {
                   name="comment"
                   label={messages.commentLabel}
                   helperText={messages.commentHelperText}
-                  disabled={isRegLoading || privateKey}
+                  disabled={isRegLoading || !!privateKey}
                   fullWidth
                 />
                 <ResultIndicator {...{ error }} />
