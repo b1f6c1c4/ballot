@@ -185,6 +185,16 @@ type Subscription {
 
   # Authentication is required
   ballotsStatus: BallotSt
+
+  # Authentication is required
+  #
+  # **Error codes**
+  #
+  # | Status  | Code     | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `404`   | `ntfd`   | Resource not found                          |
+  # | `409`   | `stna`   | Ballot status doesn't allow the operation   |
+  voterRegistered(input: BallotInput!): VoterRg
 }
 
 # Inputs
@@ -357,6 +367,12 @@ type TicketPayload {
 type FieldStat {
   answer: String
   count: Int!
+}
+
+type VoterRg {
+  iCode: ID!
+  comment: String
+  publicKey: Crypto!
 }
 
 # Enums

@@ -8,9 +8,23 @@
 
 ### Routing Key
 
-`status.{owner}.{bID}`
+`status.{owner}.{bId}`
 
 ### Body
 
 `inviting`
+
+## Voter Registered
+
+### Exchange
+
+`topic_subscription`
+
+### Routing Key
+
+`vreg.{bId}.{iCode}`
+
+### Body
+
+`{"comment":"{comment}","publicKey":"{publicKey}"}`
 
