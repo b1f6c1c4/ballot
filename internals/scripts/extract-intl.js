@@ -106,6 +106,7 @@ const extractFromFile = async (fileName) => {
 
   // Make the directory if it doesn't exist, especially for first run
   mkdir('-p', 'app/translations');
+  /* eslint-disable no-await-in-loop */
   for (const locale of locales) {
     const translationFileName = `app/translations/${locale}.json`;
 
@@ -133,6 +134,7 @@ const extractFromFile = async (fileName) => {
       );
     }
   }
+  /* eslint-enable no-await-in-loop */
 
   process.exit();
 }());

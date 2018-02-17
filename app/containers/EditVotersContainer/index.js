@@ -17,6 +17,7 @@ import sagas from './sagas';
 
 export class EditVotersContainer extends React.PureComponent {
   componentWillMount() {
+    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
     }
@@ -25,7 +26,12 @@ export class EditVotersContainer extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
+      nextProps.onVoterRgRequestAction();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onVoterRgStopAction();
   }
 
   render() {
@@ -54,6 +60,8 @@ EditVotersContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
+  onVoterRgRequestAction: PropTypes.func.isRequired,
+  onVoterRgStopAction: PropTypes.func.isRequired,
 };
 
 export function mapDispatchToProps(dispatch, { match }) {
@@ -61,6 +69,8 @@ export function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
+    onVoterRgRequestAction: () => dispatch(editVotersContainerActions.voterRgRequest({ bId })),
+    onVoterRgStopAction: () => dispatch(editVotersContainerActions.voterRgStop()),
     onCreateVoter: ({ name }) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
     onDeleteVoter: ({ iCode }) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
   };
