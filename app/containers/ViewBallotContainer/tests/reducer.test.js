@@ -1,5 +1,7 @@
 import { fromJS } from 'immutable';
 import * as globalContainerActions from 'containers/GlobalContainer/actions';
+import * as editVotersContainerActions from 'containers/EditVotersContainer/actions';
+import * as editFieldsContainerActions from 'containers/EditFieldsContainer/actions';
 
 import viewBallotContainerReducer from '../reducer';
 
@@ -204,5 +206,29 @@ describe('viewBallotContainerReducer', () => {
       .set('error', fromJS(error));
 
     expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.exportFailure(error))).toEq(expectedResult);
+  });
+
+  it('should handle voters create voter success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editVotersContainerActions.createVoterSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle voters delete voter success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editVotersContainerActions.deleteVoterSuccess(result))).toEq(expectedResult);
+  });
+
+  it('should handle fields save success', () => {
+    const originalState = state.set('ballot', 'xx');
+    const result = { };
+    const expectedResult = state;
+
+    expect(viewBallotContainerReducer(originalState, editFieldsContainerActions.saveSuccess(result))).toEq(expectedResult);
   });
 });

@@ -12,7 +12,3 @@ subscription BallotsStatus {
     status
   }
 }
-
-# Hack graphql-tag/loader
-# [bug](https://github.com/apollographql/graphql-tag/issues/137)
-query Hack { hack }
