@@ -1,5 +1,6 @@
 const errors = require('./error');
 const { Ballot } = require('../../models/ballots');
+const { updateVoterRegistered } = require('../publish');
 const throttle = require('./throttle');
 const logger = require('../../logger')('graphql/voter');
 
@@ -47,6 +48,7 @@ module.exports = {
           voter.publicKey = publicKey;
           await doc.save();
           logger.info('Voter registered', { bId, iCode });
+          await updateVoterRegistered(bId, voter);
           return true;
         } catch (e) {
           if (e instanceof errors.TooManyRequestsError) return e;

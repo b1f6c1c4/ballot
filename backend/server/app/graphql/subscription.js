@@ -55,6 +55,21 @@ const makeBallotSt = (key, data) => {
   };
 };
 
+const makeVoterRg = (key, data) => {
+  const [vreg, bId, iCode] = key.split('.');
+  if (vreg !== 'vreg') {
+    logger.error('Invalid routing key', key);
+    throw new Error('Invalid routing key');
+  }
+  const { comment, publicKey } = JSON.parse(data);
+  return {
+    bId,
+    iCode,
+    comment,
+    publicKey,
+  };
+};
+
 const subscribeBallotStatus = async (bId) => {
   const k = `status.*.${bId}`;
   await lock(k, (key, res) => {
@@ -81,14 +96,29 @@ const subscribeBallotsStatus = async (owner) => {
   return () => unlock(k);
 };
 
+const subscribeVoterRegistered = async (bId) => {
+  const k = `vreg.${bId}.*`;
+  await lock(k, (key, res) => {
+    logger.trace('Status data', res);
+    const bSt = makeVoterRg(key, res);
+    logger.debug('PubSub.publish', bSt);
+    const pk = `voterRegistered.${bId}`;
+    logger.debug('To', pk);
+    pubsub.publish(pk, { voterRegistered: bSt });
+  });
+  return () => unlock(k);
+};
+
 module.exports = {
   subsLib,
   pubsub,
   lock,
   unlock,
   makeBallotSt,
+  makeVoterRg,
   subscribeBallotStatus,
   subscribeBallotsStatus,
+  subscribeVoterRegistered,
 
   onOperation(message, params, ws) {
     const opId = message.id;
@@ -175,6 +205,44 @@ module.exports = {
             /* istanbul ignore next */
             logger.error('Subscribe ballotsStatus', e);
             /* istanbul ignore next */
+            return e;
+          }
+        },
+      },
+      voterRegistered: {
+        subscribe: async (parent, args, context) => {
+          logger.debug('Subscription.voterRegistered.subscribe', args);
+          logger.trace('parent', parent);
+          logger.trace('context', context);
+
+          if (!_.get(context, 'auth.username')) {
+            return new errors.UnauthorizedError();
+          }
+
+          const { username } = context.auth;
+          const { bId } = args.input;
+
+          try {
+            await throttle('ballotStatus', 2, 1000)(context);
+
+            const doc = await Ballot.findById(bId, { _id: 1, status: 1, owner: 1 });
+            if (!doc) {
+              return new errors.NotFoundError();
+            }
+            if (doc.owner !== username) {
+              return new errors.UnauthorizedError();
+            }
+            if (doc.status !== 'inviting') {
+              return new errors.StatusNotAllowedError();
+            }
+
+            const cb = await subscribeVoterRegistered(bId);
+            context.registry.set(context.opId, cb);
+
+            return pubsub.asyncIterator(`voterRegistered.${bId}`);
+          } catch (e) {
+            if (e instanceof errors.TooManyRequestsError) return e;
+            logger.error('Subscribe voterRegistered', e);
             return e;
           }
         },

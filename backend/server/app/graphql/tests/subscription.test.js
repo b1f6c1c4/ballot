@@ -29,8 +29,10 @@ const {
   lock,
   unlock,
   makeBallotSt,
+  makeVoterRg,
   subscribeBallotStatus,
   subscribeBallotsStatus,
+  subscribeVoterRegistered,
   onOperation,
   onOperationComplete,
   resolvers,
@@ -95,6 +97,28 @@ describe('makeBallotSt', () => {
 
   it('should throw if wrong', () => {
     expect(() => makeBallotSt('sta tus.ow.id', 'st')).toThrow();
+  });
+});
+
+describe('makeVoterRg', () => {
+  it('should make', () => {
+    expect(makeVoterRg('vreg.id.ic', JSON.stringify({
+      comment: 'cm',
+      publicKey: 'pk',
+    }))).toEqual({
+      bId: 'id',
+      iCode: 'ic',
+      comment: 'cm',
+      publicKey: 'pk',
+    });
+  });
+
+  it('should throw if wrong', () => {
+    expect(() => makeVoterRg('vr eg.id.ic', '{}')).toThrow();
+  });
+
+  it('should throw if json wrong', () => {
+    expect(() => makeVoterRg('vreg.id.ic', 'st')).toThrow();
   });
 });
 
@@ -170,6 +194,41 @@ describe('subscribeBallotsStatus', () => {
   });
 });
 
+describe('subscribeVoterRegistered', () => {
+  beforeEach(() => {
+    subsLib.clear();
+  });
+
+  it('should publish', (done) => {
+    expect.hasAssertions();
+    rpcMock.subscribe.mockImplementationOnce(async (k, cb) => {
+      expect(k).toEqual('vreg.234.*');
+      const it = pubsub.asyncIterator('voterRegistered.234');
+      cb('vreg.id.ic', '{}');
+      const rx = await it.next();
+      expect(rx.value).toEqual({
+        voterRegistered: {
+          bId: 'id',
+          iCode: 'ic',
+        },
+      });
+      done();
+    });
+    subscribeVoterRegistered('234');
+  });
+
+  it('should return unlock', async (done) => {
+    expect.assertions(2);
+    rpcMock.subscribe.mockImplementationOnce(async () => () => {
+      expect(undefined).toBeUndefined();
+    });
+    const res = await subscribeVoterRegistered('234');
+    res();
+    expect(subsLib.size).toEqual(0);
+    done();
+  });
+});
+
 describe('onOperation', () => {
   it('should add registry if none', () => {
     const ws = {};
@@ -227,6 +286,8 @@ describe('onOperationComplete', () => {
 describe('Subscription', () => {
   const dBallot = {
     _id: '123',
+    owner: 'un',
+    status: 'inviting',
   };
 
   describe('ballotStatus', () => {
@@ -311,6 +372,77 @@ describe('Subscription', () => {
       const res = await func(...dArgs);
       pubsub.publish('ballotsStatus.uw', { evil: true });
       pubsub.publish('ballotsStatus.un', { evil: false });
+      const rx = await res.next();
+      expect(rx.value).toEqual({ evil: false });
+      done();
+    });
+  });
+
+  describe('voterRegistered', () => {
+    const func = resolvers.Subscription.voterRegistered.subscribe;
+    const dArgs = [
+      undefined,
+      { input: { bId: '123' } },
+      {
+        auth: { username: 'un' },
+        registry: new Map(),
+        opId: 'a',
+      },
+    ];
+
+    it('should throw unauthorized', async (done) => {
+      const res = await func(...mer(dArgs, '[2]', {}));
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
+    });
+
+    it('should not throw if error', async (done) => {
+      models.Ballot.throwErrOn('findOne');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(Error);
+      expect(res.message).toEqual('Some error');
+      done();
+    });
+
+    it('should handle not found', async (done) => {
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.NotFoundError);
+      done();
+    });
+
+    it('should handle not owner', async (done) => {
+      await make.Ballot(dBallot, 'owner', 'ow');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.UnauthorizedError);
+      done();
+    });
+
+    it('should handle status not allowed', async (done) => {
+      await make.Ballot(dBallot, 'status', 'nk');
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
+      done();
+    });
+
+    it('should return async iterator', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      expect(res.next).toBeDefined();
+      done();
+    });
+
+    it('should throttle', async (done) => {
+      throttleThrow = true;
+      const res = await func(...dArgs);
+      expect(res).toBeInstanceOf(errors.TooManyRequestsError);
+      done();
+    });
+
+    it('should use pubsub', async (done) => {
+      await make.Ballot(dBallot);
+      const res = await func(...dArgs);
+      pubsub.publish('voterRegistered.1234', { evil: true });
+      pubsub.publish('voterRegistered.123', { evil: false });
       const rx = await res.next();
       expect(rx.value).toEqual({ evil: false });
       done();

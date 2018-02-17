@@ -10,4 +10,17 @@ module.exports = {
     logger.debug('To', k);
     await sPublish(k, status);
   },
+
+  async updateVoterRegistered(bId, voter) {
+    logger.trace('updateVoterRegistered', { bId, ...voter });
+    const { _id: iCode, comment, publicKey } = voter;
+    const k = `vreg.${bId}.${iCode}`;
+    const data = JSON.stringify({
+      comment,
+      publicKey,
+    });
+    logger.debug('Publish voter registered', data);
+    logger.debug('To', k);
+    await sPublish(k, data);
+  },
 };
