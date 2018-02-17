@@ -12,6 +12,20 @@ beforeEach(() => {
   throttleThrow = false;
 });
 
+let updateVoterRegisteredCalled = false;
+
+jest.doMock('../../publish', () => ({
+  async updateVoterRegistered(bId, doc) {
+    expect(bId).toEqual('123');
+    expect(doc._id).toEqual('icc');
+    updateVoterRegisteredCalled = true;
+  },
+}));
+
+beforeEach(() => {
+  updateVoterRegisteredCalled = false;
+});
+
 // eslint-disable-next-line global-require
 const { resolvers } = require('../voter');
 
@@ -95,11 +109,12 @@ describe('Mutation', () => {
       done();
     });
 
-    it('should save if good inviting', async (done) => {
+    it('should save if good', async (done) => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
       await check.Ballot(dBallot, 'voters[0]', targ);
+      expect(updateVoterRegisteredCalled).toEqual(true);
       done();
     });
   });

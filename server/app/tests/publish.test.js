@@ -4,7 +4,10 @@ jest.doMock('../../rpc', () => ({
 }));
 
 // eslint-disable-next-line global-require
-const { updateBallotStatus } = require('../publish');
+const {
+  updateBallotStatus,
+  updateVoterRegistered,
+} = require('../publish');
 
 describe('updateBallotStatus', () => {
   it('should publish', (done) => {
@@ -18,3 +21,21 @@ describe('updateBallotStatus', () => {
   });
 });
 
+describe('updateVoterRegistered', () => {
+  it('should publish', (done) => {
+    expect.hasAssertions();
+    sPublish.mockImplementationOnce((k, status) => {
+      expect(k).toEqual('vreg.id.ic');
+      expect(JSON.parse(status)).toEqual({
+        comment: 'cm',
+        publicKey: 'pk',
+      });
+      done();
+    });
+    updateVoterRegistered('id', {
+      _id: 'ic',
+      comment: 'cm',
+      publicKey: 'pk',
+    });
+  });
+});
