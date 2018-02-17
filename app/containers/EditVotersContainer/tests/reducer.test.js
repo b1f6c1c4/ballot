@@ -107,10 +107,10 @@ describe('editVotersContainerReducer', () => {
         { iCode: '1', name: 'n1', publicKey: null },
         { iCode: '2', name: 'n2', publicKey: null },
       ]));
-    const param = { iCode: '1' };
+    const param = { iCode: '1', comment: 'x' };
     const expectedResult = state.set('ballot', fromJS({ bId: 'b' }))
       .set('voters', fromJS([
-        { iCode: '1' },
+        { iCode: '1', name: 'n1', comment: 'x' },
         { iCode: '2', name: 'n2', publicKey: null },
       ]));
 

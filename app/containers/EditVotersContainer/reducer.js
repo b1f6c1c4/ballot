@@ -29,7 +29,9 @@ function editVotersContainerReducer(state = initialState, action) {
       const list = state.get('voters');
       const id = list.findIndex((b) => b.get('iCode') === action.voter.iCode);
       if (id === -1) return state;
-      const newList = list.set(id, action.voter);
+      const newList = list
+        .setIn([id, 'comment'], action.voter.comment)
+        .setIn([id, 'publicKey'], action.voter.publicKey);
       return state.set('voters', newList);
     }
     // Sagas
