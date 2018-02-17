@@ -52,7 +52,11 @@ module.exports = (options) => ({
         })],
       },
       {
-        test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
+        test: /\.(svg)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(eot|otf|ttf|woff|woff2)$/,
         loader: 'file-loader',
       },
       {

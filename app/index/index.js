@@ -27,10 +27,10 @@ _.mapValues(rawResources, (lo, k) => {
   $('a', o)
     .attr('data-lang', k)
     .text(lo['index.lang']);
-  $('#nav-langs').append(o);
+  $('#nav-langs ul').append(o);
 });
 
-$(document).on('click', '.nav-langs a', function onLangClick() {
+$(document).on('click', '#nav-langs a', function onLangClick() {
   const k = $(this).attr('data-lang');
   i18next.changeLanguage(k);
 });

@@ -4,7 +4,7 @@
 body {
   background: #fff;
   color: #666666;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   overflow-x: hidden;
 }
 
@@ -25,7 +25,7 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   margin: 0 0 20px 0;
   padding: 0;
@@ -37,7 +37,7 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
   background: linear-gradient(45deg, #1de099, #1dc8cd);
   color: #fff;
-  padding: 2px 20px 8px 20px;
+  padding: 6px 20px 2px 20px;
   font-size: 16px;
   border-radius: 4px 4px 0 0;
   right: 15px;
@@ -47,13 +47,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .back-to-top:focus {
   background: linear-gradient(45deg, #1de099, #1dc8cd);
-  color: #fff;
   outline: none;
 }
 
 .back-to-top:hover {
   background: #1dc8cd;
-  color: #fff;
+}
+
+.back-to-top svg {
+  fill: #fff;
 }
 
 /*--------------------------------------------------------------
@@ -80,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
   line-height: 1;
   display: inline-block;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 300;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -167,7 +169,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #intro .btn-get-started {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 16px;
   letter-spacing: 1px;
@@ -226,22 +228,9 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 180px;
 }
 
-/* Nav Menu Arrows */
-.sf-arrows .sf-with-ul {
-  padding-right: 30px;
-}
-
-.sf-arrows .sf-with-ul:after {
-  content: "\f107";
-  position: absolute;
-  right: 15px;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-}
-
-.sf-arrows ul .sf-with-ul:after {
-  content: "\f105";
+#nav-langs svg {
+  fill: #fff;
+  margin-top: 3.5px;
 }
 
 /* Nav Meu Container */
@@ -262,7 +251,7 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
   display: inline-block;
   color: #fff;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 14px;
   outline: none;
@@ -309,15 +298,14 @@ h1, h2, h3, h4, h5, h6 {
   margin: 20px 20px 0 0;
   border: 0;
   background: none;
-  font-size: 24px;
   display: none;
-  transition: all 0.4s;
   outline: none;
   cursor: pointer;
 }
 
-#mobile-nav-toggle i {
-  color: #fff;
+#mobile-nav-toggle svg {
+  fill: #fff;
+  transition: all 0.4s;
 }
 
 @media (max-width: 768px) {
@@ -362,25 +350,17 @@ h1, h2, h3, h4, h5, h6 {
   outline: none;
 }
 
-#mobile-nav ul li a:hover {
-  color: #fff;
-}
-
 #mobile-nav ul li li {
   padding-left: 30px;
 }
 
-#mobile-nav ul .menu-has-children i {
+#mobile-nav ul .menu-has-children svg {
   position: absolute;
   right: 0;
+  margin-top: 4px;
   z-index: 99;
-  padding: 15px;
   cursor: pointer;
-  color: #fff;
-}
-
-#mobile-nav ul .menu-has-children i.fa-chevron-up {
-  color: #1dc8cd;
+  fill: #fff;
 }
 
 #mobile-nav ul .menu-item-active {
@@ -466,18 +446,9 @@ body.mobile-nav-active #mobile-nav-toggle {
   margin-bottom: 10px;
 }
 
-#features .icon i {
-  color: #666666;
-  font-size: 40px;
+#features .icon svg {
+  fill: url(#gradient);
   transition: 0.5s;
-}
-
-#features .icon i:before {
-  background: #1dc8cd;
-  background: linear-gradient(45deg, #1dc8cd 0%, #55fabe 100%);
-  background-clip: border-box;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 #features .title {
@@ -527,7 +498,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #call-to-action .cta-btn {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 16px;
   letter-spacing: 1px;
@@ -630,7 +601,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 18px 0;
   display: block;
   position: relative;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 22px;
   line-height: 1;
   font-weight: 300;

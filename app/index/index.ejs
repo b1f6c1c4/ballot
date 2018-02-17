@@ -19,7 +19,7 @@
   </head>
   <body>
 
-    <%= require('html-loader!./index.html') %>
+    <%= require('ejs-loader!./content.ejs')() %>
 
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.js) {
