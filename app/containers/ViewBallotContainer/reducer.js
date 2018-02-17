@@ -19,6 +19,18 @@ function viewBallotContainerReducer(state = initialState, action) {
         return state.setIn(['ballot', 'status'], action.status);
       }
       return state;
+    case VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION:
+      return state;
+    case VIEW_BALLOT_CONTAINER.VOTER_RG_STOP_ACTION:
+      return state;
+    case VIEW_BALLOT_CONTAINER.VOTER_REGISTERED_ACTION: {
+      if (action.bId !== state.getIn(['ballot', 'bId'])) return state;
+      const list = state.getIn(['ballot', 'voters']);
+      const id = list.findIndex((b) => b.get('iCode') === action.iCode);
+      if (id === -1) return state;
+      const newList = list.update(id, (b) => b.set('publicKey', true));
+      return state.setIn(['ballot', 'voters'], newList);
+    }
     // Sagas
     case VIEW_BALLOT_CONTAINER.BALLOT_REQUEST:
       return state.set('isLoading', true)

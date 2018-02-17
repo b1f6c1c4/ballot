@@ -41,7 +41,7 @@ describe('ballotsStatusChan', () => {
     const obj = obs.subscribe.mock.calls[0][0];
     const st = { bId: 'b', status: 's' };
     res.take((action) => {
-      expect(action).toEqual(globalContainerActions.statusChange(st));
+      expect(action).toEqual(st);
       done();
     });
     obj.next({ data: { ballotsStatus: st } });

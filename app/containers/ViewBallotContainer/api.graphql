@@ -10,6 +10,7 @@ query Ballot($bId: ID!) {
       prompt
     }
     voters {
+      iCode
       name
       publicKey
     }
@@ -52,4 +53,12 @@ mutation FinalizeVoting($bId: ID!) {
   finalizeVoting(input: {
     bId: $bId,
   })
+}
+
+subscription VoterRegistered($bId: ID!) {
+  voterRegistered(input: {
+    bId: $bId,
+  }) {
+    iCode
+  }
 }
