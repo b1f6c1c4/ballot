@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
@@ -16,6 +17,7 @@ import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
+import ConfirmDialog from 'components/ConfirmDialog';
 
 import messages from './messages';
 
@@ -48,6 +50,27 @@ const styles = (theme) => ({
 });
 
 class VoterRegPage extends React.PureComponent {
+  state = {
+    isOpenRegister: false,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.bId, this.props.bId)) {
+      this.handleConfirm()();
+    }
+  }
+
+  handleConfirm = (ac) => (...args) => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true, args }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac(...this.state.args);
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
+
   handleRegister = (vals) => this.props.onRegister({
     comment: vals.get('comment'),
   });
@@ -86,7 +109,7 @@ class VoterRegPage extends React.PureComponent {
         <ResultIndicator error={this.props.refreshError} />
         {!isLoading && (
           <Paper className={classes.root}>
-            <form onSubmit={handleSubmit(this.handleRegister)}>
+            <form onSubmit={handleSubmit(this.handleConfirm('isOpenRegister'))}>
               <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
@@ -126,6 +149,13 @@ class VoterRegPage extends React.PureComponent {
                 <span className={classes.secret}>{privateKey}</span>
               )}
             </form>
+            <ConfirmDialog
+              title={messages.registerTitle}
+              description={messages.registerDescription}
+              isOpen={this.state.isOpenRegister}
+              onCancel={this.handleConfirm()}
+              onAction={this.handleConfirm(this.handleRegister)}
+            />
           </Paper>
         )}
       </div>

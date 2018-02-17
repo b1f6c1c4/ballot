@@ -40,17 +40,49 @@ export default {
       id: 'app.components.ViewBallotPage.finalizeVoters',
       defaultMessage: 'Stop inviting',
     },
+    finalizeVotersTitle: {
+      id: 'app.components.ViewBallotPage.finalizeVotersTitle',
+      defaultMessage: 'Are you sure',
+    },
+    finalizeVotersDescription: {
+      id: 'app.components.ViewBallotPage.finalizeVotersDescription',
+      defaultMessage: 'Stop inviting?',
+    },
     finalizeFields: {
       id: 'app.components.ViewBallotPage.finalizeFields',
       defaultMessage: 'Start pre voting',
+    },
+    finalizeFieldsTitle: {
+      id: 'app.components.ViewBallotPage.finalizeFieldsTitle',
+      defaultMessage: 'Are you sure',
+    },
+    finalizeFieldsDescription: {
+      id: 'app.components.ViewBallotPage.finalizeFieldsDescription',
+      defaultMessage: 'Start pre voting?',
     },
     finalizePreVoting: {
       id: 'app.components.ViewBallotPage.finalizePreVoting',
       defaultMessage: 'Start voting',
     },
+    finalizePreVotingTitle: {
+      id: 'app.components.ViewBallotPage.finalizePreVotingTitle',
+      defaultMessage: 'Are you sure',
+    },
+    finalizePreVotingDescription: {
+      id: 'app.components.ViewBallotPage.finalizePreVotingDescription',
+      defaultMessage: 'Start voting?',
+    },
     finalizeVoting: {
       id: 'app.components.ViewBallotPage.finalizeVoting',
       defaultMessage: 'Stop voting',
+    },
+    finalizeVotingTitle: {
+      id: 'app.components.ViewBallotPage.finalizeVotingTitle',
+      defaultMessage: 'Are you sure',
+    },
+    finalizeVotingDescription: {
+      id: 'app.components.ViewBallotPage.finalizeVotingDescription',
+      defaultMessage: 'Stop voting?',
     },
     export: {
       id: 'app.components.ViewBallotPage.export',

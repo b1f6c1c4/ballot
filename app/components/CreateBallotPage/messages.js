@@ -20,5 +20,13 @@ export default {
       id: 'app.components.CreateBallotPage.nameHelperText',
       defaultMessage: '1+ alphanumeric or dash char.',
     },
+    createTitle: {
+      id: 'app.components.CreateBallotPage.createTitle',
+      defaultMessage: 'Are you sure',
+    },
+    createDescription: {
+      id: 'app.components.CreateBallotPage.createDescription',
+      defaultMessage: 'Create it?',
+    },
   }),
 };

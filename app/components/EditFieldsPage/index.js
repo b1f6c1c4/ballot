@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
@@ -29,6 +30,7 @@ import EmptyIndicator from 'components/EmptyIndicator';
 import EditFieldDialog from 'components/EditFieldDialog';
 import ReorderableList from 'components/ReorderableList';
 import ReorderableListItem from 'components/ReorderableListItem';
+import ConfirmDialog from 'components/ConfirmDialog';
 
 import messages from './messages';
 
@@ -50,6 +52,28 @@ const styles = (theme) => ({
 });
 
 class EditFieldsPage extends React.PureComponent {
+  state = {
+    isOpenDrop: false,
+    isOpenDelete: false,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.bId, this.props.bId)) {
+      this.handleConfirm()();
+    }
+  }
+
+  handleConfirm = (ac) => () => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac();
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
+
   handleEdit = (index) => () => this.props.onStartEditAction({ index });
 
   handleDelete = (index) => () => this.props.onRemoveAction({ index });
@@ -127,13 +151,20 @@ class EditFieldsPage extends React.PureComponent {
               <Button
                 color="secondary"
                 disabled={isLoading}
-                onClick={this.props.onRefresh}
+                onClick={this.handleConfirm('isOpenDrop')}
               >
                 <FormattedMessage {...messages.drop} />
                 <Clear className={classes.rightIcon} />
               </Button>
             </LoadingButton>
           )}
+          <ConfirmDialog
+            title={messages.dropTitle}
+            description={messages.dropDescription}
+            isOpen={this.state.isOpenDrop}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onRefresh)}
+          />
         </div>
         <ResultIndicator error={this.props.error} />
         <EditFieldDialog
@@ -175,10 +206,17 @@ class EditFieldsPage extends React.PureComponent {
                     </IconButton>
                     {canEditFields && (
                       <IconButton>
-                        <Delete onClick={this.handleDelete(i)} />
+                        <Delete onClick={this.handleConfirm('isOpenDelete')} />
                       </IconButton>
                     )}
                   </ListItemSecondaryAction>
+                  <ConfirmDialog
+                    title={messages.deleteTitle}
+                    description={messages.deleteDescription}
+                    isOpen={this.state.isOpenDelete}
+                    onCancel={this.handleConfirm()}
+                    onAction={this.handleConfirm(this.handleDelete(i))}
+                  />
                 </ListItem>
               </Card>
             ))}

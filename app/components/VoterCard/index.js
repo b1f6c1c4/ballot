@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -15,6 +16,7 @@ import {
 import classnames from 'classnames';
 import { Delete, ExpandMore } from 'material-ui-icons';
 import QRCode from 'qrcode.react';
+import ConfirmDialog from 'components/ConfirmDialog';
 
 import messages from './messages';
 
@@ -54,7 +56,28 @@ const styles = (theme) => ({
 });
 
 class VoterCard extends React.PureComponent {
-  state = { expanded: false };
+  state = {
+    expanded: false,
+    isOpenDelete: false,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.bId, this.props.bId)
+      || !_.isEqual(nextProps.voter, this.props.voter)) {
+      this.handleConfirm()();
+    }
+  }
+
+  handleConfirm = (ac) => () => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac();
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
 
   handleExpand = () => this.setState({ expanded: !this.state.expanded });
 
@@ -93,10 +116,17 @@ class VoterCard extends React.PureComponent {
         </CardContent>
         <CardActions className={classes.actions} disableActionSpacing>
           {!disabled && (
-            <IconButton onClick={this.props.onDelete}>
+            <IconButton onClick={this.handleConfirm('isOpenDelete')}>
               <Delete />
             </IconButton>
           )}
+          <ConfirmDialog
+            title={messages.deleteTitle}
+            description={messages.deleteDescription}
+            isOpen={this.state.isOpenDelete}
+            onCancel={this.handleConfirm()}
+            onAction={this.handleConfirm(this.props.onDelete)}
+          />
           <IconButton
             className={classnames(classes.expand, {
               [classes.expandOpen]: this.state.expanded,
