@@ -80,7 +80,7 @@ class GlobalBar extends React.PureComponent {
     } = this.props;
 
     return (
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             className={classes.menuButton}
