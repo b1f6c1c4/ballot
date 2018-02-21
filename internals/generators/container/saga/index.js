@@ -131,8 +131,7 @@ module.exports = {
     // api.graphql
     actions.push({
       type: 'complexModify',
-      method: 'by',
-      pattern: /^# Hack/g,
+      method: 'append',
       path: '../../app/containers/{{properCase name}}/api.graphql',
       templateFile: './container/saga/api.graphql.hbs',
       abortOnFail: true,
