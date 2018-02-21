@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import EditVotersPage from 'components/EditVotersPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as editVotersContainerSelectors from './selectors';
 import * as editVotersContainerActions from './actions';
 import reducer from './reducer';
@@ -69,8 +70,8 @@ function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
-    onVoterRgRequestAction: () => dispatch(editVotersContainerActions.voterRgRequest({ bId })),
-    onVoterRgStopAction: () => dispatch(editVotersContainerActions.voterRgStop()),
+    onVoterRgRequestAction: () => dispatch(subscriptionContainerActions.voterRgRequest({ bId })),
+    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
     onCreateVoter: ({ name }) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
     onDeleteVoter: ({ iCode }) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
   };

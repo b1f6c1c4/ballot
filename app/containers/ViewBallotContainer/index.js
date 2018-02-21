@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import ViewBallotPage from 'components/ViewBallotPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
 import reducer from './reducer';
@@ -72,8 +73,8 @@ function mapDispatchToProps(dispatch, { match }) {
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
-    onVoterRgRequestAction: () => dispatch(viewBallotContainerActions.voterRgRequest({ bId })),
-    onVoterRgStopAction: () => dispatch(viewBallotContainerActions.voterRgStop()),
+    onVoterRgRequestAction: () => dispatch(subscriptionContainerActions.voterRgRequest({ bId })),
+    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };
 }
 

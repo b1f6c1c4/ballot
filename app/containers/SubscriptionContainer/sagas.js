@@ -8,7 +8,6 @@ import {
   put,
   select,
   cancel,
-  cancelled,
 } from 'redux-saga/effects';
 import * as api from 'utils/request';
 
@@ -16,18 +15,41 @@ import * as SUBSCRIPTION_CONTAINER from './constants';
 import * as subscriptionContainerActions from './actions';
 import gql from './api.graphql';
 
-export const ballotsStatusChan = (obs0) => eventChannel((emit) => {
+const close = (chan) => {
+  /* istanbul ignore if */
+  if (_.isObject(chan)) {
+    chan.close();
+  }
+};
+
+const report = (err) => {
+  /* istanbul ignore if */
+  if (process.env.NODE_ENV !== 'test') {
+    /* eslint-disable no-console */
+    if (_.isArray(err)) {
+      err.forEach((e) => console.error(e));
+    } else {
+      console.error(err);
+    }
+    /* eslint-enable no-console */
+  }
+};
+
+export const makeChan = (lbl, obs0) => eventChannel((emit) => {
   const obs1 = obs0.subscribe({
     next(data) {
-      const st = _.get(data, 'data.ballotsStatus');
-      if (st) {
-        emit(st);
+      if (_.get(data, 'errors')) {
+        emit({ error: data.errors });
+        return;
+      }
+      const result = _.get(data, `data.${lbl}`);
+      if (result) {
+        emit({ result });
       }
     },
     error(err) {
       /* istanbul ignore next */
-      // eslint-disable-next-line no-console
-      console.error(err);
+      emit({ error: err });
     },
   });
   return () => obs1.unsubscribe();
@@ -37,58 +59,36 @@ export function* handleStatusRequestAction() {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
 
   const obs0 = yield call(api.subscribe, gql.BallotsStatus, undefined, cred);
-  const chan = yield call(ballotsStatusChan, obs0);
+  const chan = yield call(makeChan, 'ballotsStatus', obs0);
   try {
     while (true) {
-      const result = yield take(chan);
+      const { error, result } = yield take(chan);
+      if (error) throw error;
       yield put(subscriptionContainerActions.statusChange(result));
     }
+  } catch (err) {
+    report(err);
   } finally {
-    /* istanbul ignore else */
-    if (yield cancelled()) {
-      /* istanbul ignore if */
-      if (_.isObject(chan)) {
-        chan.close();
-      }
-    }
+    close(chan);
   }
 }
-
-export const voterRegisteredChan = (obs0) => eventChannel((emit) => {
-  const obs1 = obs0.subscribe({
-    next(data) {
-      const st = _.get(data, 'data.voterRegistered');
-      if (st) {
-        emit(st);
-      }
-    },
-    error(err) {
-      /* istanbul ignore next */
-      // eslint-disable-next-line no-console
-      console.error(err);
-    },
-  });
-  return () => obs1.unsubscribe();
-});
 
 export function* handleVoterRgRequestAction({ bId }) {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
 
   const obs0 = yield call(api.subscribe, gql.VoterRegistered, { bId }, cred);
-  const chan = yield call(voterRegisteredChan, obs0);
+  const chan = yield call(makeChan, 'voterRegistered', obs0);
   try {
     while (true) {
-      const result = yield take(chan);
+      const { error, result } = yield take(chan);
+      /* istanbul ignore if */
+      if (error) throw error;
       yield put(subscriptionContainerActions.voterRegistered(bId, result));
     }
+  } catch (err) {
+    report(err);
   } finally {
-    /* istanbul ignore else */
-    if (yield cancelled()) {
-      /* istanbul ignore if */
-      if (_.isObject(chan)) {
-        chan.close();
-      }
-    }
+    close(chan);
   }
 }
 
@@ -102,6 +102,8 @@ export function* watchStatus() {
       request: take(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION),
       stop: take(SUBSCRIPTION_CONTAINER.STATUS_STOP_ACTION),
     });
+    /* istanbul ignore if */
+    if (ob && !ob.isRunning()) ob = undefined;
     if (request && !ob) {
       ob = yield fork(handleStatusRequestAction, request);
     } /* istanbul ignore next */ else if (stop && ob) {
@@ -121,6 +123,8 @@ export function* watchVoterRg() {
       request: take(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION),
       stop: take(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION),
     });
+    /* istanbul ignore if */
+    if (ob && !ob.isRunning()) ob = undefined;
     /* istanbul ignore else */
     if (request) {
       if (!ob || /* istanbul ignore next */ request.bId !== bId) {

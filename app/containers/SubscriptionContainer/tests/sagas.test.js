@@ -9,20 +9,19 @@ import * as subscriptionContainerActions from '../actions';
 import gql from '../api.graphql';
 
 import watcher, {
-  ballotsStatusChan,
+  makeChan,
   handleStatusRequestAction,
-  voterRegisteredChan,
   handleVoterRgRequestAction,
   watchStatus,
   watchVoterRg,
 } from '../sagas';
 
-describe('ballotsStatusChan', () => {
+describe('makeChan', () => {
   const unsubscribe = jest.fn();
   const obs = {
     subscribe: jest.fn(() => ({ unsubscribe })),
   };
-  const func = () => ballotsStatusChan(obs);
+  const func = () => makeChan('itst', obs);
 
   beforeEach(() => {
     obs.subscribe.mockClear();
@@ -36,16 +35,28 @@ describe('ballotsStatusChan', () => {
     obj.next();
   });
 
+  it('should subscribe next error', (done) => {
+    const res = func();
+    expect(obs.subscribe.mock.calls.length).toEqual(1);
+    const obj = obs.subscribe.mock.calls[0][0];
+    const e = { key: 'val' };
+    res.take((action) => {
+      expect(action).toEqual({ error: e });
+      done();
+    });
+    obj.next({ errors: e });
+  });
+
   it('should subscribe next not null', (done) => {
     const res = func();
     expect(obs.subscribe.mock.calls.length).toEqual(1);
     const obj = obs.subscribe.mock.calls[0][0];
     const st = { bId: 'b', status: 's' };
     res.take((action) => {
-      expect(action).toEqual(st);
+      expect(action).toEqual({ result: st });
       done();
     });
-    obj.next({ data: { ballotsStatus: st } });
+    obj.next({ data: { itst: st } });
   });
 
   it('should return unsubscribe', () => {
@@ -61,7 +72,24 @@ describe('handleStatusRequestAction', () => {
   });
   const func = handleStatusRequestAction;
   const dArgs0 = [api.subscribe, gql.BallotsStatus, undefined, 'cre'];
-  const dArgs1 = [ballotsStatusChan, 123];
+  const dArgs1 = [makeChan, 'ballotsStatus', 123];
+
+  it('should quit if error', () => {
+    const chan = 'chan';
+    const e = { key: 'val' };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .take(chan)
+      .provide([
+        [matchers.call(...dArgs0), 123],
+        [matchers.call(...dArgs1), chan],
+        [matchers.take(chan), { error: e }],
+      ])
+      .run();
+  });
 
   it('should dispatch statusChange', () => {
     const chan = 'chan';
@@ -70,7 +98,7 @@ describe('handleStatusRequestAction', () => {
     const fn = (par, next) => {
       id += 1;
       if (id > 2) return next();
-      return res;
+      return { result: res };
     };
 
     return expectSaga(func)
@@ -90,51 +118,30 @@ describe('handleStatusRequestAction', () => {
   });
 });
 
-describe('voterRegisteredChan', () => {
-  const unsubscribe = jest.fn();
-  const obs = {
-    subscribe: jest.fn(() => ({ unsubscribe })),
-  };
-  const func = () => voterRegisteredChan(obs);
-
-  beforeEach(() => {
-    obs.subscribe.mockClear();
-    unsubscribe.mockClear();
-  });
-
-  it('should subscribe next null', () => {
-    func();
-    expect(obs.subscribe.mock.calls.length).toEqual(1);
-    const obj = obs.subscribe.mock.calls[0][0];
-    obj.next();
-  });
-
-  it('should subscribe next not null', (done) => {
-    const res = func();
-    expect(obs.subscribe.mock.calls.length).toEqual(1);
-    const obj = obs.subscribe.mock.calls[0][0];
-    const st = { bId: 'b', status: 's' };
-    res.take((action) => {
-      expect(action).toEqual(st);
-      done();
-    });
-    obj.next({ data: { voterRegistered: st } });
-  });
-
-  it('should return unsubscribe', () => {
-    const res = func();
-    res.close();
-    expect(unsubscribe.mock.calls.length).toEqual(1);
-  });
-});
-
 describe('handleVoterRgRequestAction', () => {
   const state = fromJS({
     globalContainer: { credential: { token: 'cre' } },
   });
   const func = () => handleVoterRgRequestAction({ bId: '66' });
   const dArgs0 = [api.subscribe, gql.VoterRegistered, { bId: '66' }, 'cre'];
-  const dArgs1 = [voterRegisteredChan, 123];
+  const dArgs1 = [makeChan, 'voterRegistered', 123];
+
+  it('should quit if error', () => {
+    const chan = 'chan';
+    const e = { key: 'val' };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .take(chan)
+      .provide([
+        [matchers.call(...dArgs0), 123],
+        [matchers.call(...dArgs1), chan],
+        [matchers.take(chan), { error: e }],
+      ])
+      .run();
+  });
 
   it('should dispatch voterRegistered', () => {
     const chan = 'chan';
@@ -143,7 +150,7 @@ describe('handleVoterRgRequestAction', () => {
     const fn = (par, next) => {
       id += 1;
       if (id > 2) return next();
-      return { iCode: '2' };
+      return { result: { iCode: '2' } };
     };
 
     return expectSaga(func)
@@ -173,7 +180,7 @@ describe('watchStatus', () => {
     const fn = () => {
       id += 1;
       expect(id).toBeLessThanOrEqual(1);
-      return {};
+      return { isRunning: () => true };
     };
 
     return expectSaga(watchStatus)
@@ -201,7 +208,7 @@ describe('watchVoterRg', () => {
     const fn = () => {
       id += 1;
       expect(id).toBeLessThanOrEqual(1);
-      return {};
+      return { isRunning: () => true };
     };
 
     return expectSaga(watchVoterRg)
