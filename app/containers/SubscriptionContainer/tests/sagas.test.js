@@ -14,7 +14,9 @@ import watcher, {
   handleStatusesRequestAction,
   handleVoterRgRequestAction,
   watchStatus,
+  watchStatuses,
   watchVoterRg,
+  testReset,
 } from '../sagas';
 
 describe('makeChan', () => {
@@ -126,6 +128,13 @@ describe('handleStatusesRequestAction', () => {
   const dArgs0 = [api.subscribe, gql.BallotsStatus, undefined, 'cre'];
   const dArgs1 = [makeChan, 'ballotsStatus', 123];
 
+  // eslint-disable-next-line arrow-body-style
+  it('should return if no cred', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['globalContainer', 'credential'], undefined))
+      .run();
+  });
+
   it('should quit if error', () => {
     const chan = 'chan';
     const e = { key: 'val' };
@@ -178,6 +187,13 @@ describe('handleVoterRgRequestAction', () => {
   const dArgs0 = [api.subscribe, gql.VoterRegistered, { bId: '66' }, 'cre'];
   const dArgs1 = [makeChan, 'voterRegistered', 123];
 
+  // eslint-disable-next-line arrow-body-style
+  it('should return if no cred', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['globalContainer', 'credential'], undefined))
+      .run();
+  });
+
   it('should quit if error', () => {
     const chan = 'chan';
     const e = { key: 'val' };
@@ -225,43 +241,83 @@ describe('handleVoterRgRequestAction', () => {
 // Sagas
 
 // Watcher
-describe('watchStatus', () => {
-  it('should take request dedup', () => {
-    const req = (bId) => subscriptionContainerActions.statusesRequest({ bId });
-    let id = 0;
-    const fn = () => {
-      id += 1;
-      expect(id).toBeLessThanOrEqual(1);
-      return { isRunning: () => true };
-    };
+const mockOb = () => ({
+  isRunning: () => true,
+});
 
-    return expectSaga(watchStatus)
-      .fork(handleStatusesRequestAction, req('1'))
-      .provide([
-        [matchers.fork(handleStatusesRequestAction, req('1')), dynamic(fn)],
-      ])
-      .dispatch(req('1'))
-      .dispatch(req('1'))
-      .silentRun();
+describe('watchStatus', () => {
+  beforeEach(() => testReset());
+
+  const state = fromJS({
+    globalContainer: { credential: { username: 'un' } },
   });
 
-  it('should take requests dedup', () => {
-    const req = subscriptionContainerActions.statusesRequest();
+  it('should take request dedup', async (done) => {
+    const req = (bId) => subscriptionContainerActions.statusRequest({
+      bId,
+      owner: 'x',
+    });
+    const ob = mockOb();
     let id = 0;
     const fn = () => {
       id += 1;
       expect(id).toBeLessThanOrEqual(1);
-      return { isRunning: () => true };
+      return ob;
     };
 
-    return expectSaga(watchStatus)
-      .fork(handleStatusesRequestAction, req)
+    await expectSaga(watchStatus)
+      .withState(state)
+      .fork(handleStatusRequestAction, req('1'))
       .provide([
-        [matchers.fork(handleStatusesRequestAction, req), dynamic(fn)],
+        [matchers.fork(handleStatusRequestAction, req('1')), dynamic(fn)],
       ])
-      .dispatch(req)
-      .dispatch(req)
+      .dispatch(req('1'))
+      .dispatch(req('1'))
+      .dispatch(subscriptionContainerActions.statusStop())
       .silentRun();
+
+    expect(ob.isRunning()).toEqual(false);
+    done();
+  });
+
+  it('should take if no statuses', async (done) => {
+    const req = (bId) => subscriptionContainerActions.statusRequest({
+      bId,
+      owner: 'un',
+    });
+    const ob = mockOb();
+
+    await expectSaga(watchStatus)
+      .withState(state)
+      .fork(handleStatusRequestAction, req('1'))
+      .provide([
+        [matchers.fork(handleStatusRequestAction, req('1')), ob],
+      ])
+      .dispatch(req('1'))
+      .silentRun();
+
+    expect(ob.isRunning()).toEqual(true);
+    done();
+  });
+
+  it('should not take if statuses', async (done) => {
+    testReset({ Statuses: mockOb() });
+
+    const req = (bId) => subscriptionContainerActions.statusRequest({
+      bId,
+      owner: 'un',
+    });
+    const ob = mockOb();
+
+    await expectSaga(watchStatus)
+      .withState(state)
+      .provide([
+        [matchers.fork(handleStatusRequestAction, req('1')), ob],
+      ])
+      .dispatch(req('1'))
+      .silentRun();
+
+    done();
   });
 
   // eslint-disable-next-line arrow-body-style
@@ -272,24 +328,86 @@ describe('watchStatus', () => {
   });
 });
 
-describe('watchVoterRg', () => {
-  it('should take request dedup', () => {
-    const req = (bId) => subscriptionContainerActions.voterRgRequest({ bId });
+describe('watchStatuses', () => {
+  beforeEach(() => testReset());
+
+  it('should take request dedup', async (done) => {
+    const req = subscriptionContainerActions.statusesRequest();
+    const ob = mockOb();
     let id = 0;
     const fn = () => {
       id += 1;
       expect(id).toBeLessThanOrEqual(1);
-      return { isRunning: () => true };
+      return ob;
     };
 
-    return expectSaga(watchVoterRg)
+    await expectSaga(watchStatuses)
+      .fork(handleStatusesRequestAction, req)
+      .provide([
+        [matchers.fork(handleStatusesRequestAction, req), dynamic(fn)],
+      ])
+      .dispatch(req)
+      .dispatch(req)
+      .dispatch(subscriptionContainerActions.statusesStop())
+      .silentRun();
+
+    expect(ob.isRunning()).toEqual(false);
+    done();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen in the watcher', () => {
+    return expectSaga(watcher)
+      .take(SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION)
+      .silentRun();
+  });
+});
+
+describe('watchVoterRg', () => {
+  beforeEach(() => testReset());
+
+  it('should take request dedup', async (done) => {
+    const req = (bId) => subscriptionContainerActions.voterRgRequest({ bId });
+    const ob = mockOb();
+    let id = 0;
+    const fn = () => {
+      id += 1;
+      expect(id).toBeLessThanOrEqual(1);
+      return ob;
+    };
+
+    await expectSaga(watchVoterRg)
       .fork(handleVoterRgRequestAction, req('1'))
       .provide([
         [matchers.fork(handleVoterRgRequestAction, req('1')), dynamic(fn)],
       ])
       .dispatch(req('1'))
       .dispatch(req('1'))
+      .dispatch(subscriptionContainerActions.voterRgStop())
       .silentRun();
+
+    expect(ob.isRunning()).toEqual(false);
+    done();
+  });
+
+  it('should take request single', async (done) => {
+    const req = (bId) => subscriptionContainerActions.voterRgRequest({ bId });
+    const ob1 = mockOb();
+    const ob2 = mockOb();
+
+    await expectSaga(watchVoterRg)
+      .fork(handleVoterRgRequestAction, req('1'))
+      .provide([
+        [matchers.fork(handleVoterRgRequestAction, req('1')), ob1],
+        [matchers.fork(handleVoterRgRequestAction, req('2')), ob2],
+      ])
+      .dispatch(req('1'))
+      .dispatch(req('2'))
+      .silentRun();
+
+    expect(ob1.isRunning()).toEqual(false);
+    expect(ob2.isRunning()).toEqual(true);
+    done();
   });
 
   // eslint-disable-next-line arrow-body-style

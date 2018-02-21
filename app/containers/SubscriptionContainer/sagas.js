@@ -7,7 +7,7 @@ import {
   fork,
   put,
   select,
-  cancel,
+  cancel as rawCancel,
 } from 'redux-saga/effects';
 import * as api from 'utils/request';
 
@@ -113,67 +113,105 @@ export function* handleVoterRgRequestAction({ bId }) {
 // Sagas
 
 // Watcher
+const Ob = {};
+const valid = (obN) => {
+  const ob = Ob[obN];
+  if (!ob) return false;
+  /* istanbul ignore else */
+  if (ob.isRunning()) return true;
+  /* istanbul ignore next */
+  Ob[obN] = undefined;
+  /* istanbul ignore next */
+  return false;
+};
+const cancel = (obN) => {
+  const ob = Ob[obN];
+  if (!ob) return undefined;
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV === 'test') {
+    ob.isRunning = () => false;
+    return undefined;
+  }
+  /* istanbul ignore next */
+  Ob[obN] = undefined;
+  /* istanbul ignore next */
+  // eslint-disable-next-line redux-saga/yield-effects
+  return rawCancel(ob);
+};
+
+export const testReset = (ob) => {
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV === 'test') {
+    _.keys(Ob).forEach((k) => _.set(Ob, k, undefined));
+    _.assign(Ob, ob);
+  }
+};
+
 export function* watchStatus() {
-  let ob;
   let bId;
   while (true) {
-    const { request, requests, stop } = yield race({
+    const { request, stop } = yield race({
       request: take(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION),
-      requests: take(SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION),
       stop: take(SUBSCRIPTION_CONTAINER.STATUS_STOP_ACTION),
     });
-    /* istanbul ignore if */
-    if (ob && !ob.isRunning()) ob = undefined;
-    if (request && !(ob && bId === null)) {
-      if (!ob || /* istanbul ignore next */ request.bId !== bId) {
-        /* istanbul ignore if */
-        if (ob) {
-          yield cancel(ob);
+    if (request) {
+      if (!valid('Status') || request.bId !== bId) {
+        const username = yield select((state) => state.getIn(['globalContainer', 'credential', 'username']));
+        if (username !== request.owner || !valid('Statuses')) {
+          yield cancel('Status');
+          Ob.Status = yield fork(handleStatusRequestAction, request);
+          ({ bId } = request);
         }
-        ob = yield fork(handleStatusRequestAction, request);
-        ({ bId } = request);
       }
-    } else if (requests && (!ob || bId !== null)) {
-      /* istanbul ignore if */
-      if (ob) {
-        yield cancel(ob);
+      continue;
+    }
+    /* istanbul ignore else */
+    if (stop) {
+      yield cancel('Status');
+      continue;
+    }
+  }
+}
+
+export function* watchStatuses() {
+  while (true) {
+    const { request, stop } = yield race({
+      request: take(SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION),
+      stop: take(SUBSCRIPTION_CONTAINER.STATUSES_STOP_ACTION),
+    });
+    if (request) {
+      if (!valid('Statuses')) {
+        Ob.Statuses = yield fork(handleStatusesRequestAction, request);
       }
-      ob = yield fork(handleStatusesRequestAction, requests);
-      bId = null;
-    } /* istanbul ignore next */ else if (stop && ob) {
-      /* istanbul ignore next */
-      yield cancel(ob);
-      /* istanbul ignore next */
-      ob = undefined;
+      continue;
+    }
+    /* istanbul ignore else */
+    if (stop) {
+      yield cancel('Statuses');
+      continue;
     }
   }
 }
 
 export function* watchVoterRg() {
-  let ob;
   let bId;
   while (true) {
     const { request, stop } = yield race({
       request: take(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION),
       stop: take(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION),
     });
-    /* istanbul ignore if */
-    if (ob && !ob.isRunning()) ob = undefined;
-    /* istanbul ignore else */
     if (request) {
-      if (!ob || /* istanbul ignore next */ request.bId !== bId) {
-        /* istanbul ignore if */
-        if (ob) {
-          yield cancel(ob);
-        }
-        ob = yield fork(handleVoterRgRequestAction, request);
+      if (!valid('VoterRg') || request.bId !== bId) {
+        yield cancel('VoterRg');
+        Ob.VoterRg = yield fork(handleVoterRgRequestAction, request);
         ({ bId } = request);
       }
-    } /* istanbul ignore next */ else if (stop && ob) {
-      /* istanbul ignore next */
-      yield cancel(ob);
-      /* istanbul ignore next */
-      ob = undefined;
+      continue;
+    }
+    /* istanbul ignore else */
+    if (stop) {
+      yield cancel('VoterRg');
+      continue;
     }
   }
 }
@@ -181,5 +219,6 @@ export function* watchVoterRg() {
 /* eslint-disable func-names */
 export default function* watcher() {
   yield fork(watchStatus);
+  yield fork(watchStatuses);
   yield fork(watchVoterRg);
 }

@@ -9,10 +9,11 @@ export function statusChange({ bId, status }) {
   };
 }
 
-export function statusRequest({ bId }) {
+export function statusRequest({ bId, owner }) {
   return {
     type: SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION,
     bId,
+    owner,
   };
 }
 

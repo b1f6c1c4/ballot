@@ -9,6 +9,7 @@ export const START_ADD_ACTION = 'EditFieldsContainer/START_ADD_ACTION';
 export const START_CREATE_ACTION = 'EditFieldsContainer/START_CREATE_ACTION';
 export const CANCEL_DIALOG_ACTION = 'EditFieldsContainer/CANCEL_DIALOG_ACTION';
 export const SUBMIT_DIALOG_ACTION = 'EditFieldsContainer/SUBMIT_DIALOG_ACTION';
+export const STATUS_REQUEST_ACTION = 'EditFieldsContainer/STATUS_REQUEST_ACTION';
 
 // Sagas
 export const SAVE_REQUEST = 'EditFieldsContainer/SAVE_REQUEST';

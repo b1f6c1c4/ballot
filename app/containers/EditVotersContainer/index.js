@@ -18,20 +18,22 @@ import sagas from './sagas';
 
 export class EditVotersContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
+    } else {
+      this.props.onStatusRequestAction();
+      this.props.onVoterRgRequestAction();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
-      nextProps.onVoterRgRequestAction();
     }
   }
 
   componentWillUnmount() {
+    this.props.onStatusStopAction();
     this.props.onVoterRgStopAction();
   }
 
@@ -61,6 +63,8 @@ EditVotersContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
   onVoterRgRequestAction: PropTypes.func.isRequired,
   onVoterRgStopAction: PropTypes.func.isRequired,
 };
@@ -70,10 +74,12 @@ function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
-    onVoterRgRequestAction: () => dispatch(subscriptionContainerActions.voterRgRequest({ bId })),
-    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
     onCreateVoter: ({ name }) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
     onDeleteVoter: ({ iCode }) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
+    onStatusRequestAction: () => dispatch(editVotersContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
+    onVoterRgRequestAction: () => dispatch(editVotersContainerActions.voterRgRequest()),
+    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };
 }
 

@@ -18,7 +18,7 @@ describe('SubscriptionContainer actions', () => {
   });
 
   describe('statusRequest action', () => {
-    const param = { bId: 'b' };
+    const param = { bId: 'b', owner: 'o' };
 
     it('has a type of STATUS_REQUEST_ACTION', () => {
       expect(subscriptionContainerActions.statusRequest(param).type).toEqual(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION);
@@ -26,6 +26,7 @@ describe('SubscriptionContainer actions', () => {
 
     it('should forward', () => {
       expect(subscriptionContainerActions.statusRequest(param).bId).toEqual('b');
+      expect(subscriptionContainerActions.statusRequest(param).owner).toEqual('o');
     });
   });
 

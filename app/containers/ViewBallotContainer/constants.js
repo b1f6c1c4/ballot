@@ -1,4 +1,6 @@
 // Actions
+export const STATUS_REQUEST_ACTION = 'ViewBallotContainer/STATUS_REQUEST_ACTION';
+export const VOTER_RG_REQUEST_ACTION = 'ViewBallotContainer/VOTER_RG_REQUEST_ACTION';
 
 // Sagas
 export const BALLOT_REQUEST = 'ViewBallotContainer/BALLOT_REQUEST';

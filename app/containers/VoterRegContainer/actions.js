@@ -2,6 +2,12 @@ import * as VOTER_REG_CONTAINER from './constants';
 
 // Actions
 
+export function statusRequest() {
+  return {
+    type: VOTER_REG_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
 // Sagas
 export function registerRequest({ bId, iCode, comment }) {
   return {

@@ -31,6 +31,8 @@ function editVotersContainerReducer(state = initialState, action) {
         .setIn([id, 'publicKey'], action.voter.publicKey);
       return state.set('voters', newList);
     }
+    case EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION:
+      return state;
     // Sagas
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_REQUEST:
       return state

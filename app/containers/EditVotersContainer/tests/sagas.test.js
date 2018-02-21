@@ -4,6 +4,8 @@ import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as EDIT_VOTERS_CONTAINER from '../constants';
 import * as editVotersContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -12,6 +14,8 @@ import watcher, {
   handleCreateVoterRequest,
   handleVotersRequest,
   handleDeleteVoterRequest,
+  handleStatusRequest,
+  handleVoterRgRequest,
 } from '../sagas';
 
 // Sagas
@@ -140,6 +144,81 @@ describe('handleVotersRequest Saga', () => {
         [matchers.call(...dArgs), throwError(error)],
       ])
       .put(editVotersContainerActions.votersFailure(error))
+      .run();
+  });
+});
+
+// Subscriptions
+describe('handleStatusRequest', () => {
+  const state = fromJS({
+    editVotersContainer: {
+      ballot: { bId: 'b', owner: 'o' },
+    },
+  });
+  const func = handleStatusRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(EDIT_VOTERS_CONTAINER.STATUS_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['editVotersContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b', owner: 'o' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.statusRequest(response))
+      .run();
+  });
+});
+
+describe('handleVoterRgRequest', () => {
+  const state = fromJS({
+    editVotersContainer: {
+      ballot: { bId: 'b', status: 'inviting' },
+    },
+  });
+  const func = handleVoterRgRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen VOTER_RG_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['editVotersContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST)
+      .run();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if bad status', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['editVotersContainer', 'ballot', 'status'], 'unknown'))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.voterRgRequest(response))
       .run();
   });
 });

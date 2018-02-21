@@ -54,6 +54,7 @@ VoterRegContainer.propTypes = {
   isRegLoading: PropTypes.bool.isRequired,
   onRegister: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
   privateKey: PropTypes.string,
 };
 
@@ -62,6 +63,7 @@ function mapDispatchToProps(dispatch, { match }) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(voterRegContainerActions.refreshRequest({ bId })),
+    onStatusRequestAction: () => dispatch(voterRegContainerActions.statusRequest()),
     onRegister: (param) => dispatch(voterRegContainerActions.registerRequest({
       bId,
       iCode,

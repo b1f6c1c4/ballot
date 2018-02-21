@@ -115,6 +115,13 @@ describe('editVotersContainerReducer', () => {
     expect(editVotersContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
+  it('should handle voterRgRequest action', () => {
+    const originalState = state;
+    const expectedResult = state;
+
+    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRgRequest())).toEq(expectedResult);
+  });
+
   // Sagas
   it('should handle createVoter request', () => {
     const originalState = state.set('isCreateLoading', false).set('error', 'e');

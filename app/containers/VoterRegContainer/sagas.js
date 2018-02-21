@@ -3,6 +3,7 @@ import * as api from 'utils/request';
 import { reset, stopSubmit } from 'redux-form';
 import { generateKeyPair } from 'utils/crypto';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VOTER_REG_CONTAINER from './constants';
 import * as voterRegContainerSelectors from './selectors';
 import * as voterRegContainerActions from './actions';
@@ -33,9 +34,18 @@ export function* handleRefreshRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.Refresh, { bId });
     yield put(voterRegContainerActions.refreshSuccess(result));
+    yield put(voterRegContainerActions.statusRequest());
   } catch (err) {
     yield put(voterRegContainerActions.refreshFailure(err));
   }
+}
+
+// Subscriptions
+export function* handleStatusRequest() {
+  const ballot = yield select((state) => state.getIn(['voterRegContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, owner } = ballot.toJS();
+  yield put(subscriptionContainerActions.statusRequest({ bId, owner }));
 }
 
 // Watcher
@@ -43,4 +53,6 @@ export function* handleRefreshRequest({ bId }) {
 export default function* watcher() {
   yield takeEvery(VOTER_REG_CONTAINER.REGISTER_REQUEST, handleRegisterRequest);
   yield takeEvery(VOTER_REG_CONTAINER.REFRESH_REQUEST, handleRefreshRequest);
+
+  yield takeEvery(VOTER_REG_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
 }

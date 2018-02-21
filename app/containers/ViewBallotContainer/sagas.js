@@ -3,6 +3,7 @@ import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import downloadCsv from 'download-csv';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VIEW_BALLOT_CONTAINER from './constants';
 import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
@@ -15,6 +16,8 @@ export function* handleBallotRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.Ballot, { bId }, cred);
     yield put(viewBallotContainerActions.ballotSuccess(result));
+    yield put(viewBallotContainerActions.statusRequest());
+    yield put(viewBallotContainerActions.voterRgRequest());
   } catch (err) {
     yield put(viewBallotContainerActions.ballotFailure(err));
   }
@@ -65,10 +68,31 @@ export function* handleExportRequest({ bId }) {
   }
 }
 
+// Subscriptions
+export function* handleStatusRequest() {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, owner } = ballot.toJS();
+  yield put(subscriptionContainerActions.statusRequest({ bId, owner }));
+}
+
+export function* handleVoterRgRequest() {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, status } = ballot.toJS();
+
+  if (status === 'inviting') {
+    yield put(subscriptionContainerActions.voterRgRequest({ bId }));
+  }
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
   yield takeEvery(VIEW_BALLOT_CONTAINER.BALLOT_REQUEST, handleBallotRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST, handleFinalizeRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.EXPORT_REQUEST, handleExportRequest);
+
+  yield takeEvery(VIEW_BALLOT_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
+  yield takeEvery(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION, handleVoterRgRequest);
 }

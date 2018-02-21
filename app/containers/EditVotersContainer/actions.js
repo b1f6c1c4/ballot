@@ -2,6 +2,18 @@ import * as EDIT_VOTERS_CONTAINER from './constants';
 
 // Actions
 
+export function statusRequest() {
+  return {
+    type: EDIT_VOTERS_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
+export function voterRgRequest() {
+  return {
+    type: EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION,
+  };
+}
+
 // Sagas
 export function createVoterRequest({ bId, name }) {
   return {

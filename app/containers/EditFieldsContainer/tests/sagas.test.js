@@ -5,6 +5,8 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
 import { initialize } from 'redux-form';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as EDIT_FIELDS_CONTAINER from '../constants';
 import * as editFieldsContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -14,6 +16,7 @@ import watcher, {
   updateDialogCreate,
   handleSaveRequest,
   handleRefreshRequest,
+  handleStatusRequest,
 } from '../sagas';
 
 describe('updateDialogCreate Saga', () => {
@@ -221,6 +224,40 @@ describe('handleRefreshRequest Saga', () => {
         [matchers.call(...dArgs), throwError(error)],
       ])
       .put(editFieldsContainerActions.refreshFailure(error))
+      .run();
+  });
+});
+
+// Subscriptions
+describe('handleStatusRequest', () => {
+  const state = fromJS({
+    editFieldsContainer: {
+      ballot: { bId: 'b', owner: 'o' },
+    },
+  });
+  const func = handleStatusRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(EDIT_FIELDS_CONTAINER.STATUS_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['editFieldsContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b', owner: 'o' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.statusRequest(response))
       .run();
   });
 });

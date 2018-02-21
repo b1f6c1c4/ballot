@@ -1,4 +1,5 @@
 // Actions
+export const STATUS_REQUEST_ACTION = 'VoterRegContainer/STATUS_REQUEST_ACTION';
 
 // Sagas
 export const REGISTER_REQUEST = 'VoterRegContainer/REGISTER_REQUEST';

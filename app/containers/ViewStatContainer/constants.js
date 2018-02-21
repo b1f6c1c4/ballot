@@ -1,5 +1,6 @@
 // Actions
 export const CHANGE_FIELD_ACTION = 'ViewStatContainer/CHANGE_FIELD_ACTION';
+export const STATUS_REQUEST_ACTION = 'ViewStatContainer/STATUS_REQUEST_ACTION';
 
 // Sagas
 export const BALLOT_REQUEST = 'ViewStatContainer/BALLOT_REQUEST';

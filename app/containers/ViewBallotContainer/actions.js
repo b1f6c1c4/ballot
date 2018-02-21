@@ -1,6 +1,17 @@
 import * as VIEW_BALLOT_CONTAINER from './constants';
 
 // Actions
+export function statusRequest() {
+  return {
+    type: VIEW_BALLOT_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
+export function voterRgRequest() {
+  return {
+    type: VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION,
+  };
+}
 
 // Sagas
 export function ballotRequest({ bId }) {

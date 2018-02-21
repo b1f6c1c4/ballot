@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import EditFieldsPage from 'components/EditFieldsPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as editFieldsContainerSelectors from './selectors';
 import * as editFieldsContainerActions from './actions';
 import reducer from './reducer';
@@ -19,6 +20,8 @@ export class EditFieldsContainer extends React.PureComponent {
   componentWillMount() {
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
+    } else {
+      this.props.onStatusRequestAction();
     }
   }
 
@@ -26,6 +29,10 @@ export class EditFieldsContainer extends React.PureComponent {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onStatusStopAction();
   }
 
   render() {
@@ -61,6 +68,8 @@ EditFieldsContainer.propTypes = {
   onStartCreateAction: PropTypes.func.isRequired,
   onCancelDialogAction: PropTypes.func.isRequired,
   onSubmitDialogAction: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
 };
 
 function mapDispatchToProps(dispatch, { match }) {
@@ -75,6 +84,8 @@ function mapDispatchToProps(dispatch, { match }) {
     onStartCreateAction: () => dispatch(editFieldsContainerActions.startCreate()),
     onCancelDialogAction: () => dispatch(editFieldsContainerActions.cancelDialog()),
     onSubmitDialogAction: (param) => dispatch(editFieldsContainerActions.submitDialog(param)),
+    onStatusRequestAction: () => dispatch(editFieldsContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
   };
 }
 

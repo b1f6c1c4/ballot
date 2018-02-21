@@ -3,6 +3,7 @@ import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import { initialize } from 'redux-form';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as EDIT_FIELDS_CONTAINER from './constants';
 import * as editFieldsContainerActions from './actions';
 import gql from './api.graphql';
@@ -58,9 +59,18 @@ export function* handleRefreshRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.Refresh, { bId }, cred);
     yield put(editFieldsContainerActions.refreshSuccess(result));
+    yield put(editFieldsContainerActions.statusRequest());
   } catch (err) {
     yield put(editFieldsContainerActions.refreshFailure(err));
   }
+}
+
+// Subscriptions
+export function* handleStatusRequest() {
+  const ballot = yield select((state) => state.getIn(['editFieldsContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, owner } = ballot.toJS();
+  yield put(subscriptionContainerActions.statusRequest({ bId, owner }));
 }
 
 // Watcher
@@ -70,4 +80,6 @@ export default function* watcher() {
   yield takeEvery(EDIT_FIELDS_CONTAINER.START_CREATE_ACTION, updateDialogCreate);
   yield takeEvery(EDIT_FIELDS_CONTAINER.SAVE_REQUEST, handleSaveRequest);
   yield takeEvery(EDIT_FIELDS_CONTAINER.REFRESH_REQUEST, handleRefreshRequest);
+
+  yield takeEvery(EDIT_FIELDS_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
 }

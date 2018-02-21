@@ -5,6 +5,8 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
 import { generateKeyPair } from 'utils/crypto';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VOTER_REG_CONTAINER from '../constants';
 import * as voterRegContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -12,6 +14,7 @@ import gql from '../api.graphql';
 import watcher, {
   handleRegisterRequest,
   handleRefreshRequest,
+  handleStatusRequest,
 } from '../sagas';
 
 // Sagas
@@ -112,6 +115,40 @@ describe('handleRefreshRequest Saga', () => {
         [matchers.call(...dArgs), throwError(error)],
       ])
       .put(voterRegContainerActions.refreshFailure(error))
+      .run();
+  });
+});
+
+// Subscriptions
+describe('handleStatusRequest', () => {
+  const state = fromJS({
+    voterRegContainer: {
+      ballot: { bId: 'b', owner: 'o' },
+    },
+  });
+  const func = handleStatusRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(VOTER_REG_CONTAINER.STATUS_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['voterRegContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b', owner: 'o' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.statusRequest(response))
       .run();
   });
 });

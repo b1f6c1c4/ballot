@@ -18,18 +18,17 @@ import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onStatusRequestAction();
-    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
+    } else {
+      this.props.onStatusRequestAction();
+      this.props.onVoterRgRequestAction();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
-      nextProps.onStatusRequestAction();
-      nextProps.onVoterRgRequestAction();
     }
   }
 
@@ -78,9 +77,9 @@ function mapDispatchToProps(dispatch, { match }) {
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
-    onStatusRequestAction: () => dispatch(subscriptionContainerActions.statusRequest({ bId })),
+    onStatusRequestAction: () => dispatch(viewBallotContainerActions.statusRequest()),
     onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
-    onVoterRgRequestAction: () => dispatch(subscriptionContainerActions.voterRgRequest({ bId })),
+    onVoterRgRequestAction: () => dispatch(viewBallotContainerActions.voterRgRequest()),
     onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };
 }
