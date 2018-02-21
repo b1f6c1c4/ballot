@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -72,10 +73,10 @@ class GlobalDrawer extends React.PureComponent {
     if (username && listBallots) {
       ballots = listBallots.map((b) => {
         const content = (
-          <span>
+          <Link to={`/app/ballots/${b.bId}`}>
             {b.name}
             <StatusBadge status={b.status} minor />
-          </span>
+          </Link>
         );
         return (
           <ListItem key={b.bId} button onClick={this.handleBallot(b)}>
@@ -108,17 +109,25 @@ class GlobalDrawer extends React.PureComponent {
           {!username && (
             <ListItem button onClick={this.handleLogin}>
               <ListItemIcon>
-                <Lock />
+                <Link to="/app/login">
+                  <Lock />
+                </Link>
               </ListItemIcon>
-              <ListItemText primary={intl.formatMessage(messages.login)} />
+              <Link to="/app/login">
+                <ListItemText primary={intl.formatMessage(messages.login)} />
+              </Link>
             </ListItem>
           )}
           {username && (
             <ListItem button onClick={this.handleProfile}>
               <ListItemIcon>
-                <Home />
+                <Link to="/app/">
+                  <Home />
+                </Link>
               </ListItemIcon>
-              <ListItemText primary={intl.formatMessage(messages.profile)} />
+              <Link to="/app/">
+                <ListItemText primary={intl.formatMessage(messages.profile)} />
+              </Link>
             </ListItem>
           )}
           <Divider />

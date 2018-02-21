@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -45,8 +46,6 @@ const styles = (theme) => ({
 });
 
 class HomePage extends React.PureComponent {
-  handleCreate = () => this.props.onPush('/app/create');
-
   handleClick = (bId) => () => this.props.onPush(`/app/ballots/${bId}`);
 
   render() {
@@ -83,9 +82,11 @@ class HomePage extends React.PureComponent {
               </TableHead>
               <TableBody>
                 {listBallots.map((b) => (
-                  <TableRow key={b.bId} hover onClick={this.handleClick(b.bId)}>
+                  <TableRow key={b.bId} hover>
                     <TableCell padding="none">
-                      <Abbreviation text={b.bId} />
+                      <Link to={`/app/ballots/${b.bId}`}>
+                        <Abbreviation text={b.bId} />
+                      </Link>
                     </TableCell>
                     <TableCell padding="none">{b.name}</TableCell>
                     <TableCell padding="none"><StatusBadge status={b.status} /></TableCell>
@@ -99,7 +100,7 @@ class HomePage extends React.PureComponent {
               <Button
                 color="secondary"
                 variant="raised"
-                onClick={this.handleCreate}
+                to="/app/create"
               >
                 <FormattedMessage {...messages.create} />
               </Button>

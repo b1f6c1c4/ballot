@@ -20,6 +20,7 @@ import {
   Visibility,
   Delete,
 } from 'material-ui-icons';
+import classnames from 'classnames';
 import Button from 'components/Button';
 import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
@@ -46,8 +47,10 @@ const styles = (theme) => ({
     justifyContent: 'flex-start',
   },
   reorder: {
-    cursor: 'ns-resize',
     flex: 1,
+  },
+  reorderable: {
+    cursor: 'ns-resize',
   },
 });
 
@@ -187,7 +190,7 @@ class EditFieldsPage extends React.PureComponent {
                     disabled={!canEditFields}
                   >
                     <div
-                      className={classes.reorder}
+                      className={classnames(classes.reorder, { [classes.reorderable]: canEditFields })}
                     >
                       <ListItemText
                         primary={f.prompt}

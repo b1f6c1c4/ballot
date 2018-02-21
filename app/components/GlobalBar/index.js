@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -120,10 +121,14 @@ class GlobalBar extends React.PureComponent {
                   onClose={this.props.onCloseAccountAction}
                 >
                   <MenuItem onClick={this.handleProfile}>
-                    <FormattedMessage {...messages.profile} />
+                    <Link to="/app/">
+                      <FormattedMessage {...messages.profile} />
+                    </Link>
                   </MenuItem>
                   <MenuItem onClick={this.handlePassword}>
-                    <FormattedMessage {...messages.password} />
+                    <Link to="/app/password">
+                      <FormattedMessage {...messages.password} />
+                    </Link>
                   </MenuItem>
                   <MenuItem onClick={this.handleLogout}>
                     <FormattedMessage {...messages.logout} />
