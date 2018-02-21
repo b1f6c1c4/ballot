@@ -79,7 +79,7 @@ GlobalContainer.propTypes = {
   onStatusRequestAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
     onLanguage: (lo) => dispatch(languageProviderActions.changeLocale(lo)),

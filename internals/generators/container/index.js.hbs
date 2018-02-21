@@ -49,7 +49,7 @@ export class {{ properCase name }} extends React.PureComponent {
 };
 
 {{#if wantReducer}}
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
 {{#if wantActions}}
     on{{ properCase actionName }}Action: () => dispatch({{ camelCase name }}Actions.{{ camelCase actionName }}()),

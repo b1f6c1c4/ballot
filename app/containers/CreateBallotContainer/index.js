@@ -28,7 +28,7 @@ CreateBallotContainer.propTypes = {
   onCreate: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onCreate: (param) => dispatch(createBallotContainerActions.createBallotRequest(param)),
   };

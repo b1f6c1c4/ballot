@@ -57,7 +57,7 @@ VoterRegContainer.propTypes = {
   privateKey: PropTypes.string,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId, iCode } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),

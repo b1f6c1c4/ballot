@@ -26,7 +26,7 @@ LoginContainer.propTypes = {
   onChangeActiveIdAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onLogin: (param) => dispatch(loginContainerActions.loginRequest(param)),
     onRegister: (param) => dispatch(loginContainerActions.registerRequest(param)),

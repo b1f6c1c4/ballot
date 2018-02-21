@@ -58,7 +58,7 @@ PreVotingContainer.propTypes = {
   onSign: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
