@@ -20,7 +20,11 @@ export class EditVotersContainer extends React.PureComponent {
   componentWillMount() {
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
-    } else {
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
       this.props.onStatusRequestAction();
       this.props.onVoterRgRequestAction();
     }
@@ -28,6 +32,8 @@ export class EditVotersContainer extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
+      this.props.onVoterRgStopAction();
       nextProps.onRefresh();
     }
   }

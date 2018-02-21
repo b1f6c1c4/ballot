@@ -140,7 +140,7 @@ describe('handleStatusRequest', () => {
   it('should not dispatch if no ballot', () => {
     return expectSaga(func)
       .withState(state.setIn(['preVotingContainer', 'ballot'], undefined))
-      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION)
       .run();
   });
 

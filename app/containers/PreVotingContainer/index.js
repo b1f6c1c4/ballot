@@ -20,13 +20,18 @@ export class PreVotingContainer extends React.PureComponent {
   componentWillMount() {
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
-    } else {
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
       this.props.onStatusRequestAction();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
       nextProps.onRefresh();
     }
   }

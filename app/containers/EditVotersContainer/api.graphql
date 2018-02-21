@@ -5,6 +5,7 @@ query Voters($bId: ID!) {
     bId
     name
     status
+    owner
     voters {
       ...Voter
     }

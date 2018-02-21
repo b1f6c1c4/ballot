@@ -3,6 +3,7 @@ import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import downloadCsv from 'download-csv';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VIEW_BALLOT_CONTAINER from './constants';
 import * as viewBallotContainerSelectors from './selectors';
@@ -86,6 +87,17 @@ export function* handleVoterRgRequest() {
   }
 }
 
+export function* handleStatusChange({ bId, status }) {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (ballot && ballot.get('bId') === bId) {
+    if (status === 'inviting') {
+      yield put(viewBallotContainerActions.voterRgRequest());
+    } else {
+      yield put(subscriptionContainerActions.voterRgStop());
+    }
+  }
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
@@ -95,4 +107,5 @@ export default function* watcher() {
 
   yield takeEvery(VIEW_BALLOT_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION, handleVoterRgRequest);
+  yield takeEvery(SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION, handleStatusChange);
 }

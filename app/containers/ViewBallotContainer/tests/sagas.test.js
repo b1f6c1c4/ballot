@@ -17,6 +17,7 @@ import watcher, {
   handleExportRequest,
   handleStatusRequest,
   handleVoterRgRequest,
+  handleStatusChange,
 } from '../sagas';
 
 // Sagas
@@ -223,7 +224,7 @@ describe('handleStatusRequest', () => {
   it('should not dispatch if no ballot', () => {
     return expectSaga(func)
       .withState(state.setIn(['viewBallotContainer', 'ballot'], undefined))
-      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION)
       .run();
   });
 
@@ -256,7 +257,7 @@ describe('handleVoterRgRequest', () => {
   it('should not dispatch if no ballot', () => {
     return expectSaga(func)
       .withState(state.setIn(['viewBallotContainer', 'ballot'], undefined))
-      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION)
       .run();
   });
 
@@ -264,16 +265,66 @@ describe('handleVoterRgRequest', () => {
   it('should not dispatch if bad status', () => {
     return expectSaga(func)
       .withState(state.setIn(['viewBallotContainer', 'ballot', 'status'], 'unknown'))
-      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION)
       .run();
   });
 
-  it('should dispatch statusRequest', () => {
+  it('should dispatch voterRgRequest', () => {
     const response = { bId: 'b' };
 
     return expectSaga(func)
       .withState(state)
       .put(subscriptionContainerActions.voterRgRequest(response))
+      .run();
+  });
+});
+
+describe('handleStatusChange', () => {
+  const state = fromJS({
+    viewBallotContainer: { ballot: { bId: 'b' } },
+  });
+  const func = handleStatusChange;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_CHANGE_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func, { bId: 'b', status: 'inviting' })
+      .withState(state.setIn(['viewBallotContainer', 'ballot'], undefined))
+      .not.put.actionType(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION)
+      .run();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if not match', () => {
+    return expectSaga(func, { bId: 'b3', status: 'inviting' })
+      .withState(state)
+      .not.put.actionType(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION)
+      .run();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should dispatch voterRgRequest', () => {
+    return expectSaga(func, { bId: 'b', status: 'inviting' })
+      .withState(state)
+      .put.actionType(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION)
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION)
+      .run();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should dispatch voterRgStop', () => {
+    return expectSaga(func, { bId: 'b', status: 'unknown' })
+      .withState(state)
+      .not.put.actionType(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION)
+      .put.actionType(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION)
       .run();
   });
 });
