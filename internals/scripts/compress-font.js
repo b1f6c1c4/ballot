@@ -7,22 +7,21 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const fastXmlParser = require('fast-xml-parser');
-// const zh = require('../../app/translations/zh.json');
-const zh = {
-  fuck: '中智',
-  shit: '慧全',
-  bitch: 'bitch',
-  BB: 'BITCH',
-};
+const zh = require('../../app/translations/zh.json');
 
 mkdir('-p', 'font');
 
 const theCodes = new Set();
-_.values(zh).forEach((str) => _.range(str.length).forEach((i) => {
-  theCodes.add(str.charCodeAt(i));
-}));
+let txt = _.values(zh).join('');
+if (process.argv.length >= 3) {
+  [, , txt] = process.argv;
+}
+_.range(txt.length).forEach((i) => {
+  theCodes.add(txt.charCodeAt(i));
+});
 
-console.log(`Codes: [${theCodes.size}]`);
+console.log(`${theCodes.size} codes`);
+console.log([...theCodes].map((c) => String.fromCharCode(c)).join(''));
 
 const extractNames = (iPath, codes) => new Promise((resolve) => {
   const rl = readline.createInterface({
@@ -166,33 +165,49 @@ const filterSubrs = (obj, fdsRaw) => new Promise((resolve) => {
     }
   };
 
+  const makeBias = (a) => {
+    if (!_.isArray(a)) return undefined;
+    const n = a.length;
+    if (n < 1240) {
+      return 107;
+    }
+    if (n < 33900) {
+      return 1131;
+    }
+    return 32768;
+  };
+
+  const biasGlobal = makeBias(obj.ttFont.CFF.GlobalSubrs.CharString);
+  const biases = obj.ttFont.CFF.CFFFont.FDArray.FontDict.map((fdRaw) => makeBias(_.get(fdRaw, 'Private.Subrs.CharString')));
+
   // eslint-disable-next-line func-names
-  const extractGlobal = function* (cs) {
-    const reg = /([0-9]+) callgsubr/g;
+  const extractGlobal = function* (bias, cs) {
+    const reg = /(-?[0-9]+) callgsubr/g;
     let match;
     // eslint-disable-next-line no-cond-assign
     while (match = reg.exec(cs.text)) {
-      yield parseInt(match[1], 10);
+      yield bias + parseInt(match[1], 10);
     }
   };
 
   // eslint-disable-next-line func-names
-  const extract = function* (cs) {
-    const reg = /([0-9]+) callsubr/g;
+  const extract = function* (bias, cs) {
+    const reg = /(-?[0-9]+) callsubr/g;
     let match;
     // eslint-disable-next-line no-cond-assign
     while (match = reg.exec(cs.text)) {
-      yield parseInt(match[1], 10);
+      yield bias + parseInt(match[1], 10);
     }
   };
 
   obj.ttFont.CFF.CFFFont.CharStrings.CharString.forEach((cs) => {
     const fd = cs._fdSelectIndex;
-    connect(extractGlobal(cs), gsubrs);
-    connect(extract(cs), subrs[fd]);
+    connect(extractGlobal(biasGlobal, cs), gsubrs);
+    connect(extract(biases[fd], cs), subrs[fd]);
   });
 
   obj.ttFont.CFF.CFFFont.FDArray.FontDict.forEach((fdRaw) => {
+    if (!fdRaw.Private.Subrs) return;
     const fd = parseInt(fdRaw._index, 10);
     const active = subrs[fd];
     if (!active) return;
@@ -201,8 +216,8 @@ const filterSubrs = (obj, fdsRaw) => new Promise((resolve) => {
     console.log(`Direct len of fd ${fdsRaw[fd]} is: ${active.size} / ${css.length}`);
     while (queue.length) {
       const id = queue.shift();
-      connect(extractGlobal(css[id]), gsubrs);
-      for (const elem of extract(css[id])) {
+      connect(extractGlobal(biasGlobal, css[id]), gsubrs);
+      for (const elem of extract(biases[fd], css[id])) {
         if (!active.has(elem)) {
           active.add(elem);
           queue.push(elem);
@@ -219,7 +234,7 @@ const filterSubrs = (obj, fdsRaw) => new Promise((resolve) => {
     console.log(`Active len of global is: ${active.size} / ${css.length}`);
     while (queue.length) {
       const id = queue.shift();
-      for (const elem of extractGlobal(css[id])) {
+      for (const elem of extractGlobal(biasGlobal, css[id])) {
         if (!active.has(elem)) {
           active.add(elem);
           queue.push(elem);
@@ -232,21 +247,24 @@ const filterSubrs = (obj, fdsRaw) => new Promise((resolve) => {
   const arrGlobal = [...gsubrs].sort((a, b) => a - b);
   const arrs = subrs.map((subr) => [...subr].sort((a, b) => a - b));
 
-  const gReplace = (t) => t.replace(/([0-9]+) callgsubr/g, (match, id) => {
-    const i = parseInt(id, 10);
+  const newBiasGlobal = makeBias(arrGlobal);
+  const newBiases = arrs.map((arr) => makeBias(arr));
+
+  const gReplace = (t) => t.replace(/(-?[0-9]+) callgsubr/g, (match, id) => {
+    const i = biasGlobal + parseInt(id, 10);
     const idx = arrGlobal.indexOf(i);
     if (idx === -1) {
       throw new Error(`Not found ${i} in global`);
     }
-    return `${idx} callgsubr`;
+    return `${idx - newBiasGlobal} callgsubr`;
   });
-  const lReplace = (fd) => (t) => t.replace(/([0-9]+) callsubr/g, (match, id) => {
-    const i = parseInt(id, 10);
+  const lReplace = (fd) => (t) => t.replace(/(-?[0-9]+) callsubr/g, (match, id) => {
+    const i = biases[fd] + parseInt(id, 10);
     const idx = arrs[fd].indexOf(i);
     if (idx === -1) {
       throw new Error(`Not found ${i} in ${fd}`);
     }
-    return `${idx} callsubr`;
+    return `${idx - newBiases[fd]} callsubr`;
   });
 
   {
@@ -313,29 +331,40 @@ const fromXml = (obj, ftmp) => new Promise((resolve, reject) => {
 });
 
 const ttx = (ftmp, fout) => new Promise((resolve, reject) => {
-  exec(`ttx --flavor woff2 -o ${fout} ${ftmp}`, {
-    silent: false,
-  }, (code) => {
+  exec(`ttx ${fout.endsWith('woff2') ? '--flavor woff2' : ''} -o ${fout} ${ftmp}`, {
+    silent: true,
+  }, (code, stdout, stderr) => {
     if (code) {
-      reject();
+      console.log(stdout);
+      console.error(stderr);
+      reject(new Error(stderr));
     } else {
       resolve();
     }
   });
 });
 
-const tasks = ['Thin'].map(async (x) => {
-  const fin = path.join(__dirname, `../../app/images/fonts/ttx/NotoSansSC-${x}.ttx`);
-  const ftmp1 = path.join(__dirname, `../../app/images/fonts/ttx/NotoSansSC-${x}-1.ttx`);
-  const ftmp2 = path.join(__dirname, `../../app/images/fonts/ttx/NotoSansSC-${x}-2.ttx`);
-  const fout = path.join(__dirname, `../../app/images/fonts/NotoSansSC-${x}-X.woff2`);
-  // const names = await extractNames(fin, theCodes);
-  // await filterNames(fin, ftmp1, names);
+const tasks = [
+  'Black',
+  'Bold',
+  'Medium',
+  'Regular',
+  'Light',
+  'Thin',
+].map(async (s) => {
+  const x = `NotoSansSC-${s}`;
+  console.log(`Compressing ${x}`);
+  const fin = path.join(__dirname, `../../app/images/fonts/ttx/${x}.ttx`);
+  const ftmp1 = path.join(__dirname, `../../app/images/fonts/ttx/${x}-1.ttx`);
+  const ftmp2 = path.join(__dirname, `../../app/images/fonts/ttx/${x}-2.ttx`);
+  const names = await extractNames(fin, theCodes);
+  await filterNames(fin, ftmp1, names);
   const obj = await toXml(ftmp1);
   const fds = await filterFd(obj);
   await filterSubrs(obj, fds);
   await fromXml(obj, ftmp2);
-  await ttx(ftmp2, fout);
+  await Promise.all(['woff', 'woff2']
+    .map((f) => ttx(ftmp2, path.join(__dirname, `../../app/images/fonts/${x}-X.${f}`))));
 });
 
 Promise.all(tasks)

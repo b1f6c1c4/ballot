@@ -33,7 +33,7 @@ const MOUNT_NODE = document.getElementById('app');
 
 const fonts = {
   en: '"Roboto", "Helvetica", "Arial", sans-serif',
-  zh: '"Roboto", "Noto Sans SC", "Microsoft YaHei", sans-serif',
+  zh: '"Noto Sans SC X", "Noto Sans SC", "Microsoft YaHei", sans-serif',
 };
 
 const makeTheme = (fontFamily) => createMuiTheme({

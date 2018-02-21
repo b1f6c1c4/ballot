@@ -12,8 +12,7 @@ body {
 }
 
 .body-x-zh {
-  font-family: "Noto Sans SC";
-  font-style: light;
+  font-family: "Noto Sans SC X", "Microsoft YaHei", sans-serif;
 }
 
 a {
