@@ -84,6 +84,7 @@ module.exports = {
     schema,
     onOperation,
     onOperationComplete,
+    keepAlive: 45000,
   }, {
     server,
     path: '/api/subscriptions',
