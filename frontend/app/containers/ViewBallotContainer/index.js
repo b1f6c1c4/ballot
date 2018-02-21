@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import ViewBallotPage from 'components/ViewBallotPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
 import reducer from './reducer';
@@ -17,20 +18,28 @@ import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
     }
   }
 
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
+      this.props.onStatusRequestAction();
+      this.props.onVoterRgRequestAction();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
+      this.props.onVoterRgStopAction();
       nextProps.onRefresh();
-      nextProps.onVoterRgRequestAction();
     }
   }
 
   componentWillUnmount() {
+    this.props.onStatusStopAction();
     this.props.onVoterRgStopAction();
   }
 
@@ -61,19 +70,23 @@ ViewBallotContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
   onVoterRgRequestAction: PropTypes.func.isRequired,
   onVoterRgStopAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
-    onVoterRgRequestAction: () => dispatch(viewBallotContainerActions.voterRgRequest({ bId })),
-    onVoterRgStopAction: () => dispatch(viewBallotContainerActions.voterRgStop()),
+    onStatusRequestAction: () => dispatch(viewBallotContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
+    onVoterRgRequestAction: () => dispatch(viewBallotContainerActions.voterRgRequest()),
+    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };
 }
 

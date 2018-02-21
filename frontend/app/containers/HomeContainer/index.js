@@ -28,7 +28,7 @@ HomeContainer.propTypes = {
   onRefreshListBallots: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
     onRefreshListBallots: () => dispatch(globalContainerActions.ballotsRequest()),

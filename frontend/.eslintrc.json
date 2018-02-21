@@ -93,6 +93,7 @@
     ],
     "no-confusing-arrow": "off",
     "no-console": "warn",
+    "no-continue": "off",
     "no-use-before-define": "error",
     "prefer-template": "error",
     "react/forbid-prop-types": "off",

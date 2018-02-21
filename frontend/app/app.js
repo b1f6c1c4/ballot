@@ -17,6 +17,7 @@ import 'typeface-roboto/index.css';
 import 'index/typeface-noto-sans.css';
 
 import GlobalContainer from 'containers/GlobalContainer';
+import SubscriptionContainer from 'containers/SubscriptionContainer';
 import ErrorBoundary from 'containers/ErrorBoundary';
 import LanguageProvider from 'containers/LanguageProvider';
 
@@ -33,7 +34,7 @@ const MOUNT_NODE = document.getElementById('app');
 
 const fonts = {
   en: '"Roboto", "Helvetica", "Arial", sans-serif',
-  zh: '"Roboto", "Noto Sans SC", "Microsoft YaHei", sans-serif',
+  zh: '"Noto Sans SC X", "Noto Sans SC", "Microsoft YaHei", sans-serif',
 };
 
 const makeTheme = (fontFamily) => createMuiTheme({
@@ -59,14 +60,13 @@ const render = (messages) => {
       <ErrorBoundary>
         <ConnectedRouter history={history}>
           <ErrorBoundary>
-            <LanguageProvider messages={messages}>
-              <div>
-                <Reboot />
-                <ConnectedMuiThemeProvider>
-                  <GlobalContainer />
-                </ConnectedMuiThemeProvider>
-              </div>
-            </LanguageProvider>
+            <Reboot />
+            <SubscriptionContainer />
+            <ConnectedMuiThemeProvider>
+              <LanguageProvider messages={messages}>
+                <GlobalContainer />
+              </LanguageProvider>
+            </ConnectedMuiThemeProvider>
           </ErrorBoundary>
         </ConnectedRouter>
       </ErrorBoundary>

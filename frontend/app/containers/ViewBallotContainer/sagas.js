@@ -1,64 +1,14 @@
 import _ from 'lodash';
-import { eventChannel } from 'redux-saga';
-import {
-  take,
-  call,
-  race,
-  fork,
-  put,
-  select,
-  takeEvery,
-  cancel,
-  cancelled,
-} from 'redux-saga/effects';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import downloadCsv from 'download-csv';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VIEW_BALLOT_CONTAINER from './constants';
 import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
 import gql from './api.graphql';
-
-export const voterRegisteredChan = (obs0) => eventChannel((emit) => {
-  const obs1 = obs0.subscribe({
-    next(data) {
-      const st = _.get(data, 'data.voterRegistered');
-      if (st) {
-        emit(st);
-      }
-    },
-    error(err) {
-      /* istanbul ignore next */
-      // eslint-disable-next-line no-console
-      console.error(err);
-    },
-  });
-  return () => obs1.unsubscribe();
-});
-
-export function* handleVoterRgRequestAction({ bId }) {
-  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
-
-  const obs0 = yield call(api.subscribe, gql.VoterRegistered, { bId }, cred);
-  const chan = yield call(voterRegisteredChan, obs0);
-  try {
-    while (true) {
-      const result = yield take(chan);
-      yield put(viewBallotContainerActions.voterRegistered({
-        bId,
-        ...result,
-      }));
-    }
-  } finally {
-    /* istanbul ignore else */
-    if (yield cancelled()) {
-      /* istanbul ignore if */
-      if (_.isObject(chan)) {
-        chan.close();
-      }
-    }
-  }
-}
 
 // Sagas
 export function* handleBallotRequest({ bId }) {
@@ -67,6 +17,8 @@ export function* handleBallotRequest({ bId }) {
   try {
     const result = yield call(api.query, gql.Ballot, { bId }, cred);
     yield put(viewBallotContainerActions.ballotSuccess(result));
+    yield put(viewBallotContainerActions.statusRequest());
+    yield put(viewBallotContainerActions.voterRgRequest());
   } catch (err) {
     yield put(viewBallotContainerActions.ballotFailure(err));
   }
@@ -117,39 +69,43 @@ export function* handleExportRequest({ bId }) {
   }
 }
 
-// Watcher
-export function* watchStatus() {
-  let ob;
-  let bId;
-  while (true) {
-    const { request, stop } = yield race({
-      request: take(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION),
-      stop: take(VIEW_BALLOT_CONTAINER.VOTER_RG_STOP_ACTION),
-    });
-    /* istanbul ignore else */
-    if (request) {
-      if (!ob || /* istanbul ignore next */ request.bId !== bId) {
-        /* istanbul ignore if */
-        if (ob) {
-          yield cancel(ob);
-        }
-        ob = yield fork(handleVoterRgRequestAction, request);
-        ({ bId } = request);
-      }
-    } /* istanbul ignore next */ else if (stop && ob) {
-      /* istanbul ignore next */
-      yield cancel(ob);
-      /* istanbul ignore next */
-      ob = undefined;
+// Subscriptions
+export function* handleStatusRequest() {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, owner } = ballot.toJS();
+  yield put(subscriptionContainerActions.statusRequest({ bId, owner }));
+}
+
+export function* handleVoterRgRequest() {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, status } = ballot.toJS();
+
+  if (status === 'inviting') {
+    yield put(subscriptionContainerActions.voterRgRequest({ bId }));
+  }
+}
+
+export function* handleStatusChange({ bId, status }) {
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot']));
+  if (ballot && ballot.get('bId') === bId) {
+    if (status === 'inviting') {
+      yield put(viewBallotContainerActions.voterRgRequest());
+    } else {
+      yield put(subscriptionContainerActions.voterRgStop());
     }
   }
 }
 
+// Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
   yield takeEvery(VIEW_BALLOT_CONTAINER.BALLOT_REQUEST, handleBallotRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.FINALIZE_REQUEST, handleFinalizeRequest);
   yield takeEvery(VIEW_BALLOT_CONTAINER.EXPORT_REQUEST, handleExportRequest);
 
-  yield fork(watchStatus);
+  yield takeEvery(VIEW_BALLOT_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
+  yield takeEvery(VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION, handleVoterRgRequest);
+  yield takeEvery(SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION, handleStatusChange);
 }

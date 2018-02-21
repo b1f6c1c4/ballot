@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import downloadCsv from 'download-csv';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VIEW_STAT_CONTAINER from './constants';
 import * as viewStatContainerActions from './actions';
 import gql from './api.graphql';
@@ -17,6 +18,7 @@ export function* handleBallotRequest({ bId }) {
       const max = result.ballot.fields.length;
       yield put(viewStatContainerActions.statsRequest({ bId, max }));
     }
+    yield put(viewStatContainerActions.statusRequest());
   } catch (err) {
     yield put(viewStatContainerActions.ballotFailure(err));
   }
@@ -55,10 +57,20 @@ export function* handleExportRequest({ bId }) {
   }
 }
 
+// Subscriptions
+export function* handleStatusRequest() {
+  const ballot = yield select((state) => state.getIn(['viewStatContainer', 'ballot']));
+  if (!ballot) return;
+  const { bId, owner } = ballot.toJS();
+  yield put(subscriptionContainerActions.statusRequest({ bId, owner }));
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {
   yield takeEvery(VIEW_STAT_CONTAINER.BALLOT_REQUEST, handleBallotRequest);
   yield takeEvery(VIEW_STAT_CONTAINER.STATS_REQUEST, handleStatsRequest);
   yield takeEvery(VIEW_STAT_CONTAINER.EXPORT_REQUEST, handleExportRequest);
+
+  yield takeEvery(VIEW_STAT_CONTAINER.STATUS_REQUEST_ACTION, handleStatusRequest);
 }

@@ -65,4 +65,10 @@ describe('EditFieldsContainer actions', () => {
       expect(editFieldsContainerActions.submitDialog(param).field).toEqual(field);
     });
   });
+
+  describe('statusRequest action', () => {
+    it('has a type of STATUS_REQUEST_ACTION', () => {
+      expect(editFieldsContainerActions.statusRequest().type).toEqual(EDIT_FIELDS_CONTAINER.STATUS_REQUEST_ACTION);
+    });
+  });
 });

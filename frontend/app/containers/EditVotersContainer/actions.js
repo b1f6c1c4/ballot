@@ -1,24 +1,16 @@
 import * as EDIT_VOTERS_CONTAINER from './constants';
 
 // Actions
-export function voterRgRequest({ bId }) {
+
+export function statusRequest() {
+  return {
+    type: EDIT_VOTERS_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
+export function voterRgRequest() {
   return {
     type: EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION,
-    bId,
-  };
-}
-
-export function voterRgStop() {
-  return {
-    type: EDIT_VOTERS_CONTAINER.VOTER_RG_STOP_ACTION,
-  };
-}
-
-export function voterRegistered(bId, voter) {
-  return {
-    type: EDIT_VOTERS_CONTAINER.VOTER_REGISTERED_ACTION,
-    bId,
-    voter,
   };
 }
 

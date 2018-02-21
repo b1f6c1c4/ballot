@@ -12,8 +12,7 @@ body {
 }
 
 .body-x-zh {
-  font-family: "Noto Sans SC";
-  font-style: light;
+  font-family: "Noto Sans SC X", "Microsoft YaHei", sans-serif;
 }
 
 a {
@@ -483,7 +482,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 /* Call To Action Section
 --------------------------------*/
 #call-to-action {
-  background: linear-gradient(rgba(29, 200, 205, 0.65), rgba(29, 205, 89, 0.2)), url(../images/call-to-action-bg.jpg) fixed center center;
+  background: linear-gradient(rgba(29, 200, 205, 0.65), rgba(29, 205, 89, 0.2)), url(../resource/call-to-action-bg.jpg) fixed center center;
   background-size: cover;
   padding: 80px 0;
 }

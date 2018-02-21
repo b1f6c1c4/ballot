@@ -29,7 +29,7 @@ ChangePasswordContainer.propTypes = {
   onPassword: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onPassword: (param) => dispatch(changePasswordContainerActions.passwordRequest(param)),
   };

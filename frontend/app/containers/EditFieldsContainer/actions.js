@@ -42,6 +42,12 @@ export function submitDialog({ field }) {
   };
 }
 
+export function statusRequest() {
+  return {
+    type: EDIT_FIELDS_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
 // Sagas
 export function saveRequest({ bId }) {
   return {

@@ -9,4 +9,10 @@ describe('ViewStatContainer actions', () => {
       expect(viewStatContainerActions.changeField().type).toEqual(VIEW_STAT_CONTAINER.CHANGE_FIELD_ACTION);
     });
   });
+
+  describe('statusRequest action', () => {
+    it('has a type of STATUS_REQUEST_ACTION', () => {
+      expect(viewStatContainerActions.statusRequest().type).toEqual(VIEW_STAT_CONTAINER.STATUS_REQUEST_ACTION);
+    });
+  });
 });

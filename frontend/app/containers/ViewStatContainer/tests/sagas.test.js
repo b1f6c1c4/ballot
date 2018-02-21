@@ -1,9 +1,12 @@
+import { fromJS } from 'immutable';
 import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
 import downloadCsv from 'download-csv';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as VIEW_STAT_CONTAINER from '../constants';
 import * as viewStatContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -12,6 +15,7 @@ import watcher, {
   handleBallotRequest,
   handleStatsRequest,
   handleExportRequest,
+  handleStatusRequest,
 } from '../sagas';
 
 // Sagas
@@ -168,6 +172,40 @@ describe('handleExportRequest Saga', () => {
         [matchers.call(...dArgs0), throwError(error)],
       ])
       .put(viewStatContainerActions.exportFailure(error))
+      .run();
+  });
+});
+
+// Subscriptions
+describe('handleStatusRequest', () => {
+  const state = fromJS({
+    viewStatContainer: {
+      ballot: { bId: 'b', owner: 'o' },
+    },
+  });
+  const func = handleStatusRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(VIEW_STAT_CONTAINER.STATUS_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['viewStatContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b', owner: 'o' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.statusRequest(response))
       .run();
   });
 });

@@ -24,5 +24,13 @@ export default {
       id: 'app.components.PreVotingPage.ticket',
       defaultMessage: 'Signed ticket',
     },
+    signTitle: {
+      id: 'app.components.PreVotingPage.signTitle',
+      defaultMessage: 'Are you sure',
+    },
+    signDescription: {
+      id: 'app.components.PreVotingPage.signDescription',
+      defaultMessage: 'Sign?',
+    },
   }),
 };

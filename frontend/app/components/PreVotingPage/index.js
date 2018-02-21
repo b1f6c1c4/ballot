@@ -24,6 +24,7 @@ import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
 import EmptyIndicator from 'components/EmptyIndicator';
+import ConfirmDialog from 'components/ConfirmDialog';
 import make, { required, hexChar } from 'utils/validation';
 
 import messages from './messages';
@@ -60,6 +61,21 @@ const styles = (theme) => ({
 });
 
 class PreVotingPage extends React.PureComponent {
+  state = {
+    isOpenSign: false,
+  };
+
+  handleConfirm = (ac) => (...args) => {
+    if (_.isString(ac)) {
+      this.setState(_.assign({}, this.state, { [ac]: true, args }));
+      return;
+    }
+    if (_.isFunction(ac)) {
+      ac(...this.state.args);
+    }
+    this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
+  };
+
   validate = make(
     this.props.intl,
     required(),
@@ -162,7 +178,7 @@ class PreVotingPage extends React.PureComponent {
         <ResultIndicator error={this.props.refreshError} />
         {!isLoading && (
           <Paper className={classes.root}>
-            <form onSubmit={handleSubmit(this.handleSign)}>
+            <form onSubmit={handleSubmit(this.handleConfirm('isOpenSign'))}>
               <Typography variant="title">
                 <FormattedMessage {...messages.header} />
               </Typography>
@@ -210,6 +226,13 @@ class PreVotingPage extends React.PureComponent {
                 </span>
               )}
             </form>
+            <ConfirmDialog
+              title={messages.signTitle}
+              description={messages.signDescription}
+              isOpen={this.state.isOpenSign}
+              onCancel={this.handleConfirm()}
+              onAction={this.handleConfirm(this.handleSign)}
+            />
           </Paper>
         )}
       </div>

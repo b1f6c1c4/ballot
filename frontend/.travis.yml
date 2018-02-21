@@ -18,12 +18,9 @@ script:
   - yarn test
   - yarn build
 
-before_install:
-  - chmod +x ./internals/netlify.sh
-
 after_success:
   - yarn coveralls
-  - ./internals/netlify.sh
+  - yarn deploy
 
 cache:
   yarn: true

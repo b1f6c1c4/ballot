@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import EditVotersPage from 'components/EditVotersPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as editVotersContainerSelectors from './selectors';
 import * as editVotersContainerActions from './actions';
 import reducer from './reducer';
@@ -17,20 +18,28 @@ import sagas from './sagas';
 
 export class EditVotersContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
     }
   }
 
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
+      this.props.onStatusRequestAction();
+      this.props.onVoterRgRequestAction();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
+      this.props.onVoterRgStopAction();
       nextProps.onRefresh();
-      nextProps.onVoterRgRequestAction();
     }
   }
 
   componentWillUnmount() {
+    this.props.onStatusStopAction();
     this.props.onVoterRgStopAction();
   }
 
@@ -60,19 +69,23 @@ EditVotersContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onCreateVoter: PropTypes.func.isRequired,
   onDeleteVoter: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
   onVoterRgRequestAction: PropTypes.func.isRequired,
   onVoterRgStopAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(editVotersContainerActions.votersRequest({ bId })),
-    onVoterRgRequestAction: () => dispatch(editVotersContainerActions.voterRgRequest({ bId })),
-    onVoterRgStopAction: () => dispatch(editVotersContainerActions.voterRgStop()),
     onCreateVoter: ({ name }) => dispatch(editVotersContainerActions.createVoterRequest({ bId, name })),
     onDeleteVoter: ({ iCode }) => dispatch(editVotersContainerActions.deleteVoterRequest({ bId, iCode })),
+    onStatusRequestAction: () => dispatch(editVotersContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
+    onVoterRgRequestAction: () => dispatch(editVotersContainerActions.voterRgRequest()),
+    onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };
 }
 

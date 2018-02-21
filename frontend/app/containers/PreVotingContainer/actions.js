@@ -1,6 +1,11 @@
 import * as PRE_VOTING_CONTAINER from './constants';
 
 // Actions
+export function statusRequest() {
+  return {
+    type: PRE_VOTING_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
 
 // Sagas
 export function refreshRequest({ bId }) {

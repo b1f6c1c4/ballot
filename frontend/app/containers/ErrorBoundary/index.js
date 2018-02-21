@@ -79,7 +79,7 @@ ErrorBoundary.propTypes = {
   onResetAll: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onResetAll: () => dispatch(globalContainerActions.logout()),
   };

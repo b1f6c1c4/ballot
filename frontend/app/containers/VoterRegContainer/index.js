@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import VoterRegPage from 'components/VoterRegPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as voterRegContainerSelectors from './selectors';
 import * as voterRegContainerActions from './actions';
 import reducer from './reducer';
@@ -22,10 +23,21 @@ export class VoterRegContainer extends React.PureComponent {
     }
   }
 
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
+      this.props.onStatusRequestAction();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
       nextProps.onRefresh();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onStatusStopAction();
   }
 
   render() {
@@ -55,9 +67,11 @@ VoterRegContainer.propTypes = {
   onRegister: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
   privateKey: PropTypes.string,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId, iCode } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
@@ -67,6 +81,8 @@ export function mapDispatchToProps(dispatch, { match }) {
       iCode,
       ...param,
     })),
+    onStatusRequestAction: () => dispatch(voterRegContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
   };
 }
 

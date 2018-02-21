@@ -1,4 +1,5 @@
 // Actions
+export const STATUS_REQUEST_ACTION = 'PreVotingContainer/STATUS_REQUEST_ACTION';
 
 // Sagas
 export const REFRESH_REQUEST = 'PreVotingContainer/REFRESH_REQUEST';

@@ -62,6 +62,8 @@
   "app.components.PreVotingPage.pvHelperText": "在此处粘贴你的私钥。",
   "app.components.PreVotingPage.pvLabel": "私钥",
   "app.components.PreVotingPage.sign": "生成签名",
+  "app.components.PreVotingPage.signDescription": "你的私钥并不会上传至服务器；整个签名过程都将在本地执行。由于计算量非常巨大，签名过程可能持续数分钟，请务必耐心等待。",
+  "app.components.PreVotingPage.signTitle": "确认签名",
   "app.components.PreVotingPage.ticket": "签名选票",
   "app.components.RefreshButton.text": "刷新",
   "app.components.RegisterForm.description": "还没有投票组织者账户？在此处注册即可发起投票。",

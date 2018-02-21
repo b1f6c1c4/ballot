@@ -77,6 +77,9 @@ module.exports = co.wrap(function* complexModify(data, cfg, plop) {
           }
           break;
         }
+        case 'append':
+          location = lines.length;
+          break;
         default:
           throw new Error('Method not allowed');
       }

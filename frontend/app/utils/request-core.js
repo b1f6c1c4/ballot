@@ -20,6 +20,7 @@ export default (makeApi) => {
   const wsLink = new WebSocketLink({
     uri: makeApi('/subscriptions', true),
     options: {
+      timeout: 50000,
       reconnect: true,
     },
   });

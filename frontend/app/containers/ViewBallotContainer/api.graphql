@@ -54,11 +54,3 @@ mutation FinalizeVoting($bId: ID!) {
     bId: $bId,
   })
 }
-
-subscription VoterRegistered($bId: ID!) {
-  voterRegistered(input: {
-    bId: $bId,
-  }) {
-    iCode
-  }
-}

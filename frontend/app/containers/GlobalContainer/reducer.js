@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as GLOBAL_CONTAINER from './constants';
 
 const initialState = fromJS({
@@ -23,17 +24,14 @@ function globalContainerReducer(state = initialState, action) {
       return state.set('isAccountOpen', false);
     case GLOBAL_CONTAINER.LOGIN_ACTION:
       return state.set('credential', fromJS(action.credential));
-    case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION: {
+    case SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION: {
       const list = state.get('listBallots');
+      if (!list) return state;
       const id = list.findIndex((b) => b.get('bId') === action.bId);
       if (id === -1) return state;
       const newList = list.update(id, (b) => b.set('status', action.status));
       return state.set('listBallots', newList);
     }
-    case GLOBAL_CONTAINER.STATUS_STOP_ACTION:
-      return state;
-    case GLOBAL_CONTAINER.STATUS_REQUEST_ACTION:
-      return state;
     // Sagas
     case GLOBAL_CONTAINER.BALLOTS_REQUEST:
       return state.set('isLoading', true);

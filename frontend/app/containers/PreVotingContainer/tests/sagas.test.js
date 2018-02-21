@@ -6,6 +6,8 @@ import * as api from 'utils/request';
 import { initialize } from 'redux-form';
 import { signMessage } from 'utils/crypto';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as PRE_VOTING_CONTAINER from '../constants';
 import * as preVotingContainerActions from '../actions';
 import gql from '../api.graphql';
@@ -13,6 +15,7 @@ import gql from '../api.graphql';
 import watcher, {
   handleRefreshRequest,
   handleSignRequest,
+  handleStatusRequest,
 } from '../sagas';
 
 // Sagas
@@ -113,6 +116,40 @@ describe('handleSignRequest Saga', () => {
         [matchers.call(...dArgs), throwError(error)],
       ])
       .put(preVotingContainerActions.signFailure(error))
+      .run();
+  });
+});
+
+// Subscriptions
+describe('handleStatusRequest', () => {
+  const state = fromJS({
+    preVotingContainer: {
+      ballot: { bId: 'b', owner: 'o' },
+    },
+  });
+  const func = handleStatusRequest;
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen STATUS_REQUEST_ACTION in the watcher', () => {
+    return expectSaga(watcher)
+      .take(PRE_VOTING_CONTAINER.STATUS_REQUEST_ACTION)
+      .silentRun();
+  });
+
+  // eslint-disable-next-line arrow-body-style
+  it('should not dispatch if no ballot', () => {
+    return expectSaga(func)
+      .withState(state.setIn(['preVotingContainer', 'ballot'], undefined))
+      .not.put.actionType(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION)
+      .run();
+  });
+
+  it('should dispatch statusRequest', () => {
+    const response = { bId: 'b', owner: 'o' };
+
+    return expectSaga(func)
+      .withState(state)
+      .put(subscriptionContainerActions.statusRequest(response))
       .run();
   });
 });

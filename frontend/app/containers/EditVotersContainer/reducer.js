@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as EDIT_VOTERS_CONTAINER from './constants';
 
 const initialState = fromJS({
@@ -15,18 +15,15 @@ const initialState = fromJS({
 function editVotersContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION:
+    case SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION:
       if (state.getIn(['ballot', 'bId']) === action.bId) {
         return state.setIn(['ballot', 'status'], action.status);
       }
       return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION:
-      return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_RG_STOP_ACTION:
-      return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_REGISTERED_ACTION: {
+    case SUBSCRIPTION_CONTAINER.VOTER_REGISTERED_ACTION: {
       if (action.bId !== state.getIn(['ballot', 'bId'])) return state;
       const list = state.get('voters');
+      if (!list) return state;
       const id = list.findIndex((b) => b.get('iCode') === action.voter.iCode);
       if (id === -1) return state;
       const newList = list
@@ -34,6 +31,8 @@ function editVotersContainerReducer(state = initialState, action) {
         .setIn([id, 'publicKey'], action.voter.publicKey);
       return state.set('voters', newList);
     }
+    case EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION:
+      return state;
     // Sagas
     case EDIT_VOTERS_CONTAINER.CREATE_VOTER_REQUEST:
       return state

@@ -21,6 +21,7 @@ import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
 import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
 
 import * as languageProviderActions from 'containers/LanguageProvider/actions';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as globalContainerSelectors from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
@@ -34,11 +35,11 @@ const ConnectedSwitch = connect(createStructuredSelector({
 
 export class GlobalContainer extends React.PureComponent {
   componentWillMount() {
-    this.props.onStatusRequestAction();
+    this.props.onStatusesRequestAction();
   }
 
   componentWillUnmount() {
-    this.props.onStatusStopAction();
+    this.props.onStatusesStopAction();
   }
 
   render() {
@@ -75,11 +76,11 @@ GlobalContainer.propTypes = {
   onCloseAccountAction: PropTypes.func.isRequired,
   onLoginAction: PropTypes.func.isRequired,
   onLogoutAction: PropTypes.func.isRequired,
-  onStatusStopAction: PropTypes.func.isRequired,
-  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusesRequestAction: PropTypes.func.isRequired,
+  onStatusesStopAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onPush: (url) => dispatch(push(url)),
     onLanguage: (lo) => dispatch(languageProviderActions.changeLocale(lo)),
@@ -89,8 +90,8 @@ export function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
-    onStatusStopAction: () => dispatch(globalContainerActions.statusStop()),
-    onStatusRequestAction: () => dispatch(globalContainerActions.statusRequest()),
+    onStatusesRequestAction: () => dispatch(subscriptionContainerActions.statusesRequest()),
+    onStatusesStopAction: () => dispatch(subscriptionContainerActions.statusesStop()),
   };
 }
 

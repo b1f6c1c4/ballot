@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import * as globalContainerActions from 'containers/GlobalContainer/actions';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as editVotersContainerActions from 'containers/EditVotersContainer/actions';
 import * as editFieldsContainerActions from 'containers/EditFieldsContainer/actions';
 
@@ -24,7 +24,7 @@ describe('viewBallotContainerReducer', () => {
   });
 
   // Actions
-  it('should handle valid global status change action', () => {
+  it('should handle valid subscription status change action', () => {
     const originalState = state.set('ballot', fromJS({
       bId: 'b',
       status: 's',
@@ -37,10 +37,10 @@ describe('viewBallotContainerReducer', () => {
       evil: true,
     }));
 
-    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
-  it('should handle invalid global status change action', () => {
+  it('should handle invalid subscription status change action', () => {
     const originalState = state.set('ballot', fromJS({
       bId: 'b',
       status: 's',
@@ -53,21 +53,19 @@ describe('viewBallotContainerReducer', () => {
       evil: true,
     }));
 
-    expect(viewBallotContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
-  it('should handle voterRgRequest action', () => {
-    const originalState = state;
-    const expectedResult = state;
+  it('should handle voterRegistered action null', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+    }));
+    const param = { iCode: '1' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+    }));
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRgRequest({ bId: 'b' }))).toEq(expectedResult);
-  });
-
-  it('should handle voterRgStop action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRgStop())).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
   it('should handle voterRegistered action not match', () => {
@@ -78,7 +76,7 @@ describe('viewBallotContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ],
     }));
-    const param = { bId: 'b3', iCode: '1' };
+    const param = { iCode: '1' };
     const expectedResult = state.set('ballot', fromJS({
       bId: 'b',
       voters: [
@@ -87,7 +85,7 @@ describe('viewBallotContainerReducer', () => {
       ],
     }));
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b3', param))).toEq(expectedResult);
   });
 
   it('should handle voterRegistered action not found', () => {
@@ -98,7 +96,7 @@ describe('viewBallotContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ],
     }));
-    const param = { bId: 'b', iCode: '3' };
+    const param = { iCode: '3' };
     const expectedResult = state.set('ballot', fromJS({
       bId: 'b',
       voters: [
@@ -107,7 +105,7 @@ describe('viewBallotContainerReducer', () => {
       ],
     }));
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
   it('should handle voterRegistered action good', () => {
@@ -118,16 +116,16 @@ describe('viewBallotContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ],
     }));
-    const param = { bId: 'b', iCode: '1' };
+    const param = { iCode: '1', comment: 'x' };
     const expectedResult = state.set('ballot', fromJS({
       bId: 'b',
       voters: [
-        { iCode: '1', name: 'n1', publicKey: true },
+        { iCode: '1', name: 'n1', comment: 'x' },
         { iCode: '2', name: 'n2', publicKey: null },
       ],
     }));
 
-    expect(viewBallotContainerReducer(originalState, viewBallotContainerActions.voterRegistered(param))).toEq(expectedResult);
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
   // Sagas

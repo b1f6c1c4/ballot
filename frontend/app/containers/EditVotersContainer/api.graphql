@@ -5,6 +5,7 @@ query Voters($bId: ID!) {
     bId
     name
     status
+    owner
     voters {
       ...Voter
     }
@@ -25,16 +26,6 @@ mutation DeleteVoter($bId: ID!, $iCode: ID!) {
     bId: $bId,
     iCode: $iCode,
   })
-}
-
-subscription VoterRegistered($bId: ID!) {
-  voterRegistered(input: {
-    bId: $bId,
-  }) {
-    iCode
-    comment
-    publicKey
-  }
 }
 
 fragment Voter on BallotVoter {

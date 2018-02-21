@@ -10,6 +10,7 @@ import injectSaga from 'utils/injectSaga';
 
 import ViewStatPage from 'components/ViewStatPage';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewStatContainerSelectors from './selectors';
 import * as viewStatContainerActions from './actions';
 import reducer from './reducer';
@@ -22,10 +23,21 @@ export class ViewStatContainer extends React.PureComponent {
     }
   }
 
+  componentDidMount() {
+    if (this.props.match.params.bId === _.get(this.props.ballot, 'bId')) {
+      this.props.onStatusRequestAction();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
+      this.props.onStatusStopAction();
       nextProps.onRefresh();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onStatusStopAction();
   }
 
   render() {
@@ -55,15 +67,19 @@ ViewStatContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   onChangeFieldAction: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
 };
 
-export function mapDispatchToProps(dispatch, { match }) {
+function mapDispatchToProps(dispatch, { match }) {
   const { bId } = match.params;
   return {
     onPush: (url) => dispatch(push(url)),
     onRefresh: () => dispatch(viewStatContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewStatContainerActions.exportRequest({ bId })),
     onChangeFieldAction: (index) => dispatch(viewStatContainerActions.changeField(index)),
+    onStatusRequestAction: () => dispatch(viewStatContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
   };
 }
 

@@ -1,24 +1,15 @@
 import * as VIEW_BALLOT_CONTAINER from './constants';
 
 // Actions
-export function voterRgRequest({ bId }) {
+export function statusRequest() {
+  return {
+    type: VIEW_BALLOT_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
+export function voterRgRequest() {
   return {
     type: VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION,
-    bId,
-  };
-}
-
-export function voterRgStop() {
-  return {
-    type: VIEW_BALLOT_CONTAINER.VOTER_RG_STOP_ACTION,
-  };
-}
-
-export function voterRegistered({ bId, iCode }) {
-  return {
-    type: VIEW_BALLOT_CONTAINER.VOTER_REGISTERED_ACTION,
-    bId,
-    iCode,
   };
 }
 

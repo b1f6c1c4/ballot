@@ -13,6 +13,9 @@ const styles = (theme) => ({
   root: {
     width: '100%',
   },
+  wrapper: {
+    marginTop: 70,
+  },
 });
 
 class GlobalPage extends React.PureComponent {
@@ -57,7 +60,9 @@ class GlobalPage extends React.PureComponent {
             onCloseDrawerAction,
           }}
         />
-        {this.props.children}
+        <div className={classes.wrapper}>
+          {this.props.children}
+        </div>
       </div>
     );
   }
@@ -65,7 +70,7 @@ class GlobalPage extends React.PureComponent {
 
 GlobalPage.propTypes = {
   classes: PropTypes.object.isRequired,
-  children: PropTypes.element,
+  children: PropTypes.any,
   onPush: PropTypes.func.isRequired,
   onLanguage: PropTypes.func.isRequired,
   username: PropTypes.string,

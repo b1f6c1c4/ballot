@@ -5,10 +5,3 @@ query Ballots {
     status
   }
 }
-
-subscription BallotsStatus {
-  ballotsStatus {
-    bId
-    status
-  }
-}

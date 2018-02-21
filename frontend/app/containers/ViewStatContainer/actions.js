@@ -8,6 +8,12 @@ export function changeField(index) {
   };
 }
 
+export function statusRequest() {
+  return {
+    type: VIEW_STAT_CONTAINER.STATUS_REQUEST_ACTION,
+  };
+}
+
 // Sagas
 export function ballotRequest({ bId }) {
   return {

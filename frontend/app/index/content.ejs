@@ -16,7 +16,7 @@
     <div id="logo" class="pull-left">
       <h1><a href="#intro" class="scrollto">Ballot</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="#intro"><img src="images/logo.png" alt="" title=""></a> -->
+      <!-- <a href="#intro"><img src="resource/logo.png" alt="" title=""></a> -->
     </div>
 
     <nav id="nav-menu-container">
@@ -27,7 +27,7 @@
         <li><a href="/app/login" data-i18n="index.login"></a></li>
         <li class="menu-has-children">
           <a class="nav-langs" href="#">Language/语言</a>
-          <span class="nav-langs"><%= require('images/icons/ic_language_black_18px.svg') %></span>
+          <span class="nav-langs"><%= require('resource/icons/ic_language_black_18px.svg') %></span>
           <ul id="nav-langs"></ul>
         </li>
       </ul>
@@ -69,23 +69,23 @@
 
           <div class="row">
 
-            <div class="col-lg-6 col-md-6 box wow fadeInLeft">
-              <div class="icon"><%= require('images/icons/ic_lock_black_48px.svg') %></div>
+            <div class="col-lg-6 col-md-6 box">
+              <div class="icon"><%= require('resource/icons/ic_lock_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.security"></h4>
               <p class="description" data-i18n="index.features.security.description"></p>
             </div>
-            <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.1s">
-              <div class="icon"><%= require('images/icons/ic_person_black_48px.svg') %></div>
+            <div class="col-lg-6 col-md-6 box">
+              <div class="icon"><%= require('resource/icons/ic_person_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.anonymity"></h4>
               <p class="description" data-i18n="index.features.anonymity.description"></p>
             </div>
-            <div class="col-lg-6 col-md-6 box wow fadeInLeft" data-wow-delay="0.2s">
-              <div class="icon"><%= require('images/icons/ic_remove_circle_outline_black_48px.svg') %></div>
+            <div class="col-lg-6 col-md-6 box">
+              <div class="icon"><%= require('resource/icons/ic_remove_circle_outline_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.duplication"></h4>
               <p class="description" data-i18n="index.features.duplication.description"></p>
             </div>
-            <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.3s">
-              <div class="icon"><%= require('images/icons/ic_check_black_48px.svg') %></div>
+            <div class="col-lg-6 col-md-6 box">
+              <div class="icon"><%= require('resource/icons/ic_check_black_48px.svg') %></div>
               <h4 class="title" data-i18n="index.features.authenticity"></h4>
               <p class="description" data-i18n="index.features.authenticity.description"></p>
             </div>
@@ -134,28 +134,28 @@
 
         <div class="col-lg-6">
           <div class="box wow fadeInLeft">
-            <div class="icon"><%= require('images/icons/ic_mode_edit_black_48px.svg') %></div>
+            <div class="icon"><%= require('resource/icons/ic_mode_edit_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.customizable"></h4>
             <p class="description" data-i18n="index.more.customizable.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInRight">
-            <div class="icon"><%= require('images/icons/ic_error_outline_black_48px.svg') %></div>
+            <div class="icon"><%= require('resource/icons/ic_error_outline_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.immutable"></h4>
             <p class="description" data-i18n="index.more.immutable.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInLeft">
-            <div class="icon"><%= require('images/icons/ic_visibility_black_48px.svg') %></div>
+            <div class="icon"><%= require('resource/icons/ic_visibility_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.visibility"></h4>
             <p class="description" data-i18n="index.more.visibility.description"></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="box wow fadeInRight">
-            <div class="icon"><%= require('images/icons/ic_accessibility_black_48px.svg') %></div>
+            <div class="icon"><%= require('resource/icons/ic_accessibility_black_48px.svg') %></div>
             <h4 class="title" data-i18n="index.more.userFriendly"></h4>
             <p class="description" data-i18n="index.more.userFriendly.description"></p>
           </div>
@@ -177,33 +177,33 @@
         <p class="section-description" data-i18n="index.faq.description"></p>
       </div>
 
-      <ul id="faq-list" class="wow fadeInUp">
+      <ul id="faq-list">
 
-        <li>
+        <li class="wow fadeInUp">
           <a data-toggle="collapse" class="collapsed" href="#faq1" data-i18n="index.faq.q1.question"></a>
           <div id="faq1" class="collapse" data-parent="#faq-list">
             <p data-i18n="index.faq.q1.answer"></p>
           </div>
         </li>
-        <li>
+        <li class="wow fadeInUp" data-wow-delay="0.1s">
           <a data-toggle="collapse" class="collapsed" href="#faq2" data-i18n="index.faq.q2.question"></a>
           <div id="faq2" class="collapse" data-parent="#faq-list">
             <p data-i18n="index.faq.q2.answer"></p>
           </div>
         </li>
-        <li>
+        <li class="wow fadeInUp" data-wow-delay="0.2s">
           <a data-toggle="collapse" class="collapsed" href="#faq3" data-i18n="index.faq.q3.question"></a>
           <div id="faq3" class="collapse" data-parent="#faq-list">
             <p data-i18n="index.faq.q3.answer"></p>
           </div>
         </li>
-        <li>
+        <li class="wow fadeInUp" data-wow-delay="0.3s">
           <a data-toggle="collapse" class="collapsed" href="#faq4" data-i18n="index.faq.q4.question"></a>
           <div id="faq4" class="collapse" data-parent="#faq-list">
             <p data-i18n="index.faq.q4.answer"></p>
           </div>
         </li>
-        <li>
+        <li class="wow fadeInUp" data-wow-delay="0.4s">
           <a data-toggle="collapse" class="collapsed" href="#faq5" data-i18n="index.faq.q5.question"></a>
           <div id="faq5" class="collapse" data-parent="#faq-list">
             <p data-i18n="index.faq.q5.answer"></p>
@@ -235,4 +235,4 @@
   </div>
 </footer><!-- #footer -->
 
-<a href="#" class="back-to-top"><%= require('images/icons/ic_keyboard_arrow_up_black_24px.svg') %></a>
+<a href="#" class="back-to-top"><%= require('resource/icons/ic_keyboard_arrow_up_black_24px.svg') %></a>

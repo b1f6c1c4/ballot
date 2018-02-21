@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 
 import globalContainerReducer from '../reducer';
 
@@ -69,7 +70,15 @@ describe('globalContainerReducer', () => {
       { bId: 'b2', status: 's3', evil: false },
     ]));
 
-    expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+    expect(globalContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle statusChange action null', () => {
+    const originalState = state;
+    const param = { bId: 'b3', status: 's3' };
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
   it('should handle statusChange action not found', () => {
@@ -83,21 +92,7 @@ describe('globalContainerReducer', () => {
       { bId: 'b2', status: 's2', evil: false },
     ]));
 
-    expect(globalContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
-  });
-
-  it('should handle statusStop action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(globalContainerReducer(originalState, globalContainerActions.statusStop())).toEq(expectedResult);
-  });
-
-  it('should handle statusRequest action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(globalContainerReducer(originalState, globalContainerActions.statusRequest())).toEq(expectedResult);
+    expect(globalContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
   // Sagas
