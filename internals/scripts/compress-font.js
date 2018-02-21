@@ -2,14 +2,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-restricted-syntax */
 const _ = require('lodash');
-const { exec, mkdir } = require('shelljs');
+const { exec } = require('shelljs');
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const fastXmlParser = require('fast-xml-parser');
 const zh = require('../../app/translations/zh.json');
-
-mkdir('-p', 'font');
 
 const theCodes = new Set();
 let txt = _.values(zh).join('');
@@ -354,9 +352,9 @@ const tasks = [
 ].map(async (s) => {
   const x = `NotoSansSC-${s}`;
   console.log(`Compressing ${x}`);
-  const fin = path.join(__dirname, `../../app/images/fonts/ttx/${x}.ttx`);
-  const ftmp1 = path.join(__dirname, `../../app/images/fonts/ttx/${x}-1.ttx`);
-  const ftmp2 = path.join(__dirname, `../../app/images/fonts/ttx/${x}-2.ttx`);
+  const fin = path.join(__dirname, `../../app/resource/fonts/ttx/${x}.ttx`);
+  const ftmp1 = path.join(__dirname, `../../app/resource/fonts/ttx/${x}-1.ttx`);
+  const ftmp2 = path.join(__dirname, `../../app/resource/fonts/ttx/${x}-2.ttx`);
   const names = await extractNames(fin, theCodes);
   await filterNames(fin, ftmp1, names);
   const obj = await toXml(ftmp1);
@@ -364,7 +362,7 @@ const tasks = [
   await filterSubrs(obj, fds);
   await fromXml(obj, ftmp2);
   await Promise.all(['woff', 'woff2']
-    .map((f) => ttx(ftmp2, path.join(__dirname, `../../app/images/fonts/${x}-X.${f}`))));
+    .map((f) => ttx(ftmp2, path.join(__dirname, `../../app/resource/fonts/${x}-X.${f}`))));
 });
 
 Promise.all(tasks)
