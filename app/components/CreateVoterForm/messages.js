@@ -9,15 +9,15 @@ export default {
       defaultMessage: 'Create Voter',
     },
     create: {
-      id: 'app.components.CreateBallotPage.create',
+      id: 'app.components.CreateVoterPage.create',
       defaultMessage: 'Create',
     },
     nameLabel: {
-      id: 'app.components.CreateBallotPage.nameLabel',
+      id: 'app.components.CreateVoterPage.nameLabel',
       defaultMessage: 'Name',
     },
     nameHelperText: {
-      id: 'app.components.CreateBallotPage.nameHelperText',
+      id: 'app.components.CreateVoterPage.nameHelperText',
       defaultMessage: 'Not null.',
     },
   }),

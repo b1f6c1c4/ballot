@@ -8,12 +8,12 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
   IconButton,
   Menu,
   MenuItem,
 } from 'material-ui';
 import { Menu as MenuIcon, AccountCircle } from 'material-ui-icons';
+import Button from 'components/Button';
 
 import messages from './messages';
 

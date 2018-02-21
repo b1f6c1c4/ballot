@@ -6,10 +6,10 @@ import {
   withStyles,
   Typography,
   MobileStepper,
-  Button,
 } from 'material-ui';
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';
+import Button from 'components/Button';
 import Loading from 'components/Loading';
 import EmptyIndicator from 'components/EmptyIndicator';
 import BallotMeta from 'components/BallotMeta';

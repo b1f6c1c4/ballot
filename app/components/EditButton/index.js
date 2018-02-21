@@ -4,9 +4,9 @@ import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Button,
 } from 'material-ui';
 import { Edit } from 'material-ui-icons';
+import Button from 'components/Button';
 
 import messages from './messages';
 

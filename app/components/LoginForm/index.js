@@ -9,9 +9,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import UsernameField from 'components/UsernameField';
 import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';

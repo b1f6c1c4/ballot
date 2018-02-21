@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import {
   withStyles,
   Typography,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -13,11 +12,13 @@ import {
   TableRow,
   Paper,
 } from 'material-ui';
+import Button from 'components/Button';
 import EmptyIndicator from 'components/EmptyIndicator';
 import Abbreviation from 'components/Abbreviation';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import StatusBadge from 'components/StatusBadge';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
@@ -70,6 +71,7 @@ class HomePage extends React.PureComponent {
             </LoadingButton>
           </div>
           <EmptyIndicator isLoading={isLoading} list={listBallots} />
+          <ResultIndicator error={this.props.error} />
           {!isLoading && listBallots && listBallots.length > 0 && (
             <Table>
               <TableHead>
@@ -114,6 +116,7 @@ HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   listBallots: PropTypes.array,
+  error: PropTypes.object,
   onRefreshListBallots: PropTypes.func.isRequired,
 };
 

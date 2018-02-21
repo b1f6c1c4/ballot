@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -25,14 +26,6 @@ const styles = (theme) => ({
 });
 
 class BallotMeta extends React.PureComponent {
-  handleClick = () => {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    } else {
-      this.props.onPush(`/app/ballots/${this.props.bId}`);
-    }
-  };
-
   render() {
     const {
       classes,
@@ -47,10 +40,20 @@ class BallotMeta extends React.PureComponent {
           <Typography
             variant="display2"
             gutterBottom
-            onClick={this.handleClick}
-            className={classes.clickable}
           >
-            {ballot.name}
+            {this.props.onRefresh && (
+              <span
+                className={classes.clickable}
+                onClick={this.props.onRefresh}
+              >
+                {ballot.name}
+              </span>
+            )}
+            {!this.props.onRefresh && (
+              <Link to={`/app/ballots/${this.props.bId}`}>
+                {ballot.name}
+              </Link>
+            )}
             <Typography className={classes.badge} variant="subheading" component="span">
               <StatusBadge status={ballot.status} />
             </Typography>

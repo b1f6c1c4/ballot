@@ -4,13 +4,13 @@ import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
 } from 'material-ui';
+import Button from 'components/Button';
 
 import messages from './messages';
 

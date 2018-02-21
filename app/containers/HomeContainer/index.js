@@ -25,6 +25,7 @@ HomeContainer.propTypes = {
   hasCredential: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   listBallots: PropTypes.array,
+  error: PropTypes.object,
   onRefreshListBallots: PropTypes.func.isRequired,
 };
 
@@ -39,6 +40,7 @@ const mapStateToProps = createStructuredSelector({
   hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['globalContainer', 'isLoading']),
   listBallots: globalContainerSelectors.ListBallots(),
+  error: globalContainerSelectors.Error(),
 });
 
 export default compose(

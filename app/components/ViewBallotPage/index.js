@@ -14,9 +14,9 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Button,
 } from 'material-ui';
 import QRCode from 'qrcode.react';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -95,16 +95,6 @@ class ViewBallotPage extends React.PureComponent {
       ac();
     }
     this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
-  };
-
-  handleFieldsEdit = () => {
-    const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/fields/`);
-  };
-
-  handleVotersEdit = () => {
-    const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/voters/`);
   };
 
   handleStatView = () => {
@@ -262,10 +252,10 @@ class ViewBallotPage extends React.PureComponent {
             </CardContent>
             <CardActions>
               {canEditFields && (
-                <EditButton onClick={this.handleFieldsEdit} />
+                <EditButton to={`/app/ballots/${bId}/fields/`} />
               )}
               {!canEditFields && (
-                <ViewButton onClick={this.handleFieldsEdit} />
+                <ViewButton to={`/app/ballots/${bId}/fields/`} />
               )}
             </CardActions>
           </Card>
@@ -290,10 +280,10 @@ class ViewBallotPage extends React.PureComponent {
             </CardContent>
             <CardActions>
               {canEditVoters && (
-                <EditButton onClick={this.handleVotersEdit} />
+                <EditButton to={`/app/ballots/${bId}/voters/`} />
               )}
               {!canEditVoters && (
-                <ViewButton onClick={this.handleVotersEdit} />
+                <ViewButton to={`/app/ballots/${bId}/voters/`} />
               )}
             </CardActions>
           </Card>
@@ -344,7 +334,7 @@ class ViewBallotPage extends React.PureComponent {
                 </Typography>
               </CardContent>
               <CardActions>
-                <ViewButton onClick={this.handleStatView} />
+                <ViewButton to={`/app/ballots/${bId}/tickets/`} />
               </CardActions>
             </Card>
           )}

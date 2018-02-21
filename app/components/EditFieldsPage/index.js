@@ -6,7 +6,6 @@ import * as Permission from 'utils/permission';
 
 import {
   withStyles,
-  Button,
   IconButton,
   Card,
   ListItem,
@@ -21,6 +20,7 @@ import {
   Visibility,
   Delete,
 } from 'material-ui-icons';
+import Button from 'components/Button';
 import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';

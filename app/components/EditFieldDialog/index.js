@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   MenuItem,
   FormControl,
   InputLabel,
@@ -24,6 +23,7 @@ import {
   formValueSelector,
   SubmissionError,
 } from 'redux-form/immutable';
+import Button from 'components/Button';
 import ResultIndicator from 'components/ResultIndicator';
 import TextField from 'components/TextField';
 import make, { required, properLines } from 'utils/validation';

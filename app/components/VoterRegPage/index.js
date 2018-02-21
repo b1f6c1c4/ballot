@@ -7,10 +7,10 @@ import { FormattedMessage } from 'react-intl';
 import {
   withStyles,
   Typography,
-  Button,
   Paper,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';

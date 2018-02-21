@@ -15,6 +15,7 @@ import Teal from 'material-ui/colors/teal';
 import Brown from 'material-ui/colors/brown';
 import 'typeface-roboto/index.css';
 import 'index/typeface-noto-sans.css';
+import 'app.css';
 
 import GlobalContainer from 'containers/GlobalContainer';
 import SubscriptionContainer from 'containers/SubscriptionContainer';

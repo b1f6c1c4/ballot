@@ -6,10 +6,10 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import {
   withStyles,
   Typography,
-  Button,
   Paper,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';

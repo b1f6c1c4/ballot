@@ -7,8 +7,8 @@ import downloadCsv from 'download-csv';
 
 import {
   withStyles,
-  Button,
 } from 'material-ui';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
