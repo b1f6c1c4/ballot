@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import * as globalContainerActions from 'containers/GlobalContainer/actions';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 
 import preVotingContainerReducer, {
   normalizeFields,
@@ -54,7 +54,7 @@ describe('preVotingContainerReducer', () => {
   });
 
   // Actions
-  it('should handle valid global status change action', () => {
+  it('should handle valid subscription status change action', () => {
     const originalState = state.set('ballot', fromJS({
       bId: 'b',
       status: 's',
@@ -67,10 +67,10 @@ describe('preVotingContainerReducer', () => {
       evil: true,
     }));
 
-    expect(preVotingContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+    expect(preVotingContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
-  it('should handle invalid global status change action', () => {
+  it('should handle invalid subscription status change action', () => {
     const originalState = state.set('ballot', fromJS({
       bId: 'b',
       status: 's',
@@ -83,7 +83,7 @@ describe('preVotingContainerReducer', () => {
       evil: true,
     }));
 
-    expect(preVotingContainerReducer(originalState, globalContainerActions.statusChange(param))).toEq(expectedResult);
+    expect(preVotingContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
   // Sagas

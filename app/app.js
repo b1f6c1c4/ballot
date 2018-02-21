@@ -17,6 +17,7 @@ import 'typeface-roboto/index.css';
 import 'index/typeface-noto-sans.css';
 
 import GlobalContainer from 'containers/GlobalContainer';
+import SubscriptionContainer from 'containers/SubscriptionContainer';
 import ErrorBoundary from 'containers/ErrorBoundary';
 import LanguageProvider from 'containers/LanguageProvider';
 
@@ -60,6 +61,7 @@ const render = (messages) => {
         <ConnectedRouter history={history}>
           <ErrorBoundary>
             <Reboot />
+            <SubscriptionContainer />
             <ConnectedMuiThemeProvider>
               <LanguageProvider messages={messages}>
                 <GlobalContainer />

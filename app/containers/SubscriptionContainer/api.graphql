@@ -1,0 +1,6 @@
+subscription BallotsStatus {
+  ballotsStatus {
+    bId
+    status
+  }
+}

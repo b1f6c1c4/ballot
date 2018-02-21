@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { fromJS } from 'immutable';
 import shortid from 'shortid';
 
-import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as PRE_VOTING_CONTAINER from './constants';
 
 const initialState = fromJS({
@@ -40,7 +40,7 @@ export const normalizeFields = (fs) => fs.map((f) => {
 function preVotingContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case GLOBAL_CONTAINER.STATUS_CHANGE_ACTION:
+    case SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION:
       if (state.getIn(['ballot', 'bId']) === action.bId) {
         return state.setIn(['ballot', 'status'], action.status);
       }

@@ -21,6 +21,7 @@ import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
 import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
 
 import * as languageProviderActions from 'containers/LanguageProvider/actions';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as globalContainerSelectors from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
@@ -89,8 +90,8 @@ function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
-    onStatusStopAction: () => dispatch(globalContainerActions.statusStop()),
-    onStatusRequestAction: () => dispatch(globalContainerActions.statusRequest()),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
+    onStatusRequestAction: () => dispatch(subscriptionContainerActions.statusRequest()),
   };
 }
 
