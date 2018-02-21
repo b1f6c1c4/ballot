@@ -20,11 +20,7 @@ function editVotersContainerReducer(state = initialState, action) {
         return state.setIn(['ballot', 'status'], action.status);
       }
       return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_RG_REQUEST_ACTION:
-      return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_RG_STOP_ACTION:
-      return state;
-    case EDIT_VOTERS_CONTAINER.VOTER_REGISTERED_ACTION: {
+    case SUBSCRIPTION_CONTAINER.VOTER_REGISTERED_ACTION: {
       if (action.bId !== state.getIn(['ballot', 'bId'])) return state;
       const list = state.get('voters');
       const id = list.findIndex((b) => b.get('iCode') === action.voter.iCode);

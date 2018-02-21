@@ -21,16 +21,14 @@ function viewBallotContainerReducer(state = initialState, action) {
         return state.setIn(['ballot', 'status'], action.status);
       }
       return state;
-    case VIEW_BALLOT_CONTAINER.VOTER_RG_REQUEST_ACTION:
-      return state;
-    case VIEW_BALLOT_CONTAINER.VOTER_RG_STOP_ACTION:
-      return state;
-    case VIEW_BALLOT_CONTAINER.VOTER_REGISTERED_ACTION: {
+    case SUBSCRIPTION_CONTAINER.VOTER_REGISTERED_ACTION: {
       if (action.bId !== state.getIn(['ballot', 'bId'])) return state;
       const list = state.getIn(['ballot', 'voters']);
-      const id = list.findIndex((b) => b.get('iCode') === action.iCode);
+      const id = list.findIndex((b) => b.get('iCode') === action.voter.iCode);
       if (id === -1) return state;
-      const newList = list.update(id, (b) => b.set('publicKey', true));
+      const newList = list
+        .setIn([id, 'comment'], action.voter.comment)
+        .setIn([id, 'publicKey'], action.voter.publicKey);
       return state.setIn(['ballot', 'voters'], newList);
     }
     // Sagas

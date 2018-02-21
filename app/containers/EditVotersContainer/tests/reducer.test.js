@@ -55,20 +55,6 @@ describe('editVotersContainerReducer', () => {
     expect(editVotersContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
-  it('should handle voterRgRequest action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRgRequest({ bId: 'b' }))).toEq(expectedResult);
-  });
-
-  it('should handle voterRgStop action', () => {
-    const originalState = state;
-    const expectedResult = state;
-
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRgStop())).toEq(expectedResult);
-  });
-
   it('should handle voterRegistered action not match', () => {
     const originalState = state.set('ballot', fromJS({ bId: 'b' }))
       .set('voters', fromJS([
@@ -82,7 +68,7 @@ describe('editVotersContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ]));
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b3', param))).toEq(expectedResult);
+    expect(editVotersContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b3', param))).toEq(expectedResult);
   });
 
   it('should handle voterRegistered action not found', () => {
@@ -98,7 +84,7 @@ describe('editVotersContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ]));
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b', param))).toEq(expectedResult);
+    expect(editVotersContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
   it('should handle voterRegistered action good', () => {
@@ -114,7 +100,7 @@ describe('editVotersContainerReducer', () => {
         { iCode: '2', name: 'n2', publicKey: null },
       ]));
 
-    expect(editVotersContainerReducer(originalState, editVotersContainerActions.voterRegistered('b', param))).toEq(expectedResult);
+    expect(editVotersContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
   });
 
   // Sagas

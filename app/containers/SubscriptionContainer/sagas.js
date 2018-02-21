@@ -54,6 +54,44 @@ export function* handleStatusRequestAction() {
   }
 }
 
+export const voterRegisteredChan = (obs0) => eventChannel((emit) => {
+  const obs1 = obs0.subscribe({
+    next(data) {
+      const st = _.get(data, 'data.voterRegistered');
+      if (st) {
+        emit(st);
+      }
+    },
+    error(err) {
+      /* istanbul ignore next */
+      // eslint-disable-next-line no-console
+      console.error(err);
+    },
+  });
+  return () => obs1.unsubscribe();
+});
+
+export function* handleVoterRgRequestAction({ bId }) {
+  const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
+
+  const obs0 = yield call(api.subscribe, gql.VoterRegistered, { bId }, cred);
+  const chan = yield call(voterRegisteredChan, obs0);
+  try {
+    while (true) {
+      const result = yield take(chan);
+      yield put(subscriptionContainerActions.voterRegistered(bId, result));
+    }
+  } finally {
+    /* istanbul ignore else */
+    if (yield cancelled()) {
+      /* istanbul ignore if */
+      if (_.isObject(chan)) {
+        chan.close();
+      }
+    }
+  }
+}
+
 // Sagas
 
 // Watcher
@@ -75,7 +113,35 @@ export function* watchStatus() {
   }
 }
 
+export function* watchVoterRg() {
+  let ob;
+  let bId;
+  while (true) {
+    const { request, stop } = yield race({
+      request: take(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION),
+      stop: take(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION),
+    });
+    /* istanbul ignore else */
+    if (request) {
+      if (!ob || /* istanbul ignore next */ request.bId !== bId) {
+        /* istanbul ignore if */
+        if (ob) {
+          yield cancel(ob);
+        }
+        ob = yield fork(handleVoterRgRequestAction, request);
+        ({ bId } = request);
+      }
+    } /* istanbul ignore next */ else if (stop && ob) {
+      /* istanbul ignore next */
+      yield cancel(ob);
+      /* istanbul ignore next */
+      ob = undefined;
+    }
+  }
+}
+
 /* eslint-disable func-names */
 export default function* watcher() {
   yield fork(watchStatus);
+  yield fork(watchVoterRg);
 }

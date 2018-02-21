@@ -28,4 +28,35 @@ describe('SubscriptionContainer actions', () => {
       expect(subscriptionContainerActions.statusRequest().type).toEqual(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION);
     });
   });
+
+  describe('voterRgRequest action', () => {
+    const param = { bId: 'b' };
+
+    it('has a type of VOTER_RG_REQUEST_ACTION', () => {
+      expect(subscriptionContainerActions.voterRgRequest(param).type).toEqual(SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION);
+    });
+
+    it('should forward', () => {
+      expect(subscriptionContainerActions.voterRgRequest(param).bId).toEqual('b');
+    });
+  });
+
+  describe('voterRgStop action', () => {
+    it('has a type of VOTER_RG_STOP_ACTION', () => {
+      expect(subscriptionContainerActions.voterRgStop().type).toEqual(SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION);
+    });
+  });
+
+  describe('voterRegistered action', () => {
+    const param = { iCode: 'c' };
+
+    it('has a type of VOTER_REGISTERED_ACTION', () => {
+      expect(subscriptionContainerActions.voterRegistered('b', param).type).toEqual(SUBSCRIPTION_CONTAINER.VOTER_REGISTERED_ACTION);
+    });
+
+    it('should forward', () => {
+      expect(subscriptionContainerActions.voterRegistered('b', param).bId).toEqual('b');
+      expect(subscriptionContainerActions.voterRegistered('b', param).voter).toEqual(param);
+    });
+  });
 });

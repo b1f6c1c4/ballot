@@ -21,4 +21,25 @@ export function statusRequest() {
   };
 }
 
+export function voterRgRequest({ bId }) {
+  return {
+    type: SUBSCRIPTION_CONTAINER.VOTER_RG_REQUEST_ACTION,
+    bId,
+  };
+}
+
+export function voterRgStop() {
+  return {
+    type: SUBSCRIPTION_CONTAINER.VOTER_RG_STOP_ACTION,
+  };
+}
+
+export function voterRegistered(bId, voter) {
+  return {
+    type: SUBSCRIPTION_CONTAINER.VOTER_REGISTERED_ACTION,
+    bId,
+    voter,
+  };
+}
+
 // Sagas
