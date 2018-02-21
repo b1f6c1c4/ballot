@@ -59,14 +59,12 @@ const render = (messages) => {
       <ErrorBoundary>
         <ConnectedRouter history={history}>
           <ErrorBoundary>
-            <LanguageProvider messages={messages}>
-              <div>
-                <Reboot />
-                <ConnectedMuiThemeProvider>
-                  <GlobalContainer />
-                </ConnectedMuiThemeProvider>
-              </div>
-            </LanguageProvider>
+            <Reboot />
+            <ConnectedMuiThemeProvider>
+              <LanguageProvider messages={messages}>
+                <GlobalContainer />
+              </LanguageProvider>
+            </ConnectedMuiThemeProvider>
           </ErrorBoundary>
         </ConnectedRouter>
       </ErrorBoundary>
