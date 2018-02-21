@@ -21,8 +21,6 @@ services:
     image: jwilder/docker-gen
     restart: always
     environment:
-      SSL_POLICY: AWS-TLS-1-2-2017-01
-      HTTPS_METHOD: redirect
       DEFAULT_HOST: ballot-api.b1f6c1c4.info
     command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     volumes_from:
@@ -41,6 +39,7 @@ services:
     environment:
       VIRTUAL_HOST: ballot-api.b1f6c1c4.info
       VIRTUAL_PORT: 3000
+      HTTPS_METHOD: redirect
       CORS_ORIGIN: "https://ballot.b1f6c1c4.info"
       BACKEND_LOG: "${DEBUG_LEVEL}"
       NO_SHARD: 'true'
