@@ -6,7 +6,8 @@ import _ from 'lodash';
 import rawResources from 'translations';
 
 function updateContent() {
-  const k = i18next.language;
+  const ks = i18next.language;
+  const [k] = ks.split('-');
   $('#lng').val(k);
   $('body').removeClass();
   $('body').addClass(`body-x-${k}`);
