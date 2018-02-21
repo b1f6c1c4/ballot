@@ -18,6 +18,7 @@ import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
   componentWillMount() {
+    this.props.onStatusRequestAction();
     this.props.onVoterRgRequestAction();
     if (this.props.match.params.bId !== _.get(this.props.ballot, 'bId')) {
       this.props.onRefresh();
@@ -27,11 +28,13 @@ export class ViewBallotContainer extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.match.params, this.props.match.params)) {
       nextProps.onRefresh();
+      nextProps.onStatusRequestAction();
       nextProps.onVoterRgRequestAction();
     }
   }
 
   componentWillUnmount() {
+    this.props.onStatusStopAction();
     this.props.onVoterRgStopAction();
   }
 
@@ -62,6 +65,8 @@ ViewBallotContainer.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   onFinalize: PropTypes.func.isRequired,
+  onStatusRequestAction: PropTypes.func.isRequired,
+  onStatusStopAction: PropTypes.func.isRequired,
   onVoterRgRequestAction: PropTypes.func.isRequired,
   onVoterRgStopAction: PropTypes.func.isRequired,
 };
@@ -73,6 +78,8 @@ function mapDispatchToProps(dispatch, { match }) {
     onRefresh: () => dispatch(viewBallotContainerActions.ballotRequest({ bId })),
     onExport: () => dispatch(viewBallotContainerActions.exportRequest({ bId })),
     onFinalize: () => dispatch(viewBallotContainerActions.finalizeRequest({ bId })),
+    onStatusRequestAction: () => dispatch(subscriptionContainerActions.statusRequest({ bId })),
+    onStatusStopAction: () => dispatch(subscriptionContainerActions.statusStop()),
     onVoterRgRequestAction: () => dispatch(subscriptionContainerActions.voterRgRequest({ bId })),
     onVoterRgStopAction: () => dispatch(subscriptionContainerActions.voterRgStop()),
   };

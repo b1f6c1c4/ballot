@@ -73,6 +73,14 @@ describe('globalContainerReducer', () => {
     expect(globalContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
+  it('should handle statusChange action null', () => {
+    const originalState = state;
+    const param = { bId: 'b3', status: 's3' };
+    const expectedResult = state;
+
+    expect(globalContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
   it('should handle statusChange action not found', () => {
     const originalState = state.set('listBallots', fromJS([
       { bId: 'b1', status: 's1', evil: true },

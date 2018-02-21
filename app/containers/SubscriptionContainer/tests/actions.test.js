@@ -17,15 +17,33 @@ describe('SubscriptionContainer actions', () => {
     });
   });
 
+  describe('statusRequest action', () => {
+    const param = { bId: 'b' };
+
+    it('has a type of STATUS_REQUEST_ACTION', () => {
+      expect(subscriptionContainerActions.statusRequest(param).type).toEqual(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION);
+    });
+
+    it('should forward', () => {
+      expect(subscriptionContainerActions.statusRequest(param).bId).toEqual('b');
+    });
+  });
+
   describe('statusStop action', () => {
     it('has a type of STATUS_STOP_ACTION', () => {
       expect(subscriptionContainerActions.statusStop().type).toEqual(SUBSCRIPTION_CONTAINER.STATUS_STOP_ACTION);
     });
   });
 
-  describe('statusRequest action', () => {
-    it('has a type of STATUS_REQUEST_ACTION', () => {
-      expect(subscriptionContainerActions.statusRequest().type).toEqual(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION);
+  describe('statusesRequest action', () => {
+    it('has a type of STATUSES_REQUEST_ACTION', () => {
+      expect(subscriptionContainerActions.statusesRequest().type).toEqual(SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION);
+    });
+  });
+
+  describe('statusesStop action', () => {
+    it('has a type of STATUSES_STOP_ACTION', () => {
+      expect(subscriptionContainerActions.statusesStop().type).toEqual(SUBSCRIPTION_CONTAINER.STATUSES_STOP_ACTION);
     });
   });
 

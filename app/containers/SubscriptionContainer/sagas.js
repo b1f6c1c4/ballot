@@ -55,8 +55,25 @@ export const makeChan = (lbl, obs0) => eventChannel((emit) => {
   return () => obs1.unsubscribe();
 });
 
-export function* handleStatusRequestAction() {
+export function* handleStatusRequestAction({ bId }) {
+  const obs0 = yield call(api.subscribe, gql.BallotStatus, { bId });
+  const chan = yield call(makeChan, 'ballotStatus', obs0);
+  try {
+    while (true) {
+      const { error, result } = yield take(chan);
+      if (error) throw error;
+      yield put(subscriptionContainerActions.statusChange(result));
+    }
+  } catch (err) {
+    report(err);
+  } finally {
+    close(chan);
+  }
+}
+
+export function* handleStatusesRequestAction() {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
+  if (!cred) return;
 
   const obs0 = yield call(api.subscribe, gql.BallotsStatus, undefined, cred);
   const chan = yield call(makeChan, 'ballotsStatus', obs0);
@@ -75,6 +92,7 @@ export function* handleStatusRequestAction() {
 
 export function* handleVoterRgRequestAction({ bId }) {
   const cred = yield select((state) => state.getIn(['globalContainer', 'credential', 'token']));
+  if (!cred) return;
 
   const obs0 = yield call(api.subscribe, gql.VoterRegistered, { bId }, cred);
   const chan = yield call(makeChan, 'voterRegistered', obs0);
@@ -97,15 +115,31 @@ export function* handleVoterRgRequestAction({ bId }) {
 // Watcher
 export function* watchStatus() {
   let ob;
+  let bId;
   while (true) {
-    const { request, stop } = yield race({
+    const { request, requests, stop } = yield race({
       request: take(SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION),
+      requests: take(SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION),
       stop: take(SUBSCRIPTION_CONTAINER.STATUS_STOP_ACTION),
     });
     /* istanbul ignore if */
     if (ob && !ob.isRunning()) ob = undefined;
-    if (request && !ob) {
-      ob = yield fork(handleStatusRequestAction, request);
+    if (request && !(ob && bId === null)) {
+      if (!ob || /* istanbul ignore next */ request.bId !== bId) {
+        /* istanbul ignore if */
+        if (ob) {
+          yield cancel(ob);
+        }
+        ob = yield fork(handleStatusRequestAction, request);
+        ({ bId } = request);
+      }
+    } else if (requests && (!ob || bId !== null)) {
+      /* istanbul ignore if */
+      if (ob) {
+        yield cancel(ob);
+      }
+      ob = yield fork(handleStatusesRequestAction, requests);
+      bId = null;
     } /* istanbul ignore next */ else if (stop && ob) {
       /* istanbul ignore next */
       yield cancel(ob);

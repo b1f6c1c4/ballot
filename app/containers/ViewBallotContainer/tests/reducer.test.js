@@ -56,6 +56,18 @@ describe('viewBallotContainerReducer', () => {
     expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
+  it('should handle voterRegistered action null', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+    }));
+    const param = { iCode: '1' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+    }));
+
+    expect(viewBallotContainerReducer(originalState, subscriptionContainerActions.voterRegistered('b', param))).toEq(expectedResult);
+  });
+
   it('should handle voterRegistered action not match', () => {
     const originalState = state.set('ballot', fromJS({
       bId: 'b',

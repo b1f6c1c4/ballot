@@ -11,6 +11,7 @@ import gql from '../api.graphql';
 import watcher, {
   makeChan,
   handleStatusRequestAction,
+  handleStatusesRequestAction,
   handleVoterRgRequestAction,
   watchStatus,
   watchVoterRg,
@@ -67,10 +68,61 @@ describe('makeChan', () => {
 });
 
 describe('handleStatusRequestAction', () => {
+  const state = fromJS({});
+  const variables = { bId: 'b' };
+  const func = () => handleStatusRequestAction(variables);
+  const dArgs0 = [api.subscribe, gql.BallotStatus, variables];
+  const dArgs1 = [makeChan, 'ballotStatus', 123];
+
+  it('should quit if error', () => {
+    const chan = 'chan';
+    const e = { key: 'val' };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .take(chan)
+      .provide([
+        [matchers.call(...dArgs0), 123],
+        [matchers.call(...dArgs1), chan],
+        [matchers.take(chan), { error: e }],
+      ])
+      .run();
+  });
+
+  it('should dispatch statusChange', () => {
+    const chan = 'chan';
+    const res = { bId: '1', status: '2' };
+    let id = 0;
+    const fn = (par, next) => {
+      id += 1;
+      if (id > 2) return next();
+      return { result: res };
+    };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs0)
+      .call(...dArgs1)
+      .take(chan)
+      .take(chan)
+      .provide([
+        [matchers.call(...dArgs0), 123],
+        [matchers.call(...dArgs1), chan],
+        [matchers.take(chan), dynamic(fn)],
+      ])
+      .put(subscriptionContainerActions.statusChange(res))
+      .put(subscriptionContainerActions.statusChange(res))
+      .silentRun();
+  });
+});
+
+describe('handleStatusesRequestAction', () => {
   const state = fromJS({
     globalContainer: { credential: { token: 'cre' } },
   });
-  const func = handleStatusRequestAction;
+  const func = handleStatusesRequestAction;
   const dArgs0 = [api.subscribe, gql.BallotsStatus, undefined, 'cre'];
   const dArgs1 = [makeChan, 'ballotsStatus', 123];
 
@@ -175,7 +227,7 @@ describe('handleVoterRgRequestAction', () => {
 // Watcher
 describe('watchStatus', () => {
   it('should take request dedup', () => {
-    const req = subscriptionContainerActions.statusRequest();
+    const req = (bId) => subscriptionContainerActions.statusesRequest({ bId });
     let id = 0;
     const fn = () => {
       id += 1;
@@ -184,9 +236,28 @@ describe('watchStatus', () => {
     };
 
     return expectSaga(watchStatus)
-      .fork(handleStatusRequestAction, req)
+      .fork(handleStatusesRequestAction, req('1'))
       .provide([
-        [matchers.fork(handleStatusRequestAction, req), dynamic(fn)],
+        [matchers.fork(handleStatusesRequestAction, req('1')), dynamic(fn)],
+      ])
+      .dispatch(req('1'))
+      .dispatch(req('1'))
+      .silentRun();
+  });
+
+  it('should take requests dedup', () => {
+    const req = subscriptionContainerActions.statusesRequest();
+    let id = 0;
+    const fn = () => {
+      id += 1;
+      expect(id).toBeLessThanOrEqual(1);
+      return { isRunning: () => true };
+    };
+
+    return expectSaga(watchStatus)
+      .fork(handleStatusesRequestAction, req)
+      .provide([
+        [matchers.fork(handleStatusesRequestAction, req), dynamic(fn)],
       ])
       .dispatch(req)
       .dispatch(req)

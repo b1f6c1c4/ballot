@@ -60,14 +60,14 @@ describe('handleBallotsRequest Saga', () => {
 // Watcher
 describe('watcher', () => {
   // eslint-disable-next-line arrow-body-style
-  it('should forward login to ballotsRequest and statusRequest', () => {
+  it('should forward login to ballotsRequest and statusesRequest', () => {
     return expectSaga(watcher)
       .provide([
         [matchers.put(globalContainerActions.ballotsRequest())],
-        [matchers.put(subscriptionContainerActions.statusRequest())],
+        [matchers.put(subscriptionContainerActions.statusesRequest())],
       ])
       .put(globalContainerActions.ballotsRequest())
-      .put(subscriptionContainerActions.statusRequest())
+      .put(subscriptionContainerActions.statusesRequest())
       .dispatch(globalContainerActions.login())
       .silentRun();
   });
@@ -77,10 +77,10 @@ describe('watcher', () => {
     return expectSaga(watcher)
       .provide([
         [matchers.put(push('/app/login'))],
-        [matchers.put(subscriptionContainerActions.statusStop())],
+        [matchers.put(subscriptionContainerActions.statusesStop())],
       ])
       .put(push('/app/login'))
-      .put(subscriptionContainerActions.statusStop())
+      .put(subscriptionContainerActions.statusesStop())
       .dispatch(globalContainerActions.logout())
       .silentRun();
   });

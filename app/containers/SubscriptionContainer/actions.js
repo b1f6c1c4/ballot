@@ -9,15 +9,28 @@ export function statusChange({ bId, status }) {
   };
 }
 
+export function statusRequest({ bId }) {
+  return {
+    type: SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION,
+    bId,
+  };
+}
+
 export function statusStop() {
   return {
     type: SUBSCRIPTION_CONTAINER.STATUS_STOP_ACTION,
   };
 }
 
-export function statusRequest() {
+export function statusesRequest() {
   return {
-    type: SUBSCRIPTION_CONTAINER.STATUS_REQUEST_ACTION,
+    type: SUBSCRIPTION_CONTAINER.STATUSES_REQUEST_ACTION,
+  };
+}
+
+export function statusesStop() {
+  return {
+    type: SUBSCRIPTION_CONTAINER.STATUSES_STOP_ACTION,
   };
 }
 

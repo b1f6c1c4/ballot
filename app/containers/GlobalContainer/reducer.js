@@ -26,6 +26,7 @@ function globalContainerReducer(state = initialState, action) {
       return state.set('credential', fromJS(action.credential));
     case SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION: {
       const list = state.get('listBallots');
+      if (!list) return state;
       const id = list.findIndex((b) => b.get('bId') === action.bId);
       if (id === -1) return state;
       const newList = list.update(id, (b) => b.set('status', action.status));

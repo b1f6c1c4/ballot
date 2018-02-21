@@ -26,11 +26,11 @@ export default function* watcher() {
 
   yield takeEvery(GLOBAL_CONTAINER.LOGIN_ACTION, function* () {
     yield put(globalContainerActions.ballotsRequest());
-    yield put(subscriptionContainerActions.statusRequest());
+    yield put(subscriptionContainerActions.statusesRequest());
   });
 
   yield takeEvery(GLOBAL_CONTAINER.LOGOUT_ACTION, function* () {
     yield put(push('/app/login'));
-    yield put(subscriptionContainerActions.statusStop());
+    yield put(subscriptionContainerActions.statusesStop());
   });
 }
