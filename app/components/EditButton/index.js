@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -48,6 +49,6 @@ EditButton.defaultProps = {
   isLoading: false,
 };
 
-export const styledEditButton = withStyles(styles)(EditButton);
-
-export default styledEditButton;
+export default compose(
+  withStyles(styles),
+)(EditButton);

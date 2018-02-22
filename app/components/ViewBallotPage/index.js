@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -357,6 +358,6 @@ ViewBallotPage.propTypes = {
   onFinalize: PropTypes.func.isRequired,
 };
 
-export const styledViewBallotPage = withStyles(styles)(ViewBallotPage);
-
-export default styledViewBallotPage;
+export default compose(
+  withStyles(styles),
+)(ViewBallotPage);

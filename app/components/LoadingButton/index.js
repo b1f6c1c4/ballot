@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 
 import {
   withStyles,
@@ -43,6 +44,6 @@ LoadingButton.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export const styledLoadingButton = withStyles(styles)(LoadingButton);
-
-export default styledLoadingButton;
+export default compose(
+  withStyles(styles),
+)(LoadingButton);

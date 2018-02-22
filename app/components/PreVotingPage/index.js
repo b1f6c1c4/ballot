@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { TextEncoderLite } from 'text-encoder-lite';
 import base64js from 'base64-js';
@@ -256,9 +256,8 @@ PreVotingPage.propTypes = {
   ticket: PropTypes.object,
 };
 
-export const styledPreVotingPage = withStyles(styles)(PreVotingPage);
-
 export default compose(
   reduxForm({ form: 'preVotingForm' }),
   injectIntl,
-)(styledPreVotingPage);
+  withStyles(styles),
+)(PreVotingPage);

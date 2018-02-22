@@ -1,6 +1,6 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -80,9 +80,8 @@ RegisterForm.propTypes = {
   onRegister: PropTypes.func.isRequired,
 };
 
-export const styledRegisterForm = withStyles(styles)(RegisterForm);
-
 export default compose(
   reduxForm({ form: 'registerForm' }),
   injectIntl,
-)(styledRegisterForm);
+  withStyles(styles),
+)(RegisterForm);

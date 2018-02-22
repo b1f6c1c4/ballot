@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
+import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -159,6 +160,6 @@ GlobalBar.propTypes = {
   onLogoutAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalBar = withStyles(styles)(GlobalBar);
-
-export default styledGlobalBar;
+export default compose(
+  withStyles(styles),
+)(GlobalBar);

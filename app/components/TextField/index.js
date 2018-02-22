@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -50,6 +51,7 @@ TextField.propTypes = {
   helperText: PropTypes.object,
 };
 
-export const styledTextField = withStyles(styles)(TextField);
-
-export default injectIntl(styledTextField);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(TextField);

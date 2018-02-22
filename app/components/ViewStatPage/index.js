@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -152,6 +153,6 @@ ViewStatPage.propTypes = {
   onChangeFieldAction: PropTypes.func.isRequired,
 };
 
-export const styledViewStatPage = withStyles(styles)(ViewStatPage);
-
-export default styledViewStatPage;
+export default compose(
+  withStyles(styles),
+)(ViewStatPage);

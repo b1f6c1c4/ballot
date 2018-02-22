@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -162,6 +163,7 @@ GlobalDrawer.propTypes = {
   onCloseDrawerAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalDrawer = withStyles(styles)(GlobalDrawer);
-
-export default injectIntl(styledGlobalDrawer);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(GlobalDrawer);

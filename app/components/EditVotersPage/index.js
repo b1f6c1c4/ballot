@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
 import downloadCsv from 'download-csv';
@@ -123,6 +124,6 @@ EditVotersPage.propTypes = {
   onDeleteVoter: PropTypes.func.isRequired,
 };
 
-export const styledEditVotersPage = withStyles(styles)(EditVotersPage);
-
-export default styledEditVotersPage;
+export default compose(
+  withStyles(styles),
+)(EditVotersPage);

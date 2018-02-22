@@ -1,6 +1,6 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import LoginForm from 'components/LoginForm';
@@ -67,8 +67,7 @@ LoginPage.propTypes = {
   onRegister: PropTypes.func.isRequired,
 };
 
-export const styledLoginPage = withStyles(styles)(LoginPage);
-
 export default compose(
   injectIntl,
-)(styledLoginPage);
+  withStyles(styles),
+)(LoginPage);

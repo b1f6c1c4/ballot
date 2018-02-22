@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import * as Permission from 'utils/permission';
 
@@ -252,6 +253,7 @@ EditFieldsPage.propTypes = {
   onSubmitDialogAction: PropTypes.func.isRequired,
 };
 
-export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);
-
-export default injectIntl(styledEditFieldsPage);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(EditFieldsPage);

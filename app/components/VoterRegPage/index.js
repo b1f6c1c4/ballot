@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -178,8 +178,7 @@ VoterRegPage.propTypes = {
   privateKey: PropTypes.string,
 };
 
-export const styledVoterRegPage = withStyles(styles)(VoterRegPage);
-
 export default compose(
   reduxForm({ form: 'voterRegForm' }),
-)(styledVoterRegPage);
+  withStyles(styles),
+)(VoterRegPage);

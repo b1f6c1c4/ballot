@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -46,6 +47,6 @@ ClearButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 };
 
-export const styledClearButton = withStyles(styles)(ClearButton);
-
-export default styledClearButton;
+export default compose(
+  withStyles(styles),
+)(ClearButton);

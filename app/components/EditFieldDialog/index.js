@@ -204,11 +204,10 @@ EditFieldDialog.propTypes = {
 
 const selector = formValueSelector('editFieldForm');
 
-export const styledEditFieldDialog = withStyles(styles)(EditFieldDialog);
-
 export default compose(
   connect((state) => ({ type: selector(state, 'type') })),
   reduxForm({ form: 'editFieldForm' }),
   injectIntl,
   withMobileDialog(),
-)(styledEditFieldDialog);
+  withStyles(styles),
+)(EditFieldDialog);

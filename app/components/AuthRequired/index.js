@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -36,6 +37,6 @@ AuthRequired.propTypes = {
   hasCredential: PropTypes.bool.isRequired,
 };
 
-export const styledAuthRequired = withStyles(styles)(AuthRequired);
-
-export default styledAuthRequired;
+export default compose(
+  withStyles(styles),
+)(AuthRequired);

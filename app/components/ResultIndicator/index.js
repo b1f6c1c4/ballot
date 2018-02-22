@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -68,6 +69,6 @@ ResultIndicator.propTypes = {
   error: PropTypes.object,
 };
 
-export const styledResultIndicator = withStyles(styles)(ResultIndicator);
-
-export default styledResultIndicator;
+export default compose(
+  withStyles(styles),
+)(ResultIndicator);

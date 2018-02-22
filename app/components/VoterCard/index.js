@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -181,6 +182,6 @@ VoterCard.defaultProps = {
   disabled: false,
 };
 
-export const styledVoterCard = withStyles(styles)(VoterCard);
-
-export default styledVoterCard;
+export default compose(
+  withStyles(styles),
+)(VoterCard);

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 
 import {
   withStyles,
@@ -84,6 +85,6 @@ GlobalPage.propTypes = {
   onLogoutAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalPage = withStyles(styles)(GlobalPage);
-
-export default styledGlobalPage;
+export default compose(
+  withStyles(styles),
+)(GlobalPage);

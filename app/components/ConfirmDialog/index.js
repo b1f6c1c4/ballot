@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -67,6 +68,6 @@ ConfirmDialog.propTypes = {
   onAction: PropTypes.func,
 };
 
-export const styledConfirmDialog = withStyles(styles)(ConfirmDialog);
-
-export default styledConfirmDialog;
+export default compose(
+  withStyles(styles),
+)(ConfirmDialog);

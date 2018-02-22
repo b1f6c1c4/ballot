@@ -1,6 +1,6 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -96,9 +96,8 @@ ChangePasswordPage.propTypes = {
   onPassword: PropTypes.func.isRequired,
 };
 
-export const styledChangePasswordPage = withStyles(styles)(ChangePasswordPage);
-
 export default compose(
   reduxForm({ form: 'passwordForm' }),
   injectIntl,
-)(styledChangePasswordPage);
+  withStyles(styles),
+)(ChangePaPage);

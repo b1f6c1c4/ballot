@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -121,6 +122,6 @@ HomePage.propTypes = {
   onRefreshListBallots: PropTypes.func.isRequired,
 };
 
-export const styledHomePage = withStyles(styles)(HomePage);
-
-export default styledHomePage;
+export default compose(
+  withStyles(styles),
+)(HomePage);

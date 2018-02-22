@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -44,6 +45,6 @@ ViewButton.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export const styledViewButton = withStyles(styles)(ViewButton);
-
-export default styledViewButton;
+export default compose(
+  withStyles(styles),
+)(ViewButton);

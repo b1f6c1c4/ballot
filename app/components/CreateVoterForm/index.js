@@ -1,6 +1,6 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -94,9 +94,8 @@ CreateVoterForm.propTypes = {
   onCreateVoter: PropTypes.func.isRequired,
 };
 
-export const styledCreateVoterForm = withStyles(styles)(CreateVoterForm);
-
 export default compose(
   reduxForm({ form: 'createVoterForm' }),
   injectIntl,
-)(styledCreateVoterForm);
+  withStyles(styles),
+)(CreateVoterForm);

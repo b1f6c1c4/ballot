@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -125,9 +125,8 @@ CreateBallotPage.propTypes = {
   onCreate: PropTypes.func.isRequired,
 };
 
-export const styledCreateBallotPage = withStyles(styles)(CreateBallotPage);
-
 export default compose(
   reduxForm({ form: 'createBallotForm' }),
   injectIntl,
-)(styledCreateBallotPage);
+  withStyles(styles),
+)(CreateBallotPage);

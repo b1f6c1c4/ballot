@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -90,6 +91,6 @@ StatusBadge.defaultProps = {
   minor: false,
 };
 
-export const styledStatusBadge = withStyles(styles)(StatusBadge);
-
-export default styledStatusBadge;
+export default compose(
+  withStyles(styles),
+)(StatusBadge);

@@ -1,6 +1,6 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
@@ -78,9 +78,8 @@ LoginForm.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
 
-export const styledLoginForm = withStyles(styles)(LoginForm);
-
 export default compose(
   reduxForm({ form: 'loginForm' }),
   injectIntl,
-)(styledLoginForm);
+  withStyles(styles),
+)(LoginForm);

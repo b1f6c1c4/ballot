@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -35,6 +36,6 @@ NotFoundPage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export const styledNotFoundPage = withStyles(styles)(NotFoundPage);
-
-export default styledNotFoundPage;
+export default compose(
+  withStyles(styles),
+)(NotFoundPage);

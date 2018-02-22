@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -51,6 +52,6 @@ EmptyIndicator.propTypes = {
   text: PropTypes.object,
 };
 
-export const styledEmptyIndicator = withStyles(styles)(EmptyIndicator);
-
-export default styledEmptyIndicator;
+export default compose(
+  withStyles(styles),
+)(EmptyIndicator);
