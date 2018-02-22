@@ -100,4 +100,4 @@ export default compose(
   reduxForm({ form: 'passwordForm' }),
   injectIntl,
   withStyles(styles),
-)(ChangePaPage);
+)(ChangePasswordPage);
