@@ -151,7 +151,7 @@
   "app.validation.minChar": "至少{m}个字符",
   "app.validation.noEmptyLines": "不能包含空选项",
   "app.validation.required": "必填",
-  "index.cta.description": "马上注册成为投票组织者，发起新投票！如果你是投票者，请联系投票组织，获得链接进行注册，而不要在这里注册。",
+  "index.cta.description": "马上注册成为投票组织者，发起新投票！如果你是投票者，请联系投票组织者，获得链接进行注册。",
   "index.cta.login": "注册",
   "index.cta.title": "立即注册！",
   "index.faq": "FAQ",

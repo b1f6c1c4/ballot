@@ -25,6 +25,7 @@ const plugins = [
     inject: true,
     chunksSortMode: 'manual',
     chunks: [
+      'outdated',
       'indexStyle',
       'index',
     ],
@@ -34,6 +35,7 @@ const plugins = [
     template: 'app/app.ejs',
     inject: true,
     chunks: [
+      'outdated',
       'app',
     ],
   }),
@@ -76,18 +78,20 @@ if (dllPlugin) {
 module.exports = require('./webpack.base.babel')({
   // Add hot reloading in development
   entry: {
+    outdated: [
+      'index/outdated.js',
+    ],
     index: [
-      'resource/favicon.ico',
       'webpack-hot-middleware/client?reload=true',
-      path.join(process.cwd(), 'app/index/index.js'),
+      'index/index.js',
     ],
     indexStyle: [
       'webpack-hot-middleware/client?reload=true',
-      path.join(process.cwd(), 'app/index/style.js'),
+      'index/style.js',
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
-      path.join(process.cwd(), 'app/app.js'),
+      'app.js',
     ],
   },
 

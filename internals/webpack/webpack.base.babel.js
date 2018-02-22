@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const StringReplacePlugin = require('string-replace-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const en = require('../../app/translations/en.json');
 
 module.exports = (options) => ({
@@ -65,15 +66,6 @@ module.exports = (options) => ({
         loader: 'file-loader',
       },
       {
-        test: /favicon\.ico$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-          },
-        }],
-      },
-      {
         test: /\.json$/,
         loader: 'json-loader',
       },
@@ -105,9 +97,15 @@ module.exports = (options) => ({
     }),
 
     new CopyWebpackPlugin([
+      'app/resource/favicon.ico',
       'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ]),
+
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'all',
+    }),
   ]),
   resolve: {
     modules: ['app', 'node_modules'],

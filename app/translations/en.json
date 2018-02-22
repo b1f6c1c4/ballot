@@ -151,7 +151,7 @@
   "app.validation.minChar": "At least {m, number} {m, plural, one {character} other {characters}}",
   "app.validation.noEmptyLines": "No empty choices.",
   "app.validation.required": "This field is required",
-  "index.cta.description": "Sign up as ballot organizer now to start a new anonymous ballot in minutes. If you are voter, please register by following the link given by your ballot organizer, instead of sign up here.",
+  "index.cta.description": "Sign up as ballot organizer now to start a new anonymous ballot in minutes. If you are voter, please register by following the link given by your ballot organizer.",
   "index.cta.login": "Sign Up Here",
   "index.cta.title": "Sign Up Now!",
   "index.faq": "FAQ",

@@ -8,7 +8,6 @@ import { WOW } from 'wowjs';
 import 'jquery.easing';
 import 'superfish';
 import 'superfish/dist/js/hoverIntent';
-import '../resource/favicon.ico';
 import svgMenu from '../resource/icons/ic_menu_black_36px.svg';
 import svgClose from '../resource/icons/ic_close_black_36px.svg';
 import svgUp from '../resource/icons/ic_arrow_drop_up_black_36px.svg';

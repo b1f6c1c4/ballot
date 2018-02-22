@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -96,16 +95,18 @@ class NetlifyRedirectsPlugin {
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: {
+    outdated: [
+      'index/outdated.js',
+    ],
     index: [
-      'resource/favicon.ico',
-      path.join(process.cwd(), 'app/index/index.js'),
+      'index/index.js',
     ],
     indexStyle: [
-      path.join(process.cwd(), 'app/index/style.js'),
+      'index/style.js',
     ],
     app: [
       'redux-form',
-      path.join(process.cwd(), 'app/app.js'),
+      'app.js',
     ],
   },
 
@@ -176,10 +177,10 @@ module.exports = require('./webpack.base.babel')({
       inject: false, // manual inject
       chunksSortMode: 'manual',
       chunks: [
+        'outdated',
         'indexCommon',
         'index',
         'indexStyle',
-        'app', // prefetch
       ],
     }),
 
@@ -190,6 +191,7 @@ module.exports = require('./webpack.base.babel')({
       minify,
       inject: true,
       chunks: [
+        'outdated',
         'app',
       ],
     }),
