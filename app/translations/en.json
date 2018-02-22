@@ -194,6 +194,7 @@
   "index.more.userFriendly.description": "Your experience is valued. Our system is well-engineered to provide you the best experience for both organizers and voters.",
   "index.more.visibility": "Public Visibility",
   "index.more.visibility.description": "Your ballot data is visible to public once voting finished. This maximizes openness and democraticness, and also prevents fraud.",
+  "index.signUpNow": "Sign Up Now",
   "secret.anonyResultDescription": "To ensure your anonymity, please make sure that the \"ip\" cannot be used to track you and the \"isTor\" is true.",
   "secret.anonyResultTitle": "Check result",
   "secret.anonyTitle": "Check anonymity",

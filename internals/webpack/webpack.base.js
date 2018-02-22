@@ -37,7 +37,7 @@ module.exports = (options) => ({
         use: options.cssLoaderVender || ['style-loader', 'css-loader'],
       },
       {
-        test: /\.css$/,
+        test: /(?<!style)\.css$/,
         exclude: /node_modules/,
         use: options.cssLoaderApp || ['style-loader', 'css-loader'],
       },

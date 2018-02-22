@@ -40,6 +40,7 @@ class BallotMeta extends React.PureComponent {
       <div>
         {!isLoading && ballot && (
           <Typography
+            component="h1"
             variant="display2"
             gutterBottom
           >

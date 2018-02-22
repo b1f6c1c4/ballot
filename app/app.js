@@ -43,8 +43,18 @@ const makeTheme = (fontFamily) => createMuiTheme({
     fontFamily,
   },
   palette: {
-    primary: Teal,
-    secondary: Brown,
+    primary: {
+      light: Teal[600],
+      main: Teal[800],
+      dark: Teal[900],
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: Brown[600],
+      main: Brown[800],
+      dark: Brown[900],
+      contrastText: '#fff',
+    },
   },
 });
 

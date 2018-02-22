@@ -189,7 +189,7 @@ module.exports = require('./webpack.base')({
       filename: 'app.html',
       template: 'app/app.ejs',
       minify,
-      inject: true,
+      inject: false, // manual inject
       chunks: [
         'outdated',
         'app',
