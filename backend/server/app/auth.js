@@ -33,7 +33,8 @@ const core = (auth) => {
 
     logger.trace('Verifing JWT...', match[1]);
     const decoded = jwt.verify(match[1], secret, verifyOptions);
-    logger.info('JWT verified', decoded);
+    logger.debug('JWT verified', decoded);
+    logger.info('JWT verified username', decoded.username);
     return decoded;
   } catch (err) {
     logger.debug('Verifing JWT error', err);
