@@ -28,6 +28,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -68,6 +69,7 @@ class ViewStatPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,

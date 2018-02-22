@@ -4,6 +4,10 @@ import messages from 'utils/messages';
 export default {
   ...messages,
   ...defineMessages({
+    header: {
+      id: 'app.components.ViewStatPage.header',
+      defaultMessage: 'Statistics',
+    },
     export: {
       id: 'app.components.ViewStatPage.export',
       defaultMessage: 'Export',

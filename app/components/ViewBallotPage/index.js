@@ -43,6 +43,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   cards: {

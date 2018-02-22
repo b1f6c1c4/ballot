@@ -28,13 +28,14 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   cards: {
     display: 'flex',
-    alignItems: 'flex-start',
     flexWrap: 'wrap',
+    alignItems: 'flex-start',
   },
 });
 
@@ -63,6 +64,7 @@ class EditVotersPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,

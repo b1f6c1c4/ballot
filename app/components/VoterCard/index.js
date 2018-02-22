@@ -29,6 +29,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
   },
   expand: {
     transform: 'rotate(0deg)',

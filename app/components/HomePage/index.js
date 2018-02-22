@@ -42,6 +42,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-end',
   },
 });
@@ -83,13 +84,17 @@ class HomePage extends React.PureComponent {
               </TableHead>
               <TableBody>
                 {listBallots.map((b) => (
-                  <TableRow key={b.bId} hover>
+                  <TableRow key={b.bId} hover onClick={this.handleClick(b.bId)}>
                     <TableCell padding="none">
                       <Link to={`/app/ballots/${b.bId}`}>
                         <Abbreviation text={b.bId} />
                       </Link>
                     </TableCell>
-                    <TableCell padding="none">{b.name}</TableCell>
+                    <TableCell padding="none">
+                      <Link to={`/app/ballots/${b.bId}`}>
+                        {b.name}
+                      </Link>
+                    </TableCell>
                     <TableCell padding="none"><StatusBadge status={b.status} /></TableCell>
                   </TableRow>
                 ))}

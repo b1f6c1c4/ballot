@@ -33,6 +33,7 @@ class BallotMeta extends React.PureComponent {
       isLoading,
       ballot,
       bId,
+      header,
     } = this.props;
 
     return (
@@ -58,6 +59,12 @@ class BallotMeta extends React.PureComponent {
             <Typography className={classes.badge} variant="subheading" component="span">
               <StatusBadge status={ballot.status} />
             </Typography>
+            {header && (
+              <span>
+                /
+                <FormattedMessage {...header} />
+              </span>
+            )}
           </Typography>
         )}
         {isLoading && (
@@ -82,6 +89,7 @@ BallotMeta.propTypes = {
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
+  header: PropTypes.object,
   onRefresh: PropTypes.func,
 };
 

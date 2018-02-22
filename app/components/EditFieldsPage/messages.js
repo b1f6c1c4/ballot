@@ -4,6 +4,10 @@ import messages from 'utils/messages';
 export default {
   ...messages,
   ...defineMessages({
+    header: {
+      id: 'app.components.EditFieldsPage.header',
+      defaultMessage: 'Fields',
+    },
     drop: {
       id: 'app.components.EditFieldsPage.drop',
       defaultMessage: 'Drop',
