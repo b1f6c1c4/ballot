@@ -116,7 +116,7 @@ const style = (file) => (styleApi) => {
     { match: moduleNameIs('redux-form-material-ui') },
     { match: moduleNameIs('redux-form/immutable') },
     { match: moduleNameIs('react-router-dom') },
-    { match: moduleNameIs(/^react-dnd/) },
+    { match: moduleNameIs('react-beautiful-dnd') },
     {
       match: and(
         () => /components/.test(file),

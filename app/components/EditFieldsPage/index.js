@@ -182,16 +182,18 @@ class EditFieldsPage extends React.PureComponent {
         />
         <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
         {!isLoading && ballot && fields && (
-          <ReorderableList>
+          <ReorderableList
+            onReorder={this.props.onReorderAction}
+          >
             {fields.map((f, i) => (
-              <Card>
-                <ListItem>
-                  <ReorderableListItem
-                    onReorder={this.props.onReorderAction}
-                    key={f.key}
-                    index={i}
-                    disabled={!canEditFields}
-                  >
+              <ReorderableListItem
+                key={f.key}
+                id={f.key}
+                index={i}
+                disabled={!canEditFields}
+              >
+                <Card>
+                  <ListItem component="div">
                     <div
                       className={classnames(classes.reorder, { [classes.reorderable]: canEditFields })}
                     >
@@ -200,31 +202,31 @@ class EditFieldsPage extends React.PureComponent {
                         secondary={makeFieldType(f)}
                       />
                     </div>
-                  </ReorderableListItem>
-                  <ListItemSecondaryAction>
-                    <IconButton>
-                      {canEditFields && (
-                        <Edit onClick={this.handleEdit(i)} />
-                      )}
-                      {!canEditFields && (
-                        <Visibility onClick={this.handleEdit(i)} />
-                      )}
-                    </IconButton>
-                    {canEditFields && (
+                    <ListItemSecondaryAction>
                       <IconButton>
-                        <Delete onClick={this.handleConfirm('isOpenDelete')} />
+                        {canEditFields && (
+                          <Edit onClick={this.handleEdit(i)} />
+                        )}
+                        {!canEditFields && (
+                          <Visibility onClick={this.handleEdit(i)} />
+                        )}
                       </IconButton>
-                    )}
-                  </ListItemSecondaryAction>
-                  <ConfirmDialog
-                    title={messages.deleteTitle}
-                    description={messages.deleteDescription}
-                    isOpen={this.state.isOpenDelete}
-                    onCancel={this.handleConfirm()}
-                    onAction={this.handleConfirm(this.handleDelete(i))}
-                  />
-                </ListItem>
-              </Card>
+                      {canEditFields && (
+                        <IconButton>
+                          <Delete onClick={this.handleConfirm('isOpenDelete')} />
+                        </IconButton>
+                      )}
+                    </ListItemSecondaryAction>
+                    <ConfirmDialog
+                      title={messages.deleteTitle}
+                      description={messages.deleteDescription}
+                      isOpen={this.state.isOpenDelete}
+                      onCancel={this.handleConfirm()}
+                      onAction={this.handleConfirm(this.handleDelete(i))}
+                    />
+                  </ListItem>
+                </Card>
+              </ReorderableListItem>
             ))}
           </ReorderableList>
         )}
