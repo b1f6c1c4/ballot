@@ -1,8 +1,7 @@
 import { fromJS } from 'immutable';
 
-import changePasswordContainerReducer from '../reducer';
-
 import * as changePasswordContainerActions from '../actions';
+import changePasswordContainerReducer from '../reducer';
 
 describe('changePasswordContainerReducer', () => {
   let state;

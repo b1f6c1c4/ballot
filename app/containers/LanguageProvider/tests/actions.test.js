@@ -1,5 +1,4 @@
 import * as LANGUAGE_PROVIDER from '../constants';
-
 import * as languageProviderActions from '../actions';
 
 describe('LanguageProvider actions', () => {

@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { compose } from 'redux';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
   AppBar,
-  Toolbar,
-  Typography,
   IconButton,
   Menu,
   MenuItem,
+  Toolbar,
+  Typography,
 } from 'material-ui';
-import { Menu as MenuIcon, AccountCircle } from 'material-ui-icons';
+import { AccountCircle, Menu as MenuIcon } from 'material-ui-icons';
+import { Link } from 'react-router-dom';
 import Button from 'components/Button';
 
 import messages from './messages';

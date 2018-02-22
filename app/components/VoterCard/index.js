@@ -1,21 +1,21 @@
 import _ from 'lodash';
-import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  IconButton,
   Card,
-  CardHeader,
-  CardContent,
   CardActions,
+  CardContent,
+  CardHeader,
   Collapse,
+  IconButton,
+  Typography,
 } from 'material-ui';
-import classnames from 'classnames';
 import { Delete, ExpandMore } from 'material-ui-icons';
+import classnames from 'classnames';
 import QRCode from 'qrcode.react';
 import ConfirmDialog from 'components/ConfirmDialog';
 

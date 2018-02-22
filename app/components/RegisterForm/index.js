@@ -5,10 +5,10 @@ import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';

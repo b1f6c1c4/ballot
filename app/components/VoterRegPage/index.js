@@ -6,8 +6,8 @@ import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
   Paper,
+  Typography,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';

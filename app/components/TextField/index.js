@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import {

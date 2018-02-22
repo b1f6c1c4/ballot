@@ -1,5 +1,4 @@
 import * as GLOBAL_CONTAINER from '../constants';
-
 import * as globalContainerActions from '../actions';
 
 describe('GlobalContainer actions', () => {

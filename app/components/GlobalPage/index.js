@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import {
   withStyles,
 } from 'material-ui';
-
 import GlobalBar from 'components/GlobalBar';
 import GlobalDrawer from 'components/GlobalDrawer';
 

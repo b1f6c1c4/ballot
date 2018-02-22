@@ -1,5 +1,4 @@
 import * as VOTER_REG_CONTAINER from '../constants';
-
 import * as voterRegContainerActions from '../actions';
 
 describe('VoterRegContainer actions', () => {

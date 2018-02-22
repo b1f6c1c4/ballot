@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
-import { Prompt } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
+
+import { Prompt } from 'react-router-dom';
 import makeConfirmSave from 'utils/confirm';
 
 import messages from 'utils/messages';

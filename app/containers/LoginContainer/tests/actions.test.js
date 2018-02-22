@@ -1,5 +1,4 @@
 import * as LOGIN_CONTAINER from '../constants';
-
 import * as loginContainerActions from '../actions';
 
 describe('LoginContainer actions', () => {

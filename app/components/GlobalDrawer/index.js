@@ -2,26 +2,26 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Link } from 'react-router-dom';
 import { injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  Drawer,
   Collapse,
+  Divider,
+  Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
 } from 'material-ui';
 import {
-  Home,
-  Lock,
-  Language,
   ExpandLess,
   ExpandMore,
+  Home,
+  Language,
+  Lock,
 } from 'material-ui-icons';
+import { Link } from 'react-router-dom';
 import StatusBadge from 'components/StatusBadge';
 
 import rawResources from 'translations';

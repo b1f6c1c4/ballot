@@ -6,10 +6,10 @@ import { FormattedMessage } from 'react-intl';
 import {
   withStyles,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
 } from 'material-ui';
 import Button from 'components/Button';
 

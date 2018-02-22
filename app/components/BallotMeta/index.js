@@ -1,13 +1,13 @@
 import React from 'react';
-import { compose } from 'redux';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
   Typography,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
 import Loading from 'components/Loading';
 import Abbreviation from 'components/Abbreviation';
 import StatusBadge from 'components/StatusBadge';

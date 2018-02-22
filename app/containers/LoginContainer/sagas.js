@@ -1,4 +1,3 @@
-import jwtDecode from 'jwt-decode';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import {
@@ -8,6 +7,7 @@ import {
   stopSubmit,
 } from 'redux-form';
 import { push } from 'react-router-redux';
+import jwtDecode from 'jwt-decode';
 
 import * as globalContainerActions from 'containers/GlobalContainer/actions';
 import * as LOGIN_CONTAINER from './constants';

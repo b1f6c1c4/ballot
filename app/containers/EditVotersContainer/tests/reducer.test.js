@@ -1,9 +1,8 @@
 import { fromJS } from 'immutable';
+
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
-
-import editVotersContainerReducer from '../reducer';
-
 import * as editVotersContainerActions from '../actions';
+import editVotersContainerReducer from '../reducer';
 
 describe('editVotersContainerReducer', () => {
   let state;

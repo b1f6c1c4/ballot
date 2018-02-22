@@ -1,5 +1,4 @@
 import * as VIEW_STAT_CONTAINER from '../constants';
-
 import * as viewStatContainerActions from '../actions';
 
 describe('ViewStatContainer actions', () => {

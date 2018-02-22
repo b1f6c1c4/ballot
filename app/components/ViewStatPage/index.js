@@ -5,8 +5,8 @@ import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
   MobileStepper,
+  Typography,
 } from 'material-ui';
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';

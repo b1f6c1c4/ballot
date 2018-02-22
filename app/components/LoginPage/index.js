@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
-import LoginForm from 'components/LoginForm';
-import RegisterForm from 'components/RegisterForm';
-
-import SwipeableViews from 'react-swipeable-views';
 import {
   withStyles,
-  Dialog,
   AppBar,
-  Tabs,
+  Dialog,
   Tab,
+  Tabs,
 } from 'material-ui';
+import SwipeableViews from 'react-swipeable-views';
+import LoginForm from 'components/LoginForm';
+import RegisterForm from 'components/RegisterForm';
 
 import messages from './messages';
 

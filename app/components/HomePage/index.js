@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Paper,
+  Typography,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
 import Button from 'components/Button';
 import EmptyIndicator from 'components/EmptyIndicator';
 import Abbreviation from 'components/Abbreviation';

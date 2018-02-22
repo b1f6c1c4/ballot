@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
-import downloadCsv from 'download-csv';
 
 import {
   withStyles,
 } from 'material-ui';
+import downloadCsv from 'download-csv';
 import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';

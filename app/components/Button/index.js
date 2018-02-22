@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
   Button as RawButton,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
 
 class Button extends React.PureComponent {
   render() {

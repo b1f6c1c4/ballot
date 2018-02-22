@@ -1,19 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
-  withStyles,
   withMobileDialog,
+  withStyles,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  MenuItem,
+  DialogContent,
+  DialogTitle,
   FormControl,
   InputLabel,
+  MenuItem,
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import {

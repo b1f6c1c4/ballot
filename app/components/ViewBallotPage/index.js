@@ -1,13 +1,12 @@
 import _ from 'lodash';
-import { compose } from 'redux';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
   withStyles,
-  Typography,
   Card,
   CardActions,
   CardContent,
@@ -15,6 +14,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Typography,
 } from 'material-ui';
 import QRCode from 'qrcode.react';
 import Button from 'components/Button';

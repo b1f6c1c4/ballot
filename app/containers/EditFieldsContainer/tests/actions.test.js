@@ -1,5 +1,4 @@
 import * as EDIT_FIELDS_CONTAINER from '../constants';
-
 import * as editFieldsContainerActions from '../actions';
 
 describe('EditFieldsContainer actions', () => {

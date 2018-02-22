@@ -1,8 +1,7 @@
 import { fromJS } from 'immutable';
 
-import voterRegContainerReducer from '../reducer';
-
 import * as voterRegContainerActions from '../actions';
+import voterRegContainerReducer from '../reducer';
 
 describe('voterRegContainerReducer', () => {
   let state;

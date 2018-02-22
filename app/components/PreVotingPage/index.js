@@ -3,19 +3,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { TextEncoderLite } from 'text-encoder-lite';
-import base64js from 'base64-js';
 
 import {
   withStyles,
-  Typography,
-  Paper,
-  MenuItem,
   FormControl,
   InputLabel,
+  MenuItem,
+  Paper,
+  Typography,
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import { Field, reduxForm, propTypes } from 'redux-form/immutable';
+import { TextEncoderLite } from 'text-encoder-lite';
+import base64js from 'base64-js';
 import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import TextField from 'components/TextField';

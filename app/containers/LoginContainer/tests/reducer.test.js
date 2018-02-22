@@ -1,8 +1,7 @@
 import { fromJS } from 'immutable';
 
-import loginContainerReducer from '../reducer';
-
 import * as loginContainerActions from '../actions';
+import loginContainerReducer from '../reducer';
 
 describe('loginContainerReducer', () => {
   let state;
