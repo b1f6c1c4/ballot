@@ -97,30 +97,30 @@ router.post(
   async (req, res, next) => {
     logger.info('POST /secret/tickets');
     logger.info('Anony', req.anony);
-    try {
-      switch (req.accepts(['json', 'html'])) {
-        case 'json': {
-          logger.debug('Requesting json');
-          req.targetObj = req.body;
-          req.responseEnc = 'json';
-          next();
-          return;
-        }
-        case 'html': {
-          logger.debug('Requesting html');
+    switch (req.accepts(['json', 'html'])) {
+      case 'json': {
+        logger.debug('Requesting json');
+        req.targetObj = req.body;
+        req.responseEnc = 'json';
+        next();
+        return;
+      }
+      case 'html': {
+        logger.debug('Requesting html');
+        try {
           const buf = Buffer.from(req.body.enc, 'base64');
           const j = JSON.parse(buf.toString('utf8'));
           logger.trace('Parsing base64 succeed');
           req.targetObj = j;
           req.responseEnc = 'html';
-          next();
-          return;
+        } catch (e) {
+          res.status(400).send('Error occured: <pre>tkmf</pre><br><pre>Ticket malformed</pre>');
         }
-        default:
-          res.status(406).send();
+        next();
+        return;
       }
-    } catch (e) {
-      next(e);
+      default:
+        res.status(406).send();
     }
   },
   expressTh('GET tickets', { max: 1, duration: 60000 }, (req) => req.targetObj.t),
@@ -137,8 +137,7 @@ router.post(
           res.status(rst.status).send(`Ticket staged. Your tId is <pre>${rst.json.tId}</pre>`);
         } else {
           res.status(rst.status)
-            .send(`Error occured: <pre>${rst.json.error.code}</pre>
-<pre>${rst.json.error.message}</pre>`);
+            .send(`Error occured: <pre>${rst.json.error.code}</pre><br><pre>${rst.json.error.message}</pre>`);
         }
         return;
       }

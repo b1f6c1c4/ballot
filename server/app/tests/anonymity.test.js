@@ -12,8 +12,6 @@ jest.mock('tor-test', () => ({
 // eslint-disable-next-line global-require
 const anonymity = require('../anonymity');
 
-process.env.NODE_ENV = 'production';
-
 describe('anonymity', () => {
   const res = (send) => ({
     status(code) {
