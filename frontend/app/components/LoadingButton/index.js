@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 
 import {
   withStyles,
   CircularProgress,
 } from 'material-ui';
+
 import green from 'material-ui/colors/green';
 
 // eslint-disable-next-line no-unused-vars
@@ -43,6 +45,6 @@ LoadingButton.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export const styledLoadingButton = withStyles(styles)(LoadingButton);
-
-export default styledLoadingButton;
+export default compose(
+  withStyles(styles),
+)(LoadingButton);

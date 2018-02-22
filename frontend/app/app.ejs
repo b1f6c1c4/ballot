@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- The first thing in any HTML file should be the charset -->
-    <meta charset="utf-8">
-    <!-- Make the page mobile compatible -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="ie=edge" http-equiv="x-ua-compatible">
-
-    <link rel="dns-prefetch" href="<%= process.env.API_URL_HOST %>">
+    <%= require('raw-loader!index/header.html') %>
 
     <title>Ballot</title>
   </head>
   <body>
     <!-- The app hooks into this div -->
     <div id="app"></div>
+
+    <noscript>Please enbale javascript.</noscript>
+
+    <%= require('raw-loader!index/outdated.html') %>
+    <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
   </body>
 </html>

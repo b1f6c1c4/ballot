@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 
 import {
   withStyles,
@@ -71,6 +72,6 @@ Abbreviation.defaultProps = {
   allowExpand: false,
 };
 
-export const styledAbbreviation = withStyles(styles)(Abbreviation);
-
-export default styledAbbreviation;
+export default compose(
+  withStyles(styles),
+)(Abbreviation);

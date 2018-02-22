@@ -1,14 +1,15 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
-import downloadCsv from 'download-csv';
 
 import {
   withStyles,
-  Button,
 } from 'material-ui';
+import downloadCsv from 'download-csv';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -27,13 +28,14 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   cards: {
     display: 'flex',
-    alignItems: 'flex-start',
     flexWrap: 'wrap',
+    alignItems: 'flex-start',
   },
 });
 
@@ -62,6 +64,7 @@ class EditVotersPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,
@@ -123,6 +126,6 @@ EditVotersPage.propTypes = {
   onDeleteVoter: PropTypes.func.isRequired,
 };
 
-export const styledEditVotersPage = withStyles(styles)(EditVotersPage);
-
-export default styledEditVotersPage;
+export default compose(
+  withStyles(styles),
+)(EditVotersPage);

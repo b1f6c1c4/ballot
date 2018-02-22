@@ -1,22 +1,22 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { TextEncoderLite } from 'text-encoder-lite';
-import base64js from 'base64-js';
 
 import {
   withStyles,
-  Typography,
-  Button,
-  Paper,
-  MenuItem,
   FormControl,
   InputLabel,
+  MenuItem,
+  Paper,
+  Typography,
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import { Field, reduxForm, propTypes } from 'redux-form/immutable';
+import { TextEncoderLite } from 'text-encoder-lite';
+import base64js from 'base64-js';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
@@ -43,11 +43,13 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   formActions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -160,6 +162,7 @@ class PreVotingPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,
@@ -256,9 +259,8 @@ PreVotingPage.propTypes = {
   ticket: PropTypes.object,
 };
 
-export const styledPreVotingPage = withStyles(styles)(PreVotingPage);
-
 export default compose(
   reduxForm({ form: 'preVotingForm' }),
   injectIntl,
-)(styledPreVotingPage);
+  withStyles(styles),
+)(PreVotingPage);

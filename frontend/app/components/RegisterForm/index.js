@@ -1,17 +1,17 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button,
+  DialogTitle,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import UsernameField from 'components/UsernameField';
 import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';
@@ -80,9 +80,8 @@ RegisterForm.propTypes = {
   onRegister: PropTypes.func.isRequired,
 };
 
-export const styledRegisterForm = withStyles(styles)(RegisterForm);
-
 export default compose(
   reduxForm({ form: 'registerForm' }),
   injectIntl,
-)(styledRegisterForm);
+  withStyles(styles),
+)(RegisterForm);

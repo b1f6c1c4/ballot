@@ -1,25 +1,27 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  Drawer,
   Collapse,
+  Divider,
+  Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
 } from 'material-ui';
 import {
-  Home,
-  Lock,
-  Language,
   ExpandLess,
   ExpandMore,
+  Home,
+  Language,
+  Lock,
 } from 'material-ui-icons';
+import { Link } from 'react-router-dom';
 import StatusBadge from 'components/StatusBadge';
 
 import rawResources from 'translations';
@@ -72,10 +74,10 @@ class GlobalDrawer extends React.PureComponent {
     if (username && listBallots) {
       ballots = listBallots.map((b) => {
         const content = (
-          <span>
+          <Link to={`/app/ballots/${b.bId}`}>
             {b.name}
             <StatusBadge status={b.status} minor />
-          </span>
+          </Link>
         );
         return (
           <ListItem key={b.bId} button onClick={this.handleBallot(b)}>
@@ -108,17 +110,25 @@ class GlobalDrawer extends React.PureComponent {
           {!username && (
             <ListItem button onClick={this.handleLogin}>
               <ListItemIcon>
-                <Lock />
+                <Link to="/app/login">
+                  <Lock />
+                </Link>
               </ListItemIcon>
-              <ListItemText primary={intl.formatMessage(messages.login)} />
+              <Link to="/app/login">
+                <ListItemText primary={intl.formatMessage(messages.login)} />
+              </Link>
             </ListItem>
           )}
           {username && (
             <ListItem button onClick={this.handleProfile}>
               <ListItemIcon>
-                <Home />
+                <Link to="/app/">
+                  <Home />
+                </Link>
               </ListItemIcon>
-              <ListItemText primary={intl.formatMessage(messages.profile)} />
+              <Link to="/app/">
+                <ListItemText primary={intl.formatMessage(messages.profile)} />
+              </Link>
             </ListItem>
           )}
           <Divider />
@@ -153,6 +163,7 @@ GlobalDrawer.propTypes = {
   onCloseDrawerAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalDrawer = withStyles(styles)(GlobalDrawer);
-
-export default injectIntl(styledGlobalDrawer);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(GlobalDrawer);

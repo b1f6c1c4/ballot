@@ -1,20 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
-  withStyles,
   withMobileDialog,
+  withStyles,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
-  MenuItem,
+  DialogContent,
+  DialogTitle,
   FormControl,
   InputLabel,
+  MenuItem,
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import {
@@ -24,6 +23,7 @@ import {
   formValueSelector,
   SubmissionError,
 } from 'redux-form/immutable';
+import Button from 'components/Button';
 import ResultIndicator from 'components/ResultIndicator';
 import TextField from 'components/TextField';
 import make, { required, properLines } from 'utils/validation';
@@ -204,11 +204,10 @@ EditFieldDialog.propTypes = {
 
 const selector = formValueSelector('editFieldForm');
 
-export const styledEditFieldDialog = withStyles(styles)(EditFieldDialog);
-
 export default compose(
   connect((state) => ({ type: selector(state, 'type') })),
   reduxForm({ form: 'editFieldForm' }),
   injectIntl,
   withMobileDialog(),
-)(styledEditFieldDialog);
+  withStyles(styles),
+)(EditFieldDialog);

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 
 import {
   withStyles,
 } from 'material-ui';
-
 import GlobalBar from 'components/GlobalBar';
 import GlobalDrawer from 'components/GlobalDrawer';
 
@@ -84,6 +84,6 @@ GlobalPage.propTypes = {
   onLogoutAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalPage = withStyles(styles)(GlobalPage);
-
-export default styledGlobalPage;
+export default compose(
+  withStyles(styles),
+)(GlobalPage);

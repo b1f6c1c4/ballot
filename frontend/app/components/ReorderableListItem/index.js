@@ -1,64 +1,47 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
 
-import { DragSource, DropTarget } from 'react-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 
 class ReorderableListItem extends React.PureComponent {
   render() {
     const {
       children,
-      connectDragSource,
-      connectDropTarget,
+      id,
+      index,
+      disabled,
     } = this.props;
 
-    return compose(
-      connectDropTarget,
-      connectDragSource,
-    )(children);
+    return (
+      <Draggable
+        draggableId={id}
+        type="REORDERABLE_ITEM"
+        index={index}
+        isDragDisabled={disabled}
+      >
+        {(provided) => (
+          <li>
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={provided.draggableProps.style}
+            >
+              {children}
+            </div>
+            {provided.placeholder}
+          </li>
+        )}
+      </Draggable>
+    );
   }
 }
 
 ReorderableListItem.propTypes = {
   children: PropTypes.any,
-  connectDropTarget: PropTypes.func.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  disabled: PropTypes.bool,
 };
 
-const itemSource = {
-  beginDrag: ({ index }) => ({ index }),
-  canDrag: ({ disabled }) => !disabled,
-};
-
-const itemTarget = {
-  canDrop(props, monitor) {
-    const { index: from } = monitor.getItem();
-    const { index: to } = props;
-
-    return from !== to;
-  },
-
-  drop(props, monitor) {
-    const { index: from } = monitor.getItem();
-    const { index: to } = props;
-
-    props.onReorder({
-      from,
-      to,
-    });
-  },
-};
-
-
-const connectTarget = (connect) => ({
-  connectDropTarget: connect.dropTarget(),
-});
-
-const connectSource = (connect) => ({
-  connectDragSource: connect.dragSource(),
-});
-
-export default compose(
-  DropTarget('ReorderableListItem', itemTarget, connectTarget),
-  DragSource('ReorderableListItem', itemSource, connectSource),
-)(ReorderableListItem);
+export default ReorderableListItem;

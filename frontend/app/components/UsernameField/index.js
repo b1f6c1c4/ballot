@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import { withStyles } from 'material-ui';
@@ -40,6 +41,7 @@ UsernameField.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export const styledUsernameField = withStyles(styles)(UsernameField);
-
-export default injectIntl(styledUsernameField);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(UsernameField);

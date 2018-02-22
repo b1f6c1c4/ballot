@@ -4,9 +4,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector, createSelector } from 'reselect';
+import { Switch, Route } from 'react-router-dom';
 import injectSaga from 'utils/injectSaga';
 
-import { Switch, Route } from 'react-router-dom';
 import GlobalPage from 'components/GlobalPage';
 import NotFoundPage from 'components/NotFoundPage';
 import HomeContainer from 'containers/HomeContainer/Loadable';

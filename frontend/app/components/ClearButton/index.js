@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Button,
 } from 'material-ui';
 import { Delete } from 'material-ui-icons';
+import Button from 'components/Button';
 
 import messages from './messages';
 
@@ -46,6 +47,6 @@ ClearButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 };
 
-export const styledClearButton = withStyles(styles)(ClearButton);
-
-export default styledClearButton;
+export default compose(
+  withStyles(styles),
+)(ClearButton);

@@ -1,8 +1,7 @@
 import { fromJS } from 'immutable';
 
-import createBallotContainerReducer from '../reducer';
-
 import * as createBallotContainerActions from '../actions';
+import createBallotContainerReducer from '../reducer';
 
 describe('createBallotContainerReducer', () => {
   let state;

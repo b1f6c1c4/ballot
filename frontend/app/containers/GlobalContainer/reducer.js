@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { fromJS } from 'immutable';
 
 import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
@@ -9,6 +10,7 @@ const initialState = fromJS({
   isAccountOpen: false,
   credential: null,
   listBallots: null,
+  error: null,
 });
 
 function globalContainerReducer(state = initialState, action) {
@@ -34,12 +36,15 @@ function globalContainerReducer(state = initialState, action) {
     }
     // Sagas
     case GLOBAL_CONTAINER.BALLOTS_REQUEST:
-      return state.set('isLoading', true);
+      return state.set('isLoading', true)
+        .set('error', null);
     case GLOBAL_CONTAINER.BALLOTS_SUCCESS:
       return state.set('isLoading', false)
+        .set('error', null)
         .set('listBallots', fromJS(action.result.ballots));
     case GLOBAL_CONTAINER.BALLOTS_FAILURE:
-      return state.set('isLoading', false);
+      return state.set('isLoading', false)
+        .set('error', fromJS(_.toPlainObject(action.error)));
     // Default
     default:
       return state;

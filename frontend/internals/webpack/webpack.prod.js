@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -22,11 +21,12 @@ const minify = {
   removeRedundantAttributes: true,
   useShortDoctype: true,
   removeEmptyAttributes: true,
-  removeStyleLinkTypeAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: false,
   keepClosingSlash: true,
   minifyJS: true,
   minifyCSS: true,
-  minifyURLs: true,
+  minifyURLs: false,
 };
 
 const materialUiGroups = _.fromPairs([
@@ -93,19 +93,21 @@ class NetlifyRedirectsPlugin {
   }
 }
 
-module.exports = require('./webpack.base.babel')({
+module.exports = require('./webpack.base')({
   // In production, we skip all hot-reloading stuff
   entry: {
+    outdated: [
+      'index/outdated.js',
+    ],
     index: [
-      'resource/favicon.ico',
-      path.join(process.cwd(), 'app/index/index.js'),
+      'index/index.js',
     ],
     indexStyle: [
-      path.join(process.cwd(), 'app/index/style.js'),
+      'index/style.js',
     ],
     app: [
       'redux-form',
-      path.join(process.cwd(), 'app/app.js'),
+      'app.js',
     ],
   },
 
@@ -176,10 +178,10 @@ module.exports = require('./webpack.base.babel')({
       inject: false, // manual inject
       chunksSortMode: 'manual',
       chunks: [
+        'outdated',
         'indexCommon',
         'index',
         'indexStyle',
-        'app', // prefetch
       ],
     }),
 
@@ -190,6 +192,7 @@ module.exports = require('./webpack.base.babel')({
       minify,
       inject: true,
       chunks: [
+        'outdated',
         'app',
       ],
     }),

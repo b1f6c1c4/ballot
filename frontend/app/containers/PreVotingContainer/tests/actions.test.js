@@ -1,5 +1,4 @@
 import * as PRE_VOTING_CONTAINER from '../constants';
-
 import * as preVotingContainerActions from '../actions';
 
 describe('PreVotingContainer actions', () => {

@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  Button,
   Paper,
+  Typography,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
@@ -35,11 +35,13 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   formActions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -91,6 +93,7 @@ class VoterRegPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,
@@ -178,8 +181,7 @@ VoterRegPage.propTypes = {
   privateKey: PropTypes.string,
 };
 
-export const styledVoterRegPage = withStyles(styles)(VoterRegPage);
-
 export default compose(
   reduxForm({ form: 'voterRegForm' }),
-)(styledVoterRegPage);
+  withStyles(styles),
+)(VoterRegPage);

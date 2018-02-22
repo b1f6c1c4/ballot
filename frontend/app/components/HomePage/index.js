@@ -1,23 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  Button,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Paper,
+  Typography,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
+import Button from 'components/Button';
 import EmptyIndicator from 'components/EmptyIndicator';
 import Abbreviation from 'components/Abbreviation';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import StatusBadge from 'components/StatusBadge';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
@@ -39,13 +42,12 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-end',
   },
 });
 
 class HomePage extends React.PureComponent {
-  handleCreate = () => this.props.onPush('/app/create');
-
   handleClick = (bId) => () => this.props.onPush(`/app/ballots/${bId}`);
 
   render() {
@@ -70,6 +72,7 @@ class HomePage extends React.PureComponent {
             </LoadingButton>
           </div>
           <EmptyIndicator isLoading={isLoading} list={listBallots} />
+          <ResultIndicator error={this.props.error} />
           {!isLoading && listBallots && listBallots.length > 0 && (
             <Table>
               <TableHead>
@@ -83,9 +86,15 @@ class HomePage extends React.PureComponent {
                 {listBallots.map((b) => (
                   <TableRow key={b.bId} hover onClick={this.handleClick(b.bId)}>
                     <TableCell padding="none">
-                      <Abbreviation text={b.bId} />
+                      <Link to={`/app/ballots/${b.bId}`}>
+                        <Abbreviation text={b.bId} />
+                      </Link>
                     </TableCell>
-                    <TableCell padding="none">{b.name}</TableCell>
+                    <TableCell padding="none">
+                      <Link to={`/app/ballots/${b.bId}`}>
+                        {b.name}
+                      </Link>
+                    </TableCell>
                     <TableCell padding="none"><StatusBadge status={b.status} /></TableCell>
                   </TableRow>
                 ))}
@@ -97,7 +106,7 @@ class HomePage extends React.PureComponent {
               <Button
                 color="secondary"
                 variant="raised"
-                onClick={this.handleCreate}
+                to="/app/create"
               >
                 <FormattedMessage {...messages.create} />
               </Button>
@@ -114,9 +123,10 @@ HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
   listBallots: PropTypes.array,
+  error: PropTypes.object,
   onRefreshListBallots: PropTypes.func.isRequired,
 };
 
-export const styledHomePage = withStyles(styles)(HomePage);
-
-export default styledHomePage;
+export default compose(
+  withStyles(styles),
+)(HomePage);

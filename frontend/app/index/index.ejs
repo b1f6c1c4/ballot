@@ -1,41 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- The first thing in any HTML file should be the charset -->
-    <meta charset="utf-8">
-    <!-- Make the page mobile compatible -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <%= require('raw-loader!index/header.html') %>
 
     <title data-i18n="index.htmlTitle">Ballot</title>
 
+    <style type="text/css">
+      <%= require('raw-loader!index/style.css') %>
+    </style>
+
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.css) {
-        if (/index/.test(key) && !/vendor/.test(key)) { %>
+        if (!/vendor/.test(key)) { %>
           <link rel="stylesheet" href="<%= key %>">
-      <% }
+        <% } else { %>
+          <link rel="preload" as="style" href="<%= key %>" onload="this.onload=null;this.rel='stylesheet'">
+        <% }
       }
     } %>
+
+    <script>
+      <%= require('raw-loader!fg-loadcss/dist/cssrelpreload.min.js') %>
+    </script>
   </head>
   <body>
 
-    <%= require('ejs-loader!./content.ejs')() %>
+    <% const en = require('../../app/translations/en.json'); %>
+    <% const raw = require('ejs-loader!./content.ejs')() %>
+    <%= raw.replace(
+      /data-i18n="([_a-zA-Z0-9.]*)"></g,
+      (match, k) => `data-i18n="${k}">${en[k]}<`,
+    ) %>
+
+    <%= require('raw-loader!index/outdated.html') %>
+    <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
 
     <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.js) {
-        if (/index/.test(key)) { %>
-          <script type="text/javascript" src="<%= key %>"></script>
-      <% } else { %>
-          <link rel="prefetch" href="<%= key %>">
+      for (let key of htmlWebpackPlugin.files.js) { %>
+        <script src="<%= key %>"></script>
       <% }
-      }
     } %>
   </body>
 </html>
-<% if (!htmlWebpackPlugin.options.inject) {
-  for (let key of htmlWebpackPlugin.files.css) {
-    if (/index/.test(key) && /vendor/.test(key)) { %>
-      <link rel="stylesheet" href="<%= key %>">
-  <% }
-  }
-} %>

@@ -1,9 +1,8 @@
 import { fromJS } from 'immutable';
+
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
-
-import viewStatContainerReducer from '../reducer';
-
 import * as viewStatContainerActions from '../actions';
+import viewStatContainerReducer from '../reducer';
 
 describe('viewStatContainerReducer', () => {
   let state;

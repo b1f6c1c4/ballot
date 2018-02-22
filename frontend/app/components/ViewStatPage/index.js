@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
   MobileStepper,
-  Button,
+  Typography,
 } from 'material-ui';
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';
+import Button from 'components/Button';
 import Loading from 'components/Loading';
 import EmptyIndicator from 'components/EmptyIndicator';
 import BallotMeta from 'components/BallotMeta';
@@ -27,6 +28,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -67,6 +69,7 @@ class ViewStatPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,
@@ -152,6 +155,6 @@ ViewStatPage.propTypes = {
   onChangeFieldAction: PropTypes.func.isRequired,
 };
 
-export const styledViewStatPage = withStyles(styles)(ViewStatPage);
-
-export default styledViewStatPage;
+export default compose(
+  withStyles(styles),
+)(ViewStatPage);

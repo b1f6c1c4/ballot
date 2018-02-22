@@ -1,20 +1,21 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  IconButton,
   Card,
-  CardHeader,
-  CardContent,
   CardActions,
+  CardContent,
+  CardHeader,
   Collapse,
+  IconButton,
+  Typography,
 } from 'material-ui';
-import classnames from 'classnames';
 import { Delete, ExpandMore } from 'material-ui-icons';
+import classnames from 'classnames';
 import QRCode from 'qrcode.react';
 import ConfirmDialog from 'components/ConfirmDialog';
 
@@ -28,6 +29,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -181,6 +183,6 @@ VoterCard.defaultProps = {
   disabled: false,
 };
 
-export const styledVoterCard = withStyles(styles)(VoterCard);
-
-export default styledVoterCard;
+export default compose(
+  withStyles(styles),
+)(VoterCard);

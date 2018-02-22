@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
   Typography,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
 import Loading from 'components/Loading';
 import Abbreviation from 'components/Abbreviation';
 import StatusBadge from 'components/StatusBadge';
@@ -25,35 +27,45 @@ const styles = (theme) => ({
 });
 
 class BallotMeta extends React.PureComponent {
-  handleClick = () => {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    } else {
-      this.props.onPush(`/app/ballots/${this.props.bId}`);
-    }
-  };
-
   render() {
     const {
       classes,
       isLoading,
       ballot,
       bId,
+      header,
     } = this.props;
 
     return (
       <div>
         {!isLoading && ballot && (
           <Typography
+            component="h1"
             variant="display2"
             gutterBottom
-            onClick={this.handleClick}
-            className={classes.clickable}
           >
-            {ballot.name}
+            {this.props.onRefresh && (
+              <span
+                className={classes.clickable}
+                onClick={this.props.onRefresh}
+              >
+                {ballot.name}
+              </span>
+            )}
+            {!this.props.onRefresh && (
+              <Link to={`/app/ballots/${this.props.bId}`}>
+                {ballot.name}
+              </Link>
+            )}
             <Typography className={classes.badge} variant="subheading" component="span">
               <StatusBadge status={ballot.status} />
             </Typography>
+            {header && (
+              <span>
+                /
+                <FormattedMessage {...header} />
+              </span>
+            )}
           </Typography>
         )}
         {isLoading && (
@@ -78,9 +90,10 @@ BallotMeta.propTypes = {
   classes: PropTypes.object.isRequired,
   ballot: PropTypes.object,
   isLoading: PropTypes.bool.isRequired,
+  header: PropTypes.object,
   onRefresh: PropTypes.func,
 };
 
-export const styledBallotMeta = withStyles(styles)(BallotMeta);
-
-export default styledBallotMeta;
+export default compose(
+  withStyles(styles),
+)(BallotMeta);

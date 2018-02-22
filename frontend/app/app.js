@@ -15,6 +15,7 @@ import Teal from 'material-ui/colors/teal';
 import Brown from 'material-ui/colors/brown';
 import 'typeface-roboto/index.css';
 import 'index/typeface-noto-sans.css';
+import 'app.css';
 
 import GlobalContainer from 'containers/GlobalContainer';
 import SubscriptionContainer from 'containers/SubscriptionContainer';
@@ -42,8 +43,18 @@ const makeTheme = (fontFamily) => createMuiTheme({
     fontFamily,
   },
   palette: {
-    primary: Teal,
-    secondary: Brown,
+    primary: {
+      light: Teal[600],
+      main: Teal[800],
+      dark: Teal[900],
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: Brown[600],
+      main: Brown[800],
+      dark: Brown[900],
+      contrastText: '#fff',
+    },
   },
 });
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -49,6 +50,6 @@ Loading.propTypes = {
   pastDelay: PropTypes.bool,
 };
 
-export const styledLoading = withStyles(styles)(Loading);
-
-export default styledLoading;
+export default compose(
+  withStyles(styles),
+)(Loading);

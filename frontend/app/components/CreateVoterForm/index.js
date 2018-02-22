@@ -1,15 +1,15 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  Button,
   Paper,
+  Typography,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
@@ -28,6 +28,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -94,9 +95,8 @@ CreateVoterForm.propTypes = {
   onCreateVoter: PropTypes.func.isRequired,
 };
 
-export const styledCreateVoterForm = withStyles(styles)(CreateVoterForm);
-
 export default compose(
   reduxForm({ form: 'createVoterForm' }),
   injectIntl,
-)(styledCreateVoterForm);
+  withStyles(styles),
+)(CreateVoterForm);

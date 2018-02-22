@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
   withStyles,
-  Typography,
   Card,
   CardActions,
   CardContent,
@@ -14,9 +14,10 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Button,
+  Typography,
 } from 'material-ui';
 import QRCode from 'qrcode.react';
+import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
@@ -42,6 +43,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   cards: {
@@ -95,16 +97,6 @@ class ViewBallotPage extends React.PureComponent {
       ac();
     }
     this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
-  };
-
-  handleFieldsEdit = () => {
-    const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/fields/`);
-  };
-
-  handleVotersEdit = () => {
-    const { bId } = this.props;
-    this.props.onPush(`/app/ballots/${bId}/voters/`);
   };
 
   handleStatView = () => {
@@ -262,10 +254,10 @@ class ViewBallotPage extends React.PureComponent {
             </CardContent>
             <CardActions>
               {canEditFields && (
-                <EditButton onClick={this.handleFieldsEdit} />
+                <EditButton to={`/app/ballots/${bId}/fields/`} />
               )}
               {!canEditFields && (
-                <ViewButton onClick={this.handleFieldsEdit} />
+                <ViewButton to={`/app/ballots/${bId}/fields/`} />
               )}
             </CardActions>
           </Card>
@@ -290,10 +282,10 @@ class ViewBallotPage extends React.PureComponent {
             </CardContent>
             <CardActions>
               {canEditVoters && (
-                <EditButton onClick={this.handleVotersEdit} />
+                <EditButton to={`/app/ballots/${bId}/voters/`} />
               )}
               {!canEditVoters && (
-                <ViewButton onClick={this.handleVotersEdit} />
+                <ViewButton to={`/app/ballots/${bId}/voters/`} />
               )}
             </CardActions>
           </Card>
@@ -344,7 +336,7 @@ class ViewBallotPage extends React.PureComponent {
                 </Typography>
               </CardContent>
               <CardActions>
-                <ViewButton onClick={this.handleStatView} />
+                <ViewButton to={`/app/ballots/${bId}/tickets/`} />
               </CardActions>
             </Card>
           )}
@@ -367,6 +359,6 @@ ViewBallotPage.propTypes = {
   onFinalize: PropTypes.func.isRequired,
 };
 
-export const styledViewBallotPage = withStyles(styles)(ViewBallotPage);
-
-export default styledViewBallotPage;
+export default compose(
+  withStyles(styles),
+)(ViewBallotPage);

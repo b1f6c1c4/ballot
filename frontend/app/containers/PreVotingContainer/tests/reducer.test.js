@@ -1,11 +1,10 @@
 import { fromJS } from 'immutable';
-import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
+import * as preVotingContainerActions from '../actions';
 import preVotingContainerReducer, {
   normalizeFields,
 } from '../reducer';
-
-import * as preVotingContainerActions from '../actions';
 
 jest.mock('shortid', () => ({
   generate: () => 'id',

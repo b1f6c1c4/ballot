@@ -16,4 +16,4 @@ shelljs.mkdir('-p', outputPath);
 console.log('Building the Webpack DLL...');
 
 // the BUILDING_DLL env var is set to avoid confusing the development environment
-shelljs.exec('cross-env BUILDING_DLL=true webpack --display-chunks --color --config internals/webpack/webpack.dll.babel.js --hide-modules');
+shelljs.exec('cross-env BUILDING_DLL=true webpack --display-chunks --color --config internals/webpack/webpack.dll.js --hide-modules');

@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Button,
 } from 'material-ui';
 import { Edit } from 'material-ui-icons';
+import Button from 'components/Button';
 
 import messages from './messages';
 
@@ -48,6 +49,6 @@ EditButton.defaultProps = {
   isLoading: false,
 };
 
-export const styledEditButton = withStyles(styles)(EditButton);
-
-export default styledEditButton;
+export default compose(
+  withStyles(styles),
+)(EditButton);

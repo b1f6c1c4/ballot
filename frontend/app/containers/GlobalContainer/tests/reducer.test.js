@@ -1,9 +1,8 @@
 import { fromJS } from 'immutable';
+
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
-
-import globalContainerReducer from '../reducer';
-
 import * as globalContainerActions from '../actions';
+import globalContainerReducer from '../reducer';
 
 describe('globalContainerReducer', () => {
   let state;
@@ -14,6 +13,7 @@ describe('globalContainerReducer', () => {
       isAccountOpen: false,
       credential: null,
       listBallots: null,
+      error: null,
     });
   });
 
@@ -115,8 +115,9 @@ describe('globalContainerReducer', () => {
 
   it('should handle ballots failure', () => {
     const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
+    const error = { key: 'value' };
+    const expectedResult = state.set('isLoading', false)
+      .set('error', fromJS(error));
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEq(expectedResult);
   });

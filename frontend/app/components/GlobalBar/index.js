@@ -1,19 +1,21 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
   AppBar,
-  Toolbar,
-  Typography,
-  Button,
   IconButton,
   Menu,
   MenuItem,
+  Toolbar,
+  Typography,
 } from 'material-ui';
-import { Menu as MenuIcon, AccountCircle } from 'material-ui-icons';
+import { AccountCircle, Menu as MenuIcon } from 'material-ui-icons';
+import { Link } from 'react-router-dom';
+import Button from 'components/Button';
 
 import messages from './messages';
 
@@ -120,10 +122,14 @@ class GlobalBar extends React.PureComponent {
                   onClose={this.props.onCloseAccountAction}
                 >
                   <MenuItem onClick={this.handleProfile}>
-                    <FormattedMessage {...messages.profile} />
+                    <Link to="/app/">
+                      <FormattedMessage {...messages.profile} />
+                    </Link>
                   </MenuItem>
                   <MenuItem onClick={this.handlePassword}>
-                    <FormattedMessage {...messages.password} />
+                    <Link to="/app/password">
+                      <FormattedMessage {...messages.password} />
+                    </Link>
                   </MenuItem>
                   <MenuItem onClick={this.handleLogout}>
                     <FormattedMessage {...messages.logout} />
@@ -154,6 +160,6 @@ GlobalBar.propTypes = {
   onLogoutAction: PropTypes.func.isRequired,
 };
 
-export const styledGlobalBar = withStyles(styles)(GlobalBar);
-
-export default styledGlobalBar;
+export default compose(
+  withStyles(styles),
+)(GlobalBar);

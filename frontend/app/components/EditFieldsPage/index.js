@@ -1,26 +1,28 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import * as Permission from 'utils/permission';
 
 import {
   withStyles,
-  Button,
-  IconButton,
   Card,
+  IconButton,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
+  ListItemText,
 } from 'material-ui';
 import {
-  Clear,
-  Save,
   Add,
-  Edit,
-  Visibility,
+  Clear,
   Delete,
+  Edit,
+  Save,
+  Visibility,
 } from 'material-ui-icons';
+import classnames from 'classnames';
+import Button from 'components/Button';
 import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
 import LoadingButton from 'components/LoadingButton';
@@ -42,12 +44,15 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   reorder: {
-    cursor: 'ns-resize',
     flex: 1,
+  },
+  reorderable: {
+    cursor: 'ns-resize',
   },
 });
 
@@ -107,6 +112,7 @@ class EditFieldsPage extends React.PureComponent {
     return (
       <div className={classes.container}>
         <BallotMeta
+          header={messages.header}
           {...{
             onPush: this.props.onPush,
             bId,
@@ -176,49 +182,51 @@ class EditFieldsPage extends React.PureComponent {
         />
         <EmptyIndicator isLoading={isLoading} list={ballot && fields} />
         {!isLoading && ballot && fields && (
-          <ReorderableList>
+          <ReorderableList
+            onReorder={this.props.onReorderAction}
+          >
             {fields.map((f, i) => (
-              <Card>
-                <ListItem>
-                  <ReorderableListItem
-                    onReorder={this.props.onReorderAction}
-                    key={f.key}
-                    index={i}
-                    disabled={!canEditFields}
-                  >
+              <ReorderableListItem
+                key={f.key}
+                id={f.key}
+                index={i}
+                disabled={!canEditFields}
+              >
+                <Card>
+                  <ListItem component="div">
                     <div
-                      className={classes.reorder}
+                      className={classnames(classes.reorder, { [classes.reorderable]: canEditFields })}
                     >
                       <ListItemText
                         primary={f.prompt}
                         secondary={makeFieldType(f)}
                       />
                     </div>
-                  </ReorderableListItem>
-                  <ListItemSecondaryAction>
-                    <IconButton>
-                      {canEditFields && (
-                        <Edit onClick={this.handleEdit(i)} />
-                      )}
-                      {!canEditFields && (
-                        <Visibility onClick={this.handleEdit(i)} />
-                      )}
-                    </IconButton>
-                    {canEditFields && (
+                    <ListItemSecondaryAction>
                       <IconButton>
-                        <Delete onClick={this.handleConfirm('isOpenDelete')} />
+                        {canEditFields && (
+                          <Edit onClick={this.handleEdit(i)} />
+                        )}
+                        {!canEditFields && (
+                          <Visibility onClick={this.handleEdit(i)} />
+                        )}
                       </IconButton>
-                    )}
-                  </ListItemSecondaryAction>
-                  <ConfirmDialog
-                    title={messages.deleteTitle}
-                    description={messages.deleteDescription}
-                    isOpen={this.state.isOpenDelete}
-                    onCancel={this.handleConfirm()}
-                    onAction={this.handleConfirm(this.handleDelete(i))}
-                  />
-                </ListItem>
-              </Card>
+                      {canEditFields && (
+                        <IconButton>
+                          <Delete onClick={this.handleConfirm('isOpenDelete')} />
+                        </IconButton>
+                      )}
+                    </ListItemSecondaryAction>
+                    <ConfirmDialog
+                      title={messages.deleteTitle}
+                      description={messages.deleteDescription}
+                      isOpen={this.state.isOpenDelete}
+                      onCancel={this.handleConfirm()}
+                      onAction={this.handleConfirm(this.handleDelete(i))}
+                    />
+                  </ListItem>
+                </Card>
+              </ReorderableListItem>
             ))}
           </ReorderableList>
         )}
@@ -249,6 +257,7 @@ EditFieldsPage.propTypes = {
   onSubmitDialogAction: PropTypes.func.isRequired,
 };
 
-export const styledEditFieldsPage = withStyles(styles)(EditFieldsPage);
-
-export default injectIntl(styledEditFieldsPage);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(EditFieldsPage);

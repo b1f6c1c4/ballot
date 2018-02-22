@@ -1,5 +1,4 @@
 import * as SUBSCRIPTION_CONTAINER from '../constants';
-
 import * as subscriptionContainerActions from '../actions';
 
 describe('SubscriptionContainer actions', () => {

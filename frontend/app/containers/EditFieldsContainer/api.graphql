@@ -14,6 +14,7 @@ query Refresh($bId: ID!) {
     bId
     name
     status
+    owner
     fields {
       ...Fields
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import { withStyles } from 'material-ui';
@@ -41,6 +42,7 @@ PasswordField.propTypes = {
   label: PropTypes.object,
 };
 
-export const styledPasswordField = withStyles(styles)(PasswordField);
-
-export default injectIntl(styledPasswordField);
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)(PasswordField);

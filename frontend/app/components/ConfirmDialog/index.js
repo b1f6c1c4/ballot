@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
-  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
+  DialogTitle,
 } from 'material-ui';
+import Button from 'components/Button';
 
 import messages from './messages';
 
@@ -67,6 +68,6 @@ ConfirmDialog.propTypes = {
   onAction: PropTypes.func,
 };
 
-export const styledConfirmDialog = withStyles(styles)(ConfirmDialog);
-
-export default styledConfirmDialog;
+export default compose(
+  withStyles(styles),
+)(ConfirmDialog);

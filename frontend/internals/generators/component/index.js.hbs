@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 {{#if wantMessages}}
 {{#if wantInjectIntl}}
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
@@ -46,10 +47,13 @@ class {{ properCase name }} extends React.PureComponent {
   classes: PropTypes.object.isRequired,
 };
 
-export const styled{{ properCase name}} = withStyles(styles)({{ properCase name}});
-
 {{#if wantInjectIntl}}
-export default injectIntl(styled{{ properCase name }});
+export default compose(
+  injectIntl,
+  withStyles(styles),
+)({{ properCase name }});
 {{else}}
-export default styled{{ properCase name }};
+export default compose(
+  withStyles(styles),
+)({{ properCase name }});
 {{/if}}

@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const StringReplacePlugin = require('string-replace-webpack-plugin');
-const en = require('../../app/translations/en.json');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -37,19 +37,9 @@ module.exports = (options) => ({
         use: options.cssLoaderVender || ['style-loader', 'css-loader'],
       },
       {
-        test: /\.css$/,
+        test: /(?<!style)\.css$/,
         exclude: /node_modules/,
         use: options.cssLoaderApp || ['style-loader', 'css-loader'],
-      },
-      {
-        test: /index.html$/,
-        exclude: /node_modules/,
-        use: [StringReplacePlugin.replace({
-          replacements: [{
-            pattern: /data-i18n="([_a-zA-Z0-9.]*)"></g,
-            replacement: (match, k) => `data-i18n="${k}">${en[k]}<`,
-          }],
-        })],
       },
       {
         test: /\.(svg)$/,
@@ -64,15 +54,6 @@ module.exports = (options) => ({
         loader: 'file-loader',
       },
       {
-        test: /favicon\.ico$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-          },
-        }],
-      },
-      {
         test: /\.json$/,
         loader: 'json-loader',
       },
@@ -85,7 +66,6 @@ module.exports = (options) => ({
   },
   plugins: options.plugins.concat([
     new webpack.NamedModulesPlugin(),
-    new StringReplacePlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       jQuery: 'jquery',
@@ -101,6 +81,17 @@ module.exports = (options) => ({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         API_URL: JSON.stringify(process.env.API_URL),
       },
+    }),
+
+    new CopyWebpackPlugin([
+      'app/resource/favicon.ico',
+      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
+    ]),
+
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'all',
     }),
   ]),
   resolve: {

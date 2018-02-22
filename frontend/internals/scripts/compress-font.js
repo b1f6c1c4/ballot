@@ -4,13 +4,14 @@
 const _ = require('lodash');
 const { exec } = require('shelljs');
 const fs = require('fs');
+const async = require('async');
 const path = require('path');
 const readline = require('readline');
 const fastXmlParser = require('fast-xml-parser');
 const zh = require('../../app/translations/zh.json');
 
 const theCodes = new Set();
-let txt = _.values(zh).join('');
+let txt = _.values(zh).join('').replace(/[ -~]/g, '');
 if (process.argv.length >= 3) {
   [, , txt] = process.argv;
 }
@@ -342,14 +343,14 @@ const ttx = (ftmp, fout) => new Promise((resolve, reject) => {
   });
 });
 
-const tasks = [
+async.mapLimit([
   'Black',
   'Bold',
   'Medium',
   'Regular',
   'Light',
   'Thin',
-].map(async (s) => {
+], 3, async (s) => {
   const x = `NotoSansSC-${s}`;
   console.log(`Compressing ${x}`);
   const fin = path.join(__dirname, `../../app/resource/fonts/ttx/${x}.ttx`);
@@ -363,12 +364,8 @@ const tasks = [
   await fromXml(obj, ftmp2);
   await Promise.all(['woff', 'woff2']
     .map((f) => ttx(ftmp2, path.join(__dirname, `../../app/resource/fonts/${x}-X.${f}`))));
-});
-
-Promise.all(tasks)
-  .then(() => {
-    console.log('Done');
-  })
-  .catch((err) => {
+}, (err) => {
+  if (err) {
     console.error(err);
-  });
+  }
+});

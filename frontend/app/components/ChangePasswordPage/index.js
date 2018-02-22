@@ -1,15 +1,15 @@
 import React from 'react';
-import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  Typography,
-  Button,
   Paper,
+  Typography,
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
+import Button from 'components/Button';
 import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
@@ -31,6 +31,7 @@ const styles = (theme) => ({
   },
   actions: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -96,9 +97,8 @@ ChangePasswordPage.propTypes = {
   onPassword: PropTypes.func.isRequired,
 };
 
-export const styledChangePasswordPage = withStyles(styles)(ChangePasswordPage);
-
 export default compose(
   reduxForm({ form: 'passwordForm' }),
   injectIntl,
-)(styledChangePasswordPage);
+  withStyles(styles),
+)(ChangePasswordPage);
