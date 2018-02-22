@@ -1,12 +1,6 @@
     <%= require('raw-loader!index/header.html') %>
 
     <title>Ballot</title>
-
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.css) { %>
-        <link rel="stylesheet" href="<%= key %>">
-      <% }
-    } %>
   </head>
   <body>
     <!-- The app hooks into this div -->
@@ -16,11 +10,5 @@
 
     <%= require('raw-loader!index/outdated.html') %>
     <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
-
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.js) { %>
-        <script src="<%= key %>"></script>
-      <% }
-    } %>
   </body>
 </html>

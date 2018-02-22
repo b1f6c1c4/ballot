@@ -11,7 +11,7 @@ const fastXmlParser = require('fast-xml-parser');
 const zh = require('../../app/translations/zh.json');
 
 const theCodes = new Set();
-let txt = _.values(zh).join('');
+let txt = _.values(zh).join('').replace(/[ -~]/g, '');
 if (process.argv.length >= 3) {
   [, , txt] = process.argv;
 }
@@ -343,14 +343,14 @@ const ttx = (ftmp, fout) => new Promise((resolve, reject) => {
   });
 });
 
-const tasks = async.mapLimit([
+async.mapLimit([
   'Black',
   'Bold',
   'Medium',
   'Regular',
   'Light',
   'Thin',
-], 2, async (s) => {
+], 3, async (s) => {
   const x = `NotoSansSC-${s}`;
   console.log(`Compressing ${x}`);
   const fin = path.join(__dirname, `../../app/resource/fonts/ttx/${x}.ttx`);
@@ -364,8 +364,8 @@ const tasks = async.mapLimit([
   await fromXml(obj, ftmp2);
   await Promise.all(['woff', 'woff2']
     .map((f) => ttx(ftmp2, path.join(__dirname, `../../app/resource/fonts/${x}-X.${f}`))));
-});
-
-tasks.catch((err) => {
-  console.error(err);
+}, (err) => {
+  if (err) {
+    console.error(err);
+  }
 });

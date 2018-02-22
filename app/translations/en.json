@@ -155,7 +155,7 @@
   "index.cta.login": "Sign Up Here",
   "index.cta.title": "Sign Up Now!",
   "index.faq": "FAQ",
-  "index.faq.description": "Having questions? Wondering how our system works?",
+  "index.faq.description": "Have questions? Wondering how our system works?",
   "index.faq.q1.answer": "Currently all our service is for free.",
   "index.faq.q1.question": "How your service charged?",
   "index.faq.q2.answer": "We use cryptographic technology called \"ring signature\" to achieve anonymity and authenticity, theoretically. Besides, we enforce all voters use Tor network to maintain anonymity when submitting tickets to us.",

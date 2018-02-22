@@ -21,11 +21,12 @@ const minify = {
   removeRedundantAttributes: true,
   useShortDoctype: true,
   removeEmptyAttributes: true,
-  removeStyleLinkTypeAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: false,
   keepClosingSlash: true,
   minifyJS: true,
   minifyCSS: true,
-  minifyURLs: true,
+  minifyURLs: false,
 };
 
 const materialUiGroups = _.fromPairs([
@@ -189,7 +190,7 @@ module.exports = require('./webpack.base')({
       filename: 'app.html',
       template: 'app/app.ejs',
       minify,
-      inject: false, // manual inject
+      inject: true,
       chunks: [
         'outdated',
         'app',
