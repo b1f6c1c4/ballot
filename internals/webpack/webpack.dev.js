@@ -75,7 +75,7 @@ if (dllPlugin) {
   });
 }
 
-module.exports = require('./webpack.base.babel')({
+module.exports = require('./webpack.base')({
   // Add hot reloading in development
   entry: {
     outdated: [

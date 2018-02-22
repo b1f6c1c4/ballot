@@ -3,7 +3,7 @@ const chalk = require('chalk');
 
 // Generate stats.json file with webpack
 shelljs.exec(
-  'webpack --config internals/webpack/webpack.prod.babel.js --profile --json > stats.json',
+  'webpack --config internals/webpack/webpack.prod.js --profile --json > stats.json',
   () => {
     /* eslint-disable no-console */
     console.log('Done, please visit');

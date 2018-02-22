@@ -1,9 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const StringReplacePlugin = require('string-replace-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
-const en = require('../../app/translations/en.json');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -44,16 +42,6 @@ module.exports = (options) => ({
         use: options.cssLoaderApp || ['style-loader', 'css-loader'],
       },
       {
-        test: /index.html$/,
-        exclude: /node_modules/,
-        use: [StringReplacePlugin.replace({
-          replacements: [{
-            pattern: /data-i18n="([_a-zA-Z0-9.]*)"></g,
-            replacement: (match, k) => `data-i18n="${k}">${en[k]}<`,
-          }],
-        })],
-      },
-      {
         test: /\.(svg)$/,
         loader: 'raw-loader',
       },
@@ -78,7 +66,6 @@ module.exports = (options) => ({
   },
   plugins: options.plugins.concat([
     new webpack.NamedModulesPlugin(),
-    new StringReplacePlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       jQuery: 'jquery',

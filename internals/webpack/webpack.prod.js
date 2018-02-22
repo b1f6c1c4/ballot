@@ -92,7 +92,7 @@ class NetlifyRedirectsPlugin {
   }
 }
 
-module.exports = require('./webpack.base.babel')({
+module.exports = require('./webpack.base')({
   // In production, we skip all hot-reloading stuff
   entry: {
     outdated: [

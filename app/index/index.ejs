@@ -20,7 +20,12 @@
   </head>
   <body>
 
-    <%= require('ejs-loader!./content.ejs')() %>
+    <% const en = require('../../app/translations/en.json'); %>
+    <% const raw = require('ejs-loader!./content.ejs')() %>
+    <%= raw.replace(
+      /data-i18n="([_a-zA-Z0-9.]*)"></g,
+      (match, k) => `data-i18n="${k}">${en[k]}<`,
+    ) %>
 
     <%= require('raw-loader!index/outdated.html') %>
     <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
