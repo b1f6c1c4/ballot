@@ -9,6 +9,7 @@
 
     <title data-i18n="index.htmlTitle">Ballot</title>
 
+    <link rel="stylesheet" href="/outdatedbrowser.min.css">
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.css) {
         if (/index/.test(key) && !/vendor/.test(key)) { %>
@@ -20,6 +21,8 @@
   <body>
 
     <%= require('ejs-loader!./content.ejs')() %>
+
+    <%= require('raw-loader!index/outdated.html') %>
 
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.js) {

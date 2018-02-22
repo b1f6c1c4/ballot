@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const StringReplacePlugin = require('string-replace-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const en = require('../../app/translations/en.json');
 
 module.exports = (options) => ({
@@ -102,6 +103,11 @@ module.exports = (options) => ({
         API_URL: JSON.stringify(process.env.API_URL),
       },
     }),
+
+    new CopyWebpackPlugin([
+      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
+    ]),
   ]),
   resolve: {
     modules: ['app', 'node_modules'],
