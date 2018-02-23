@@ -16,10 +16,6 @@ export default {
       id: 'app.components.EditFieldsPage.save',
       defaultMessage: 'Save',
     },
-    create: {
-      id: 'app.components.EditFieldsPage.create',
-      defaultMessage: 'Create',
-    },
     dropTitle: {
       id: 'app.components.EditFieldsPage.dropTitle',
       defaultMessage: 'Are you sure',

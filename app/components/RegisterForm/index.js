@@ -51,7 +51,7 @@ class RegisterForm extends React.PureComponent {
             <UsernameField name="username" fullWidth />
           </div>
           <div>
-            <PasswordField name="password" fullWidth />
+            <PasswordField name="password" isNew fullWidth />
           </div>
           <ResultIndicator {...{ error }} />
         </DialogContent>

@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  globalTitle: {
+    id: 'app.general.globalTitle',
+    defaultMessage: 'Ballot',
+  },
   login: {
     id: 'app.general.login',
     defaultMessage: 'Sign in',

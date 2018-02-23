@@ -98,6 +98,7 @@ class CreateBallotPage extends React.PureComponent {
               <LoadingButton {...{ isLoading }}>
                 <Button
                   type="submit"
+                  variant={this.props.pristine ? 'flat' : 'raised'}
                   color="primary"
                   disabled={isLoading}
                 >

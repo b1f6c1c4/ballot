@@ -51,6 +51,7 @@ class CreateVoterForm extends React.PureComponent {
       reset,
       handleSubmit,
       isLoading,
+      pristine,
     } = this.props;
 
     return (
@@ -74,6 +75,7 @@ class CreateVoterForm extends React.PureComponent {
             <LoadingButton {...{ isLoading }}>
               <Button
                 type="submit"
+                variant={pristine ? 'flat' : 'raised'}
                 color="primary"
                 disabled={isLoading}
               >

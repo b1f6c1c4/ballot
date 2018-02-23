@@ -11,6 +11,9 @@ import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
+  forceFont: {
+    fontFamily: 'sans-serif',
+  },
 });
 
 class PasswordField extends React.PureComponent {
@@ -22,11 +25,15 @@ class PasswordField extends React.PureComponent {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { intl, classes, ...other } = this.props;
+    const { intl, classes, isNew, ...other } = this.props;
 
     return (
       <TextField
         {...other}
+        inputProps={{
+          className: classes.forceFont,
+          autocomplete: isNew ? 'new-password' : 'current-password',
+        }}
         type="password"
         label={this.props.label || messages.label}
         helperText={messages.helperText}
@@ -40,6 +47,7 @@ PasswordField.propTypes = {
   intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
   label: PropTypes.object,
+  isNew: PropTypes.bool,
 };
 
 export default compose(

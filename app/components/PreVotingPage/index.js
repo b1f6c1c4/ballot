@@ -210,6 +210,7 @@ class PreVotingPage extends React.PureComponent {
                   <LoadingButton isLoading={isSignLoading}>
                     <Button
                       type="submit"
+                      variant={this.props.pristine ? 'flat' : 'raised'}
                       color="primary"
                       disabled={isSignLoading}
                     >

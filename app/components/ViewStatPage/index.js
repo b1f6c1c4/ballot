@@ -126,12 +126,14 @@ class ViewStatPage extends React.PureComponent {
               </Typography>
             )}
             {data && (
-              <PieChart
-                data={data}
-                width={600}
-                height={400}
-                viewBox="0 0 600 400"
-              />
+              <div className="chart-wrapper">
+                <PieChart
+                  data={data}
+                  width={600}
+                  height={400}
+                  viewBox="0 0 600 400"
+                />
+              </div>
             )}
           </div>
         )}

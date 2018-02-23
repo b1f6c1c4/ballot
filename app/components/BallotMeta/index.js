@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
@@ -9,6 +9,7 @@ import {
 } from 'material-ui';
 import { Link } from 'react-router-dom';
 import Abbreviation from 'components/Abbreviation';
+import DocumentTitle from 'components/DocumentTitle';
 import Loading from 'components/Loading';
 import StatusBadge from 'components/StatusBadge';
 
@@ -34,6 +35,7 @@ const styles = (theme) => ({
 class BallotMeta extends React.PureComponent {
   render() {
     const {
+      intl,
       classes,
       isLoading,
       ballot,
@@ -41,8 +43,14 @@ class BallotMeta extends React.PureComponent {
       header,
     } = this.props;
 
+    let subtitle = '';
+    if (header) {
+      subtitle = `/${intl.formatMessage(header)}`;
+    }
+
     return (
       <div>
+        <DocumentTitle title={!isLoading && ballot && (ballot.name + subtitle)} />
         {!isLoading && ballot && (
           <Typography
             component="h1"
@@ -90,6 +98,7 @@ class BallotMeta extends React.PureComponent {
 }
 
 BallotMeta.propTypes = {
+  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   onPush: PropTypes.func.isRequired,
   bId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired,
@@ -100,5 +109,6 @@ BallotMeta.propTypes = {
 };
 
 export default compose(
+  injectIntl,
   withStyles(styles),
 )(BallotMeta);
