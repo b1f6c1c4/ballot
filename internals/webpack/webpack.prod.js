@@ -96,9 +96,10 @@ class NetlifyRedirectsPlugin {
 class NetlifyHttp2PushPlugin {
   apply(compiler) {
     compiler.plugin('emit', (compilation, cb) => {
+      const entry = (e) => compilation.outputOptions.publicPath + e;
       const makePreload = (reg, as) => _.keys(compilation.assets)
         .filter((a) => reg.test(a))
-        .map((a) => `  Link: <${a}>; rel=preload; as=${as}`);
+        .map((a) => `  Link: <${entry(a)}>; rel=preload; as=${as}`);
       const makeIndex = () => {
         const preloads = [];
         // outdatedbrowser.min.css
