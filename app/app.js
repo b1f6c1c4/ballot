@@ -21,6 +21,7 @@ import ErrorBoundary from 'containers/ErrorBoundary';
 import GlobalContainer from 'containers/GlobalContainer';
 import LanguageProvider from 'containers/LanguageProvider';
 import SubscriptionContainer from 'containers/SubscriptionContainer';
+import SnackbarContainer from 'containers/SnackbarContainer';
 import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable';
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
 import EditFieldsContainer from 'containers/EditFieldsContainer/Loadable';
@@ -95,6 +96,7 @@ const render = (messages) => {
               <LanguageProvider messages={messages}>
                 <GlobalContainer>
                   <ErrorBoundary>
+                    <SnackbarContainer />
                     <ConnectedSwitch>
                       <Route exact path="/app/" component={HomeContainer} />
                       <Route exact path="/app/login" component={LoginContainer} />
