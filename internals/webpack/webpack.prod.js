@@ -93,19 +93,118 @@ class NetlifyRedirectsPlugin {
   }
 }
 
+class NetlifyHttp2PushPlugin {
+  apply(compiler) {
+    compiler.plugin('emit', (compilation, cb) => {
+      const makePreload = (reg, as) => _.keys(compilation.assets)
+        .filter((a) => reg.test(a))
+        .map((a) => `  Link: <${a}>; rel=preload; as=${as}`);
+      const makeIndex = () => {
+        const preloads = [];
+        // outdatedbrowser.min.css
+        preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
+        // outdatedbrowser.min.js outdated.js
+        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
+        // index.css index.vender.css
+        preloads.push(...makePreload(/^index\..*\.css/, 'style'));
+        // index.js
+        preloads.push(...makePreload(/^index\..*\.js$/, 'script'));
+        return preloads.join('\n');
+      };
+      const makeApp = () => {
+        const preloads = [];
+        // outdatedbrowser.min.css
+        preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
+        // outdatedbrowser.min.js outdated.js
+        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
+        // app.css
+        preloads.push(...makePreload(/^app\..*\.css/, 'style'));
+        // app.js
+        preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+        return preloads.join('\n');
+      };
+      const data = `/\n${makeIndex()}\n/*\n${makeApp()}`;
+      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
+      compilation.assets._headers = {
+        source: () => data,
+        size: () => data.length,
+      };
+      cb();
+    });
+  }
+}
+
+class PreloadPlugin {
+  apply(compiler) {
+    compiler.plugin('compilation', (compilation) => {
+      compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, cb) => {
+        const entry = (e) => compilation.outputOptions.publicPath + e;
+        const makePreload = (reg, as) => _.keys(compilation.assets)
+          .filter((a) => reg.test(a))
+          .map((a) => `<link rel="preload" as="${as}" href="${entry(a)}">`);
+        const makePrefetch = (reg) => _.keys(compilation.assets)
+          .filter((a) => reg.test(a))
+          .map((a) => `<link rel="prefetch" href="${entry(a)}">`);
+
+        const preloads = [];
+        if (/index/.test(htmlPluginData.plugin.options.filename)) {
+          // outdatedbrowser.min.js outdated.js
+          preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
+          // index.js
+          preloads.push(...makePreload(/^index\..*\.js$/, 'script'));
+          // roboto-latin-400.woff2 roboto-latin-300.woff2
+          preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
+          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
+          preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
+          // app.js
+          preloads.push(...makePrefetch(/^app\..*\.js$/));
+          // app.css
+          preloads.push(...makePrefetch(/^app\..*\.css$/));
+          // LoginContainer.chunk.js
+          preloads.push(...makePrefetch(/^LoginContainer.*\.chunk\.js$/));
+          // HomeContainer.chunk.js
+          preloads.push(...makePrefetch(/^HomeContainer.*\.chunk\.js$/));
+          // NotoSansSC-Regular.woff2
+          preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
+        } else if (/app/.test(htmlPluginData.plugin.options.filename)) {
+          // outdatedbrowser.min.js outdated.js
+          preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
+          // app.js
+          preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+          // roboto-latin-400.woff2 roboto-latin-300.woff2
+          preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
+          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
+          preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
+          // NotoSansSC-Regular.woff2
+          preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
+          // *.chunk.js
+          preloads.push(...makePrefetch(/^.*\.chunk\.js$/));
+          // *.worker.js
+          preloads.push(...makePrefetch(/^.*\.worker\.js$/));
+        }
+
+        _.set(htmlPluginData, 'html', htmlPluginData.html.replace('</head>', `${preloads.join('\n')}</head>`));
+        cb(null, htmlPluginData);
+      });
+    });
+  }
+}
+
 module.exports = require('./webpack.base')({
   // In production, we skip all hot-reloading stuff
   entry: {
     outdated: [
       'index/outdated.js',
+      'file-loader?name=[name].[ext]!resource/favicon.ico',
+      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
+      'index/style.js',
       'index/index.js',
     ],
-    indexStyle: [
-      'index/style.js',
-    ],
     app: [
+      'index/outdated.js',
       'redux-form',
       'app.js',
     ],
@@ -150,12 +249,9 @@ module.exports = require('./webpack.base')({
   plugins: [
     new GitRevisionPlugin(),
     new NetlifyRedirectsPlugin(),
+    new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'indexCommon',
-      chunks: ['index', 'indexStyle'],
-    }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       cache: true,
@@ -179,9 +275,7 @@ module.exports = require('./webpack.base')({
       chunksSortMode: 'manual',
       chunks: [
         'outdated',
-        'indexCommon',
         'index',
-        'indexStyle',
       ],
     }),
 
@@ -190,7 +284,7 @@ module.exports = require('./webpack.base')({
       filename: 'app.html',
       template: 'app/app.ejs',
       minify,
-      inject: true,
+      inject: false, // manual inject
       chunks: [
         'outdated',
         'app',
@@ -215,6 +309,7 @@ module.exports = require('./webpack.base')({
       i18n: v,
     })).value(),
 
+    new PreloadPlugin(),
   ],
 
   performance: {

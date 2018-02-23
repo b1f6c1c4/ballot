@@ -26,7 +26,6 @@ const plugins = [
     chunksSortMode: 'manual',
     chunks: [
       'outdated',
-      'indexStyle',
       'index',
     ],
   }),
@@ -80,14 +79,14 @@ module.exports = require('./webpack.base')({
   entry: {
     outdated: [
       'index/outdated.js',
+      'file-loader?name=[name].[ext]!resource/favicon.ico',
+      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'webpack-hot-middleware/client?reload=true',
-      'index/index.js',
-    ],
-    indexStyle: [
-      'webpack-hot-middleware/client?reload=true',
       'index/style.js',
+      'index/index.js',
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',

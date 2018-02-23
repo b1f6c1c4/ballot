@@ -1,7 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -34,6 +32,7 @@ module.exports = (options) => ({
       {
         test: /\.css$/,
         include: /node_modules/,
+        exclude: /outdatedbrowser/,
         use: options.cssLoaderVender || ['style-loader', 'css-loader'],
       },
       {
@@ -47,11 +46,21 @@ module.exports = (options) => ({
       },
       {
         test: /\.(eot|otf|ttf|woff|woff2)$/,
-        loader: 'file-loader',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[hash:8].[ext]',
+          },
+        },
       },
       {
         test: /\.(jpg|png|gif)$/,
-        loader: 'file-loader',
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[hash:8].[ext]',
+          },
+        },
       },
       {
         test: /\.json$/,
@@ -81,17 +90,6 @@ module.exports = (options) => ({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         API_URL: JSON.stringify(process.env.API_URL),
       },
-    }),
-
-    new CopyWebpackPlugin([
-      'app/resource/favicon.ico',
-      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
-      'node_modules/outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
-    ]),
-
-    new PreloadWebpackPlugin({
-      rel: 'prefetch',
-      include: 'all',
     }),
   ]),
   resolve: {
