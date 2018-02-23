@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
-import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
-import * as EDIT_VOTERS_CONTAINER from 'containers/EditVotersContainer/constants';
 import * as EDIT_FIELDS_CONTAINER from 'containers/EditFieldsContainer/constants';
+import * as EDIT_VOTERS_CONTAINER from 'containers/EditVotersContainer/constants';
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as VIEW_BALLOT_CONTAINER from './constants';
 
 const initialState = fromJS({

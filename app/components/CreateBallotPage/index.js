@@ -11,11 +11,11 @@ import {
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';
-import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
+import ConfirmDialog from 'components/ConfirmDialog';
 import LoadingButton from 'components/LoadingButton';
 import ResultIndicator from 'components/ResultIndicator';
-import ConfirmDialog from 'components/ConfirmDialog';
+import TextField from 'components/TextField';
 import make, { required, alphanumericDash, minChar } from 'utils/validation';
 
 import messages from './messages';

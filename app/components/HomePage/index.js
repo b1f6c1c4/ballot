@@ -14,13 +14,13 @@ import {
   Typography,
 } from 'material-ui';
 import { Link } from 'react-router-dom';
+import Abbreviation from 'components/Abbreviation';
 import Button from 'components/Button';
 import EmptyIndicator from 'components/EmptyIndicator';
-import Abbreviation from 'components/Abbreviation';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
-import StatusBadge from 'components/StatusBadge';
 import ResultIndicator from 'components/ResultIndicator';
+import StatusBadge from 'components/StatusBadge';
 
 import messages from './messages';
 

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
 
-import HomePage from 'components/HomePage';
 import AuthRequired from 'components/AuthRequired';
+import HomePage from 'components/HomePage';
 
 import * as globalContainerSelectors from 'containers/GlobalContainer/selectors';
 import * as globalContainerActions from 'containers/GlobalContainer/actions';

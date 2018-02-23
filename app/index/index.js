@@ -1,9 +1,11 @@
+import _ from 'lodash';
+
+import rawResources from 'translations';
+
 import $ from 'jquery';
 import i18next from 'i18next';
 import jqueryI18next from 'jquery-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
-import _ from 'lodash';
-import rawResources from 'translations';
 
 function updateContent() {
   const ks = i18next.language;

@@ -17,15 +17,15 @@ import {
   Typography,
 } from 'material-ui';
 import QRCode from 'qrcode.react';
-import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
-import LoadingButton from 'components/LoadingButton';
-import RefreshButton from 'components/RefreshButton';
-import ViewButton from 'components/ViewButton';
+import Button from 'components/Button';
+import ConfirmDialog from 'components/ConfirmDialog';
 import EditButton from 'components/EditButton';
 import EmptyIndicator from 'components/EmptyIndicator';
+import LoadingButton from 'components/LoadingButton';
+import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
-import ConfirmDialog from 'components/ConfirmDialog';
+import ViewButton from 'components/ViewButton';
 
 import messages from './messages';
 

@@ -1,7 +1,6 @@
 import 'babel-polyfill';
-import 'typeface-roboto/index.css';
 import 'index/typeface-noto-sans.css';
-import 'app.css';
+import 'typeface-roboto/index.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -18,25 +17,26 @@ import brown from 'material-ui/colors/brown';
 import teal from 'material-ui/colors/teal';
 import { Switch, Route } from 'react-router-dom';
 import NotFoundPage from 'components/NotFoundPage';
-import GlobalContainer from 'containers/GlobalContainer';
-import SubscriptionContainer from 'containers/SubscriptionContainer';
 import ErrorBoundary from 'containers/ErrorBoundary';
+import GlobalContainer from 'containers/GlobalContainer';
 import LanguageProvider from 'containers/LanguageProvider';
-import HomeContainer from 'containers/HomeContainer/Loadable';
-import LoginContainer from 'containers/LoginContainer/Loadable';
+import SubscriptionContainer from 'containers/SubscriptionContainer';
 import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable';
 import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
-import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
-import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
 import EditFieldsContainer from 'containers/EditFieldsContainer/Loadable';
-import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
+import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
+import HomeContainer from 'containers/HomeContainer/Loadable';
+import LoginContainer from 'containers/LoginContainer/Loadable';
 import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
+import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
 import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
+import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
 
 import createHistory from 'history/createBrowserHistory';
 import configureStore from 'utils/configureStore';
-// Import i18n messages
 import { translationMessages } from 'utils/i18n';
+
+import './app.css';
 
 // Create redux store with history
 const initialState = {};

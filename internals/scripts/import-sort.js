@@ -46,7 +46,6 @@ const style = (file) => (styleApi) => {
     name,
     moduleName,
     isAbsoluteModule,
-    isRelativeModule,
     hasOnlyDefaultMember,
     hasOnlyNamespaceMember,
     unicode,
@@ -77,6 +76,7 @@ const style = (file) => (styleApi) => {
         moduleNameIs(/\.css$/),
         isAbsoluteModule,
       ),
+      sort: moduleName(unicode),
     },
     { separator: true },
 
@@ -103,6 +103,7 @@ const style = (file) => (styleApi) => {
         () => /containers/.test(file),
         moduleNameIs(/^[-a-z0-9]+$/),
       ),
+      sort: moduleName(unicode),
     },
     { match: moduleNameIs('utils/injectReducer') },
     { match: moduleNameIs('utils/injectSaga') },
@@ -135,18 +136,29 @@ const style = (file) => (styleApi) => {
         not(moduleNameIs('translations')),
         moduleNameIs(/^[-a-z0-9.]+$/),
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^components\//),
         hasOnlyDefaultMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\//),
+        not(moduleNameIs(/^containers\/.*\/Loadable$/)),
         hasOnlyDefaultMember,
       ),
+      sort: moduleName(unicode),
+    },
+    {
+      match: and(
+        moduleNameIs(/^containers\/.*\/Loadable$/),
+        hasOnlyDefaultMember,
+      ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
@@ -162,18 +174,21 @@ const style = (file) => (styleApi) => {
         moduleNameIs(/^containers\/[A-Za-z]+\/constants/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\/[A-Za-z]+\/selectors/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\/[A-Za-z]+\/actions/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     { match: moduleNameIs(/^\.\.?\/constants/) },
     { match: moduleNameIs(/^\.\.?\/selectors/) },
@@ -189,11 +204,11 @@ const style = (file) => (styleApi) => {
     { match: moduleNameIs('translations') },
     { match: moduleNameIs('utils/messages') },
     { match: moduleNameIs('./messages') },
+    { separator: true },
+
     {
-      match: and(
-        moduleNameIs(/\.css$/),
-        isRelativeModule,
-      ),
+      match: isAbsoluteModule,
+      sort: moduleName(unicode),
     },
     { separator: true },
 
@@ -203,6 +218,7 @@ const style = (file) => (styleApi) => {
         not(hasOnlyDefaultMember),
       ),
     },
+    { separator: true },
   ];
 };
 
@@ -225,7 +241,9 @@ const run = async () => {
     listFiles('app/containers'),
     listFiles('app/components'),
   ]);
-  const f = f1.concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
+  const f = [
+    'app/app.js',
+  ].concat(f1).concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
   await async.mapLimit(f, 10, sortFile);
 };
 

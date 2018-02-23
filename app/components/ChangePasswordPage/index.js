@@ -10,9 +10,9 @@ import {
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';
-import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
+import PasswordField from 'components/PasswordField';
 import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';

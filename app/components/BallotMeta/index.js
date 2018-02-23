@@ -8,8 +8,8 @@ import {
   Typography,
 } from 'material-ui';
 import { Link } from 'react-router-dom';
-import Loading from 'components/Loading';
 import Abbreviation from 'components/Abbreviation';
+import Loading from 'components/Loading';
 import StatusBadge from 'components/StatusBadge';
 
 import messages from './messages';

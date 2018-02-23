@@ -1,8 +1,8 @@
 import { fromJS } from 'immutable';
 
-import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
-import * as editVotersContainerActions from 'containers/EditVotersContainer/actions';
 import * as editFieldsContainerActions from 'containers/EditFieldsContainer/actions';
+import * as editVotersContainerActions from 'containers/EditVotersContainer/actions';
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewBallotContainerActions from '../actions';
 import viewBallotContainerReducer from '../reducer';
 

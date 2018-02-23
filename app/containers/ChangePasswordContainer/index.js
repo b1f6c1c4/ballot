@@ -6,8 +6,8 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import ChangePasswordPage from 'components/ChangePasswordPage';
 import AuthRequired from 'components/AuthRequired';
+import ChangePasswordPage from 'components/ChangePasswordPage';
 
 import * as changePasswordContainerActions from './actions';
 import reducer from './reducer';

@@ -22,17 +22,17 @@ import {
   Visibility,
 } from 'material-ui-icons';
 import classnames from 'classnames';
-import Button from 'components/Button';
-import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
+import Button from 'components/Button';
+import ConfirmDialog from 'components/ConfirmDialog';
+import EditFieldDialog from 'components/EditFieldDialog';
+import EmptyIndicator from 'components/EmptyIndicator';
+import LeavePrompt from 'components/LeavePrompt';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
-import ResultIndicator from 'components/ResultIndicator';
-import EmptyIndicator from 'components/EmptyIndicator';
-import EditFieldDialog from 'components/EditFieldDialog';
 import ReorderableList from 'components/ReorderableList';
 import ReorderableListItem from 'components/ReorderableListItem';
-import ConfirmDialog from 'components/ConfirmDialog';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
