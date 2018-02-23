@@ -10,10 +10,10 @@ const initialState = fromJS({
 function snackbarContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
-    case SNACKBAR_CONTAINER.SNACKBAR_SHOW:
+    case SNACKBAR_CONTAINER.SNACKBAR_SHOW_ACTION:
       return state.set('isOpen', true)
         .set('message', fromJS(action.message));
-    case SNACKBAR_CONTAINER.SNACKBAR_HIDE:
+    case SNACKBAR_CONTAINER.SNACKBAR_HIDE_ACTION:
       return state.set('isOpen', false);
     // Sagas
     // Default

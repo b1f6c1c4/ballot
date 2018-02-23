@@ -1,14 +1,14 @@
 import { fromJS } from 'immutable';
 
-import snackbarContainerReducer from '../reducer';
-
 import * as snackbarContainerActions from '../actions';
+import snackbarContainerReducer from '../reducer';
 
 describe('snackbarContainerReducer', () => {
   let state;
   beforeEach(() => {
     state = fromJS({
-      isLoading: false,
+      isOpen: false,
+      message: null,
     });
   });
 
@@ -18,29 +18,29 @@ describe('snackbarContainerReducer', () => {
   });
 
   // Actions
+  it('should handle snackbarRequest action', () => {
+    const originalState = state;
+    const message = { key: 'v' };
+    const expectedResult = state;
+
+    expect(snackbarContainerReducer(originalState, snackbarContainerActions.snackbarRequest(message))).toEq(expectedResult);
+  });
+
+  it('should handle snackbarShow action', () => {
+    const originalState = state;
+    const message = { key: 'v' };
+    const expectedResult = state.set('isOpen', true)
+      .set('message', fromJS(message));
+
+    expect(snackbarContainerReducer(originalState, snackbarContainerActions.snackbarShow(message))).toEq(expectedResult);
+  });
+
+  it('should handle snackbarHide action', () => {
+    const originalState = state.set('isOpen', true);
+    const expectedResult = state.set('isOpen', false);
+
+    expect(snackbarContainerReducer(originalState, snackbarContainerActions.snackbarHide())).toEq(expectedResult);
+  });
 
   // Sagas
-  it('should handle external request', () => {
-    const originalState = state.set('isLoading', false);
-    const param = { id: 'val' };
-    const expectedResult = state.set('isLoading', true);
-
-    expect(snackbarContainerReducer(originalState, snackbarContainerActions.externalRequest(param))).toEq(expectedResult);
-  });
-
-  it('should handle external success', () => {
-    const originalState = state.set('isLoading', true);
-    const result = { };
-    const expectedResult = state.set('isLoading', false);
-
-    expect(snackbarContainerReducer(originalState, snackbarContainerActions.externalSuccess(result))).toEq(expectedResult);
-  });
-
-  it('should handle external failure', () => {
-    const originalState = state.set('isLoading', true);
-    const error = { };
-    const expectedResult = state.set('isLoading', false);
-
-    expect(snackbarContainerReducer(originalState, snackbarContainerActions.externalFailure(error))).toEq(expectedResult);
-  });
 });

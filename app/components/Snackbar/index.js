@@ -6,15 +6,14 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import {
   withStyles,
-  Snackbar as RawSnackbar,
   IconButton,
+  Snackbar as RawSnackbar,
 } from 'material-ui';
-import Close from 'material-ui-icons/Close';
+import { Close } from 'material-ui-icons';
 
-import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as CHANGE_PASSWORD_CONTAINER from 'containers/ChangePasswordContainer/constants';
 import * as CREATE_BALLOT_CONTAINER from 'containers/CreateBallotContainer/constants';
-
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars

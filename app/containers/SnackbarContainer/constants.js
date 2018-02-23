@@ -1,6 +1,6 @@
 // Actions
-export const SNACKBAR_REQUEST = 'SnackbarContainer/SNACKBAR_REQUEST';
-export const SNACKBAR_SHOW = 'SnackbarContainer/SNACKBAR_SHOW';
-export const SNACKBAR_HIDE = 'SnackbarContainer/SNACKBAR_HIDE';
+export const SNACKBAR_REQUEST_ACTION = 'SnackbarContainer/SNACKBAR_REQUEST_ACTION';
+export const SNACKBAR_SHOW_ACTION = 'SnackbarContainer/SNACKBAR_SHOW_ACTION';
+export const SNACKBAR_HIDE_ACTION = 'SnackbarContainer/SNACKBAR_HIDE_ACTION';
 
 // Sagas

@@ -1,31 +1,45 @@
-import { delay } from 'redux-saga';
+import _ from 'lodash';
+import { delay as rawDelay } from 'redux-saga';
 import {
-  take,
   call,
-  select,
-  takeEvery,
-  cancel,
-  race,
+  cancel as rawCancel,
   fork,
   put,
+  select,
+  take,
+  takeEvery,
 } from 'redux-saga/effects';
 
-import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as CHANGE_PASSWORD_CONTAINER from 'containers/ChangePasswordContainer/constants';
 import * as CREATE_BALLOT_CONTAINER from 'containers/CreateBallotContainer/constants';
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as SNACKBAR_CONTAINER from './constants';
 import * as snackbarContainerActions from './actions';
 
-function* handleSnackbarRequest({ message }, delayed = false) {
+const delay = (time) => {
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV === 'test') {
+    return undefined;
+  }
+  /* istanbul ignore next */
+  // eslint-disable-next-line redux-saga/yield-effects
+  return rawDelay(time);
+};
+
+export function* handleSnackbarRequest({ message }, delayed = false) {
   if (delayed) {
-    yield delay(200);
+    yield delay(100);
   }
   yield put(snackbarContainerActions.snackbarShow(message));
   yield delay(6000);
   yield put(snackbarContainerActions.snackbarHide());
 }
 
-function* handleStatusChange(action) {
+export function* handleSimpleForward(action) {
+  yield put(snackbarContainerActions.snackbarRequest(action));
+}
+
+export function* handleStatusChange(action) {
   let name;
   const list = yield select((state) => state.getIn(['globalContainer', 'listBallots']));
   if (list) {
@@ -37,47 +51,36 @@ function* handleStatusChange(action) {
   yield put(snackbarContainerActions.snackbarRequest({ ...action, name }));
 }
 
-function* handleSimpleForward(action) {
-  yield put(snackbarContainerActions.snackbarRequest(action));
+export function* resolveVoterName1(pars) {
+  const bId = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'bId']));
+  if (bId !== pars.bId) return undefined;
+  const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'name']));
+  const list = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'voters']));
+  const id = list.findIndex((b) => b.get('iCode') === pars.voter.iCode);
+  if (id === -1) return undefined;
+  return {
+    ballot,
+    name: list.getIn([id, 'name']),
+  };
 }
 
-function* resolveVoterName1(pars) {
-  try {
-    const bId = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'bId']));
-    if (bId !== pars.bId) return undefined;
-    const ballot = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'name']));
-    const list = yield select((state) => state.getIn(['viewBallotContainer', 'ballot', 'voters']));
-    const id = list.findIndex((b) => b.get('iCode') === pars.iCode);
-    return {
-      ballot,
-      name: list.getIn([id, 'name']),
-    };
-  } catch (err) {
-    return undefined;
-  }
+export function* resolveVoterName2(pars) {
+  const bId = yield select((state) => state.getIn(['editVotersContainer', 'ballot', 'bId']));
+  if (bId !== pars.bId) return undefined;
+  const ballot = yield select((state) => state.getIn(['editVotersContainer', 'ballot', 'name']));
+  const list = yield select((state) => state.getIn(['editVotersContainer', 'voters']));
+  const id = list.findIndex((b) => b.get('iCode') === pars.voter.iCode);
+  if (id === -1) return undefined;
+  return {
+    ballot,
+    name: list.getIn([id, 'name']),
+  };
 }
 
-function* resolveVoterName2(pars) {
-  try {
-    const bId = yield select((state) => state.getIn(['editVotersContainer', 'ballot', 'bId']));
-    if (bId !== pars.bId) return undefined;
-    const ballot = yield select((state) => state.getIn(['editVotersContainer', 'ballot', 'name']));
-    const list = yield select((state) => state.getIn(['editVotersContainer', 'voters']));
-    const id = list.findIndex((b) => b.get('iCode') === pars.iCode);
-    return {
-      ballot,
-      name: list.getIn([id, 'name']),
-    };
-  } catch (err) {
-    return undefined;
-  }
-}
-
-function* handleVoterRegistered(action) {
-  const pars = { bId: action.bId, iCode: action.bId };
-  let obj = yield call(resolveVoterName1, pars);
+export function* handleVoterRegistered(action) {
+  let obj = yield call(resolveVoterName1, action);
   if (!obj) {
-    obj = yield call(resolveVoterName2, pars);
+    obj = yield call(resolveVoterName2, action);
   }
   yield put(snackbarContainerActions.snackbarRequest({ ...action, ...obj }));
 }
@@ -85,31 +88,35 @@ function* handleVoterRegistered(action) {
 // Sagas
 
 // Watcher
-function* watchSnackbar() {
+const cancel = (ob) => {
+  /* istanbul ignore else */
+  if (process.env.NODE_ENV === 'test') {
+    _.set(ob, 'isRunning', () => false);
+    return undefined;
+  }
+  /* istanbul ignore next */
+  // eslint-disable-next-line redux-saga/yield-effects
+  return rawCancel(ob);
+};
+
+const valid = (ob) => {
+  if (!ob) return false;
+  /* istanbul ignore else */
+  if (ob.isRunning()) return true;
+  /* istanbul ignore next */
+  return false;
+};
+
+export function* watchSnackbar() {
   let ob;
   while (true) {
-    const { request, hide } = yield race({
-      request: take(SNACKBAR_CONTAINER.SNACKBAR_REQUEST),
-      hide: take(SNACKBAR_CONTAINER.SNACKBAR_HIDE),
-    });
-    if (request) {
-      if (ob) {
-        yield cancel(ob);
-        ob = undefined;
-        yield put(snackbarContainerActions.snackbarHide());
-        ob = yield fork(handleSnackbarRequest, request, true);
-      } else {
-        ob = yield fork(handleSnackbarRequest, request);
-      }
-      continue;
-    }
-    /* istanbul ignore else */
-    if (hide) {
-      if (ob) {
-        yield cancel(ob);
-        ob = undefined;
-      }
-      continue;
+    const request = yield take(SNACKBAR_CONTAINER.SNACKBAR_REQUEST_ACTION);
+    if (valid(ob)) {
+      yield put(snackbarContainerActions.snackbarHide());
+      yield cancel(ob);
+      ob = yield fork(handleSnackbarRequest, request, true);
+    } else {
+      ob = yield fork(handleSnackbarRequest, request);
     }
   }
 }

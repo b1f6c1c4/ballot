@@ -1,43 +1,23 @@
 import { fromJS } from 'immutable';
 
-import * as globalContainerSelectors from '../selectors';
+import * as snackbarContainerSelectors from '../selectors';
 
-describe('ListBallots', () => {
-  const selector = globalContainerSelectors.ListBallots();
-
-  it('should handle null', () => {
-    const mockedState = fromJS({});
-    expect(selector(mockedState)).not.toEqual(expect.anything());
-  });
-
-  it('should select listBallots', () => {
-    const listBallots = ['value'];
-    const state = fromJS({
-      listBallots,
-    });
-    const mockedState = fromJS({
-      globalContainer: state,
-    });
-    expect(selector(mockedState)).toEqual(listBallots);
-  });
-});
-
-describe('Error', () => {
-  const selector = globalContainerSelectors.Error();
+describe('Message', () => {
+  const selector = snackbarContainerSelectors.Message();
 
   it('should handle null', () => {
     const mockedState = fromJS({});
     expect(selector(mockedState)).not.toEqual(expect.anything());
   });
 
-  it('should select error', () => {
-    const error = { key: 'value' };
+  it('should select message', () => {
+    const message = { key: 'value' };
     const state = fromJS({
-      error,
+      message,
     });
     const mockedState = fromJS({
-      globalContainer: state,
+      snackbarContainer: state,
     });
-    expect(selector(mockedState)).toEqual(error);
+    expect(selector(mockedState)).toEqual(message);
   });
 });
