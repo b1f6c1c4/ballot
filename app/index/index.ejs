@@ -39,9 +39,11 @@
     <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
 
     <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.js) { %>
-        <script src="<%= key %>"></script>
-      <% }
+      for (let key of htmlWebpackPlugin.files.js) {
+        if (!/outdated/.test(key)) { %>
+          <script src="<%= key %>"></script>
+        <% }
+      }
     } %>
   </body>
 </html>
