@@ -202,7 +202,7 @@ class EditFieldsPage extends React.PureComponent {
                 disabled={!canEditFields}
               >
                 <Card>
-                  <ListItem component="div">
+                  <ListItem container="div">
                     <div
                       className={classnames(classes.reorder, { [classes.reorderable]: canEditFields })}
                     >

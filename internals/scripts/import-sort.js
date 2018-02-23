@@ -86,8 +86,14 @@ const style = (file) => (styleApi) => {
     { match: moduleNameIs('react-dom') },
     { match: moduleNameIs('immutable') },
     { match: moduleNameIs('redux') },
-    { match: moduleNameIs('redux-saga') },
-    { match: moduleNameIs('redux-saga/effects') },
+    {
+      match: moduleNameIs('redux-saga'),
+      sortNamedMembers: name(proper),
+    },
+    {
+      match: moduleNameIs('redux-saga/effects'),
+      sortNamedMembers: name(proper),
+    },
     { match: moduleNameIs('redux-saga-test-plan') },
     { match: moduleNameIs('redux-saga-test-plan/providers') },
     { match: moduleNameIs('redux-saga-test-plan/matchers') },
