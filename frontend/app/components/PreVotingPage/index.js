@@ -14,17 +14,17 @@ import {
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import { Field, reduxForm, propTypes } from 'redux-form/immutable';
-import { TextEncoderLite } from 'text-encoder-lite';
 import base64js from 'base64-js';
-import Button from 'components/Button';
+import { TextEncoderLite } from 'text-encoder-lite';
 import BallotMeta from 'components/BallotMeta';
-import TextField from 'components/TextField';
+import Button from 'components/Button';
 import ClearButton from 'components/ClearButton';
+import ConfirmDialog from 'components/ConfirmDialog';
+import EmptyIndicator from 'components/EmptyIndicator';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
-import EmptyIndicator from 'components/EmptyIndicator';
-import ConfirmDialog from 'components/ConfirmDialog';
+import TextField from 'components/TextField';
 import make, { required, hexChar } from 'utils/validation';
 
 import messages from './messages';
@@ -210,6 +210,7 @@ class PreVotingPage extends React.PureComponent {
                   <LoadingButton isLoading={isSignLoading}>
                     <Button
                       type="submit"
+                      variant={this.props.pristine ? 'flat' : 'raised'}
                       color="primary"
                       disabled={isSignLoading}
                     >

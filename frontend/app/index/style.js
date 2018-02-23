@@ -54,7 +54,7 @@ jQuery(document).ready(($) => {
     const mobileNav = $('#nav-menu-container').clone().prop({
       id: 'mobile-nav',
     });
-    mobileNav.find('> ul').attr({
+    mobileNav.find('ul').attr({
       class: '',
       id: '',
     });

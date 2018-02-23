@@ -1,13 +1,13 @@
 import _ from 'lodash';
-import { eventChannel } from 'redux-saga';
+import { delay, eventChannel } from 'redux-saga';
 import {
-  take,
   call,
-  race,
+  cancel as rawCancel,
   fork,
   put,
+  race,
   select,
-  cancel as rawCancel,
+  take,
 } from 'redux-saga/effects';
 import * as api from 'utils/request';
 
@@ -114,6 +114,7 @@ export function* handleVoterRgRequestAction({ bId }) {
 
 // Watcher
 const Ob = {};
+
 const valid = (obN) => {
   const ob = Ob[obN];
   if (!ob) return false;
@@ -124,7 +125,35 @@ const valid = (obN) => {
   /* istanbul ignore next */
   return false;
 };
-const cancel = (obN) => {
+
+/* istanbul ignore next */
+function* scheduleCancel(obN) {
+  const ob = Ob[obN];
+  yield delay(800);
+  yield rawCancel(ob);
+}
+
+const uncancel = /* istanbul ignore next */ (obN) => {
+  const ob = Ob[`${obN}Cancel`];
+  if (!ob) return undefined;
+  // eslint-disable-next-line redux-saga/yield-effects
+  return rawCancel(ob);
+};
+
+const doCancel = /* istanbul ignore next */ (obN, force) => {
+  if (!force) {
+    const k = `${obN}Cancel`;
+    if (Ob[k]) return undefined;
+    // eslint-disable-next-line redux-saga/yield-effects
+    return fork(scheduleCancel, obN);
+  }
+  const ob = Ob[obN];
+  Ob[obN] = undefined;
+  // eslint-disable-next-line redux-saga/yield-effects
+  return rawCancel(ob);
+};
+
+const cancel = (obN, force = true) => {
   const ob = Ob[obN];
   if (!ob) return undefined;
   /* istanbul ignore else */
@@ -133,10 +162,7 @@ const cancel = (obN) => {
     return undefined;
   }
   /* istanbul ignore next */
-  Ob[obN] = undefined;
-  /* istanbul ignore next */
-  // eslint-disable-next-line redux-saga/yield-effects
-  return rawCancel(ob);
+  return doCancel(obN, force);
 };
 
 export const testReset = (ob) => {
@@ -163,11 +189,12 @@ export function* watchStatus() {
           ({ bId } = request);
         }
       }
+      yield uncancel('Status');
       continue;
     }
     /* istanbul ignore else */
     if (stop) {
-      yield cancel('Status');
+      Ob.StatusCancel = yield cancel('Status', false);
       continue;
     }
   }
@@ -206,11 +233,12 @@ export function* watchVoterRg() {
         Ob.VoterRg = yield fork(handleVoterRgRequestAction, request);
         ({ bId } = request);
       }
+      yield uncancel('VoterRg');
       continue;
     }
     /* istanbul ignore else */
     if (stop) {
-      yield cancel('VoterRg');
+      Ob.VoterRgCancel = yield cancel('VoterRg', false);
       continue;
     }
   }

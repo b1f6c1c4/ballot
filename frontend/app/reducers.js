@@ -10,6 +10,7 @@ import { reducer as formReducer } from 'redux-form/immutable';
 import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import globalContainerReducer from 'containers/GlobalContainer/reducer';
+import snackbarContainerReducer from 'containers/SnackbarContainer/reducer';
 
 /*
  * routeReducer
@@ -46,6 +47,7 @@ export default function createReducer(injectedReducers) {
     route: routeReducer,
     language: languageProviderReducer,
     globalContainer: globalContainerReducer,
+    snackbarContainer: snackbarContainerReducer,
     ...injectedReducers,
   });
 

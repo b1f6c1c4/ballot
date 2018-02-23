@@ -6,7 +6,6 @@ import {
   withStyles,
   CircularProgress,
 } from 'material-ui';
-
 import green from 'material-ui/colors/green';
 
 // eslint-disable-next-line no-unused-vars

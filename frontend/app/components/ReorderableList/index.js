@@ -18,7 +18,7 @@ class ReorderableList extends React.PureComponent {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { children, ...other } = this.props;
+    const { children, onReorder, ...other } = this.props;
 
     return (
       <DragDropContext

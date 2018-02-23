@@ -22,17 +22,17 @@ import {
   Visibility,
 } from 'material-ui-icons';
 import classnames from 'classnames';
-import Button from 'components/Button';
-import LeavePrompt from 'components/LeavePrompt';
 import BallotMeta from 'components/BallotMeta';
+import Button from 'components/Button';
+import ConfirmDialog from 'components/ConfirmDialog';
+import EditFieldDialog from 'components/EditFieldDialog';
+import EmptyIndicator from 'components/EmptyIndicator';
+import LeavePrompt from 'components/LeavePrompt';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
-import ResultIndicator from 'components/ResultIndicator';
-import EmptyIndicator from 'components/EmptyIndicator';
-import EditFieldDialog from 'components/EditFieldDialog';
 import ReorderableList from 'components/ReorderableList';
 import ReorderableListItem from 'components/ReorderableListItem';
-import ConfirmDialog from 'components/ConfirmDialog';
+import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
 
@@ -54,6 +54,15 @@ const styles = (theme) => ({
   reorderable: {
     cursor: 'ns-resize',
   },
+  fab: {
+    zIndex: 999,
+    position: 'fixed',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2,
+  },
+  placeholder: {
+    height: 80,
+  },
 });
 
 class EditFieldsPage extends React.PureComponent {
@@ -68,20 +77,20 @@ class EditFieldsPage extends React.PureComponent {
     }
   }
 
-  handleConfirm = (ac) => () => {
+  handleConfirm = (ac, ...args) => () => {
     if (_.isString(ac)) {
-      this.setState(_.assign({}, this.state, { [ac]: true }));
+      this.setState(_.assign({}, this.state, { [ac]: true, args }));
       return;
     }
     if (_.isFunction(ac)) {
-      ac();
+      ac(...this.state.args);
     }
     this.setState(_.mapValues(this.state, (v, k) => /^isOpen/.test(k) ? false : v));
   };
 
   handleEdit = (index) => () => this.props.onStartEditAction({ index });
 
-  handleDelete = (index) => () => this.props.onRemoveAction({ index });
+  handleDelete = (index) => this.props.onRemoveAction({ index });
 
   render() {
     const {
@@ -145,10 +154,10 @@ class EditFieldsPage extends React.PureComponent {
           {!isLoading && canEditFields && (
             <Button
               color="primary"
-              variant="raised"
+              variant="fab"
+              className={classes.fab}
               onClick={this.props.onStartCreateAction}
             >
-              <FormattedMessage {...messages.create} />
               <Add className={classes.rightIcon} />
             </Button>
           )}
@@ -193,7 +202,7 @@ class EditFieldsPage extends React.PureComponent {
                 disabled={!canEditFields}
               >
                 <Card>
-                  <ListItem component="div">
+                  <ListItem>
                     <div
                       className={classnames(classes.reorder, { [classes.reorderable]: canEditFields })}
                     >
@@ -213,23 +222,24 @@ class EditFieldsPage extends React.PureComponent {
                       </IconButton>
                       {canEditFields && (
                         <IconButton>
-                          <Delete onClick={this.handleConfirm('isOpenDelete')} />
+                          <Delete onClick={this.handleConfirm('isOpenDelete', i)} />
                         </IconButton>
                       )}
                     </ListItemSecondaryAction>
-                    <ConfirmDialog
-                      title={messages.deleteTitle}
-                      description={messages.deleteDescription}
-                      isOpen={this.state.isOpenDelete}
-                      onCancel={this.handleConfirm()}
-                      onAction={this.handleConfirm(this.handleDelete(i))}
-                    />
                   </ListItem>
                 </Card>
               </ReorderableListItem>
             ))}
           </ReorderableList>
         )}
+        <ConfirmDialog
+          title={messages.deleteTitle}
+          description={messages.deleteDescription}
+          isOpen={this.state.isOpenDelete}
+          onCancel={this.handleConfirm()}
+          onAction={this.handleConfirm(this.handleDelete)}
+        />
+        <div className={classes.placeholder} />
       </div>
     );
   }

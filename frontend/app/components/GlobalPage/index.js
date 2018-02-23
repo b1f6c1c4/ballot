@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import {
   withStyles,
 } from 'material-ui';
+import DocumentTitle from 'components/DocumentTitle';
 import GlobalBar from 'components/GlobalBar';
 import GlobalDrawer from 'components/GlobalDrawer';
 
@@ -15,6 +16,9 @@ const styles = (theme) => ({
   },
   wrapper: {
     marginTop: 70,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: 1024,
   },
 });
 
@@ -37,6 +41,7 @@ class GlobalPage extends React.PureComponent {
 
     return (
       <div className={classes.root}>
+        <DocumentTitle />
         <GlobalBar
           {...{
             onPush,

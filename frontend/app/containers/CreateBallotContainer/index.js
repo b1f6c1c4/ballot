@@ -6,8 +6,8 @@ import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
-import CreateBallotPage from 'components/CreateBallotPage';
 import AuthRequired from 'components/AuthRequired';
+import CreateBallotPage from 'components/CreateBallotPage';
 
 import * as createBallotContainerActions from './actions';
 import reducer from './reducer';

@@ -9,14 +9,14 @@ import {
   withStyles,
 } from 'material-ui';
 import downloadCsv from 'download-csv';
-import Button from 'components/Button';
 import BallotMeta from 'components/BallotMeta';
+import Button from 'components/Button';
+import CreateVoterForm from 'components/CreateVoterForm';
+import EmptyIndicator from 'components/EmptyIndicator';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
-import EmptyIndicator from 'components/EmptyIndicator';
 import VoterCard from 'components/VoterCard';
-import CreateVoterForm from 'components/CreateVoterForm';
 
 import messages from './messages';
 

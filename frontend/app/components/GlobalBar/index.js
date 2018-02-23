@@ -69,11 +69,6 @@ class GlobalBar extends React.PureComponent {
     this.props.onLogoutAction();
   };
 
-  handleLogin = () => {
-    this.props.onCloseAccountAction();
-    this.props.onPush('/app/login');
-  };
-
   render() {
     const {
       classes,
@@ -137,7 +132,7 @@ class GlobalBar extends React.PureComponent {
                 </Menu>
               </div>
               :
-              <Button onClick={this.handleLogin} color="inherit">
+              <Button to="/app/login" color="inherit">
                 <FormattedMessage {...messages.login} />
               </Button>
           }

@@ -2,6 +2,14 @@
 
     <title data-i18n="index.htmlTitle">Ballot</title>
 
+    <% if (!htmlWebpackPlugin.options.inject) {
+      for (let key of htmlWebpackPlugin.files.css) {
+        if (/vendor/.test(key)) { %>
+          <link rel="preload" as="style" href="<%= key %>" onload="this.onload=null;this.rel='stylesheet'">
+        <% }
+      }
+    } %>
+
     <style type="text/css">
       <%= require('raw-loader!index/style.css') %>
     </style>
@@ -9,8 +17,6 @@
     <% if (!htmlWebpackPlugin.options.inject) {
       for (let key of htmlWebpackPlugin.files.css) {
         if (!/vendor/.test(key)) { %>
-          <link rel="stylesheet" href="<%= key %>">
-        <% } else { %>
           <link rel="preload" as="style" href="<%= key %>" onload="this.onload=null;this.rel='stylesheet'">
         <% }
       }
@@ -33,9 +39,11 @@
     <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
 
     <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.js) { %>
-        <script src="<%= key %>"></script>
-      <% }
+      for (let key of htmlWebpackPlugin.files.js) {
+        if (!/outdated/.test(key)) { %>
+          <script src="<%= key %>"></script>
+        <% }
+      }
     } %>
   </body>
 </html>

@@ -10,10 +10,10 @@ import {
 } from 'material-ui';
 import { KeyboardArrowLeft, KeyboardArrowRight } from 'material-ui-icons';
 import { PieChart } from 'react-d3-components';
-import Button from 'components/Button';
-import Loading from 'components/Loading';
-import EmptyIndicator from 'components/EmptyIndicator';
 import BallotMeta from 'components/BallotMeta';
+import Button from 'components/Button';
+import EmptyIndicator from 'components/EmptyIndicator';
+import Loading from 'components/Loading';
 import LoadingButton from 'components/LoadingButton';
 import RefreshButton from 'components/RefreshButton';
 import ResultIndicator from 'components/ResultIndicator';
@@ -126,12 +126,14 @@ class ViewStatPage extends React.PureComponent {
               </Typography>
             )}
             {data && (
-              <PieChart
-                data={data}
-                width={600}
-                height={400}
-                viewBox="0 0 600 400"
-              />
+              <div className="chart-wrapper">
+                <PieChart
+                  data={data}
+                  width={600}
+                  height={400}
+                  viewBox="0 0 600 400"
+                />
+              </div>
             )}
           </div>
         )}

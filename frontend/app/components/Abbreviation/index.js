@@ -41,8 +41,7 @@ class Abbreviation extends React.PureComponent {
     const { classes, text, length } = this.props;
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-      <div
+      <span
         className={classnames(classes.root, { [classes.clickable]: !this.state.expand })}
         onClick={this.handleExpand}
       >
@@ -55,7 +54,7 @@ class Abbreviation extends React.PureComponent {
             {text.length > length && '...'}
           </span>
         )}
-      </div>
+      </span>
     );
   }
 }

@@ -45,6 +45,7 @@ const style = (file) => (styleApi) => {
     not,
     name,
     moduleName,
+    isAbsoluteModule,
     hasOnlyDefaultMember,
     hasOnlyNamespaceMember,
     unicode,
@@ -69,14 +70,30 @@ const style = (file) => (styleApi) => {
   };
 
   return [
+    { match: moduleNameIs('babel-polyfill') },
+    {
+      match: and(
+        moduleNameIs(/\.css$/),
+        isAbsoluteModule,
+      ),
+      sort: moduleName(unicode),
+    },
+    { separator: true },
+
     { match: moduleNameIs('lodash') },
     { match: moduleNameIs('react') },
     { match: moduleNameIs('prop-types') },
     { match: moduleNameIs('react-dom') },
     { match: moduleNameIs('immutable') },
     { match: moduleNameIs('redux') },
-    { match: moduleNameIs('redux-saga') },
-    { match: moduleNameIs('redux-saga/effects') },
+    {
+      match: moduleNameIs('redux-saga'),
+      sortNamedMembers: name(proper),
+    },
+    {
+      match: moduleNameIs('redux-saga/effects'),
+      sortNamedMembers: name(proper),
+    },
     { match: moduleNameIs('redux-saga-test-plan') },
     { match: moduleNameIs('redux-saga-test-plan/providers') },
     { match: moduleNameIs('redux-saga-test-plan/matchers') },
@@ -92,6 +109,7 @@ const style = (file) => (styleApi) => {
         () => /containers/.test(file),
         moduleNameIs(/^[-a-z0-9]+$/),
       ),
+      sort: moduleName(unicode),
     },
     { match: moduleNameIs('utils/injectReducer') },
     { match: moduleNameIs('utils/injectSaga') },
@@ -108,6 +126,7 @@ const style = (file) => (styleApi) => {
       match: moduleNameIs('material-ui'),
       sortNamedMembers: name(proper),
     },
+    { match: moduleNameIs(/^material-ui\/colors/) },
     {
       match: moduleNameIs('material-ui-icons'),
       sortNamedMembers: name(proper),
@@ -123,18 +142,29 @@ const style = (file) => (styleApi) => {
         not(moduleNameIs('translations')),
         moduleNameIs(/^[-a-z0-9.]+$/),
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^components\//),
         hasOnlyDefaultMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\//),
+        not(moduleNameIs(/^containers\/.*\/Loadable$/)),
         hasOnlyDefaultMember,
       ),
+      sort: moduleName(unicode),
+    },
+    {
+      match: and(
+        moduleNameIs(/^containers\/.*\/Loadable$/),
+        hasOnlyDefaultMember,
+      ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
@@ -150,18 +180,21 @@ const style = (file) => (styleApi) => {
         moduleNameIs(/^containers\/[A-Za-z]+\/constants/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\/[A-Za-z]+\/selectors/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     {
       match: and(
         moduleNameIs(/^containers\/[A-Za-z]+\/actions/),
         hasOnlyNamespaceMember,
       ),
+      sort: moduleName(unicode),
     },
     { match: moduleNameIs(/^\.\.?\/constants/) },
     { match: moduleNameIs(/^\.\.?\/selectors/) },
@@ -180,11 +213,18 @@ const style = (file) => (styleApi) => {
     { separator: true },
 
     {
+      match: isAbsoluteModule,
+      sort: moduleName(unicode),
+    },
+    { separator: true },
+
+    {
       match: and(
         moduleNameIs(/^\.\.?\/sagas/),
         not(hasOnlyDefaultMember),
       ),
     },
+    { separator: true },
   ];
 };
 
@@ -207,7 +247,9 @@ const run = async () => {
     listFiles('app/containers'),
     listFiles('app/components'),
   ]);
-  const f = f1.concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
+  const f = [
+    'app/app.js',
+  ].concat(f1).concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
   await async.mapLimit(f, 10, sortFile);
 };
 

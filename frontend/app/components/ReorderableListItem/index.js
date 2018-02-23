@@ -20,7 +20,7 @@ class ReorderableListItem extends React.PureComponent {
         isDragDisabled={disabled}
       >
         {(provided) => (
-          <li>
+          <div>
             <div
               ref={provided.innerRef}
               {...provided.draggableProps}
@@ -30,7 +30,7 @@ class ReorderableListItem extends React.PureComponent {
               {children}
             </div>
             {provided.placeholder}
-          </li>
+          </div>
         )}
       </Draggable>
     );

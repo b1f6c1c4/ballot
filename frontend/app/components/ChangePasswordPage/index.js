@@ -10,9 +10,10 @@ import {
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';
-import PasswordField from 'components/PasswordField';
 import ClearButton from 'components/ClearButton';
+import DocumentTitle from 'components/DocumentTitle';
 import LoadingButton from 'components/LoadingButton';
+import PasswordField from 'components/PasswordField';
 import ResultIndicator from 'components/ResultIndicator';
 
 import messages from './messages';
@@ -53,6 +54,7 @@ class ChangePasswordPage extends React.PureComponent {
 
     return (
       <div className={classes.container}>
+        <DocumentTitle title={messages.header} />
         <Typography variant="display2">
           <FormattedMessage {...messages.header} />
         </Typography>
@@ -67,6 +69,7 @@ class ChangePasswordPage extends React.PureComponent {
               <PasswordField
                 label={messages.newPassword}
                 name="newPassword"
+                isNew
                 fullWidth
               />
               <ResultIndicator error={this.props.error} />

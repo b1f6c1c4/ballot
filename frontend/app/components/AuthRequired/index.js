@@ -7,6 +7,7 @@ import {
   withStyles,
   Typography,
 } from 'material-ui';
+import { Link } from 'react-router-dom';
 
 import messages from './messages';
 
@@ -22,7 +23,9 @@ class AuthRequired extends React.PureComponent {
     if (!this.props.hasCredential) {
       return (
         <Typography variant="display2">
-          <FormattedMessage {...messages.header} />
+          <Link to="/app/login">
+            <FormattedMessage {...messages.header} />
+          </Link>
         </Typography>
       );
     }

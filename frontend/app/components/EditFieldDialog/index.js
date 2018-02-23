@@ -156,7 +156,7 @@ class EditFieldDialog extends React.PureComponent {
           </DialogContent>
           <DialogActions>
             <Button
-              variant={pristine ? '' : 'raised'}
+              variant={pristine ? 'flat' : 'raised'}
               color={pristine ? 'primary' : 'secondary'}
               onClick={this.handleCancel}
             >
@@ -170,7 +170,7 @@ class EditFieldDialog extends React.PureComponent {
             {!disabled && (
               <Button
                 type="submit"
-                variant={pristine ? '' : 'raised'}
+                variant={pristine ? 'flat' : 'raised'}
                 color="primary"
                 onClick={this.handleSubmit}
               >

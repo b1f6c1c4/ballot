@@ -26,7 +26,6 @@ const plugins = [
     chunksSortMode: 'manual',
     chunks: [
       'outdated',
-      'indexStyle',
       'index',
     ],
   }),
@@ -80,14 +79,14 @@ module.exports = require('./webpack.base')({
   entry: {
     outdated: [
       'index/outdated.js',
+      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'webpack-hot-middleware/client?reload=true',
-      'index/index.js',
-    ],
-    indexStyle: [
-      'webpack-hot-middleware/client?reload=true',
       'index/style.js',
+      'index/index.js',
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
@@ -97,8 +96,8 @@ module.exports = require('./webpack.base')({
 
   // Don't use hashes in dev mode for better performance
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
+    filename: 'assets/[name].js',
+    chunkFilename: 'assets/[name].chunk.js',
   },
 
   // Add development plugins

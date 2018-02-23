@@ -10,10 +10,10 @@ import {
 } from 'material-ui';
 import { reduxForm, propTypes } from 'redux-form/immutable';
 import Button from 'components/Button';
-import TextField from 'components/TextField';
 import ClearButton from 'components/ClearButton';
 import LoadingButton from 'components/LoadingButton';
 import ResultIndicator from 'components/ResultIndicator';
+import TextField from 'components/TextField';
 import make, { required } from 'utils/validation';
 
 import messages from './messages';
@@ -51,6 +51,7 @@ class CreateVoterForm extends React.PureComponent {
       reset,
       handleSubmit,
       isLoading,
+      pristine,
     } = this.props;
 
     return (
@@ -74,6 +75,7 @@ class CreateVoterForm extends React.PureComponent {
             <LoadingButton {...{ isLoading }}>
               <Button
                 type="submit"
+                variant={pristine ? 'flat' : 'raised'}
                 color="primary"
                 disabled={isLoading}
               >
