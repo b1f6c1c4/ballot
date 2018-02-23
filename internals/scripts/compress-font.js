@@ -14,6 +14,10 @@ const theCodes = new Set();
 let txt = _.values(zh).join('').replace(/[ -~]/g, '');
 if (process.argv.length >= 3) {
   [, , txt] = process.argv;
+} else {
+  _.range(' '.charCodeAt(0), '~'.charCodeAt(0)).forEach((i) => {
+    theCodes.add(i);
+  });
 }
 _.range(txt.length).forEach((i) => {
   theCodes.add(txt.charCodeAt(i));

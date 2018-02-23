@@ -22,7 +22,7 @@ const minify = {
   useShortDoctype: true,
   removeEmptyAttributes: true,
   removeScriptTypeAttributes: true,
-  removeStyleLinkTypeAttributes: false,
+  removeStyleLinkTypeAttributes: true,
   keepClosingSlash: true,
   minifyJS: true,
   minifyCSS: true,

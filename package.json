@@ -21,6 +21,7 @@
     "extract-intl": "babel-node --presets env,stage-0 -- ./internals/scripts/extract-intl.js",
     "extract-fragment": "node ./internals/scripts/fragmentTypes.js",
     "compress-font": "node ./internals/scripts/compress-font.js",
+    "import-sort": "node ./internals/scripts/import-sort.js",
     "prebuild": "yarn build:clean",
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.prod.js --color -p --progress --hide-modules --display-optimization-bailout",
     "build:clean": "rimraf ./build",

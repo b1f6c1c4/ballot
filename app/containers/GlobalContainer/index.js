@@ -3,35 +3,16 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { createStructuredSelector, createSelector } from 'reselect';
-import { Switch, Route } from 'react-router-dom';
+import { createStructuredSelector } from 'reselect';
 import injectSaga from 'utils/injectSaga';
 
 import GlobalPage from 'components/GlobalPage';
-import NotFoundPage from 'components/NotFoundPage';
-import HomeContainer from 'containers/HomeContainer/Loadable';
-import LoginContainer from 'containers/LoginContainer/Loadable';
-import ChangePasswordContainer from 'containers/ChangePasswordContainer/Loadable';
-import CreateBallotContainer from 'containers/CreateBallotContainer/Loadable';
-import ViewBallotContainer from 'containers/ViewBallotContainer/Loadable';
-import EditVotersContainer from 'containers/EditVotersContainer/Loadable';
-import EditFieldsContainer from 'containers/EditFieldsContainer/Loadable';
-import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
-import PreVotingContainer from 'containers/PreVotingContainer/Loadable';
-import ViewStatContainer from 'containers/ViewStatContainer/Loadable';
 
 import * as languageProviderActions from 'containers/LanguageProvider/actions';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as globalContainerSelectors from './selectors';
 import * as globalContainerActions from './actions';
 import sagas from './sagas';
-
-const ConnectedSwitch = connect(createStructuredSelector({
-  location: createSelector(
-    (state) => state.getIn(['route', 'location']),
-    (state) => state.toJS(),
-  ),
-}))(Switch);
 
 export class GlobalContainer extends React.PureComponent {
   componentWillMount() {
@@ -45,25 +26,14 @@ export class GlobalContainer extends React.PureComponent {
   render() {
     return (
       <GlobalPage {...this.props}>
-        <ConnectedSwitch>
-          <Route exact path="/app/" component={HomeContainer} />
-          <Route exact path="/app/login" component={LoginContainer} />
-          <Route exact path="/app/password" component={ChangePasswordContainer} />
-          <Route exact path="/app/create" component={CreateBallotContainer} />
-          <Route exact path="/app/ballots/:bId" component={ViewBallotContainer} />
-          <Route exact path="/app/ballots/:bId/voters/" component={EditVotersContainer} />
-          <Route exact path="/app/ballots/:bId/fields/" component={EditFieldsContainer} />
-          <Route exact path="/app/vreg/:bId/:iCode" component={VoterRegContainer} />
-          <Route exact path="/app/ballots/:bId/preVoting" component={PreVotingContainer} />
-          <Route exact path="/app/ballots/:bId/tickets/" component={ViewStatContainer} />
-          <Route component={NotFoundPage} />
-        </ConnectedSwitch>
+        {this.props.children}
       </GlobalPage>
     );
   }
 }
 
 GlobalContainer.propTypes = {
+  children: PropTypes.any,
   isDrawerOpen: PropTypes.bool.isRequired,
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,

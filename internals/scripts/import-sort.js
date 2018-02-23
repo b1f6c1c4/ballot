@@ -45,6 +45,8 @@ const style = (file) => (styleApi) => {
     not,
     name,
     moduleName,
+    isAbsoluteModule,
+    isRelativeModule,
     hasOnlyDefaultMember,
     hasOnlyNamespaceMember,
     unicode,
@@ -69,6 +71,15 @@ const style = (file) => (styleApi) => {
   };
 
   return [
+    { match: moduleNameIs('babel-polyfill') },
+    {
+      match: and(
+        moduleNameIs(/\.css$/),
+        isAbsoluteModule,
+      ),
+    },
+    { separator: true },
+
     { match: moduleNameIs('lodash') },
     { match: moduleNameIs('react') },
     { match: moduleNameIs('prop-types') },
@@ -108,6 +119,7 @@ const style = (file) => (styleApi) => {
       match: moduleNameIs('material-ui'),
       sortNamedMembers: name(proper),
     },
+    { match: moduleNameIs(/^material-ui\/colors/) },
     {
       match: moduleNameIs('material-ui-icons'),
       sortNamedMembers: name(proper),
@@ -177,6 +189,12 @@ const style = (file) => (styleApi) => {
     { match: moduleNameIs('translations') },
     { match: moduleNameIs('utils/messages') },
     { match: moduleNameIs('./messages') },
+    {
+      match: and(
+        moduleNameIs(/\.css$/),
+        isRelativeModule,
+      ),
+    },
     { separator: true },
 
     {

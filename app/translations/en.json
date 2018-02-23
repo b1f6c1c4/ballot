@@ -48,6 +48,7 @@
   "app.components.GlobalBar.logout": "Sign Out",
   "app.components.GlobalBar.password": "Change Password",
   "app.components.GlobalBar.profile": "Home",
+  "app.components.GlobalDrawer.help": "Help",
   "app.components.GlobalDrawer.profile": "Home",
   "app.components.HomePage.bId": "ID",
   "app.components.HomePage.create": "Create",

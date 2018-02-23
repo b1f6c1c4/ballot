@@ -48,6 +48,7 @@
   "app.components.GlobalBar.logout": "登出",
   "app.components.GlobalBar.password": "修改密钥",
   "app.components.GlobalBar.profile": "控制台",
+  "app.components.GlobalDrawer.help": "帮助",
   "app.components.GlobalDrawer.profile": "控制台",
   "app.components.HomePage.bId": "编号",
   "app.components.HomePage.create": "发起新投票",

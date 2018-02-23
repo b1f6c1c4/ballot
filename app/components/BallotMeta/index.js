@@ -24,6 +24,11 @@ const styles = (theme) => ({
     verticalAlign: 'super',
     marginLeft: theme.spacing.unit * 2,
   },
+  scrollable: {
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    whiteSpace: 'pre',
+  },
 });
 
 class BallotMeta extends React.PureComponent {
@@ -71,11 +76,11 @@ class BallotMeta extends React.PureComponent {
         {isLoading && (
           <Loading />
         )}
-        <Typography variant="caption">
+        <Typography variant="caption" className={classes.scrollable}>
           <FormattedMessage {...messages.owner} />
           {ballot && ballot.owner}
         </Typography>
-        <Typography variant="caption">
+        <Typography variant="caption" className={classes.scrollable}>
           <FormattedMessage {...messages.bId} />
           <Abbreviation text={bId} allowExpand />
         </Typography>

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import {
   withStyles,
@@ -17,6 +17,7 @@ import {
 import {
   ExpandLess,
   ExpandMore,
+  HelpOutline,
   Home,
   Language,
   Lock,
@@ -35,6 +36,9 @@ const styles = (theme) => ({
   nested: {
     paddingLeft: theme.spacing.unit * 4,
   },
+  item: {
+    paddingLeft: 0,
+  },
 });
 
 class GlobalDrawer extends React.PureComponent {
@@ -43,6 +47,11 @@ class GlobalDrawer extends React.PureComponent {
   handleProfile = () => {
     this.props.onCloseDrawerAction();
     this.props.onPush('/app/');
+  };
+
+  handleHelp = () => {
+    this.props.onCloseDrawerAction();
+    window.location = '/#faq';
   };
 
   handleLogin = () => {
@@ -64,7 +73,6 @@ class GlobalDrawer extends React.PureComponent {
 
   render() {
     const {
-      intl,
       classes,
       username,
       listBallots,
@@ -114,9 +122,14 @@ class GlobalDrawer extends React.PureComponent {
                   <Lock />
                 </Link>
               </ListItemIcon>
-              <Link to="/app/login">
-                <ListItemText primary={intl.formatMessage(messages.login)} />
-              </Link>
+              <ListItemText
+                className={classes.item}
+                primary={(
+                  <Link to="/app/login">
+                    <FormattedMessage {...messages.login} />
+                  </Link>
+                )}
+              />
             </ListItem>
           )}
           {username && (
@@ -126,17 +139,44 @@ class GlobalDrawer extends React.PureComponent {
                   <Home />
                 </Link>
               </ListItemIcon>
-              <Link to="/app/">
-                <ListItemText primary={intl.formatMessage(messages.profile)} />
-              </Link>
+              <ListItemText
+                className={classes.item}
+                primary={(
+                  <Link to="/app/">
+                    <FormattedMessage {...messages.profile} />
+                  </Link>
+                )}
+              />
             </ListItem>
           )}
+          <ListItem button onClick={this.handleHelp}>
+            <ListItemIcon>
+              <a href="/#faq">
+                <HelpOutline />
+              </a>
+            </ListItemIcon>
+            <ListItemText
+              className={classes.item}
+              primary={(
+                <a href="/#faq">
+                  <FormattedMessage {...messages.help} />
+                </a>
+              )}
+            />
+          </ListItem>
           <Divider />
           <ListItem button onClick={this.handleLanguageList}>
             <ListItemIcon>
               <Language />
             </ListItemIcon>
-            <ListItemText primary="Language/语言" />
+            <ListItemText
+              className={classes.item}
+              primary={(
+                <span>
+                  Language/语言
+                </span>
+              )}
+            />
             {this.state.isLangOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={this.state.isLangOpen} timeout="auto" unmountOnExit>
@@ -153,7 +193,6 @@ class GlobalDrawer extends React.PureComponent {
 }
 
 GlobalDrawer.propTypes = {
-  intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   classes: PropTypes.object.isRequired,
   onPush: PropTypes.func.isRequired,
   onLanguage: PropTypes.func.isRequired,
@@ -164,6 +203,5 @@ GlobalDrawer.propTypes = {
 };
 
 export default compose(
-  injectIntl,
   withStyles(styles),
 )(GlobalDrawer);

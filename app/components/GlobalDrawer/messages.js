@@ -8,5 +8,9 @@ export default {
       id: 'app.components.GlobalDrawer.profile',
       defaultMessage: 'Home',
     },
+    help: {
+      id: 'app.components.GlobalDrawer.help',
+      defaultMessage: 'Help',
+    },
   }),
 };
