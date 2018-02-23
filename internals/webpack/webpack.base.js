@@ -22,7 +22,7 @@ module.exports = (options) => ({
         use: [{
           loader: 'worker-loader',
           options: {
-            name: options.workerName,
+            name: 'assets/[chunkhash:8].worker.js',
           },
         }, {
           loader: 'babel-loader',
@@ -49,7 +49,7 @@ module.exports = (options) => ({
         use: {
           loader: 'file-loader',
           options: {
-            name: '[name].[hash:8].[ext]',
+            name: 'assets/[name].[hash:8].[ext]',
           },
         },
       },
@@ -58,7 +58,7 @@ module.exports = (options) => ({
         use: {
           loader: 'file-loader',
           options: {
-            name: '[name].[hash:8].[ext]',
+            name: 'assets/[name].[hash:8].[ext]',
           },
         },
       },

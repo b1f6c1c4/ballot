@@ -238,7 +238,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 100%;
 }
 
-.nav-menu ul li {
+.nav-menu li {
   min-width: 180px;
 }
 
@@ -285,11 +285,11 @@ h1, h2, h3, h4, h5, h6 {
   background: #fff;
 }
 
-.nav-menu ul li {
+.nav-menu li {
   transition: 0.3s;
 }
 
-.nav-menu ul li a {
+.nav-menu li a {
   padding: 10px;
   color: #333;
   transition: 0.3s;
@@ -347,11 +347,11 @@ h1, h2, h3, h4, h5, h6 {
   list-style: none;
 }
 
-#mobile-nav ul li {
+#mobile-nav li {
   position: relative;
 }
 
-#mobile-nav ul li a {
+#mobile-nav li a {
   color: #fff;
   font-size: 16px;
   overflow: hidden;
@@ -363,7 +363,7 @@ h1, h2, h3, h4, h5, h6 {
   outline: none;
 }
 
-#mobile-nav ul li li {
+#mobile-nav li li {
   padding-left: 30px;
 }
 

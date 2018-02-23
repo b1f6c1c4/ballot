@@ -79,9 +79,9 @@ module.exports = require('./webpack.base')({
   entry: {
     outdated: [
       'index/outdated.js',
-      'file-loader?name=[name].[ext]!resource/favicon.ico',
-      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
-      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
+      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'webpack-hot-middleware/client?reload=true',
@@ -96,8 +96,8 @@ module.exports = require('./webpack.base')({
 
   // Don't use hashes in dev mode for better performance
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
+    filename: 'assets/[name].js',
+    chunkFilename: 'assets/[name].chunk.js',
   },
 
   // Add development plugins

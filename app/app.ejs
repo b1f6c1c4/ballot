@@ -26,8 +26,6 @@
     <!-- The app hooks into this div -->
     <div id="app"></div>
 
-    <noscript>Please enbale javascript.</noscript>
-
     <%= require('raw-loader!index/outdated.html') %>
     <script src="<%= htmlWebpackPlugin.files.js.filter((j) => /outdated/.test(j)) %>"></script>
 

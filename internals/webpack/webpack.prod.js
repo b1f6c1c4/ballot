@@ -7,11 +7,11 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const i18n = require('./i18n');
 
 const extractCss0 = new ExtractTextPlugin({
-  filename: '[name].[contenthash:8].css',
+  filename: 'assets/[name].[contenthash:8].css',
   allChunks: true,
 });
 const extractCss1 = new ExtractTextPlugin({
-  filename: '[name].vendor.[contenthash:8].css',
+  filename: 'assets/[name].vendor.[contenthash:8].css',
   allChunks: true,
 });
 
@@ -79,10 +79,26 @@ const materialUiMap = (name) => {
   return `material-ui/${name}`;
 };
 
-class NetlifyRedirectsPlugin {
+class BasicAssetsPlugin {
   apply(compiler) {
-    const data = '/* /app.html 200\n';
     compiler.plugin('emit', (compilation, cb) => {
+      const data = `
+User-Agent: *
+Disallow: /*
+Allow: /$
+`.trimLeft();
+      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
+      compilation.assets['robots.txt'] = {
+        source: () => data,
+        size: () => data.length,
+      };
+      cb();
+    });
+    compiler.plugin('emit', (compilation, cb) => {
+      const data = `
+/app/* /app.html 200!
+/secret/* /secret/index.html 302
+`.trimLeft();
       // eslint-disable-next-line no-param-reassign, no-underscore-dangle
       compilation.assets._redirects = {
         source: () => data,
@@ -98,7 +114,7 @@ class NetlifyHttp2PushPlugin {
     compiler.plugin('emit', (compilation, cb) => {
       const entry = (e) => compilation.outputOptions.publicPath + e;
       const makePreload = (reg, as) => _.keys(compilation.assets)
-        .filter((a) => reg.test(a))
+        .filter((a) => reg.test(a.replace(/^assets\//, '')))
         .map((a) => `  Link: <${entry(a)}>; rel=preload; as=${as}`);
       const makeIndex = () => {
         const preloads = [];
@@ -124,7 +140,23 @@ class NetlifyHttp2PushPlugin {
         preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
         return preloads.join('\n');
       };
-      const data = `/\n${makeIndex()}\n/*\n${makeApp()}`;
+      const data = `
+/
+${makeIndex()}
+  Cache-Control: public, max-age=0, must-revalidate
+/app/*
+${makeApp()}
+  Cache-Control: public, max-age=0, must-revalidate
+/secret/*
+  Cache-Control: public, max-age=0, must-revalidate
+/assets/*
+  Cache-Control: public, max-age=3153600
+/*
+  Content-Security-Policy: default-src 'self' https://ballot-api.b1f6c1c4.info;
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+`.trimLeft();
       // eslint-disable-next-line no-param-reassign, no-underscore-dangle
       compilation.assets._headers = {
         source: () => data,
@@ -141,14 +173,14 @@ class PreloadPlugin {
       compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, cb) => {
         const entry = (e) => compilation.outputOptions.publicPath + e;
         const makePreload = (reg, as) => _.keys(compilation.assets)
-          .filter((a) => reg.test(a))
+          .filter((a) => reg.test(a.replace(/^assets\//, '')))
           .map((a) => `<link rel="preload" as="${as}" href="${entry(a)}">`);
         const makePrefetch = (reg) => _.keys(compilation.assets)
-          .filter((a) => reg.test(a))
+          .filter((a) => reg.test(a.replace(/^assets\//, '')))
           .map((a) => `<link rel="prefetch" href="${entry(a)}">`);
 
         const preloads = [];
-        if (/index/.test(htmlPluginData.plugin.options.filename)) {
+        if (/^index/.test(htmlPluginData.plugin.options.filename)) {
           // outdatedbrowser.min.js outdated.js
           preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
           // index.js
@@ -167,7 +199,7 @@ class PreloadPlugin {
           preloads.push(...makePrefetch(/^HomeContainer.*\.chunk\.js$/));
           // NotoSansSC-Regular.woff2
           preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
-        } else if (/app/.test(htmlPluginData.plugin.options.filename)) {
+        } else if (/^app/.test(htmlPluginData.plugin.options.filename)) {
           // outdatedbrowser.min.js outdated.js
           preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
           // app.js
@@ -196,16 +228,15 @@ module.exports = require('./webpack.base')({
   entry: {
     outdated: [
       'index/outdated.js',
-      'file-loader?name=[name].[ext]!resource/favicon.ico',
-      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
-      'file-loader?name=[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
+      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'index/style.js',
       'index/index.js',
     ],
     app: [
-      'index/outdated.js',
       'redux-form',
       'app.js',
     ],
@@ -231,7 +262,6 @@ module.exports = require('./webpack.base')({
     ],
   },
 
-  workerName: '[chunkhash:8].worker.js',
   cssLoaderVender: extractCss1.extract({
     fallback: 'style-loader',
     use: 'css-loader',
@@ -243,13 +273,13 @@ module.exports = require('./webpack.base')({
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
-    filename: '[name].[chunkhash:8].js',
-    chunkFilename: '[name].[chunkhash:8].chunk.js',
+    filename: 'assets/[name].[chunkhash:8].js',
+    chunkFilename: 'assets/[name].[chunkhash:8].chunk.js',
   },
 
   plugins: [
     new GitRevisionPlugin(),
-    new NetlifyRedirectsPlugin(),
+    new BasicAssetsPlugin(),
     new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
