@@ -97,7 +97,7 @@ Allow: /$
     compiler.plugin('emit', (compilation, cb) => {
       const data = `
 /app/* /app.html 200!
-/secret/* /secret/index.html 302
+/secret/* /secret/ 302
 `.trimLeft();
       // eslint-disable-next-line no-param-reassign, no-underscore-dangle
       compilation.assets._redirects = {
@@ -152,7 +152,6 @@ ${makeApp()}
 /assets/*
   Cache-Control: public, max-age=3153600
 /*
-  Content-Security-Policy: default-src 'self' https://ballot-api.b1f6c1c4.info;
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   X-XSS-Protection: 1; mode=block
@@ -228,7 +227,7 @@ module.exports = require('./webpack.base')({
   entry: {
     outdated: [
       'index/outdated.js',
-      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
