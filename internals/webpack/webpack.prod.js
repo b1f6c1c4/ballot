@@ -261,6 +261,8 @@ module.exports = require('./webpack.base')({
     ],
   },
 
+  workerName: 'assets/[chunkhash:8].worker.js',
+
   cssLoaderVender: extractCss1.extract({
     fallback: 'style-loader',
     use: 'css-loader',

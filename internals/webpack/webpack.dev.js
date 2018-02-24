@@ -1,7 +1,3 @@
-/**
- * DEVELOPMENT WEBPACK CONFIGURATION
- */
-
 const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
@@ -9,12 +5,9 @@ const glob = require('glob');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
 const i18n = require('./i18n');
 const logger = require('../../server/logger');
-// eslint-disable-next-line import/no-dynamic-require
-const pkg = require(path.resolve(process.cwd(), 'package.json'));
-const { dllPlugin } = pkg;
+const { dllPlugin } = require('../../package.json');
 
 const plugins = [
   new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
@@ -56,11 +49,6 @@ const plugins = [
     chunks: [],
     i18n: v,
   })).value(),
-
-  new CircularDependencyPlugin({
-    exclude: /a\.js|node_modules/, // exclude node_modules
-    failOnError: false, // show a warning when there is a circular dependency
-  }),
 ];
 
 if (dllPlugin) {
