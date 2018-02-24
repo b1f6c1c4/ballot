@@ -1,4 +1,4 @@
-const { models, make, mer, check } = require('../../../tests/util');
+const { models, make, mer, check } = require('../../../tests/bundle');
 const errors = require('../error');
 
 jest.mock('../../cryptor', () => ({
@@ -73,7 +73,7 @@ describe('Mutation', () => {
       models.Organizer.throwErrOn('save');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -139,7 +139,7 @@ describe('Mutation', () => {
       models.Organizer.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -201,7 +201,7 @@ describe('Mutation', () => {
       models.Organizer.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { models, make, mer } = require('../../../tests/util');
+const { models, make, mer } = require('../../../tests/bundle');
 const errors = require('../error');
 
 const rpcMock = {
@@ -302,7 +302,7 @@ describe('Subscription', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -400,7 +400,7 @@ describe('Subscription', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 

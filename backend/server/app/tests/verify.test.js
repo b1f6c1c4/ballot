@@ -1,4 +1,4 @@
-const { models, make, check } = require('../../tests/util');
+const { models, make, check } = require('../../tests/bundle');
 const finalizeVerify = require('../verify');
 
 describe('verify', () => {

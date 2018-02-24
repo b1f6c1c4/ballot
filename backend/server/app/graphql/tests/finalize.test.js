@@ -1,4 +1,4 @@
-const { models, make, mer, check } = require('../../../tests/util');
+const { models, make, mer, check } = require('../../../tests/bundle');
 const errors = require('../error');
 
 jest.doMock('../../cryptor', () => ({
@@ -59,7 +59,7 @@ describe('Mutation', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -114,7 +114,7 @@ describe('Mutation', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -169,7 +169,7 @@ describe('Mutation', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -224,7 +224,7 @@ describe('Mutation', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
