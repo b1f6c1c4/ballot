@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
 
+import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as voterRegContainerActions from '../actions';
 import voterRegContainerReducer from '../reducer';
 
@@ -21,6 +22,37 @@ describe('voterRegContainerReducer', () => {
   });
 
   // Actions
+  it('should handle valid subscription status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'b', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 'x',
+      evil: true,
+    }));
+
+    expect(voterRegContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
+  });
+
+  it('should handle invalid subscription status change action', () => {
+    const originalState = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+    const param = { bId: 'x', status: 'x' };
+    const expectedResult = state.set('ballot', fromJS({
+      bId: 'b',
+      status: 's',
+      evil: true,
+    }));
+
+    expect(voterRegContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
+  });
 
   // Sagas
   it('should handle register request', () => {
