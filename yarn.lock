@@ -805,7 +805,7 @@ debug@2.6.9, debug@^2.2.0, debug@^2.6.8, debug@^2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@^3.1.0:
+debug@^3.0.1, debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
@@ -2138,6 +2138,13 @@ jest-message-util@^22.4.0:
 jest-mock@^22.2.0:
   version "22.2.0"
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-22.2.0.tgz#444b3f9488a7473adae09bc8a77294afded397a7"
+
+jest-mongoose@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/jest-mongoose/-/jest-mongoose-1.0.1.tgz#ac84067efb98b59acf042fcc9929e1a8887727cc"
+  dependencies:
+    debug "^3.0.1"
+    lodash "^4.17.4"
 
 jest-regex-util@^22.1.0:
   version "22.1.0"

@@ -1,4 +1,4 @@
-const { models, make, mer } = require('../../../tests/util');
+const { models, make, mer } = require('../../../tests/bundle');
 const errors = require('../error');
 
 jest.mock('../projection', () => ({
@@ -77,7 +77,7 @@ describe('Query', () => {
       models.SignedTicket.throwErrOn('count');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -115,7 +115,7 @@ describe('Query', () => {
       models.SignedTicket.throwErrOn('find');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -146,7 +146,7 @@ describe('Query', () => {
       models.SignedTicket.throwErrOn('aggregate');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 

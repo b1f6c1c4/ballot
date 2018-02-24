@@ -1,4 +1,4 @@
-const { models, make, mer } = require('../../../tests/util');
+const { models, make, mer } = require('../../../tests/bundle');
 const errors = require('../error');
 
 jest.mock('../projection', () => ({
@@ -52,7 +52,7 @@ describe('Query', () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 
@@ -96,7 +96,7 @@ describe('Query', () => {
       models.Ballot.throwErrOn('find');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
-      expect(res.message).toEqual('Some error');
+      expect(res.message).toEqual('jest-mongoose Error');
       done();
     });
 

@@ -1,4 +1,4 @@
-const { models, make, mer, check } = require('../../tests/util');
+const { models, make, mer, check } = require('../../tests/bundle');
 
 const verify = jest.fn();
 jest.doMock('../cryptor', () => ({
