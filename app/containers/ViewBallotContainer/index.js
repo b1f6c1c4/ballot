@@ -64,6 +64,7 @@ ViewBallotContainer.propTypes = {
   ballot: PropTypes.object,
   error: PropTypes.object,
   count: PropTypes.number,
+  isOperable: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
@@ -89,11 +90,18 @@ function mapDispatchToProps(dispatch, { match }) {
 }
 
 const mapStateToProps = createStructuredSelector({
-  hasCredential: (state) => !!state.getIn(['globalContainer', 'credential']),
   isLoading: (state) => state.getIn(['viewBallotContainer', 'isLoading']),
   ballot: viewBallotContainerSelectors.Ballot(),
   error: viewBallotContainerSelectors.Error(),
   count: (state) => state.getIn(['viewBallotContainer', 'count']),
+  isOperable: (state) => {
+    if (!state.getIn(['globalContainer', 'credential'])) {
+      return false;
+    }
+    const me = state.getIn(['globalContainer', 'credential', 'username']);
+    const ow = state.getIn(['viewBallotContainer', 'ballot', 'owner']);
+    return me === ow;
+  },
 });
 
 export default compose(
