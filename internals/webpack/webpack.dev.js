@@ -78,7 +78,7 @@ module.exports = require('./webpack.base')({
     ],
     app: [
       'webpack-hot-middleware/client?reload=true',
-      'app.js',
+      'root.js',
     ],
   },
 

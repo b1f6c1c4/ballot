@@ -237,7 +237,7 @@ module.exports = require('./webpack.base')({
     ],
     app: [
       'redux-form',
-      'app.js',
+      'root.js',
     ],
   },
 

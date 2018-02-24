@@ -249,6 +249,7 @@ const run = async () => {
   ]);
   const f = [
     'app/app.js',
+    'app/root.js',
   ].concat(f1).concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
   await async.mapLimit(f, 10, sortFile);
 };

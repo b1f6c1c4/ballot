@@ -110,6 +110,7 @@
       "!app/components/**/index.js",
       "!app/containers/**/index.js",
       "!app/app.js",
+      "!app/root.js",
       "!app/index/*.js",
       "!app/utils/injectReducer.js",
       "!app/utils/injectSaga.js",
