@@ -1,7 +1,3 @@
-/**
- * Test store addons
- */
-
 import { fromJS } from 'immutable';
 import { browserHistory } from 'react-router-dom';
 import configureStore, { slicer as makeSlicer } from '../configureStore';
@@ -138,12 +134,6 @@ describe('configureStore', () => {
 
   beforeAll(() => {
     store = configureStore({}, browserHistory);
-  });
-
-  describe('injectedReducers', () => {
-    it('should contain an object for reducers', () => {
-      expect(typeof store.injectedReducers).toBe('object');
-    });
   });
 
   describe('injectedSagas', () => {

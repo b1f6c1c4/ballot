@@ -11,7 +11,6 @@ export default function checkStore(store) {
     getState: _.isFunction,
     replaceReducer: _.isFunction,
     runSaga: _.isFunction,
-    injectedReducers: _.isObject,
     injectedSagas: _.isObject,
   };
   invariant(

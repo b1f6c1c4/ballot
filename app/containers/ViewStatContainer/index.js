@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import ViewStatPage from 'components/ViewStatPage';
@@ -13,7 +12,6 @@ import ViewStatPage from 'components/ViewStatPage';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewStatContainerSelectors from './selectors';
 import * as viewStatContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class ViewStatContainer extends React.PureComponent {
@@ -94,6 +92,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'viewStatContainer', saga: sagas }),
-  injectReducer({ key: 'viewStatContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(ViewStatContainer);

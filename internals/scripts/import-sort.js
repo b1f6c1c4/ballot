@@ -111,7 +111,6 @@ const style = (file) => (styleApi) => {
       ),
       sort: moduleName(unicode),
     },
-    { match: moduleNameIs('utils/injectReducer') },
     { match: moduleNameIs('utils/injectSaga') },
     { match: moduleNameIs('utils/permission') },
     {

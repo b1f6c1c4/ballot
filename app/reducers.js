@@ -1,7 +1,3 @@
-/**
- * Combine all reducers in this file and export the combined reducers.
- */
-
 import { combineReducers } from 'redux-immutable';
 import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
@@ -9,25 +5,22 @@ import { reducer as formReducer } from 'redux-form/immutable';
 
 import * as GLOBAL_CONTAINER from 'containers/GlobalContainer/constants';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
+import changePasswordContainerReducer from 'containers/ChangePasswordContainer/reducer';
+import createBallotContainerReducer from 'containers/CreateBallotContainer/reducer';
+import editFieldsContainerReducer from 'containers/EditFieldsContainer/reducer';
+import editVotersContainerReducer from 'containers/EditVotersContainer/reducer';
 import globalContainerReducer from 'containers/GlobalContainer/reducer';
+import loginContainerReducer from 'containers/LoginContainer/reducer';
+import preVotingContainerReducer from 'containers/PreVotingContainer/reducer';
 import snackbarContainerReducer from 'containers/SnackbarContainer/reducer';
+import viewBallotContainerReducer from 'containers/ViewBallotContainer/reducer';
+import viewStatContainerReducer from 'containers/ViewStatContainer/reducer';
+import voterRegContainerReducer from 'containers/VoterRegContainer/reducer';
 
-/*
- * routeReducer
- *
- * The reducer merges route location changes into our immutable state.
- * The change is necessitated by moving to react-router-redux@4
- *
- */
-
-// Initial routing state
 const routeInitialState = fromJS({
   location: null,
 });
 
-/**
- * Merge route into the global application state
- */
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
     /* istanbul ignore next */
@@ -38,17 +31,22 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
-/**
- * Creates the main reducer with the dynamically injected ones
- */
-export default function createReducer(injectedReducers) {
+export default function createReducer() {
   const appReducer = combineReducers({
     form: formReducer,
     route: routeReducer,
     language: languageProviderReducer,
+    changePasswordContainer: changePasswordContainerReducer,
+    createBallotContainer: createBallotContainerReducer,
+    editFieldsContainer: editFieldsContainerReducer,
+    editVotersContainer: editVotersContainerReducer,
     globalContainer: globalContainerReducer,
+    loginContainer: loginContainerReducer,
+    preVotingContainer: preVotingContainerReducer,
     snackbarContainer: snackbarContainerReducer,
-    ...injectedReducers,
+    viewBallotContainer: viewBallotContainerReducer,
+    viewStatContainer: viewStatContainerReducer,
+    voterRegContainer: voterRegContainerReducer,
   });
 
   return (state, action) => {

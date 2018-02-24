@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import ViewBallotPage from 'components/ViewBallotPage';
@@ -13,7 +12,6 @@ import ViewBallotPage from 'components/ViewBallotPage';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as viewBallotContainerSelectors from './selectors';
 import * as viewBallotContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class ViewBallotContainer extends React.PureComponent {
@@ -100,6 +98,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'viewBallotContainer', saga: sagas }),
-  injectReducer({ key: 'viewBallotContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(ViewBallotContainer);

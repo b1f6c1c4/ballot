@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-{{#if wantReducer}}
-{{#if wantLoadable}}
-import injectReducer from 'utils/injectReducer';
-{{/if}}
-{{/if}}
 {{#if wantSagas}}
 import injectSaga from 'utils/injectSaga';
 {{/if}}
@@ -17,9 +12,6 @@ import * as {{ camelCase name }}Selectors from './selectors';
 {{/if}}
 {{#if wantReducer}}
 import * as {{ camelCase name }}Actions from './actions';
-{{#if wantLoadable}}
-import reducer from './reducer';
-{{/if}}
 {{/if}}
 {{#if wantSagas}}
 import sagas from './sagas';
@@ -76,7 +68,6 @@ export default compose(
 {{/if}}
 {{#if wantReducer}}
 {{#if wantLoadable}}
-  injectReducer({ key: '{{ camelCase name }}', reducer }),
 {{/if}}
   connect(mapStateToProps, mapDispatchToProps),
 {{else}}

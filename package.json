@@ -112,7 +112,6 @@
       "!app/app.js",
       "!app/root.js",
       "!app/index/*.js",
-      "!app/utils/injectReducer.js",
       "!app/utils/injectSaga.js",
       "!app/utils/request-core.js",
       "!app/utils/crypto/index.js",

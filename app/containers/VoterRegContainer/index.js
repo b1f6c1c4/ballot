@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import VoterRegPage from 'components/VoterRegPage';
@@ -13,7 +12,6 @@ import VoterRegPage from 'components/VoterRegPage';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as voterRegContainerSelectors from './selectors';
 import * as voterRegContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class VoterRegContainer extends React.PureComponent {
@@ -96,6 +94,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'voterRegContainer', saga: sagas }),
-  injectReducer({ key: 'voterRegContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(VoterRegContainer);

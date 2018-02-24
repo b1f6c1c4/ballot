@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import AuthRequired from 'components/AuthRequired';
 import CreateBallotPage from 'components/CreateBallotPage';
 
 import * as createBallotContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class CreateBallotContainer extends React.PureComponent {
@@ -41,6 +39,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'createBallotContainer', saga: sagas }),
-  injectReducer({ key: 'createBallotContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(CreateBallotContainer);
