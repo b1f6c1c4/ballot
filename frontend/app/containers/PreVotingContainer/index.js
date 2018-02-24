@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import PreVotingPage from 'components/PreVotingPage';
@@ -13,7 +12,6 @@ import PreVotingPage from 'components/PreVotingPage';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as preVotingContainerSelectors from './selectors';
 import * as preVotingContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class PreVotingContainer extends React.PureComponent {
@@ -97,6 +95,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'preVotingContainer', saga: sagas }),
-  injectReducer({ key: 'preVotingContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(PreVotingContainer);

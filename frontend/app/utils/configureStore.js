@@ -7,7 +7,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
-import logger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import persistState from 'redux-localstorage';
 
 import createReducer from '../reducers';
@@ -59,7 +59,10 @@ export default function configureStore(initialState = {}, history) {
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'production' &&
     process.env.NODE_ENV !== 'test') {
-    middlewares.push(logger);
+    middlewares.push(createLogger({
+      predicate: (getState, { type }) => !type || !type.startsWith('@@redux-form'),
+      level: 'debug',
+    }));
   }
 
   const enhancers = [
@@ -94,14 +97,13 @@ export default function configureStore(initialState = {}, history) {
 
   // Extensions
   store.runSaga = sagaMiddleware.run;
-  store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   /* istanbul ignore next */
   if (module.hot) {
     module.hot.accept('../reducers', () => {
-      store.replaceReducer(createReducer(store.injectedReducers));
+      store.replaceReducer(createReducer());
     });
   }
 

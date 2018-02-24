@@ -172,22 +172,24 @@ module.exports = {
         templateFile: './component/loadable.js.hbs',
         abortOnFail: true,
       });
-    } else if (data.wantReducer) {
-      actions.push({
-        type: 'modify',
-        pattern: /(from\s'containers\/[a-zA-Z]+\/reducer';\n)(?!.*from\s'containers\/[a-zA-Z]+\/reducer';)/g,
-        path: '../../app/reducers.js',
-        templateFile: './container/reducers-import.js.hbs',
-        abortOnFail: true,
-      });
-      actions.push({
-        type: 'modify',
-        pattern: /([a-zA-Z]+Reducer,\n)(?!.*[a-zA-Z]+Reducer,)/g,
-        path: '../../app/reducers.js',
-        templateFile: './container/reducers-combine.js.hbs',
-        abortOnFail: true,
-      });
     }
+
+    actions.push({
+      type: 'complexModify',
+      method: 'lastOccurance',
+      pattern: /^import [a-zA-Z]+Reducer from 'containers\/[A-Za-z]+\/reducer';$/g,
+      path: '../../app/reducers.js',
+      template: 'import {{ camelCase name }}Reducer from \'containers/{{ properCase name }}/reducer\';',
+      abortOnFail: true,
+    });
+    actions.push({
+      type: 'complexModify',
+      method: 'lastOccurance',
+      pattern: / {4}[a-zA-Z]+Reducer: [a-zA-Z]+Reducer,$/,
+      path: '../../app/reducers.js',
+      template: '    {{ camelCase name }}: {{ camelCase name }}Reducer,',
+      abortOnFail: true,
+    });
 
     return actions;
   },

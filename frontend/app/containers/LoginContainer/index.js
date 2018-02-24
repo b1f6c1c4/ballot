@@ -5,13 +5,11 @@ import { connect } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Redirect } from 'react-router';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import LoginPage from 'components/LoginPage';
 
 import * as loginContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class LoginContainer extends React.PureComponent {
@@ -50,6 +48,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'loginContainer', saga: sagas }),
-  injectReducer({ key: 'loginContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(LoginContainer);

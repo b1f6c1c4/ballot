@@ -1,12 +1,23 @@
+const _ = require('lodash');
 const path = require('path');
 const webpack = require('webpack');
 
-module.exports = (options) => ({
-  entry: options.entry,
-  output: Object.assign({
+module.exports = ({
+  entry,
+  output,
+  babelOptions,
+  workerName,
+  cssLoaderVender,
+  cssLoaderApp,
+  plugins,
+  devtool,
+  performance,
+}) => ({
+  entry,
+  output: _.merge({
     path: path.resolve(process.cwd(), 'build'),
     publicPath: '/',
-  }, options.output),
+  }, output),
   module: {
     rules: [
       {
@@ -14,7 +25,7 @@ module.exports = (options) => ({
         exclude: /node_modules/,
         use: [{
           loader: 'babel-loader',
-          options: options.babelOptions || {},
+          options: babelOptions,
         }],
       },
       {
@@ -22,23 +33,23 @@ module.exports = (options) => ({
         use: [{
           loader: 'worker-loader',
           options: {
-            name: 'assets/[chunkhash:8].worker.js',
+            name: workerName,
           },
         }, {
           loader: 'babel-loader',
-          options: options.babelOptions || {},
+          options: babelOptions,
         }],
       },
       {
         test: /\.css$/,
         include: /node_modules/,
         exclude: /outdatedbrowser/,
-        use: options.cssLoaderVender || ['style-loader', 'css-loader'],
+        use: cssLoaderVender || ['style-loader', 'css-loader'],
       },
       {
         test: /(?<!style)\.css$/,
         exclude: /node_modules/,
-        use: options.cssLoaderApp || ['style-loader', 'css-loader'],
+        use: cssLoaderApp || ['style-loader', 'css-loader'],
       },
       {
         test: /\.(svg)$/,
@@ -73,7 +84,7 @@ module.exports = (options) => ({
       },
     ],
   },
-  plugins: options.plugins.concat([
+  plugins: plugins.concat([
     new webpack.NamedModulesPlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
@@ -103,7 +114,7 @@ module.exports = (options) => ({
       'main',
     ],
   },
-  devtool: options.devtool,
+  devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
-  performance: options.performance || {},
+  performance,
 });

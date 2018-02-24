@@ -111,10 +111,11 @@ class ViewBallotPage extends React.PureComponent {
       isLoading,
       ballot,
       count,
+      isOperable,
     } = this.props;
 
-    const canEditFields = ballot && Permission.CanEditFields(ballot);
-    const canEditVoters = ballot && Permission.CanEditVoters(ballot);
+    const canEditFields = ballot && isOperable && Permission.CanEditFields(ballot);
+    const canEditVoters = ballot && isOperable && Permission.CanEditVoters(ballot);
     const canViewStats = !isLoading && ballot && Permission.CanViewStats(ballot);
 
     const makeFieldType = (b) => {
@@ -162,7 +163,7 @@ class ViewBallotPage extends React.PureComponent {
               onClick={this.props.onRefresh}
             />
           </LoadingButton>
-          {!isLoading && ballot && ballot.status === 'inviting' && (
+          {!isLoading && ballot && ballot.status === 'inviting' && isOperable && (
             <Button
               color="secondary"
               onClick={this.handleConfirm('isOpenFinalizeVoters')}
@@ -177,7 +178,7 @@ class ViewBallotPage extends React.PureComponent {
             onCancel={this.handleConfirm()}
             onAction={this.handleConfirm(this.props.onFinalize)}
           />
-          {!isLoading && ballot && ballot.status === 'invited' && (
+          {!isLoading && ballot && ballot.status === 'invited' && isOperable && (
             <Button
               color="secondary"
               onClick={this.handleConfirm('isOpenFinalizeFields')}
@@ -192,7 +193,7 @@ class ViewBallotPage extends React.PureComponent {
             onCancel={this.handleConfirm()}
             onAction={this.handleConfirm(this.props.onFinalize)}
           />
-          {!isLoading && ballot && ballot.status === 'preVoting' && (
+          {!isLoading && ballot && ballot.status === 'preVoting' && isOperable && (
             <Button
               color="secondary"
               onClick={this.handleConfirm('isOpenFinalizePreVoting')}
@@ -207,7 +208,7 @@ class ViewBallotPage extends React.PureComponent {
             onCancel={this.handleConfirm()}
             onAction={this.handleConfirm(this.props.onFinalize)}
           />
-          {!isLoading && ballot && ballot.status === 'voting' && (
+          {!isLoading && ballot && ballot.status === 'voting' && isOperable && (
             <Button
               color="secondary"
               onClick={this.handleConfirm('isOpenFinalizeVoting')}
@@ -353,6 +354,7 @@ ViewBallotPage.propTypes = {
   ballot: PropTypes.object,
   error: PropTypes.object,
   count: PropTypes.number,
+  isOperable: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { fromJS } from 'immutable';
 
+import * as SUBSCRIPTION_CONTAINER from 'containers/SubscriptionContainer/constants';
 import * as VOTER_REG_CONTAINER from './constants';
 
 const initialState = fromJS({
@@ -14,6 +15,11 @@ const initialState = fromJS({
 function voterRegContainerReducer(state = initialState, action) {
   switch (action.type) {
     // Actions
+    case SUBSCRIPTION_CONTAINER.STATUS_CHANGE_ACTION:
+      if (state.getIn(['ballot', 'bId']) === action.bId) {
+        return state.setIn(['ballot', 'status'], action.status);
+      }
+      return state;
     // Sagas
     case VOTER_REG_CONTAINER.REGISTER_REQUEST:
       return state.set('isRegLoading', true);

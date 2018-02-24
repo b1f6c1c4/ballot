@@ -5,7 +5,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import EditFieldsPage from 'components/EditFieldsPage';
@@ -13,7 +12,6 @@ import EditFieldsPage from 'components/EditFieldsPage';
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as editFieldsContainerSelectors from './selectors';
 import * as editFieldsContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class EditFieldsContainer extends React.PureComponent {
@@ -107,6 +105,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'editFieldsContainer', saga: sagas }),
-  injectReducer({ key: 'editFieldsContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(EditFieldsContainer);

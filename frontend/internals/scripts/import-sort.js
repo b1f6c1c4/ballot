@@ -111,7 +111,6 @@ const style = (file) => (styleApi) => {
       ),
       sort: moduleName(unicode),
     },
-    { match: moduleNameIs('utils/injectReducer') },
     { match: moduleNameIs('utils/injectSaga') },
     { match: moduleNameIs('utils/permission') },
     {
@@ -249,6 +248,7 @@ const run = async () => {
   ]);
   const f = [
     'app/app.js',
+    'app/root.js',
   ].concat(f1).concat(f2).filter((s) => /(?<!messages)\.js$/.test(s));
   await async.mapLimit(f, 10, sortFile);
 };

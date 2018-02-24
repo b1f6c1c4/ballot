@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 
 import AuthRequired from 'components/AuthRequired';
 import ChangePasswordPage from 'components/ChangePasswordPage';
 
 import * as changePasswordContainerActions from './actions';
-import reducer from './reducer';
 import sagas from './sagas';
 
 export class ChangePasswordContainer extends React.PureComponent {
@@ -42,6 +40,5 @@ const mapStateToProps = createStructuredSelector({
 
 export default compose(
   injectSaga({ key: 'changePasswordContainer', saga: sagas }),
-  injectReducer({ key: 'changePasswordContainer', reducer }),
   connect(mapStateToProps, mapDispatchToProps),
 )(ChangePasswordContainer);

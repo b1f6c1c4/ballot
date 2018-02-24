@@ -35,7 +35,7 @@ import VoterRegContainer from 'containers/VoterRegContainer/Loadable';
 
 import createHistory from 'history/createBrowserHistory';
 import configureStore from 'utils/configureStore';
-import { translationMessages } from 'utils/i18n';
+import { translationMessages as messages } from 'utils/i18n';
 
 import './app.css';
 
@@ -84,7 +84,7 @@ const ConnectedSwitch = connect(createStructuredSelector({
   ),
 }))(Switch);
 
-const render = (messages) => {
+export const render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <ErrorBoundary>
@@ -122,14 +122,7 @@ const render = (messages) => {
   );
 };
 
-if (module.hot) {
-  // Hot reloadable React components and translation json files
-  // modules.hot.accept does not accept dynamic dependencies,
-  // have to be constants at compile-time
-  module.hot.accept(['utils/i18n'], () => {
-    ReactDOM.unmountComponentAtNode(MOUNT_NODE);
-    render(translationMessages);
-  });
-}
-
-render(translationMessages);
+export const rerender = () => {
+  ReactDOM.unmountComponentAtNode(MOUNT_NODE);
+  render();
+};
