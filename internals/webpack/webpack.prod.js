@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const i18n = require('./i18n');
 
 const extractCss0 = new ExtractTextPlugin({
@@ -284,15 +285,19 @@ module.exports = require('./webpack.base')({
     extractCss0,
     extractCss1,
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJsPlugin({
       cache: true,
       parallel: true,
       sourceMap: !!process.env.SOURCE_MAP,
       uglifyOptions: {
-        ie8: false,
+        ecma: 8,
+        warnings: true,
+        compress: {
+          // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
+          inline: 1,
+        },
         output: {
           comments: false,
-          beautify: false,
         },
       },
     }),

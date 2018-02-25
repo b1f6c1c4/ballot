@@ -57,12 +57,13 @@ export default function configureStore(initialState = {}, history) {
   ];
 
   /* istanbul ignore if */
-  if (process.env.NODE_ENV !== 'production' &&
-    process.env.NODE_ENV !== 'test') {
-    middlewares.push(createLogger({
-      predicate: (getState, { type }) => !type || !type.startsWith('@@redux-form'),
-      level: 'debug',
-    }));
+  if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'production' || window.debug) {
+      middlewares.push(createLogger({
+        predicate: (getState, { type }) => !type || !type.startsWith('@@redux-form'),
+        level: 'debug',
+      }));
+    }
   }
 
   const enhancers = [

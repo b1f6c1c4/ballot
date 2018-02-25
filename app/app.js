@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import 'index/typeface-noto-sans.css';
 import 'typeface-roboto/index.css';
 

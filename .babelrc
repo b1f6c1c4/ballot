@@ -7,6 +7,14 @@
     [
       "env",
       {
+        "targets": {
+          "browsers": [
+            "Chrome >= 62",
+            "Edge >= 15",
+            "Safari >= 11",
+            "iOS >= 11",
+          ],
+        },
         "modules": false,
       },
     ],
