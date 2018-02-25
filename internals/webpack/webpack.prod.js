@@ -1,11 +1,9 @@
 const _ = require('lodash');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const i18n = require('./i18n');
 
 const extractCss0 = new ExtractTextPlugin({
   filename: 'assets/[name].[contenthash:8].css',
@@ -273,6 +271,9 @@ module.exports = require('./webpack.base')({
     use: 'css-loader',
   }),
 
+  minify,
+  inject: false,
+
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
     filename: 'assets/[name].[chunkhash:8].js',
@@ -307,48 +308,6 @@ module.exports = require('./webpack.base')({
         },
       },
     }),
-
-    // Minify and optimize the index.html
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'app/index/index.ejs',
-      minify,
-      inject: false, // manual inject
-      chunksSortMode: 'manual',
-      chunks: [
-        'index',
-      ],
-    }),
-
-    // Minify and optimize the app.html
-    new HtmlWebpackPlugin({
-      filename: 'app.html',
-      template: 'app/app.ejs',
-      minify,
-      inject: false, // manual inject
-      chunks: [
-        'app',
-      ],
-    }),
-
-    // Copy the secret/index.html
-    new HtmlWebpackPlugin({
-      filename: 'secret/index.html',
-      template: 'app/secret/index.ejs',
-      inject: true,
-      chunks: [],
-      i18n,
-    }),
-
-    // I18n the secret/index.ejs
-    ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
-      filename: `secret/${k}.html`,
-      template: 'app/secret/locale.ejs',
-      inject: true,
-      chunks: [],
-      i18n: v,
-    })).value(),
-
     new PreloadPlugin(),
   ],
 

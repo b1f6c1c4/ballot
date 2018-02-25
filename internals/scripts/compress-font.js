@@ -8,10 +8,12 @@ const async = require('async');
 const path = require('path');
 const readline = require('readline');
 const fastXmlParser = require('fast-xml-parser');
-const zh = require('../../app/translations/zh.json');
+const appResources = require('../../app/translations');
+const indexResources = require('../../app/index/translations');
 
 const theCodes = new Set();
-let txt = _.values(zh).join('').replace(/[ -~]/g, '');
+let txt = _.values(appResources).concat(_.values(indexResources))
+  .map((v) => _.values(v)).join('').replace(/[ -~]/g, '');
 if (process.argv.length >= 3) {
   [, , txt] = process.argv;
 } else {

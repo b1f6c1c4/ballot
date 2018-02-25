@@ -108,6 +108,7 @@
       "!app/**/messages.js",
       "!app/components/**/index.js",
       "!app/containers/**/index.js",
+      "!app/**/translations/index.js",
       "!app/app.js",
       "!app/root.js",
       "!app/index/*.js",

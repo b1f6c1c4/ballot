@@ -1,13 +1,9 @@
 const _ = require('lodash');
-const en = require('../../app/translations/en.json');
-const zh = require('../../app/translations/zh.json');
 
-_.assign(module.exports, _.mapValues(
-  { en, zh },
+module.exports = (res) => _.mapValues(
+  res,
   (lst) => _.chain({})
-    .assign(en)
+    .assign(res.en)
     .assign(lst)
-    .pickBy((v, k) => /^secret\.|^index.lang$/.test(k))
-    .mapKeys((v, k) => k.replace(/^secret\./, ''))
     .value(),
-));
+);

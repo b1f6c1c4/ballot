@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-syntax */
-const _ = require('lodash');
 const fs = require('fs');
 const nodeGlob = require('glob');
 const { transform } = require('babel-core');
@@ -94,15 +93,6 @@ const extractFromFile = async (fileName) => {
   // Run extraction on all files that match the glob on line 16
   await Promise.all(files.map((fileName) => extractFromFile(fileName)));
   extractTaskDone();
-
-  const appendIndexTaskDone = task('Merge index and secret messages');
-  for (const locale of locales) {
-    _.merge(
-      localeMappings[locale],
-      _.pickBy(oldLocaleMappings[locale], (v, k) => /^(index|secret)\./.test(k)),
-    );
-  }
-  appendIndexTaskDone();
 
   // Make the directory if it doesn't exist, especially for first run
   mkdir('-p', 'app/translations');

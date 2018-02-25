@@ -2,6 +2,7 @@
   "plugins": [
     "lodash",
     "transform-decorators-legacy",
+    "transform-export-extensions",
   ],
   "presets": [
     [
