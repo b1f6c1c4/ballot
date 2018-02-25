@@ -140,6 +140,8 @@ class NetlifyHttp2PushPlugin {
         preloads.push(...makePreload(/^app\..*\.css/, 'style'));
         // app.js
         preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+        // common-app.chunk.js
+        preloads.push(...makePreload(/app\..*\.chunk\.js$/, 'script'));
         return preloads.join('\n');
       };
       const data = `
@@ -190,8 +192,8 @@ class PreloadPlugin {
           preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
           // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
           preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
-          // app.js
-          preloads.push(...makePrefetch(/^app\..*\.js$/));
+          // app.js common-app.chunk.js
+          preloads.push(...makePrefetch(/^(common-)?app\..*\.js$/));
           // app.css
           preloads.push(...makePrefetch(/^app\..*\.css$/));
           // LoginContainer.chunk.js
@@ -203,8 +205,8 @@ class PreloadPlugin {
         } else if (/^app/.test(htmlPluginData.plugin.options.filename)) {
           // outdatedbrowser.min.js outdated.js
           preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
-          // app.js
-          preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+          // app.js common-app.chunk.js
+          preloads.push(...makePreload(/^(common-)?app\..*\.js$/, 'script'));
           // roboto-latin-400.woff2 roboto-latin-300.woff2
           preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
           // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
@@ -212,7 +214,7 @@ class PreloadPlugin {
           // NotoSansSC-Regular.woff2
           preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
           // *.chunk.js
-          preloads.push(...makePrefetch(/^.*\.chunk\.js$/));
+          preloads.push(...makePrefetch(/^(?!common-).*\.chunk\.js$/));
           // *.worker.js
           preloads.push(...makePrefetch(/^.*\.worker\.js$/));
         }
@@ -236,7 +238,6 @@ module.exports = require('./webpack.base')({
       'index/index.js',
     ],
     app: [
-      'redux-form',
       'root.js',
     ],
   },
@@ -284,6 +285,12 @@ module.exports = require('./webpack.base')({
     new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
+    new webpack.optimize.CommonsChunkPlugin({
+      minChunks: 4,
+      async: 'common',
+      children: true,
+      deepChildren: true,
+    }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJsPlugin({
       cache: true,
@@ -291,7 +298,6 @@ module.exports = require('./webpack.base')({
       sourceMap: !!process.env.SOURCE_MAP,
       uglifyOptions: {
         ecma: 8,
-        warnings: true,
         compress: {
           // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
           inline: 1,
