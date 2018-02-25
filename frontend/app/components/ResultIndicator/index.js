@@ -25,6 +25,9 @@ class ResultIndicator extends React.PureComponent {
     const arr = [];
     let flag = true;
 
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     if (!error.codes) {
       flag = false;
       arr.push(<FormattedMessage key="unk" {...messages.error_unknown} />);

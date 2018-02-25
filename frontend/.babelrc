@@ -2,11 +2,20 @@
   "plugins": [
     "lodash",
     "transform-decorators-legacy",
+    "transform-export-extensions",
   ],
   "presets": [
     [
       "env",
       {
+        "targets": {
+          "browsers": [
+            "Chrome >= 62",
+            "Edge >= 15",
+            "Safari >= 11",
+            "iOS >= 11",
+          ],
+        },
         "modules": false,
       },
     ],

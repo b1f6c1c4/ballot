@@ -1,10 +1,9 @@
 const _ = require('lodash');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const i18n = require('./i18n');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const extractCss0 = new ExtractTextPlugin({
   filename: 'assets/[name].[contenthash:8].css',
@@ -112,6 +111,11 @@ Allow: /$
 class NetlifyHttp2PushPlugin {
   apply(compiler) {
     compiler.plugin('emit', (compilation, cb) => {
+      _.keys(compilation.assets)
+        .filter((a) => /^mock\../.test(a.replace(/^assets\//, '')))
+        // eslint-disable-next-line no-param-reassign
+        .forEach((a) => { delete compilation.assets[a]; });
+
       const entry = (e) => compilation.outputOptions.publicPath + e;
       const makePreload = (reg, as) => _.keys(compilation.assets)
         .filter((a) => reg.test(a.replace(/^assets\//, '')))
@@ -120,8 +124,6 @@ class NetlifyHttp2PushPlugin {
         const preloads = [];
         // outdatedbrowser.min.css
         preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // outdatedbrowser.min.js outdated.js
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
         // index.css index.vender.css
         preloads.push(...makePreload(/^index\..*\.css/, 'style'));
         // index.js
@@ -132,12 +134,12 @@ class NetlifyHttp2PushPlugin {
         const preloads = [];
         // outdatedbrowser.min.css
         preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // outdatedbrowser.min.js outdated.js
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
         // app.css
         preloads.push(...makePreload(/^app\..*\.css/, 'style'));
         // app.js
         preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+        // common-app.chunk.js
+        preloads.push(...makePreload(/app\..*\.chunk\.js$/, 'script'));
         return preloads.join('\n');
       };
       const data = `
@@ -188,8 +190,8 @@ class PreloadPlugin {
           preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
           // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
           preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
-          // app.js
-          preloads.push(...makePrefetch(/^app\..*\.js$/));
+          // app.js common-app.chunk.js
+          preloads.push(...makePrefetch(/^(common-)?app\..*\.js$/));
           // app.css
           preloads.push(...makePrefetch(/^app\..*\.css$/));
           // LoginContainer.chunk.js
@@ -201,8 +203,8 @@ class PreloadPlugin {
         } else if (/^app/.test(htmlPluginData.plugin.options.filename)) {
           // outdatedbrowser.min.js outdated.js
           preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
-          // app.js
-          preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+          // app.js common-app.chunk.js
+          preloads.push(...makePreload(/^(common-)?app\..*\.js$/, 'script'));
           // roboto-latin-400.woff2 roboto-latin-300.woff2
           preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
           // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
@@ -210,7 +212,7 @@ class PreloadPlugin {
           // NotoSansSC-Regular.woff2
           preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
           // *.chunk.js
-          preloads.push(...makePrefetch(/^.*\.chunk\.js$/));
+          preloads.push(...makePrefetch(/^(?!common-).*\.chunk\.js$/));
           // *.worker.js
           preloads.push(...makePrefetch(/^.*\.worker\.js$/));
         }
@@ -225,18 +227,15 @@ class PreloadPlugin {
 module.exports = require('./webpack.base')({
   // In production, we skip all hot-reloading stuff
   entry: {
-    outdated: [
-      'index/outdated.js',
+    mock: [
       'file-loader?name=[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
-      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'index/style.js',
       'index/index.js',
     ],
     app: [
-      'redux-form',
       'root.js',
     ],
   },
@@ -272,6 +271,9 @@ module.exports = require('./webpack.base')({
     use: 'css-loader',
   }),
 
+  minify,
+  inject: false,
+
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
     filename: 'assets/[name].[chunkhash:8].js',
@@ -284,63 +286,28 @@ module.exports = require('./webpack.base')({
     new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
+    new webpack.optimize.CommonsChunkPlugin({
+      minChunks: 4,
+      async: 'common',
+      children: true,
+      deepChildren: true,
+    }),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJsPlugin({
       cache: true,
       parallel: true,
       sourceMap: !!process.env.SOURCE_MAP,
       uglifyOptions: {
-        ie8: false,
+        ecma: 8,
+        compress: {
+          // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
+          inline: 1,
+        },
         output: {
           comments: false,
-          beautify: false,
         },
       },
     }),
-
-    // Minify and optimize the index.html
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'app/index/index.ejs',
-      minify,
-      inject: false, // manual inject
-      chunksSortMode: 'manual',
-      chunks: [
-        'outdated',
-        'index',
-      ],
-    }),
-
-    // Minify and optimize the app.html
-    new HtmlWebpackPlugin({
-      filename: 'app.html',
-      template: 'app/app.ejs',
-      minify,
-      inject: false, // manual inject
-      chunks: [
-        'outdated',
-        'app',
-      ],
-    }),
-
-    // Copy the secret/index.html
-    new HtmlWebpackPlugin({
-      filename: 'secret/index.html',
-      template: 'app/secret/index.ejs',
-      inject: true,
-      chunks: [],
-      i18n,
-    }),
-
-    // I18n the secret/index.ejs
-    ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
-      filename: `secret/${k}.html`,
-      template: 'app/secret/locale.ejs',
-      inject: true,
-      chunks: [],
-      i18n: v,
-    })).value(),
-
     new PreloadPlugin(),
   ],
 

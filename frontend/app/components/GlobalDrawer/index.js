@@ -25,7 +25,7 @@ import {
 import { Link } from 'react-router-dom';
 import StatusBadge from 'components/StatusBadge';
 
-import rawResources from 'translations';
+import * as rawResources from 'translations';
 import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
@@ -102,7 +102,7 @@ class GlobalDrawer extends React.PureComponent {
         className={classes.nested}
         onClick={this.handleLanguage(k)}
       >
-        <ListItemText primary={v['index.lang']} />
+        <ListItemText primary={v.lang} />
       </ListItem>
     ));
 

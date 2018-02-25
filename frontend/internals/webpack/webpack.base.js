@@ -1,6 +1,9 @@
 const _ = require('lodash');
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const secretResources = require('../../app/secret/translations');
+const i18n = require('./i18n');
 
 module.exports = ({
   entry,
@@ -9,6 +12,8 @@ module.exports = ({
   workerName,
   cssLoaderVender,
   cssLoaderApp,
+  inject,
+  minify,
   plugins,
   devtool,
   performance,
@@ -102,6 +107,46 @@ module.exports = ({
         API_URL: JSON.stringify(process.env.API_URL),
       },
     }),
+
+    // Minify and optimize the index.html
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'app/index/index.ejs',
+      minify,
+      inject,
+      chunksSortMode: 'manual',
+      chunks: [
+        'index',
+      ],
+    }),
+
+    // Minify and optimize the app.html
+    new HtmlWebpackPlugin({
+      filename: 'app.html',
+      template: 'app/app.ejs',
+      minify,
+      inject,
+      chunks: [
+        'app',
+      ],
+    }),
+
+    // Copy the secret/index.html
+    new HtmlWebpackPlugin({
+      filename: 'secret/index.html',
+      template: 'app/secret/index.ejs',
+      inject: true,
+      chunks: [],
+    }),
+
+    // I18n the secret/index.ejs
+    ..._.chain(i18n(secretResources)).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
+      filename: `secret/${k}.html`,
+      template: 'app/secret/locale.ejs',
+      inject: true,
+      chunks: [],
+      i18n: v,
+    })).value(),
   ]),
   resolve: {
     modules: ['app', 'node_modules'],

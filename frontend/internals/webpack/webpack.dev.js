@@ -1,54 +1,14 @@
-const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
-const i18n = require('./i18n');
 const logger = require('../../server/logger');
 const { dllPlugin } = require('../../package.json');
 
 const plugins = [
   new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
   new webpack.NoEmitOnErrorsPlugin(),
-  new HtmlWebpackPlugin({
-    filename: 'index.html',
-    template: 'app/index/index.ejs',
-    inject: true,
-    chunksSortMode: 'manual',
-    chunks: [
-      'outdated',
-      'index',
-    ],
-  }),
-  new HtmlWebpackPlugin({
-    filename: 'app.html',
-    template: 'app/app.ejs',
-    inject: true,
-    chunks: [
-      'outdated',
-      'app',
-    ],
-  }),
-
-  // Copy the secret/index.html
-  new HtmlWebpackPlugin({
-    filename: 'secret/index.html',
-    template: 'app/secret/index.ejs',
-    inject: true,
-    chunks: [],
-    i18n,
-  }),
-
-  // I18n the secret/index.ejs
-  ..._.chain(i18n).toPairs().map(([k, v]) => new HtmlWebpackPlugin({
-    filename: `secret/${k}.html`,
-    template: 'app/secret/locale.ejs',
-    inject: true,
-    chunks: [],
-    i18n: v,
-  })).value(),
 ];
 
 if (dllPlugin) {
@@ -65,8 +25,7 @@ if (dllPlugin) {
 module.exports = require('./webpack.base')({
   // Add hot reloading in development
   entry: {
-    outdated: [
-      'index/outdated.js',
+    mock: [
       'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
@@ -81,6 +40,8 @@ module.exports = require('./webpack.base')({
       'root.js',
     ],
   },
+
+  inject: true,
 
   // Don't use hashes in dev mode for better performance
   output: {
