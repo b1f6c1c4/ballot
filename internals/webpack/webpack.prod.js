@@ -112,6 +112,11 @@ Allow: /$
 class NetlifyHttp2PushPlugin {
   apply(compiler) {
     compiler.plugin('emit', (compilation, cb) => {
+      _.keys(compilation.assets)
+        .filter((a) => /^mock\../.test(a.replace(/^assets\//, '')))
+        // eslint-disable-next-line no-param-reassign
+        .forEach((a) => { delete compilation.assets[a]; });
+
       const entry = (e) => compilation.outputOptions.publicPath + e;
       const makePreload = (reg, as) => _.keys(compilation.assets)
         .filter((a) => reg.test(a.replace(/^assets\//, '')))
@@ -120,8 +125,6 @@ class NetlifyHttp2PushPlugin {
         const preloads = [];
         // outdatedbrowser.min.css
         preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // outdatedbrowser.min.js outdated.js
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
         // index.css index.vender.css
         preloads.push(...makePreload(/^index\..*\.css/, 'style'));
         // index.js
@@ -132,8 +135,6 @@ class NetlifyHttp2PushPlugin {
         const preloads = [];
         // outdatedbrowser.min.css
         preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // outdatedbrowser.min.js outdated.js
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
         // app.css
         preloads.push(...makePreload(/^app\..*\.css/, 'style'));
         // app.js
@@ -225,11 +226,9 @@ class PreloadPlugin {
 module.exports = require('./webpack.base')({
   // In production, we skip all hot-reloading stuff
   entry: {
-    outdated: [
-      'index/outdated.js',
+    mock: [
       'file-loader?name=[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
-      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
     index: [
       'index/style.js',
@@ -306,7 +305,6 @@ module.exports = require('./webpack.base')({
       inject: false, // manual inject
       chunksSortMode: 'manual',
       chunks: [
-        'outdated',
         'index',
       ],
     }),
@@ -318,7 +316,6 @@ module.exports = require('./webpack.base')({
       minify,
       inject: false, // manual inject
       chunks: [
-        'outdated',
         'app',
       ],
     }),

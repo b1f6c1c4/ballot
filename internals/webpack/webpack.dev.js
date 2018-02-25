@@ -18,7 +18,6 @@ const plugins = [
     inject: true,
     chunksSortMode: 'manual',
     chunks: [
-      'outdated',
       'index',
     ],
   }),
@@ -27,7 +26,6 @@ const plugins = [
     template: 'app/app.ejs',
     inject: true,
     chunks: [
-      'outdated',
       'app',
     ],
   }),
@@ -65,8 +63,7 @@ if (dllPlugin) {
 module.exports = require('./webpack.base')({
   // Add hot reloading in development
   entry: {
-    outdated: [
-      'index/outdated.js',
+    mock: [
       'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',

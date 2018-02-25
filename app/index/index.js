@@ -36,10 +36,10 @@ _.mapValues(rawResources, (lo, k) => {
     .addClass(`nav-langs-x-${k}`)
     .attr('data-lang', k)
     .text(lo['index.lang']);
-  $('#nav-langs').append(o);
+  $('.list-langs').append(o);
 });
 
-$(document).on('click', '#nav-langs a', function onLangClick() {
+$(document).on('click', '.list-langs a', function onLangClick() {
   const k = $(this).attr('data-lang');
   i18next.changeLanguage(k);
 });

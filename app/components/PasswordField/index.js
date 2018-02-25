@@ -32,7 +32,7 @@ class PasswordField extends React.PureComponent {
         {...other}
         inputProps={{
           className: classes.forceFont,
-          autocomplete: isNew ? 'new-password' : 'current-password',
+          autoComplete: isNew ? 'new-password' : 'current-password',
         }}
         type="password"
         label={this.props.label || messages.label}
