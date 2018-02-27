@@ -1,26 +1,16 @@
-/**
- * WEBPACK DLL GENERATOR
- *
- * This profile is used to cache webpack's module
- * contexts for external library and framework type
- * dependencies which will usually not change often enough
- * to warrant building them from scratch every time we use
- * the webpack process.
- */
-
-const { join } = require('path');
+const path = require('path');
 const webpack = require('webpack');
-// eslint-disable-next-line import/no-dynamic-require
-const pkg = require(join(process.cwd(), 'package.json'));
+const { dllPlugin } = require('../../package.json');
+const base = require('./webpack.base');
 
-if (!pkg.dllPlugin) { process.exit(0); }
+if (!dllPlugin) { process.exit(0); }
 
-const dllConfig = pkg.dllPlugin;
-const outputPath = join(process.cwd(), dllConfig.path);
+const outputPath = path.join(process.cwd(), dllPlugin.path);
 
-module.exports = require('./webpack.base')({
+module.exports = base({
+  mode: 'development',
   context: process.cwd(),
-  entry: dllConfig.dlls,
+  entry: dllPlugin.dlls,
   devtool: 'eval',
   output: {
     filename: '[name].dll.js',
@@ -30,9 +20,10 @@ module.exports = require('./webpack.base')({
   plugins: [
     new webpack.DllPlugin({
       name: '[name]',
-      path: join(outputPath, '[name].json'),
+      path: path.join(outputPath, '[name].json'),
     }),
   ],
+  noHtml: true,
   performance: {
     hints: false,
   },

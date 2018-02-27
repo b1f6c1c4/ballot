@@ -226,6 +226,8 @@ class PreloadPlugin {
 }
 
 module.exports = require('./webpack.base')({
+  mode: 'production',
+
   // In production, we skip all hot-reloading stuff
   entry: {
     mock: [
@@ -315,6 +317,8 @@ module.exports = require('./webpack.base')({
     // extractCss1,
     new PreloadPlugin(),
   ],
+
+  devtool: process.env.SOURCE_MAP ? 'source-map' : undefined,
 
   performance: {
     assetFilter: (assetFilename) => !(/(\.map$)|(^(favicon\.))/.test(assetFilename)),
