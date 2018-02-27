@@ -1,18 +1,18 @@
 const _ = require('lodash');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const extractCss0 = new ExtractTextPlugin({
-  filename: 'assets/[name].[contenthash:8].css',
-  allChunks: true,
-});
-const extractCss1 = new ExtractTextPlugin({
-  filename: 'assets/[name].vendor.[contenthash:8].css',
-  allChunks: true,
-});
+// const extractCss0 = new ExtractTextPlugin({
+//   filename: 'assets/[name].[contenthash:8].css',
+//   allChunks: true,
+// });
+// const extractCss1 = new ExtractTextPlugin({
+//   filename: 'assets/[name].vendor.[contenthash:8].css',
+//   allChunks: true,
+// });
 
 const minify = {
   removeComments: true,
@@ -263,14 +263,14 @@ module.exports = require('./webpack.base')({
 
   workerName: 'assets/[chunkhash:8].worker.js',
 
-  cssLoaderVender: extractCss1.extract({
-    fallback: 'style-loader',
-    use: 'css-loader',
-  }),
-  cssLoaderApp: extractCss0.extract({
-    fallback: 'style-loader',
-    use: 'css-loader',
-  }),
+  // cssLoaderVender: extractCss1.extract({
+  //   fallback: 'style-loader',
+  //   use: 'css-loader',
+  // }),
+  // cssLoaderApp: extractCss0.extract({
+  //   fallback: 'style-loader',
+  //   use: 'css-loader',
+  // }),
 
   minify,
   inject: false,
@@ -285,6 +285,7 @@ module.exports = require('./webpack.base')({
     concatenateModules: true,
     splitChunks: {
       minChunks: 4,
+      name: false,
     },
     minimize: true,
     minimizer: [{
@@ -310,8 +311,8 @@ module.exports = require('./webpack.base')({
     new GitRevisionPlugin(),
     new BasicAssetsPlugin(),
     new NetlifyHttp2PushPlugin(),
-    extractCss0,
-    extractCss1,
+    // extractCss0,
+    // extractCss1,
     new PreloadPlugin(),
   ],
 
