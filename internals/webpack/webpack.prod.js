@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const webpack = require('webpack');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const extractCss0 = new ExtractTextPlugin({
@@ -171,7 +171,8 @@ ${makeApp()}
 class PreloadPlugin {
   apply(compiler) {
     compiler.plugin('compilation', (compilation) => {
-      compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, cb) => {
+      // eslint-disable-next-line no-underscore-dangle
+      compilation._pluginCompat.tap('html-webpack-plugin-before-html-processing', (htmlPluginData, cb) => {
         const entry = (e) => compilation.outputOptions.publicPath + e;
         const makePreload = (reg, as) => _.keys(compilation.assets)
           .filter((a) => reg.test(a.replace(/^assets\//, '')))
@@ -280,34 +281,37 @@ module.exports = require('./webpack.base')({
     chunkFilename: 'assets/[name].[chunkhash:8].chunk.js',
   },
 
+  optimization: {
+    concatenateModules: true,
+    splitChunks: {
+      minChunks: 4,
+    },
+    minimize: true,
+    minimizer: [{
+      apply: (compiler) => new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: !!process.env.SOURCE_MAP,
+        uglifyOptions: {
+          ecma: 8,
+          compress: {
+            // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
+            inline: 1,
+          },
+          output: {
+            comments: false,
+          },
+        },
+      }).apply(compiler),
+    }],
+  },
+
   plugins: [
     new GitRevisionPlugin(),
     new BasicAssetsPlugin(),
     new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
-    new webpack.optimize.CommonsChunkPlugin({
-      minChunks: 4,
-      async: 'common',
-      children: true,
-      deepChildren: true,
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new UglifyJsPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: !!process.env.SOURCE_MAP,
-      uglifyOptions: {
-        ecma: 8,
-        compress: {
-          // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
-          inline: 1,
-        },
-        output: {
-          comments: false,
-        },
-      },
-    }),
     new PreloadPlugin(),
   ],
 

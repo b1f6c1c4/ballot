@@ -8,7 +8,6 @@ const { dllPlugin } = require('../../package.json');
 
 const plugins = [
   new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
-  new webpack.NoEmitOnErrorsPlugin(),
 ];
 
 if (dllPlugin) {
@@ -47,6 +46,10 @@ module.exports = require('./webpack.base')({
   output: {
     filename: 'assets/[name].js',
     chunkFilename: 'assets/[name].chunk.js',
+  },
+
+  optimization: {
+    noEmitOnErrors: true,
   },
 
   // Add development plugins

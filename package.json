@@ -23,7 +23,7 @@
     "compress-font": "node ./internals/scripts/compress-font.js",
     "import-sort": "node ./internals/scripts/import-sort.js",
     "prebuild": "yarn build:clean",
-    "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.prod.js --color --progress --hide-modules --display-optimization-bailout",
+    "build": "webpack --mode production --config internals/webpack/webpack.prod.js --color --progress --hide-modules --display-optimization-bailout",
     "build:clean": "rimraf ./build",
     "build:dev": "cross-env SOURCE_MAP=true yarn build --devtool source-map --profile",
     "build:dll": "node ./internals/scripts/dependencies.js",

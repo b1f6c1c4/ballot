@@ -14,6 +14,7 @@ module.exports = ({
   cssLoaderApp,
   inject,
   minify,
+  optimization,
   plugins,
   devtool,
   performance,
@@ -79,18 +80,16 @@ module.exports = ({
         },
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
-      {
         test: /\.graphql$/,
         exclude: /node_modules/,
         loader: 'graphql-tag/loader',
       },
     ],
   },
+  optimization: _.merge({
+    namedModules: true,
+  }, optimization),
   plugins: plugins.concat([
-    new webpack.NamedModulesPlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       jQuery: 'jquery',
