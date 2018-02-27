@@ -21,7 +21,7 @@
   "app.components.CreateVoterPage.nameLabel": "名称",
   "app.components.EditButton.text": "编辑",
   "app.components.EditFieldDialog.close": "关闭",
-  "app.components.EditFieldDialog.create": "",
+  "app.components.EditFieldDialog.create": "添加",
   "app.components.EditFieldDialog.createHeader": "添加字段",
   "app.components.EditFieldDialog.defaultHelperText": "（可选）",
   "app.components.EditFieldDialog.defaultLabel": "默认值",
