@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const logger = require('../../server/logger');
 const { dllPlugin } = require('../../package.json');
 
@@ -22,11 +21,6 @@ function dependencyHandlers() {
       context: process.cwd(),
       // eslint-disable-next-line global-require, import/no-dynamic-require
       manifest: require(manifestPath),
-    }),
-    new AddAssetHtmlPlugin({
-      files: ['assets/app.html'],
-      filepath: dllPath,
-      includeSourcemap: false,
     }),
   ];
 }

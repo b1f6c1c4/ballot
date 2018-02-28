@@ -1,20 +1,18 @@
 const path = require('path');
+const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const options = require('../../internals/webpack/webpack.dev');
+const { dllPlugin } = require('../../package.json');
 
-function createWebpackMiddleware(compiler, publicPath) {
-  return webpackDevMiddleware(compiler, {
-    noInfo: true,
+module.exports = (app) => {
+  const compiler = webpack(options);
+  const { publicPath } = options.output;
+  const middleware = webpackDevMiddleware(compiler, {
     publicPath,
-    silent: true,
     stats: 'errors-only',
   });
-}
-
-module.exports = function addDevMiddlewares(app, webpackConfig) {
-  const compiler = webpack(webpackConfig);
-  const middleware = createWebpackMiddleware(compiler, webpackConfig.output.publicPath);
 
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
@@ -23,7 +21,12 @@ module.exports = function addDevMiddlewares(app, webpackConfig) {
   // artifacts, we use it instead
   const fs = middleware.fileSystem;
 
-  app.get('*', (req, res) => {
+  if (dllPlugin) {
+    const dllPath = path.join(__dirname, '../../', dllPlugin.path);
+    app.use(`${publicPath}dll`, express.static(dllPath));
+  }
+
+  app.get(publicPath, (req, res) => {
     fs.readFile(path.join(compiler.outputPath, 'app.html'), (err, file) => {
       if (err) {
         res.sendStatus(404);
