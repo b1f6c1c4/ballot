@@ -138,8 +138,8 @@ class NetlifyHttp2PushPlugin {
         preloads.push(...makePreload(/^app\..*\.css/, 'style'));
         // app.js
         preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
-        // common-app.chunk.js
-        preloads.push(...makePreload(/app\..*\.chunk\.js$/, 'script'));
+        // 0.chunk.js
+        preloads.push(...makePreload(/^[0-9]+\..*\.chunk\.js$/, 'script'));
         return preloads.join('\n');
       };
       const data = `
@@ -191,10 +191,12 @@ class PreloadPlugin {
           preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
           // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
           preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
-          // app.js common-app.chunk.js
-          preloads.push(...makePrefetch(/^(common-)?app\..*\.js$/));
+          // app.js
+          preloads.push(...makePrefetch(/^app\..*\.js$/));
           // app.css
           preloads.push(...makePrefetch(/^app\..*\.css$/));
+          // 0.chunk.js
+          preloads.push(...makePrefetch(/^[0-9]+\..*\.chunk\.js$/, 'script'));
           // LoginContainer.chunk.js
           preloads.push(...makePrefetch(/^LoginContainer.*\.chunk\.js$/));
           // HomeContainer.chunk.js
@@ -213,7 +215,7 @@ class PreloadPlugin {
           // NotoSansSC-Regular.woff2
           preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
           // *.chunk.js
-          preloads.push(...makePrefetch(/^(?!common-).*\.chunk\.js$/));
+          preloads.push(...makePrefetch(/\.chunk\.js$/));
           // *.worker.js
           preloads.push(...makePrefetch(/^.*\.worker\.js$/));
         }
@@ -327,6 +329,9 @@ module.exports = require('./webpack.base')({
     new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
+  ],
+
+  htmlPlugin: [
     new PreloadPlugin(),
   ],
 

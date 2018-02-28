@@ -16,6 +16,7 @@ module.exports = ({
   inject,
   minify,
   optimization,
+  htmlPlugin,
   plugins,
   noHtml,
   devtool,
@@ -63,6 +64,10 @@ module.exports = ({
       i18n: v,
     })).value(),
   ];
+
+  if (htmlPlugin) {
+    htmlPlugins.forEach((h) => h.tap(htmlPlugin));
+  }
 
   return {
     mode,
