@@ -137,6 +137,7 @@ module.exports = ({
       template: 'app/secret/index.ejs',
       inject: true,
       chunks: [],
+      i18n: i18n(secretResources),
     }),
 
     // I18n the secret/index.ejs

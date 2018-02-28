@@ -46,8 +46,9 @@ const styles = (theme) => ({
     justifyContent: 'flex-end',
   },
   secret: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
 });
 
