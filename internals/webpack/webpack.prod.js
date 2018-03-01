@@ -1,9 +1,12 @@
 const _ = require('lodash');
-const webpack = require('webpack');
+const path = require('path');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const PreloadPlugin = require('./PreloadPlugin');
+const BasicAssetsPlugin = require('./BasicAssetsPlugin');
 
 const extractCss0 = new ExtractTextPlugin({
   filename: 'assets/[name].[contenthash:8].css',
@@ -78,153 +81,9 @@ const materialUiMap = (name) => {
   return `material-ui/${name}`;
 };
 
-class BasicAssetsPlugin {
-  apply(compiler) {
-    compiler.plugin('emit', (compilation, cb) => {
-      const data = `
-User-Agent: *
-Disallow: /*
-Allow: /$
-`.trimLeft();
-      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
-      compilation.assets['robots.txt'] = {
-        source: () => data,
-        size: () => data.length,
-      };
-      cb();
-    });
-    compiler.plugin('emit', (compilation, cb) => {
-      const data = `
-/app/* /app.html 200!
-/secret/* /secret/ 302
-`.trimLeft();
-      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
-      compilation.assets._redirects = {
-        source: () => data,
-        size: () => data.length,
-      };
-      cb();
-    });
-  }
-}
-
-class NetlifyHttp2PushPlugin {
-  apply(compiler) {
-    compiler.plugin('emit', (compilation, cb) => {
-      _.keys(compilation.assets)
-        .filter((a) => /^mock\../.test(a.replace(/^assets\//, '')))
-        // eslint-disable-next-line no-param-reassign
-        .forEach((a) => { delete compilation.assets[a]; });
-
-      const entry = (e) => compilation.outputOptions.publicPath + e;
-      const makePreload = (reg, as) => _.keys(compilation.assets)
-        .filter((a) => reg.test(a.replace(/^assets\//, '')))
-        .map((a) => `  Link: <${entry(a)}>; rel=preload; as=${as}`);
-      const makeIndex = () => {
-        const preloads = [];
-        // outdatedbrowser.min.css
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // index.css index.vender.css
-        preloads.push(...makePreload(/^index\..*\.css/, 'style'));
-        // index.js
-        preloads.push(...makePreload(/^index\..*\.js$/, 'script'));
-        return preloads.join('\n');
-      };
-      const makeApp = () => {
-        const preloads = [];
-        // outdatedbrowser.min.css
-        preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
-        // app.css
-        preloads.push(...makePreload(/^app\..*\.css/, 'style'));
-        // app.js
-        preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
-        // common-app.chunk.js
-        preloads.push(...makePreload(/app\..*\.chunk\.js$/, 'script'));
-        return preloads.join('\n');
-      };
-      const data = `
-/
-${makeIndex()}
-  Cache-Control: public, max-age=0, must-revalidate
-/app/*
-${makeApp()}
-  Cache-Control: public, max-age=0, must-revalidate
-/secret/*
-  Cache-Control: public, max-age=0, must-revalidate
-/assets/*
-  Cache-Control: public, max-age=3153600
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
-`.trimLeft();
-      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
-      compilation.assets._headers = {
-        source: () => data,
-        size: () => data.length,
-      };
-      cb();
-    });
-  }
-}
-
-class PreloadPlugin {
-  apply(compiler) {
-    compiler.plugin('compilation', (compilation) => {
-      compilation.plugin('html-webpack-plugin-before-html-processing', (htmlPluginData, cb) => {
-        const entry = (e) => compilation.outputOptions.publicPath + e;
-        const makePreload = (reg, as) => _.keys(compilation.assets)
-          .filter((a) => reg.test(a.replace(/^assets\//, '')))
-          .map((a) => `<link rel="preload" as="${as}" href="${entry(a)}">`);
-        const makePrefetch = (reg) => _.keys(compilation.assets)
-          .filter((a) => reg.test(a.replace(/^assets\//, '')))
-          .map((a) => `<link rel="prefetch" href="${entry(a)}">`);
-
-        const preloads = [];
-        if (/^index/.test(htmlPluginData.plugin.options.filename)) {
-          // outdatedbrowser.min.js outdated.js
-          preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
-          // index.js
-          preloads.push(...makePreload(/^index\..*\.js$/, 'script'));
-          // roboto-latin-400.woff2 roboto-latin-300.woff2
-          preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
-          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
-          preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
-          // app.js common-app.chunk.js
-          preloads.push(...makePrefetch(/^(common-)?app\..*\.js$/));
-          // app.css
-          preloads.push(...makePrefetch(/^app\..*\.css$/));
-          // LoginContainer.chunk.js
-          preloads.push(...makePrefetch(/^LoginContainer.*\.chunk\.js$/));
-          // HomeContainer.chunk.js
-          preloads.push(...makePrefetch(/^HomeContainer.*\.chunk\.js$/));
-          // NotoSansSC-Regular.woff2
-          preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
-        } else if (/^app/.test(htmlPluginData.plugin.options.filename)) {
-          // outdatedbrowser.min.js outdated.js
-          preloads.push(...makePreload(/^outdated(browser)?\..*\.js$/, 'script'));
-          // app.js common-app.chunk.js
-          preloads.push(...makePreload(/^(common-)?app\..*\.js$/, 'script'));
-          // roboto-latin-400.woff2 roboto-latin-300.woff2
-          preloads.push(...makePreload(/^roboto-latin-[34]00\..*\.woff2$/, 'font'));
-          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
-          preloads.push(...makePreload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, 'font'));
-          // NotoSansSC-Regular.woff2
-          preloads.push(...makePrefetch(/^NotoSansSC-Regular\..*\.woff2$/));
-          // *.chunk.js
-          preloads.push(...makePrefetch(/^(?!common-).*\.chunk\.js$/));
-          // *.worker.js
-          preloads.push(...makePrefetch(/^.*\.worker\.js$/));
-        }
-
-        _.set(htmlPluginData, 'html', htmlPluginData.html.replace('</head>', `${preloads.join('\n')}</head>`));
-        cb(null, htmlPluginData);
-      });
-    });
-  }
-}
-
 module.exports = require('./webpack.base')({
+  mode: 'production',
+
   // In production, we skip all hot-reloading stuff
   entry: {
     mock: [
@@ -264,11 +123,23 @@ module.exports = require('./webpack.base')({
 
   cssLoaderVender: extractCss1.extract({
     fallback: 'style-loader',
-    use: 'css-loader',
+    use: [{
+      loader: 'css-loader',
+      options: {
+        minimize: true,
+        sourceMap: !!process.env.SOURCE_MAP,
+      },
+    }],
   }),
   cssLoaderApp: extractCss0.extract({
     fallback: 'style-loader',
-    use: 'css-loader',
+    use: [{
+      loader: 'css-loader',
+      options: {
+        minimize: true,
+        sourceMap: !!process.env.SOURCE_MAP,
+      },
+    }],
   }),
 
   minify,
@@ -276,40 +147,103 @@ module.exports = require('./webpack.base')({
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
+    path: path.join(__dirname, '../../build'),
     filename: 'assets/[name].[chunkhash:8].js',
     chunkFilename: 'assets/[name].[chunkhash:8].chunk.js',
   },
 
+  optimization: {
+    concatenateModules: true,
+    splitChunks: {
+      minChunks: 4,
+      name: false,
+    },
+    minimize: true,
+    minimizer: [{
+      apply: (compiler) => new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: !!process.env.SOURCE_MAP,
+        uglifyOptions: {
+          ecma: 8,
+          compress: {
+            // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
+            inline: 1,
+          },
+          output: {
+            comments: false,
+          },
+        },
+      }).apply(compiler),
+    }],
+  },
+
   plugins: [
     new GitRevisionPlugin(),
-    new BasicAssetsPlugin(),
-    new NetlifyHttp2PushPlugin(),
     extractCss0,
     extractCss1,
-    new webpack.optimize.CommonsChunkPlugin({
-      minChunks: 4,
-      async: 'common',
-      children: true,
-      deepChildren: true,
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new UglifyJsPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: !!process.env.SOURCE_MAP,
-      uglifyOptions: {
-        ecma: 8,
-        compress: {
-          // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
-          inline: 1,
-        },
-        output: {
-          comments: false,
+    new PreloadPlugin(),
+    new BasicAssetsPlugin({
+      remove: (a) => /^mock\../.test(a.replace(/^assets\//, '')),
+      append: {
+        'robots.txt': `
+User-Agent: *
+Disallow: /*
+Allow: /$
+`,
+        _redirects: `
+/app/* /app.html 200!
+/secret/* /secret/ 302
+`,
+        _headers: (compilation) => {
+          const entry = (e) => compilation.outputOptions.publicPath + e;
+          const makePreload = (reg, as) => _.keys(compilation.assets)
+            .filter((a) => reg.test(a.replace(/^assets\//, '')))
+            .map((a) => `  Link: <${entry(a)}>; rel=preload; as=${as}`);
+          const makeIndex = () => {
+            const preloads = [];
+            // outdatedbrowser.min.css
+            preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
+            // index.css index.vender.css
+            preloads.push(...makePreload(/^index\..*\.css/, 'style'));
+            // index.js
+            preloads.push(...makePreload(/^index\..*\.js$/, 'script'));
+            return preloads.join('\n');
+          };
+          const makeApp = () => {
+            const preloads = [];
+            // outdatedbrowser.min.css
+            preloads.push(...makePreload(/^outdated(browser)?\..*\.css/, 'style'));
+            // app.css
+            preloads.push(...makePreload(/^app\..*\.css/, 'style'));
+            // app.js
+            preloads.push(...makePreload(/^app\..*\.js$/, 'script'));
+            // 0.chunk.js
+            preloads.push(...makePreload(/^[0-9]+\..*\.chunk\.js$/, 'script'));
+            return preloads.join('\n');
+          };
+          return `
+/
+${makeIndex()}
+  Cache-Control: public, max-age=0, must-revalidate
+/app/*
+${makeApp()}
+  Cache-Control: public, max-age=0, must-revalidate
+/secret/*
+  Cache-Control: public, max-age=0, must-revalidate
+/assets/*
+  Cache-Control: public, max-age=3153600
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+`;
         },
       },
     }),
-    new PreloadPlugin(),
   ],
+
+  devtool: process.env.SOURCE_MAP ? 'source-map' : undefined,
 
   performance: {
     assetFilter: (assetFilename) => !(/(\.map$)|(^(favicon\.))/.test(assetFilename)),
