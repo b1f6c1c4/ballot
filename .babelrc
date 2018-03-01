@@ -1,48 +1,48 @@
 {
   plugins: [
-    "lodash",
+    'lodash',
     [
-      "direct-import",
+      'direct-import',
       {
-        "modules": [
-          "material-ui",
-          "material-ui-icons",
+        modules: [
+          'material-ui',
+          'material-ui-icons',
         ],
       },
     ],
   ],
-  "presets": [
+  presets: [
     [
-      "@babel/env",
+      '@babel/env',
       {
-        "targets": {
-          "browsers": [
-            "Chrome >= 62",
-            "Edge >= 15",
-            "Safari >= 11",
-            "iOS >= 11",
+        targets: {
+          browsers: [
+            'Chrome >= 62',
+            'Edge >= 15',
+            'Safari >= 11',
+            'iOS >= 11',
           ],
         },
-        "modules": false,
+        modules: false,
       },
     ],
-    "@babel/preset-react",
-    "@babel/preset-stage-0",
+    '@babel/preset-react',
+    '@babel/preset-stage-0',
   ],
-  "env": {
-    "production": {
-      "only": [
-        "app",
+  env: {
+    production: {
+      only: [
+        'app',
       ],
-      "plugins": [
-        "transform-react-remove-prop-types",
-        "@babel/plugin-transform-react-constant-elements",
-        "@babel/plugin-transform-react-inline-elements",
+      plugins: [
+        'transform-react-remove-prop-types',
+        '@babel/plugin-transform-react-constant-elements',
+        '@babel/plugin-transform-react-inline-elements',
       ],
     },
-    "test": {
-      "plugins": [
-        "@babel/plugin-transform-modules-commonjs",
+    test: {
+      plugins: [
+        '@babel/plugin-transform-modules-commonjs',
       ],
     },
   },
