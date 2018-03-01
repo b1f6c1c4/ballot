@@ -1,6 +1,15 @@
 {
-  "plugins": [
+  plugins: [
     "lodash",
+    [
+      "direct-import",
+      {
+        "modules": [
+          "material-ui",
+          "material-ui-icons",
+        ],
+      },
+    ],
   ],
   "presets": [
     [
