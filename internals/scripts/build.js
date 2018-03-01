@@ -7,7 +7,11 @@ const fs = require('fs');
 const webpack = require('webpack');
 
 const make = (makeConfig, { progress, profile }) => {
-  process.env.SOURCE_MAP = profile;
+  if (profile) {
+    process.env.SOURCE_MAP = 'true';
+  } else {
+    delete process.env.SOURCE_MAP;
+  }
 
   const config = makeConfig();
   const compiler = webpack(config);

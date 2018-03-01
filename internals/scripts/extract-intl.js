@@ -94,6 +94,12 @@ const extractFromFile = async (fileName) => {
   await Promise.all(files.map((fileName) => extractFromFile(fileName)));
   extractTaskDone();
 
+  const appendLangDone = task('Append lang');
+  locales.forEach((locale) => {
+    localeMappings[locale].lang = oldLocaleMappings[locale].lang;
+  });
+  appendLangDone();
+
   // Make the directory if it doesn't exist, especially for first run
   mkdir('-p', 'app/translations');
   /* eslint-disable no-await-in-loop */
