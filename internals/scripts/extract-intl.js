@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const nodeGlob = require('glob');
-const { transform } = require('babel-core');
+const { transform } = require('@babel/core');
 const { mkdir } = require('shelljs');
 const i18n = require('../../app/utils/i18n');
 

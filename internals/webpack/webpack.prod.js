@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const path = require('path');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
-const transformImports = require('babel-plugin-transform-imports');
+// const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -31,55 +31,55 @@ const minify = {
   minifyURLs: false,
 };
 
-const materialUiGroups = _.fromPairs([
-  'BottomNavigation',
-  'Card',
-  'Dialog',
-  'ExpansionPanel',
-  'Form',
-  'Input',
-  'Gird',
-  'List',
-  'Menu',
-  'Progress',
-  'Radio',
-  'Snackbar',
-  'Table',
-].map((g) => [g, new RegExp(`${g}($|[A-Z])|${g}$`)]));
-
-const materialUiMap = (name) => {
-  if (/^Tab($|[A-Z])/.test(name)) {
-    return `material-ui/Tabs/${name}`;
-  }
-  if (/^Step($|[A-Z])/.test(name)) {
-    return `material-ui/Step/${name}`;
-  }
-  switch (name) {
-    case 'Backdrop':
-      return `material-ui/Modal/${name}`;
-    case 'Slide':
-    case 'Grow':
-    case 'Fase':
-    case 'Collapse':
-    case 'Zoom':
-      return `material-ui/transitions/${name}`;
-    case 'MuiThemeProvider':
-    case 'withStyles':
-    case 'withTheme':
-    case 'createMuiTheme':
-    case 'jssPreset':
-      return `material-ui/styles/${name}`;
-    default:
-      break;
-  }
-  const cans = _.keys(_.pickBy(materialUiGroups, (r) => r.test(name)));
-  if (cans.length === 1) {
-    return `material-ui/${cans[0]}/${name}`;
-  } else if (cans.length > 1) {
-    throw new Error(`Unknown ${name}`);
-  }
-  return `material-ui/${name}`;
-};
+// const materialUiGroups = _.fromPairs([
+//   'BottomNavigation',
+//   'Card',
+//   'Dialog',
+//   'ExpansionPanel',
+//   'Form',
+//   'Input',
+//   'Gird',
+//   'List',
+//   'Menu',
+//   'Progress',
+//   'Radio',
+//   'Snackbar',
+//   'Table',
+// ].map((g) => [g, new RegExp(`${g}($|[A-Z])|${g}$`)]));
+//
+// const materialUiMap = (name) => {
+//   if (/^Tab($|[A-Z])/.test(name)) {
+//     return `material-ui/Tabs/${name}`;
+//   }
+//   if (/^Step($|[A-Z])/.test(name)) {
+//     return `material-ui/Step/${name}`;
+//   }
+//   switch (name) {
+//     case 'Backdrop':
+//       return `material-ui/Modal/${name}`;
+//     case 'Slide':
+//     case 'Grow':
+//     case 'Fase':
+//     case 'Collapse':
+//     case 'Zoom':
+//       return `material-ui/transitions/${name}`;
+//     case 'MuiThemeProvider':
+//     case 'withStyles':
+//     case 'withTheme':
+//     case 'createMuiTheme':
+//     case 'jssPreset':
+//       return `material-ui/styles/${name}`;
+//     default:
+//       break;
+//   }
+//   const cans = _.keys(_.pickBy(materialUiGroups, (r) => r.test(name)));
+//   if (cans.length === 1) {
+//     return `material-ui/${cans[0]}/${name}`;
+//   } else if (cans.length > 1) {
+//     throw new Error(`Unknown ${name}`);
+//   }
+//   return `material-ui/${name}`;
+// };
 
 module.exports = require('./webpack.base')({
   mode: 'production',
@@ -102,20 +102,20 @@ module.exports = require('./webpack.base')({
   babelOptions: {
     plugins: [
       'lodash',
-      [
-        transformImports,
-        {
-          'material-ui': {
-            transform: materialUiMap,
-            preventFullImport: true,
-          },
-          'material-ui-icons': {
-            // eslint-disable-next-line no-template-curly-in-string
-            transform: 'material-ui-icons/${member}',
-            preventFullImport: true,
-          },
-        },
-      ],
+      // [
+      //   transformImports,
+      //   {
+      //     'material-ui': {
+      //       transform: materialUiMap,
+      //       preventFullImport: true,
+      //     },
+      //     'material-ui-icons': {
+      //       // eslint-disable-next-line no-template-curly-in-string
+      //       transform: 'material-ui-icons/${member}',
+      //       preventFullImport: true,
+      //     },
+      //   },
+      // ],
     ],
   },
 

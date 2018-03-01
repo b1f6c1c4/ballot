@@ -1,12 +1,10 @@
 {
   "plugins": [
     "lodash",
-    "transform-decorators-legacy",
-    "transform-export-extensions",
   ],
   "presets": [
     [
-      "env",
+      "@babel/env",
       {
         "targets": {
           "browsers": [
@@ -19,8 +17,8 @@
         "modules": false,
       },
     ],
-    "react",
-    "stage-0",
+    "@babel/preset-react",
+    "@babel/preset-stage-0",
   ],
   "env": {
     "production": {
@@ -29,14 +27,13 @@
       ],
       "plugins": [
         "transform-react-remove-prop-types",
-        "transform-react-constant-elements",
-        "transform-react-inline-elements",
+        "@babel/plugin-transform-react-constant-elements",
+        "@babel/plugin-transform-react-inline-elements",
       ],
     },
     "test": {
       "plugins": [
-        "transform-es2015-modules-commonjs",
-        "dynamic-import-node",
+        "@babel/plugin-transform-modules-commonjs",
       ],
     },
   },
