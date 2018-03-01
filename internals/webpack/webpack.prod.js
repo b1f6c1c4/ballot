@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const path = require('path');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -146,6 +147,7 @@ module.exports = require('./webpack.base')({
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
+    path: path.join(__dirname, '../../build'),
     filename: 'assets/[name].[chunkhash:8].js',
     chunkFilename: 'assets/[name].[chunkhash:8].chunk.js',
   },

@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const secretResources = require('../../app/secret/translations');
@@ -68,7 +67,6 @@ module.exports = ({
     mode,
     entry,
     output: _.merge({
-      path: path.resolve(process.cwd(), 'build'),
       publicPath: '/',
     }, output),
     module: {

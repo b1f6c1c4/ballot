@@ -31,7 +31,7 @@ module.exports = require('./webpack.base')({
   // Add hot reloading in development
   entry: {
     mock: [
-      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
@@ -48,8 +48,8 @@ module.exports = require('./webpack.base')({
 
   inject: true,
 
-  // Don't use hashes in dev mode for better performance
   output: {
+    path: '/tmp/ballot', // Imaginary path
     filename: 'assets/[name].js',
     chunkFilename: 'assets/[name].chunk.js',
   },
