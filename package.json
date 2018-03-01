@@ -15,7 +15,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "extract-intl": "babel-node --presets env,stage-0 -- ./internals/scripts/extract-intl.js",
+    "extract-intl": "node ./internals/scripts/extract-intl.js",
     "extract-fragment": "node ./internals/scripts/fragmentTypes.js",
     "compress-font": "node ./internals/scripts/compress-font.js",
     "import-sort": "node ./internals/scripts/import-sort.js",
@@ -205,6 +205,7 @@
     "babel-jest": "22.4.1",
     "babel-loader": "8.0.0-beta.2",
     "babel-plugin-lodash": "3.3.2",
+    "babel-plugin-react-intl": "2.4.0",
     "babel-plugin-transform-react-remove-prop-types": "0.4.13",
     "co": "4.6.0",
     "coveralls": "3.0.0",
