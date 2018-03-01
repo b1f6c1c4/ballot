@@ -1438,7 +1438,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^3.4.7, bluebird@^3.5.1:
+bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -3164,11 +3164,12 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
-fast-xml-parser@3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.2.2.tgz#13b328c2245a0532101e5387e9e67c093944f4e6"
+fast-xml-parser@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.2.3.tgz#e6bd2c30a7ec35e17c1817cd86dac37825c6d807"
   dependencies:
     he "~1.1.1"
+    nimnjs "^1.1.0"
     opencollective "^1.0.3"
 
 fastparse@^1.1.1:
@@ -3909,17 +3910,17 @@ html-minifier@^3.2.3, html-minifier@^3.5.8:
     relateurl "0.2.x"
     uglify-js "3.3.x"
 
-html-webpack-plugin@webpack-contrib/html-webpack-plugin:
-  version "2.30.1"
-  resolved "https://codeload.github.com/webpack-contrib/html-webpack-plugin/tar.gz/1dee37e2696fd3990fe9be0a2945e465c0bb9a64"
+html-webpack-plugin@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-3.0.1.tgz#7d7275d4a179f892c62cebe33afd4c765a70a0a2"
   dependencies:
-    bluebird "^3.4.7"
     html-minifier "^3.2.3"
     loader-utils "^0.2.16"
     lodash "^4.17.3"
     pretty-error "^2.0.2"
     tapable "^1.0.0"
     toposort "^1.0.0"
+    util.promisify "1.0.0"
 
 htmlparser2@~3.3.0:
   version "3.3.0"
@@ -5766,6 +5767,21 @@ netlify@1.2.0:
     graceful-fs "^3.0.4"
     semaphore "^1.0.5"
     when "^3.7.5"
+
+nimn-date-parser@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/nimn-date-parser/-/nimn-date-parser-1.0.0.tgz#4ce55d1fd5ea206bbe82b76276f7b7c582139351"
+
+nimn_schema_builder@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nimn_schema_builder/-/nimn_schema_builder-1.1.0.tgz#b370ccf5b647d66e50b2dcfb20d0aa12468cd247"
+
+nimnjs@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nimnjs/-/nimnjs-1.1.0.tgz#c008301bc7cd980bfd7377e3ace0a76a5b500d75"
+  dependencies:
+    nimn-date-parser "^1.0.0"
+    nimn_schema_builder "^1.0.0"
 
 no-case@^2.2.0:
   version "2.3.2"
@@ -8487,9 +8503,9 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
 
-url-join@^2.0.2:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/url-join/-/url-join-2.0.5.tgz#5af22f18c052a000a48d7b82c5e9c2e2feeda728"
+url-join@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/url-join/-/url-join-4.0.0.tgz#4d3340e807d3773bda9991f8305acdcc2a665d2a"
 
 url-parse-lax@^1.0.0:
   version "1.0.0"
@@ -8540,7 +8556,7 @@ util-inspect@^0.1.8:
     json3 "3.3.0"
     object-keys "0.5.0"
 
-util.promisify@^1.0.0:
+util.promisify@1.0.0, util.promisify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/util.promisify/-/util.promisify-1.0.0.tgz#440f7165a459c9a16dc145eb8e72f35687097030"
   dependencies:
@@ -8719,16 +8735,16 @@ webpack-cli@2.0.9:
     yargs "9.0.1"
     yeoman-environment "^2.0.0"
 
-webpack-dev-middleware@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-2.0.6.tgz#a51692801e8310844ef3e3790e1eacfe52326fd4"
+webpack-dev-middleware@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-3.0.0.tgz#ae8902596f1b1fa8f7eada874aabb64cba9cd53e"
   dependencies:
     loud-rejection "^1.6.0"
     memory-fs "~0.4.1"
     mime "^2.1.0"
     path-is-absolute "^1.0.0"
     range-parser "^1.0.3"
-    url-join "^2.0.2"
+    url-join "^4.0.0"
     webpack-log "^1.0.1"
 
 webpack-fork-yeoman-generator@^1.1.1:
@@ -8761,9 +8777,9 @@ webpack-fork-yeoman-generator@^1.1.1:
     through2 "^2.0.0"
     yeoman-environment "^1.1.0"
 
-webpack-hot-middleware@2.21.0:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.21.0.tgz#7b3c113a7a4b301c91e0749573c7aab28b414b52"
+webpack-hot-middleware@2.21.1:
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.21.1.tgz#1b03b20a1a65a2e2ea0ea987476a5d23370ff176"
   dependencies:
     ansi-html "0.0.7"
     html-entities "^1.2.0"
