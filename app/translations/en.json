@@ -10,7 +10,7 @@
   "app.components.ConfirmDialog.cancel": "Cancel",
   "app.components.ConfirmDialog.confirm": "Confirm",
   "app.components.CreateBallotPage.create": "Create",
-  "app.components.CreateBallotPage.createDescription": "To ensure tickets cannot be counterfeited, Ballot uses 2048-bit ring signature algorithm, of which parameters need several seconds to minutes to calculate. Please wait patiently during the process. Besides, to avoid fraud, once created, a ballot cannot be modified or deleted.",
+  "app.components.CreateBallotPage.createDescription": "To ensure tickets cannot be counterfeited, Ballot uses 2048-bit ring signature algorithm, of which parameters need several seconds or minutes to calculate. Please wait patiently during the process. Besides, to avoid fraud, once created, a ballot cannot be modified or deleted.",
   "app.components.CreateBallotPage.createTitle": "Confirm on voter creation",
   "app.components.CreateBallotPage.header": "Create Ballot",
   "app.components.CreateBallotPage.nameHelperText": "Not null.",

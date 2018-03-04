@@ -158,6 +158,11 @@ module.exports = ({
       extensions: [
         '.js',
       ],
+      alias: {
+        lodash: 'lodash-es',
+        'material-ui': 'material-ui/es',
+        'redux-form': 'redux-form/es',
+      },
       mainFields: [
         'browser',
         'jsnext:main',
