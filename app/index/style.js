@@ -31,7 +31,7 @@ jQuery(document).ready(($) => {
   $('.back-to-top').click(() => {
     $('html, body').animate({
       scrollTop: 0,
-    }, 1500, 'easeOutExpo');
+    }, 500, 'easeOutExpo');
     return false;
   });
 
@@ -132,7 +132,7 @@ jQuery(document).ready(($) => {
 
     $('html, body').animate({
       scrollTop: target.offset().top - topSpace,
-    }, 1500, 'easeOutExpo');
+    }, 500, 'easeOutExpo');
 
     if ($(this).parents('.nav-menu').length) {
       $('.nav-menu .menu-active').removeClass('menu-active');

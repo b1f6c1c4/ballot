@@ -2,7 +2,7 @@
 # General
 --------------------------------------------------------------*/
 body {
-  background: #fff;
+  background: #fff !important;
   color: #666666;
   overflow-x: hidden;
 }
@@ -83,11 +83,11 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 997;
 }
 
-#header #logo {
+#logo {
   float: left;
 }
 
-#header #logo h1 {
+#logo h1 {
   font-size: 36px;
   margin: -4px 0 0 0;
   padding: 0;
@@ -98,26 +98,26 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
 }
 
-#header #logo h1 a, #header #logo h1 a:hover {
+#logo h1 a, #logo h1 a:hover {
   color: #fff;
 }
 
-#header #logo img {
+#logo img {
   padding: 0;
   margin: 0;
 }
 
 @media (max-width: 768px) {
-  #header #logo h1 {
+  #logo h1 {
     font-size: 28px;
     margin-top: 0;
   }
-  #header #logo img {
+  #logo img {
     max-height: 40px;
   }
 }
 
-#header.header-fixed {
+.header-fixed {
   background: linear-gradient(45deg, #1de099, #1dc8cd);
   padding: 20px 0;
   height: 72px;
@@ -134,7 +134,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-#intro .intro-text {
+.intro-text {
   position: absolute;
   left: 0;
   top: 60px;
@@ -178,7 +178,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-#intro .btn-get-started {
+.btn-get-started {
+  min-width: 170px;
   font-weight: 400;
   font-size: 16px;
   letter-spacing: 1px;
@@ -191,7 +192,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff;
 }
 
-#intro .btn-get-started:hover {
+.btn-get-started:hover {
   color: #1dc8cd;
   background: #fff;
 }
@@ -446,10 +447,6 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 60px 0 0 0;
 }
 
-#features .features-img img {
-  max-width: 100%;
-}
-
 #features .box {
   margin-bottom: 15px;
   text-align: center;
@@ -488,25 +485,25 @@ body.mobile-nav-active #mobile-nav-toggle {
   text-align: center;
 }
 
-#call-to-action .cta-title {
+.cta-title {
   color: #fff;
   font-size: 28px;
   font-weight: 700;
 }
 
-#call-to-action .cta-text {
+.cta-text {
   color: #fff;
 }
 
 @media (min-width: 769px) {
-  #call-to-action .cta-btn-container {
+  .cta-btn-container {
     display: flex;
     align-items: center;
     justify-content: flex-end;
   }
 }
 
-#call-to-action .cta-btn {
+.cta-btn {
   font-weight: 500;
   font-size: 16px;
   letter-spacing: 1px;
@@ -519,7 +516,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   color: #fff;
 }
 
-#call-to-action .cta-btn:hover {
+.cta-btn:hover {
   background: #1dc8cd;
   border: 2px solid #1dc8cd;
 }
@@ -581,16 +578,16 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding: 60px 0;
 }
 
-#faq #faq-list {
+#faq-list {
   padding: 0;
   list-style: none;
 }
 
-#faq #faq-list li {
+#faq-list li {
   border-bottom: 1px solid #ddd;
 }
 
-#faq #faq-list a {
+#faq-list a {
   padding: 18px 0;
   display: block;
   position: relative;
@@ -600,7 +597,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding-right: 20px;
 }
 
-#faq #faq-list p {
+#faq-list p {
   margin-bottom: 20px;
 }
 
@@ -610,11 +607,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   }
 }
 
-#faq #faq-list a.collapse {
-  color: #1dc8cd;
-}
-
-#faq #faq-list a.collapsed {
+#faq-list a.collapsed {
   color: #000;
 }
 
@@ -630,15 +623,15 @@ body.mobile-nav-active #mobile-nav-toggle {
   font-size: 14px;
 }
 
-#footer .footer-links a {
+.footer-links a {
   color: #666;
   padding-left: 15px;
 }
 
-#footer .footer-links a:first-child {
+.footer-links a:first-child {
   padding-left: 0;
 }
 
-#footer .footer-links a:hover {
+.footer-links a:hover {
   color: #1dc8cd;
 }
