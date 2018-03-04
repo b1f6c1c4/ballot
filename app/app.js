@@ -86,12 +86,12 @@ export const render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <ErrorBoundary>
-        <ConnectedRouter history={history}>
-          <ErrorBoundary>
-            <Reboot />
-            <SubscriptionContainer />
-            <ConnectedMuiThemeProvider>
-              <LanguageProvider messages={messages}>
+        <LanguageProvider messages={messages}>
+          <ConnectedRouter history={history}>
+            <ErrorBoundary>
+              <Reboot />
+              <SubscriptionContainer />
+              <ConnectedMuiThemeProvider>
                 <GlobalContainer>
                   <ErrorBoundary>
                     <SnackbarContainer />
@@ -110,10 +110,10 @@ export const render = () => {
                     </ConnectedSwitch>
                   </ErrorBoundary>
                 </GlobalContainer>
-              </LanguageProvider>
-            </ConnectedMuiThemeProvider>
-          </ErrorBoundary>
-        </ConnectedRouter>
+              </ConnectedMuiThemeProvider>
+            </ErrorBoundary>
+          </ConnectedRouter>
+        </LanguageProvider>
       </ErrorBoundary>
     </Provider>,
     MOUNT_NODE,
