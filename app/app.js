@@ -12,8 +12,7 @@ import {
   MuiThemeProvider,
   Reboot,
 } from 'material-ui';
-import brown from 'material-ui/colors/brown';
-import teal from 'material-ui/colors/teal';
+import { brown, teal } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';
 import NotFoundPage from 'components/NotFoundPage';
 import ErrorBoundary from 'containers/ErrorBoundary';

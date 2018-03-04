@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle';
 import 'animate.css/animate.min.css';
 import 'typeface-roboto/index.css';
 import 'paper-css/paper.min.css';
