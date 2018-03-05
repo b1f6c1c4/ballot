@@ -90,33 +90,18 @@ describe('injectors', () => {
       expect(() => ejectSaga('test')).not.toThrow();
     });
 
-    it('should remove non daemon saga\'s descriptor in production', () => {
-      process.env.NODE_ENV = 'production';
+    it('should not remove descriptor', () => {
       injectSaga('test', { saga: testSaga, mode: RESTART_ON_REMOUNT });
       injectSaga('test1', { saga: testSaga, mode: ONCE_TILL_UNMOUNT });
+      injectSaga('test2', { saga: testSaga, mode: DAEMON });
 
       ejectSaga('test');
       ejectSaga('test1');
-
-      expect(store.injectedSagas.test).toBe('done');
-      expect(store.injectedSagas.test1).toBe('done');
-      process.env.NODE_ENV = originalNodeEnv;
-    });
-
-    it('should not remove daemon saga\'s descriptor in production', () => {
-      process.env.NODE_ENV = 'production';
-      injectSaga('test', { saga: testSaga, mode: DAEMON });
-      ejectSaga('test');
+      ejectSaga('test2');
 
       expect(store.injectedSagas.test.saga).toBe(testSaga);
-      process.env.NODE_ENV = originalNodeEnv;
-    });
-
-    it('should not remove daemon saga\'s descriptor in development', () => {
-      injectSaga('test', { saga: testSaga, mode: DAEMON });
-      ejectSaga('test');
-
-      expect(store.injectedSagas.test.saga).toBe(testSaga);
+      expect(store.injectedSagas.test1.saga).toBe(testSaga);
+      expect(store.injectedSagas.test2.saga).toBe(testSaga);
     });
   });
 

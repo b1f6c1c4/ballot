@@ -13,7 +13,7 @@ export class LanguageProvider extends React.PureComponent {
         key={this.props.locale}
         messages={this.props.messages[this.props.locale]}
       >
-        {React.Children.only(this.props.children)}
+        {this.props.children}
       </IntlProvider>
     );
   }
@@ -27,7 +27,7 @@ LanguageProvider.propTypes = {
 
 
 const mapStateToProps = createStructuredSelector({
-  locale: (state) => state.get('language').get('locale'),
+  locale: (state) => state.getIn(['language', 'locale']),
 });
 
 export default compose(
