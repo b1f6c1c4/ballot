@@ -1,21 +1,17 @@
+/* eslint-disable global-require */
 const express = require('express');
 const logger = require('./logger');
 
 const argv = require('./argv');
 const port = require('./port');
-const setup = require('./middlewares/frontendMiddleware');
-const { resolve } = require('path');
 
 const app = express();
 
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-app.use('/api', (req, res) => { res.status(403).send(); });
-
-// In production we need to pass these values in instead of relying on webpack
-setup(app, {
-  outputPath: resolve(process.cwd(), 'build'),
-  publicPath: '/',
-});
+if (process.env.NODE_ENV === 'production') {
+  require('./middlewares/addProdMiddlewares')(app);
+} else {
+  require('./middlewares/addDevMiddlewares')(app);
+}
 
 // get the intended host and port number, use localhost and port 3000 if not provided
 const customHost = argv.host || process.env.HOST;

@@ -12,8 +12,7 @@ import {
   MuiThemeProvider,
   Reboot,
 } from 'material-ui';
-import brown from 'material-ui/colors/brown';
-import teal from 'material-ui/colors/teal';
+import { brown, teal } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';
 import NotFoundPage from 'components/NotFoundPage';
 import ErrorBoundary from 'containers/ErrorBoundary';
@@ -87,12 +86,12 @@ export const render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <ErrorBoundary>
-        <ConnectedRouter history={history}>
-          <ErrorBoundary>
-            <Reboot />
-            <SubscriptionContainer />
-            <ConnectedMuiThemeProvider>
-              <LanguageProvider messages={messages}>
+        <LanguageProvider messages={messages}>
+          <ConnectedRouter history={history}>
+            <ErrorBoundary>
+              <Reboot />
+              <SubscriptionContainer />
+              <ConnectedMuiThemeProvider>
                 <GlobalContainer>
                   <ErrorBoundary>
                     <SnackbarContainer />
@@ -111,10 +110,10 @@ export const render = () => {
                     </ConnectedSwitch>
                   </ErrorBoundary>
                 </GlobalContainer>
-              </LanguageProvider>
-            </ConnectedMuiThemeProvider>
-          </ErrorBoundary>
-        </ConnectedRouter>
+              </ConnectedMuiThemeProvider>
+            </ErrorBoundary>
+          </ConnectedRouter>
+        </LanguageProvider>
       </ErrorBoundary>
     </Provider>,
     MOUNT_NODE,

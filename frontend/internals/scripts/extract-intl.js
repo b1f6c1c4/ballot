@@ -1,15 +1,15 @@
 /* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const nodeGlob = require('glob');
-const { transform } = require('babel-core');
+const babel = require('@babel/core');
 const { mkdir } = require('shelljs');
-const i18n = require('../../app/utils/i18n');
+const rawResources = require('../../app/translations');
 
-const { ROOT_LOCALE } = i18n;
+const ROOT_LOCALE = 'en';
 
 // Glob to match all messages files
 const FILES_TO_PARSE = 'app/**/messages.js';
-const locales = i18n.appLocales;
+const locales = Object.keys(rawResources);
 
 // Progress Logger
 const task = (message) => {
@@ -63,14 +63,18 @@ for (const locale of locales) {
   }
 }
 
-const presets = ['stage-0'];
+const presets = ['@babel/preset-stage-0'];
 const plugins = ['react-intl'];
 
 const extractFromFile = async (fileName) => {
   try {
     const code = await readFile(fileName);
     // Use babel plugin to extract instances where react-intl is used
-    const { metadata: result } = await transform(code, { presets, plugins }); // object-shorthand
+    const { metadata: result } = await babel.transform(code, {
+      filename: fileName,
+      presets,
+      plugins,
+    }); // object-shorthand
     for (const message of result['react-intl'].messages) {
       for (const locale of locales) {
         const oldLocaleMapping = oldLocaleMappings[locale][message.id];
@@ -80,7 +84,7 @@ const extractFromFile = async (fileName) => {
       }
     }
   } catch (error) {
-    process.stderr.write(`Error transforming file: ${fileName}\n${error}`);
+    process.stderr.write(`Error transforming file: ${fileName}\n${error.stack}`);
   }
 };
 
@@ -93,6 +97,13 @@ const extractFromFile = async (fileName) => {
   // Run extraction on all files that match the glob on line 16
   await Promise.all(files.map((fileName) => extractFromFile(fileName)));
   extractTaskDone();
+
+  const appendLangDone = task('Append lang');
+  locales.forEach((locale) => {
+    localeMappings[locale].lang = oldLocaleMappings[locale].lang;
+    localeMappings[locale].language = oldLocaleMappings[locale].language;
+  });
+  appendLangDone();
 
   // Make the directory if it doesn't exist, especially for first run
   mkdir('-p', 'app/translations');

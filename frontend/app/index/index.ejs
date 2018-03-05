@@ -29,7 +29,7 @@
   <body>
 
     <% const { en } = require('./translations'); %>
-    <% const raw = require('ejs-loader!./content.ejs')() %>
+    <% const raw = require('html-webpack-plugin/lib/loader.js!./content.ejs')({}) %>
     <%= raw.replace(
       /data-i18n="([_a-zA-Z0-9.]*)"></g,
       (match, k) => `data-i18n="${k}">${en[k]}<`,
@@ -43,6 +43,8 @@
           <script src="<%= key %>"></script>
         <% }
       }
-    } %>
+    } else { %>
+      <script src="/dll/main.dll.js"></script>
+    <% } %>
   </body>
 </html>

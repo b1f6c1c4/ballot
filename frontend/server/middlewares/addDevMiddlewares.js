@@ -1,32 +1,34 @@
 const path = require('path');
+const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const options = require('../../internals/webpack/webpack.dev');
+const { dllPlugin } = require('../../package.json');
 
-function createWebpackMiddleware(compiler, publicPath) {
-  return webpackDevMiddleware(compiler, {
-    noInfo: true,
+module.exports = (app) => {
+  const compiler = webpack(options);
+  const { output: { publicPath } } = options;
+  const middleware = webpackDevMiddleware(compiler, {
     publicPath,
-    silent: true,
     stats: 'errors-only',
   });
-}
-
-module.exports = function addDevMiddlewares(app, webpackConfig) {
-  const compiler = webpack(webpackConfig);
-  const middleware = createWebpackMiddleware(compiler, webpackConfig.output.publicPath);
 
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
 
-  // Since webpackDevMiddleware uses memory-fs internally to store build
-  // artifacts, we use it instead
-  const fs = middleware.fileSystem;
+  if (dllPlugin) {
+    const dllPath = path.join(__dirname, '../../', dllPlugin.path);
+    app.use(`${publicPath}dll`, express.static(dllPath));
+  }
 
-  app.get('*', (req, res) => {
-    fs.readFile(path.join(compiler.outputPath, 'app.html'), (err, file) => {
+  const fs = middleware.fileSystem;
+  app.get(`${publicPath}app/*`, (req, res) => {
+    // Avoid `path.join` here because it will convert / to \ on Windows,
+    // which is incompatible with memory-fs
+    fs.readFile('/tmp/ballot/app.html', (err, file) => {
       if (err) {
-        res.sendStatus(404);
+        res.status(404).send();
       } else {
         res.send(file.toString());
       }

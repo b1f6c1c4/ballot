@@ -1,32 +1,37 @@
 const path = require('path');
 const fs = require('fs');
-const glob = require('glob');
 const webpack = require('webpack');
-const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const logger = require('../../server/logger');
 const { dllPlugin } = require('../../package.json');
 
-const plugins = [
-  new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
-  new webpack.NoEmitOnErrorsPlugin(),
-];
+function dependencyHandlers() {
+  if (!dllPlugin) return [];
 
-if (dllPlugin) {
-  glob.sync(`${dllPlugin.path}/*.dll.js`).forEach((dllPath) => {
-    plugins.push(
-      new AddAssetHtmlPlugin({
-        filepath: dllPath,
-        includeSourcemap: false,
-      }),
-    );
-  });
+  const dllPath = path.resolve(process.cwd(), dllPlugin.path);
+
+  const manifestPath = path.resolve(dllPath, 'main.json');
+
+  if (!fs.existsSync(manifestPath)) {
+    logger.error('The DLL manifest is missing. Please run `yarn build:dll`');
+    process.exit(0);
+  }
+
+  return [
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      // eslint-disable-next-line global-require, import/no-dynamic-require
+      manifest: require(manifestPath),
+    }),
+  ];
 }
 
 module.exports = require('./webpack.base')({
+  mode: 'development',
+
   // Add hot reloading in development
   entry: {
     mock: [
-      'file-loader?name=assets/[name].[ext]!resource/favicon.ico',
+      'file-loader?name=[name].[ext]!resource/favicon.ico',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
       'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.js',
     ],
@@ -43,15 +48,21 @@ module.exports = require('./webpack.base')({
 
   inject: true,
 
-  // Don't use hashes in dev mode for better performance
   output: {
+    path: '/tmp/ballot', // Imaginary path
     filename: 'assets/[name].js',
     chunkFilename: 'assets/[name].chunk.js',
   },
 
+  optimization: {
+    noEmitOnErrors: true,
+  },
+
   // Add development plugins
-  // eslint-disable-next-line no-use-before-define
-  plugins: dependencyHandlers().concat(plugins),
+  plugins: [
+    ...dependencyHandlers(),
+    new webpack.HotModuleReplacementPlugin(),
+  ],
 
   // Emit a source map for easier debugging
   // See https://webpack.js.org/configuration/devtool/#devtool
@@ -61,27 +72,3 @@ module.exports = require('./webpack.base')({
     hints: false,
   },
 });
-
-function dependencyHandlers() {
-  // Don't do anything during the DLL Build step
-  if (process.env.BUILDING_DLL) { return []; }
-
-  if (!dllPlugin) return [];
-
-  const dllPath = path.resolve(process.cwd(), dllPlugin.path);
-
-  const manifestPath = path.resolve(dllPath, 'main.json');
-
-  if (!fs.existsSync(manifestPath)) {
-    logger.error('The DLL manifest is missing. Please run `yarn build:dll`');
-    process.exit(0);
-  }
-
-  return [
-    new webpack.DllReferencePlugin({
-      context: process.cwd(),
-      // eslint-disable-next-line import/no-dynamic-require
-      manifest: require(manifestPath), // eslint-disable-line global-require
-    }),
-  ];
-}

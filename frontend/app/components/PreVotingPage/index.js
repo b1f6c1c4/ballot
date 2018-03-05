@@ -14,8 +14,6 @@ import {
 } from 'material-ui';
 import { Select } from 'redux-form-material-ui';
 import { Field, reduxForm, propTypes } from 'redux-form/immutable';
-import base64js from 'base64-js';
-import { TextEncoderLite } from 'text-encoder-lite';
 import BallotMeta from 'components/BallotMeta';
 import Button from 'components/Button';
 import ClearButton from 'components/ClearButton';
@@ -98,11 +96,6 @@ class PreVotingPage extends React.PureComponent {
       result,
       privateKey: vals.get('privateKey'),
     });
-  };
-
-  base64Enc = (str) => {
-    const bytes = new (TextEncoder || TextEncoderLite)('utf-8').encode(str);
-    return base64js.fromByteArray(bytes);
   };
 
   render() {
@@ -226,7 +219,7 @@ class PreVotingPage extends React.PureComponent {
               )}
               {ticket && (
                 <span className={classes.secret}>
-                  {this.base64Enc(JSON.stringify(ticket))}
+                  {ticket.base64}
                 </span>
               )}
             </form>

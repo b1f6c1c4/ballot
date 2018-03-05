@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import base64js from 'base64-js';
 import bigInt from 'big-integer';
 import { sha3_512 as sha3 } from 'js-sha3';
 import stringify from 'json-stable-stringify';
-import { TextEncoderLite as TextEncoder } from 'text-encoder-lite';
+import { TextEncoder } from 'text-encoding';
 
 const parse = (str) => bigInt(str, 16);
 const toStr = (val) => val.toString(16).padStart(2048 / 4, '0');
@@ -37,7 +38,7 @@ export const generateKeyPair = async (param) => {
 const toUtf8 = (str) => {
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'test') {
-    return (new TextEncoder('utf-8')).encode(str);
+    return new TextEncoder('utf-8').encode(str);
   }
   return Buffer.from(str, 'utf-8');
 };
@@ -82,10 +83,14 @@ export const signMessage = async (payload, param) => {
   cs[k] = cs[k].add(h1).add(qm1).minus(sum).mod(qm1);
   ss[k] = ss[k].add(qm1).minus(cs[k].multiply(x).mod(qm1)).mod(qm1);
 
-  return {
+  const ticket = {
     t: toStr(t),
     payload,
     s: ss.map(toStr),
     c: cs.map(toStr),
+  };
+  return {
+    ticket,
+    base64: base64js.fromByteArray(toUtf8(JSON.stringify(ticket))),
   };
 };

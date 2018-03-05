@@ -7,7 +7,7 @@ import * as rawResources from '../translations';
 export const DEFAULT_LOCALE = 'zh'; // When can't find browser locale
 export const ROOT_LOCALE = 'en'; // Fallback when there is no translation
 
-export const appLocales = Object.keys(rawResources);
+export const appLocales = _.keys(rawResources).filter((k) => k !== 'default');
 
 addLocaleData(en);
 addLocaleData(zh);

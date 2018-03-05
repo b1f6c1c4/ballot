@@ -1,11 +1,17 @@
-import _ from 'lodash';
-
 import $ from 'jquery';
 import i18next from 'i18next';
 import jqueryI18next from 'jquery-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
 
 import * as rawResources from './translations';
+
+function mapValues(obj, fun) {
+  const result = {};
+  Object.keys(obj).forEach((k) => {
+    result[k] = fun(obj[k], k);
+  });
+  return result;
+}
 
 function updateContent() {
   const ks = i18next.language;
@@ -21,7 +27,7 @@ function updateContent() {
 i18next.use(LngDetector).init({
   fallbackLng: 'en',
   keySeparator: '/',
-  resources: _.mapValues(rawResources, (lo) => ({
+  resources: mapValues(rawResources, (lo) => ({
     translation: lo,
   })),
 }, (err) => {
@@ -29,7 +35,7 @@ i18next.use(LngDetector).init({
   jqueryI18next.init(i18next, $);
 }).on('languageChanged', updateContent);
 
-_.mapValues(rawResources, (lo, k) => {
+mapValues(rawResources, (lo, k) => {
   const o = $('<li><a href="#"></a></li>');
   $('a', o)
     .addClass('nav-langs-x')
