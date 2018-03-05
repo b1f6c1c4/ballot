@@ -101,6 +101,7 @@ const extractFromFile = async (fileName) => {
   const appendLangDone = task('Append lang');
   locales.forEach((locale) => {
     localeMappings[locale].lang = oldLocaleMappings[locale].lang;
+    localeMappings[locale].language = oldLocaleMappings[locale].language;
   });
   appendLangDone();
 

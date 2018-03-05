@@ -160,5 +160,6 @@
   "app.validation.minChar": "At least {m, number} {m, plural, one {character} other {characters}}",
   "app.validation.noEmptyLines": "No empty choices.",
   "app.validation.required": "This field is required",
-  "lang": "English"
+  "lang": "English",
+  "language": "Language"
 }

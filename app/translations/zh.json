@@ -160,5 +160,6 @@
   "app.validation.minChar": "至少{m}个字符",
   "app.validation.noEmptyLines": "不能包含空选项",
   "app.validation.required": "必填",
-  "lang": "中文"
+  "lang": "中文",
+  "language": "语言"
 }

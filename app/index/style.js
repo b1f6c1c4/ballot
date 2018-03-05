@@ -38,6 +38,12 @@ jQuery(document).ready(($) => {
   // Initiate the wowjs animation library
   new WOW().init();
 
+  // Toggle faq
+  $('a[data-toggle="collapse"]').click(function () {
+    $(this).toggleClass('collapsed');
+    $(this).next().toggleClass('show');
+  });
+
   // Initiate superfish on nav menu
   $('.nav-menu').superfish({
     animation: {
