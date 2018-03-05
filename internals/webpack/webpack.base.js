@@ -159,9 +159,28 @@ module.exports = ({
         '.js',
       ],
       alias: {
+        history: 'history/es',
+        i18next: 'i18next/dist/es',
+        'i18next-browser-languagedetector': 'i18next-browser-languagedetector/dist/es',
+        'jquery-i18next': 'jquery-i18next/dist/es',
         lodash: 'lodash-es',
         'material-ui': 'material-ui/es',
+        // [#10497](https://github.com/mui-org/material-ui/pull/10497)
+        // 'material-ui-icons': 'material-ui-icons/es',
+        // [#369](https://github.com/atlassian/react-beautiful-dnd/pull/369)
+        // 'react-beautiful-dnd': 'react-beautiful-dnd/lib/es',
+        'react-redux': 'react-redux/es',
+        'react-router': 'react-router/es',
+        'react-router-dom': 'react-router-dom/es',
+        'react-router-redux': 'react-router-redux/es',
+        redux: 'redux/es',
         'redux-form': 'redux-form/es',
+        // [#176](https://github.com/erikras/redux-form-material-ui/pull/176)
+        // 'redux-form-material-ui': 'redux-form-material-ui/es',
+        'redux-saga': 'redux-saga/es',
+        'redux-thunk': 'redux-thunk/es',
+        reselect: 'reselect/es',
+        'symbol-observable': 'symbol-observable/es',
       },
       mainFields: [
         'browser',
