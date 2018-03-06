@@ -113,7 +113,7 @@ module.exports = require('./webpack.base')({
         uglifyOptions: {
           ecma: 8,
           compress: {
-            // See UglifyJS bug [#2956](https://github.com/mishoo/UglifyJS2/issues/2956)
+            // [#2842](https://github.com/mishoo/UglifyJS2/issues/2842)
             inline: 1,
           },
           output: {
