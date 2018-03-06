@@ -42,6 +42,7 @@ services:
       HTTPS_METHOD: redirect
       CORS_ORIGIN: "https://ballot.b1f6c1c4.info"
       BACKEND_LOG: "${DEBUG_LEVEL}"
+      JWT_SECRET: "${JWT_SECRET}"
       NO_SHARD: 'true'
       ANONY_NO_STRICT: 'true'
       MONGO_HOST: mongo
