@@ -165,8 +165,7 @@ module.exports = ({
         'jquery-i18next': 'jquery-i18next/dist/es',
         lodash: 'lodash-es',
         'material-ui': 'material-ui/es',
-        // [#10497](https://github.com/mui-org/material-ui/pull/10497)
-        // 'material-ui-icons': 'material-ui-icons/es',
+        'material-ui-icons': 'material-ui-icons/es',
         // [#369](https://github.com/atlassian/react-beautiful-dnd/pull/369)
         // 'react-beautiful-dnd': 'react-beautiful-dnd/lib/es',
         'react-redux': 'react-redux/es',
