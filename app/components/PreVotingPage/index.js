@@ -55,8 +55,9 @@ const styles = (theme) => ({
     minWidth: 300,
   },
   secret: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
 });
 
