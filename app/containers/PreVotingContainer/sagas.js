@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { eventChannel, END } from 'redux-saga';
+import { call, put, select, take, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
 import { change, reset, initialize, stopSubmit } from 'redux-form';
 import { signMessage } from 'utils/crypto';
@@ -9,6 +10,20 @@ import * as PRE_VOTING_CONTAINER from './constants';
 import * as preVotingContainerSelectors from './selectors';
 import * as preVotingContainerActions from './actions';
 import gql from './api.graphql';
+
+export const makeChan = (fn, ...args) => eventChannel((emit) => {
+  const progress = (v) => emit({ progress: v });
+  fn(progress, ...args)
+    .then((result) => {
+      emit({ result });
+      emit(END);
+    })
+    .catch((error) => {
+      emit({ error });
+      emit(END);
+    });
+  return () => {};
+});
 
 // Sagas
 export function* handleRefreshRequest({ bId }) {
@@ -45,18 +60,29 @@ export function* handleSignRequest({ payload, privateKey }) {
   const ys = _.map(voters, 'publicKey');
 
   try {
-    const result = yield call(signMessage, payload, {
+    const chan = yield call(makeChan, signMessage, payload, {
       q,
       g,
       h,
       x: privateKey,
       ys,
     });
-    yield put(preVotingContainerActions.signSuccess(result));
-    yield change('preVotingForm', { privateKey: '' });
-  } catch (err) {
-    yield put(preVotingContainerActions.signFailure(err));
-    yield put(stopSubmit('preVotingForm', { _error: err }));
+    while (true) {
+      const { progress, result, error } = yield take(chan);
+      if (progress !== undefined) {
+        yield put(preVotingContainerActions.signProgress(progress));
+      }
+      if (result) {
+        yield put(preVotingContainerActions.signSuccess(result));
+        yield change('preVotingForm', { privateKey: '' });
+      }
+      if (error) {
+        yield put(preVotingContainerActions.signFailure(error));
+        yield put(stopSubmit('preVotingForm', { _error: error }));
+      }
+    }
+  } finally {
+    // ignore
   }
 }
 

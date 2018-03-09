@@ -44,6 +44,7 @@ describe('preVotingContainerReducer', () => {
       fields: null,
       error: null,
       ticket: null,
+      progress: null,
     });
   });
 
@@ -85,9 +86,17 @@ describe('preVotingContainerReducer', () => {
     expect(preVotingContainerReducer(originalState, subscriptionContainerActions.statusChange(param))).toEq(expectedResult);
   });
 
+  it('should handle signProgress action', () => {
+    const originalState = state;
+    const expectedResult = state.set('progress', 666);
+
+    expect(preVotingContainerReducer(originalState, preVotingContainerActions.signProgress(666))).toEq(expectedResult);
+  });
+
   // Sagas
   it('should handle refresh request', () => {
     const originalState = state
+      .set('progress', 666)
       .set('isLoading', false)
       .set('error', 'e')
       .set('ticket', 't');
@@ -163,13 +172,13 @@ describe('preVotingContainerReducer', () => {
   it('should handle sign request', () => {
     const originalState = state.set('isSignLoading', false);
     const param = { payload: 'val' };
-    const expectedResult = state.set('isSignLoading', true);
+    const expectedResult = state.set('isSignLoading', true).set('progress', 0);
 
     expect(preVotingContainerReducer(originalState, preVotingContainerActions.signRequest(param))).toEq(expectedResult);
   });
 
   it('should handle sign success', () => {
-    const originalState = state.set('isSignLoading', true);
+    const originalState = state.set('isSignLoading', true).set('progress', 1);
     const result = { key: 'value' };
     const expectedResult = state.set('isSignLoading', false)
       .set('ticket', fromJS(result));

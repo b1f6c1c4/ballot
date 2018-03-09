@@ -1,5 +1,6 @@
 // Actions
 export const STATUS_REQUEST_ACTION = 'PreVotingContainer/STATUS_REQUEST_ACTION';
+export const SIGN_PROGRESS_ACTION = 'PreVotingContainer/SIGN_PROGRESS_ACTION';
 
 // Sagas
 export const REFRESH_REQUEST = 'PreVotingContainer/REFRESH_REQUEST';

@@ -14,7 +14,7 @@ export function* handleRegisterRequest({ bId, iCode, comment }) {
   const { q, g } = yield select(voterRegContainerSelectors.Ballot());
 
   try {
-    const { publicKey, privateKey } = yield call(generateKeyPair, { q, g });
+    const { publicKey, privateKey } = yield call(generateKeyPair, undefined, { q, g });
     const vars = {
       bId,
       iCode,

@@ -24,7 +24,7 @@ describe('handleRegisterRequest Saga', () => {
     voterRegContainer: { ballot: { q: 'q', g: 'g' } },
   });
   const func = () => handleRegisterRequest(variables);
-  const dArgs0 = [generateKeyPair, { q: 'q', g: 'g' }];
+  const dArgs0 = [generateKeyPair, undefined, { q: 'q', g: 'g' }];
   const dResp0 = { publicKey: 'pk', privateKey: 'pv' };
   const vars = { ...variables, publicKey: 'pk' };
   const dArgs1 = [api.mutate, gql.Register, vars];

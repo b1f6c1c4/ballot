@@ -13,10 +13,15 @@ import * as preVotingContainerActions from '../actions';
 import gql from '../api.graphql';
 
 import watcher, {
+  makeChan,
   handleRefreshRequest,
   handleSignRequest,
   handleStatusRequest,
 } from '../sagas';
+
+jest.mock('utils/crypto', () => ({
+  signMessage: jest.fn(),
+}));
 
 // Sagas
 describe('handleRefreshRequest Saga', () => {
@@ -83,7 +88,7 @@ describe('handleSignRequest Saga', () => {
     x: 'pv',
     ys: ['k1', 'k2'],
   };
-  const dArgs = [signMessage, 'val', vars];
+  const dArgs = [makeChan, signMessage, 'val', vars];
 
   // eslint-disable-next-line arrow-body-style
   it('should listen SIGN_REQUEST in the watcher', () => {
@@ -92,29 +97,43 @@ describe('handleSignRequest Saga', () => {
       .silentRun();
   });
 
-  it('should dispatch signSuccess', () => {
-    const sign = 'resp';
-    const response = { sign };
+  it('should dispatch signProgress', () => {
+    signMessage.mockImplementationOnce((progress) => new Promise((resolve) => {
+      process.nextTick(() => {
+        progress(1);
+        progress(2);
+        resolve({});
+      });
+    }));
 
     return expectSaga(func)
       .withState(state)
       .call(...dArgs)
-      .provide([
-        [matchers.call(...dArgs), response],
-      ])
+      .put(preVotingContainerActions.signProgress(1))
+      .put(preVotingContainerActions.signProgress(2))
+      .put(preVotingContainerActions.signSuccess({}))
+      .run();
+  });
+
+  it('should dispatch signSuccess', () => {
+    const sign = 'resp';
+    const response = { sign };
+    signMessage.mockImplementationOnce(() => Promise.resolve(response));
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
       .put(preVotingContainerActions.signSuccess(response))
       .run();
   });
 
   it('should dispatch signFailure', () => {
     const error = new Error('value');
+    signMessage.mockImplementationOnce(() => Promise.reject(error));
 
     return expectSaga(func)
       .withState(state)
       .call(...dArgs)
-      .provide([
-        [matchers.call(...dArgs), throwError(error)],
-      ])
       .put(preVotingContainerActions.signFailure(error))
       .run();
   });

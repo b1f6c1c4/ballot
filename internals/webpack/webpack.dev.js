@@ -52,6 +52,8 @@ module.exports = require('./webpack.base')({
     path: '/tmp/ballot', // Imaginary path
     filename: 'assets/[name].js',
     chunkFilename: 'assets/[name].chunk.js',
+    // [#6642](https://github.com/webpack/webpack/issues/6642)
+    globalObject: 'this',
   },
 
   optimization: {
