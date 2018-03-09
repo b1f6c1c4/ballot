@@ -9,7 +9,6 @@ const {
   AdvancedInjectionPlugin,
   Prefetch,
   Preload,
-  Css,
   AsyncCss,
   InlineCss,
   Js,
@@ -47,7 +46,8 @@ module.exports = require('./webpack.base')({
   entry: {
     mock: [
       'file-loader?name=[name].[ext]!resource/favicon.ico',
-      'file-loader?name=assets/[name].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
+      'file-loader?name=assets/[name].[hash:8].[ext]!fg-loadcss/dist/cssrelpreload.min.js',
+      'file-loader?name=assets/[name].[hash:8].[ext]!outdatedbrowser/outdatedbrowser/outdatedbrowser.min.css',
     ],
     index: [
       'index/style.js',
@@ -198,6 +198,12 @@ module.exports = require('./webpack.base')({
         body: [
           // app.js
           new Js(/^app\..*\.js$/),
+        ],
+      }, {
+        match: ['index.html', 'app.html'],
+        head: [
+          // cssrelpreload.min.js
+          new InlineJs(/^cssrelpreload\..*\.js$/),
         ],
       }],
     }),

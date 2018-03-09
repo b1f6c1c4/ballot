@@ -4,13 +4,13 @@
 
   </head>
   <body>
-    <!-- The app hooks into this div -->
-    <div id="app"></div>
 
-    <%= require('raw-loader!index/outdated.html') %>
+    <div id="app"></div>
 
     <% if (htmlWebpackPlugin.options.inject) { %>
       <script src="/dll/main.dll.js"></script>
+    <% } else { %>
+      <%= require('raw-loader!index/outdated.html') %>
     <% } %>
   </body>
 </html>

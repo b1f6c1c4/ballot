@@ -12,10 +12,10 @@
       (match, k) => `data-i18n="${k}">${en[k]}<`,
     ) %>
 
-    <%= require('raw-loader!index/outdated.html') %>
-
     <% if (htmlWebpackPlugin.options.inject) { %>
       <script src="/dll/main.dll.js"></script>
+    <% } else { %>
+      <%= require('raw-loader!index/outdated.html') %>
     <% } %>
   </body>
 </html>

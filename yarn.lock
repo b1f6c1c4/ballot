@@ -749,11 +749,10 @@ acorn@^5.0.0, acorn@^5.3.0, acorn@^5.5.0:
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.5.3.tgz#f473dd47e0277a08e28e9bec5aeeb04751f0b8c9"
 
-advanced-injection-plugin@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/advanced-injection-plugin/-/advanced-injection-plugin-0.2.0.tgz#87b46abc056f445e15d2edff68508821961f8b5a"
+advanced-injection-plugin@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/advanced-injection-plugin/-/advanced-injection-plugin-0.3.0.tgz#0b2fff2cfd08a5b1c994a01b09c3d61e3bac6a2f"
   dependencies:
-    fg-loadcss "^2.0.1"
     he "^1.1.1"
     lodash "^4.17.4"
 
@@ -3067,7 +3066,7 @@ fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
-fg-loadcss@^2.0.1:
+fg-loadcss@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fg-loadcss/-/fg-loadcss-2.0.1.tgz#71c00e470a57f7739d0736124dfc8791995e8af1"
 
@@ -8275,11 +8274,10 @@ wordwrap@~1.0.0:
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
 
 worker-farm@^1.5.2:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/worker-farm/-/worker-farm-1.5.4.tgz#4debbe46b40edefcc717ebde74a90b1ae1e909a1"
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/worker-farm/-/worker-farm-1.6.0.tgz#aecc405976fab5a95526180846f0dba288f3a4a0"
   dependencies:
     errno "~0.1.7"
-    xtend "~4.0.1"
 
 worker-loader@1.1.1:
   version "1.1.1"
