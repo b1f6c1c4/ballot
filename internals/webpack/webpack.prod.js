@@ -5,7 +5,16 @@ const transformImports = require('babel-plugin-transform-imports');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const PreloadPlugin = require('./PreloadPlugin');
+const {
+  AdvancedInjectionPlugin,
+  Prefetch,
+  Preload,
+  Css,
+  AsyncCss,
+  InlineCss,
+  Js,
+  InlineJs,
+} = require('advanced-injection-plugin');
 const BasicAssetsPlugin = require('./BasicAssetsPlugin');
 
 const extractCss0 = new ExtractTextPlugin({
@@ -128,7 +137,70 @@ module.exports = require('./webpack.base')({
     new GitRevisionPlugin(),
     extractCss0,
     extractCss1,
-    new PreloadPlugin(),
+    new AdvancedInjectionPlugin({
+      prefix: 'assets/',
+      rules: [{
+        match: ['index.html', 'app.html'],
+        head: [
+          // outdatedbrowser.min.css
+          new AsyncCss(/^outdatedbrowser\..*\.css$/),
+        ],
+      }, {
+        match: 'index.html',
+        head: [
+          // index.vendor.css
+          new AsyncCss(/^index\.vendor\..*\.css$/),
+          // index.css
+          new InlineCss(/^index\.(?!vendor).*\.css$/),
+          // index.js
+          new Preload(/^index\..*\.js$/, { as: 'script' }),
+          // roboto-latin-400.woff2 roboto-latin-300.woff2
+          new Preload(/^roboto-latin-[34]00\..*\.woff2$/, { as: 'font' }),
+          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
+          new Preload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, { as: 'font' }),
+          // app.js
+          new Prefetch(/^app\..*\.js$/),
+          // app.css
+          new Prefetch(/^app\..*\.css$/),
+          // 0.chunk.js
+          new Prefetch(/^[0-9]+\..*\.chunk\.js$/, { as: 'script' }),
+          // LoginContainer.chunk.js
+          new Prefetch(/^LoginContainer.*\.chunk\.js$/),
+          // HomeContainer.chunk.js
+          new Prefetch(/^HomeContainer.*\.chunk\.js$/),
+          // NotoSansSC-Regular.woff2
+          new Prefetch(/^NotoSansSC-Regular\..*\.woff2$/),
+        ],
+        body: [
+          // index.js
+          new Js(/^index\..*\.js$/),
+        ],
+      }, {
+        match: 'app.html',
+        head: [
+          // app.vendor.css
+          new AsyncCss(/^app\.vendor\..*\.css$/),
+          // app.css
+          new InlineCss(/^app\.(?!vendor).*\.css$/),
+          // app.js common-app.chunk.js
+          new Preload(/^(common-)?app\..*\.js$/, { as: 'script' }),
+          // roboto-latin-400.woff2 roboto-latin-300.woff2
+          new Preload(/^roboto-latin-[34]00\..*\.woff2$/, { as: 'font' }),
+          // NotoSansSC-Regular-X.woff2 NotoSansSC-Light-X.woff2
+          new Preload(/^NotoSansSC-(Regular|Light)-X\..*\.woff2$/, { as: 'font' }),
+          // NotoSansSC-Regular.woff2
+          new Prefetch(/^NotoSansSC-Regular\..*\.woff2$/),
+          // *.chunk.js
+          new Prefetch(/\.chunk\.js$/),
+          // *.worker.js
+          new Prefetch(/^.*\.worker\.js$/),
+        ],
+        body: [
+          // app.js
+          new Js(/^app\..*\.js$/),
+        ],
+      }],
+    }),
     new BasicAssetsPlugin({
       remove: (a) => /^mock\../.test(a.replace(/^assets\//, '')),
       append: {

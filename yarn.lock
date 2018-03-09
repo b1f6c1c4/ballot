@@ -749,6 +749,14 @@ acorn@^5.0.0, acorn@^5.3.0, acorn@^5.5.0:
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.5.3.tgz#f473dd47e0277a08e28e9bec5aeeb04751f0b8c9"
 
+advanced-injection-plugin@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/advanced-injection-plugin/-/advanced-injection-plugin-0.2.0.tgz#87b46abc056f445e15d2edff68508821961f8b5a"
+  dependencies:
+    fg-loadcss "^2.0.1"
+    he "^1.1.1"
+    lodash "^4.17.4"
+
 ajv-keywords@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.1.tgz#617997fc5f60576894c435f940d819e135b80762"
@@ -3059,7 +3067,7 @@ fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
-fg-loadcss@2.0.1:
+fg-loadcss@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fg-loadcss/-/fg-loadcss-2.0.1.tgz#71c00e470a57f7739d0736124dfc8791995e8af1"
 
@@ -3602,7 +3610,7 @@ hawk@~6.0.2:
     hoek "4.x.x"
     sntp "2.x.x"
 
-he@1.1.x, he@~1.1.1:
+he@1.1.x, he@^1.1.1, he@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 

@@ -2,29 +2,6 @@
 
     <title data-i18n="htmlTitle">Ballot</title>
 
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.css) {
-        if (/vendor/.test(key)) { %>
-          <link rel="preload" as="style" href="<%= key %>" onload="this.onload=null;this.rel='stylesheet'">
-        <% }
-      }
-    } %>
-
-    <style type="text/css">
-      <%= require('raw-loader!index/style.css') %>
-    </style>
-
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.css) {
-        if (!/vendor/.test(key)) { %>
-          <link rel="preload" as="style" href="<%= key %>" onload="this.onload=null;this.rel='stylesheet'">
-        <% }
-      }
-    } %>
-
-    <script>
-      <%= require('raw-loader!fg-loadcss/dist/cssrelpreload.min.js') %>
-    </script>
   </head>
   <body>
 
@@ -37,13 +14,7 @@
 
     <%= require('raw-loader!index/outdated.html') %>
 
-    <% if (!htmlWebpackPlugin.options.inject) {
-      for (let key of htmlWebpackPlugin.files.js) {
-        if (!/outdated/.test(key)) { %>
-          <script src="<%= key %>"></script>
-        <% }
-      }
-    } else { %>
+    <% if (htmlWebpackPlugin.options.inject) { %>
       <script src="/dll/main.dll.js"></script>
     <% } %>
   </body>

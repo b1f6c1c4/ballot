@@ -98,7 +98,7 @@ module.exports = ({
           use: cssLoaderVender || ['style-loader', 'css-loader'],
         },
         {
-          test: /(?<!style)\.css$/,
+          test: /\.css$/,
           exclude: /node_modules/,
           use: cssLoaderApp || ['style-loader', 'css-loader'],
         },
