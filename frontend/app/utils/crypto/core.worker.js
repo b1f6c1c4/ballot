@@ -1,9 +1,13 @@
 import _ from 'lodash';
 import * as core from './core';
 
+const progress = (v) => postMessage({
+  progress: v,
+});
+
 const process = async ({ method, param }) => {
   const func = core[method];
-  return func(...param);
+  return func(progress, ...param);
 };
 
 /* eslint-disable no-restricted-globals */

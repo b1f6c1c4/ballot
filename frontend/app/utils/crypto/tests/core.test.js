@@ -18,7 +18,7 @@ describe('generateKeyPair', () => {
   };
 
   it('should match snapshot', async (done) => {
-    const result = await generateKeyPair(param);
+    const result = await generateKeyPair(undefined, param);
     expect(result).toMatchSnapshot();
     done();
   });
@@ -39,14 +39,17 @@ describe('signMessage', () => {
   };
 
   it('should match snapshot', async (done) => {
-    const result = await signMessage({ key: 'val' }, param);
+    let pg;
+    const progress = (v) => { pg = v; };
+    const result = await signMessage(progress, { key: 'val' }, param);
     expect(result).toMatchSnapshot();
+    expect(pg).toEqual(1);
     done();
   });
 
   it('should throw nopk', async (done) => {
     try {
-      await signMessage({ key: 'val' }, _.merge({}, param, { x: '123' }));
+      await signMessage(undefined, { key: 'val' }, _.merge({}, param, { x: '123' }));
       expect(undefined).toBeDefined();
       done();
     } catch (e) {
@@ -57,7 +60,7 @@ describe('signMessage', () => {
 
   it('should throw rpic', async (done) => {
     try {
-      await signMessage({ key: 'val' }, _.merge({}, param, { h: '1234' }));
+      await signMessage(undefined, { key: 'val' }, _.merge({}, param, { h: '1234' }));
       expect(undefined).toBeDefined();
       done();
     } catch (e) {

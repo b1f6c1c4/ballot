@@ -8,13 +8,15 @@ const makeMakeExport = () => {
   // eslint-disable-next-line global-require
   const Worker = require('./core.worker');
 
-  return (k) => (...param) => new Promise((resolve, reject) => {
+  return (k) => (pg, ...param) => new Promise((resolve, reject) => {
     const worker = new Worker();
-    worker.onmessage = ({ data }) => {
-      if (data.error) {
-        reject(data.error);
+    worker.onmessage = ({ data: { result, error, progress } }) => {
+      if (progress !== undefined) {
+        pg(progress);
+      } else if (error) {
+        reject(error);
       } else {
-        resolve(data.result);
+        resolve(result);
       }
     };
     worker.postMessage({

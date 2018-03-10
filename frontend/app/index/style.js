@@ -13,7 +13,7 @@ import svgClose from '../resource/icons/ic_close_black_36px.svg';
 import svgUp from '../resource/icons/ic_arrow_drop_up_black_36px.svg';
 import svgDown from '../resource/icons/ic_arrow_drop_down_black_36px.svg';
 import './typeface-noto-sans.css';
-import './style-dynamic.css';
+import './style.css';
 
 /* eslint-disable func-names */
 

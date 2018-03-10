@@ -22,7 +22,7 @@ const groupHash = async (param, ...vals) => {
   return groupHashInt(param, Buffer.from(str, 'hex'));
 };
 
-export const generateKeyPair = async (param) => {
+export const generateKeyPair = async (progress, param) => {
   const q = parse(param.q);
   const g = parse(param.g);
 
@@ -43,7 +43,7 @@ const toUtf8 = (str) => {
   return Buffer.from(str, 'utf-8');
 };
 
-export const signMessage = async (payload, param) => {
+export const signMessage = async (progress, payload, param) => {
   const q = parse(param.q);
   const qm1 = q.minus(bigInt.one);
   const g = parse(param.g);
@@ -52,7 +52,17 @@ export const signMessage = async (payload, param) => {
   const n = param.ys.length;
   const ys = param.ys.map(parse);
 
+  let progressId = 0;
+  const totalProgress = (4 * n) + 5;
+  const pg = () => {
+    progressId += 1;
+    if (progress) {
+      progress(progressId / totalProgress);
+    }
+  };
+
   const y0 = g.modPow(x, q);
+  pg();
   const k = ys.findIndex((y) => y.equals(y0));
   if (k === -1) {
     const e = new Error('No public key');
@@ -68,17 +78,33 @@ export const signMessage = async (payload, param) => {
   }
 
   const t = h.modPow(x, q);
+  pg();
   const ss = Array.from({ length: n }, () => random(q));
   const cs = Array.from({ length: n }, () => random(q));
-  const us = _.zip(ys, ss, cs).map(([y, s, c]) => g.modPow(s, q).multiply(y.modPow(c, q)).mod(q));
-  const vs = _.zip(ss, cs).map(([s, c]) => h.modPow(s, q).multiply(t.modPow(c, q)).mod(q));
+  const us = _.zip(ys, ss, cs).map(([y, s, c]) => {
+    const temp = y.modPow(c, q);
+    pg();
+    const result = g.modPow(s, q).multiply(temp).mod(q);
+    pg();
+    return result;
+  });
+  const vs = _.zip(ss, cs).map(([s, c]) => {
+    const temp = t.modPow(c, q);
+    pg();
+    const result = h.modPow(s, q).multiply(temp).mod(q);
+    pg();
+    return result;
+  });
   us[k] = g.modPow(ss[k], q);
+  pg();
   vs[k] = h.modPow(ss[k], q);
+  pg();
 
   const pld = stringify(payload);
   const pldData = toUtf8(pld);
   const m = await groupHashInt({ q, g }, pldData);
   const h1 = await groupHash({ q, g }, m, t, ...us, ...vs);
+  pg();
   const sum = _.reduce(cs, (sm, c) => sm.add(c)).mod(qm1);
   cs[k] = cs[k].add(h1).add(qm1).minus(sum).mod(qm1);
   ss[k] = ss[k].add(qm1).minus(cs[k].multiply(x).mod(qm1)).mod(qm1);

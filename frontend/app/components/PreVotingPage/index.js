@@ -8,6 +8,7 @@ import {
   withStyles,
   FormControl,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Paper,
   Typography,
@@ -55,8 +56,9 @@ const styles = (theme) => ({
     minWidth: 300,
   },
   secret: {
+    display: 'block', // Fix for MS Edge
     fontFamily: 'monospace',
-    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
   },
 });
 
@@ -110,6 +112,7 @@ class PreVotingPage extends React.PureComponent {
       isLoading,
       isSignLoading,
       ticket,
+      progress,
     } = this.props;
 
     const makeField = (f, i) => {
@@ -223,6 +226,9 @@ class PreVotingPage extends React.PureComponent {
                 </span>
               )}
             </form>
+            {progress !== null && (
+              <LinearProgress variant="determinate" value={progress * 100} />
+            )}
             <ConfirmDialog
               title={messages.signTitle}
               description={messages.signDescription}
@@ -251,6 +257,7 @@ PreVotingPage.propTypes = {
   onSign: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
   ticket: PropTypes.object,
+  progress: PropTypes.number,
 };
 
 export default compose(

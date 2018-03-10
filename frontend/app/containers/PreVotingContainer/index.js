@@ -62,6 +62,7 @@ PreVotingContainer.propTypes = {
   error: PropTypes.object,
   fields: PropTypes.array,
   ticket: PropTypes.object,
+  progress: PropTypes.number,
   isLoading: PropTypes.bool.isRequired,
   isSignLoading: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
@@ -87,6 +88,7 @@ function mapDispatchToProps(dispatch, { match }) {
 const mapStateToProps = createStructuredSelector({
   isLoading: (state) => state.getIn(['preVotingContainer', 'isLoading']),
   isSignLoading: (state) => state.getIn(['preVotingContainer', 'isSignLoading']),
+  progress: (state) => state.getIn(['preVotingContainer', 'progress']),
   ballot: preVotingContainerSelectors.Ballot(),
   error: preVotingContainerSelectors.Error(),
   fields: preVotingContainerSelectors.Fields(),

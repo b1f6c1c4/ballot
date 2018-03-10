@@ -7,6 +7,13 @@ export function statusRequest() {
   };
 }
 
+export function signProgress(progress) {
+  return {
+    type: PRE_VOTING_CONTAINER.SIGN_PROGRESS_ACTION,
+    progress,
+  };
+}
+
 // Sagas
 export function refreshRequest({ bId }) {
   return {

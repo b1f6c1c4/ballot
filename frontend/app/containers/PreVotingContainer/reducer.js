@@ -12,6 +12,7 @@ const initialState = fromJS({
   fields: null,
   error: null,
   ticket: null,
+  progress: null,
 });
 
 export const normalizeFields = (fs) => fs.map((f) => {
@@ -45,9 +46,12 @@ function preVotingContainerReducer(state = initialState, action) {
         return state.setIn(['ballot', 'status'], action.status);
       }
       return state;
+    case PRE_VOTING_CONTAINER.SIGN_PROGRESS_ACTION:
+      return state.set('progress', action.progress);
     // Sagas
     case PRE_VOTING_CONTAINER.REFRESH_REQUEST:
       return state.set('isLoading', true)
+        .set('progress', null)
         .set('error', null)
         .set('ticket', null);
     case PRE_VOTING_CONTAINER.REFRESH_SUCCESS: {
@@ -68,9 +72,11 @@ function preVotingContainerReducer(state = initialState, action) {
         .set('ballot', null)
         .set('error', fromJS(_.toPlainObject(action.error)));
     case PRE_VOTING_CONTAINER.SIGN_REQUEST:
-      return state.set('isSignLoading', true);
+      return state.set('isSignLoading', true)
+        .set('progress', 0);
     case PRE_VOTING_CONTAINER.SIGN_SUCCESS:
       return state.set('isSignLoading', false)
+        .set('progress', null)
         .set('ticket', fromJS(action.result));
     case PRE_VOTING_CONTAINER.SIGN_FAILURE:
       return state.set('isSignLoading', false);

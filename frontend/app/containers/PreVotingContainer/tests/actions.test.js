@@ -8,4 +8,14 @@ describe('PreVotingContainer actions', () => {
       expect(preVotingContainerActions.statusRequest().type).toEqual(PRE_VOTING_CONTAINER.STATUS_REQUEST_ACTION);
     });
   });
+
+  describe('signProgress action', () => {
+    it('has a type of SIGN_PROGRESS_ACTION', () => {
+      expect(preVotingContainerActions.signProgress().type).toEqual(PRE_VOTING_CONTAINER.SIGN_PROGRESS_ACTION);
+    });
+
+    it('should forward', () => {
+      expect(preVotingContainerActions.signProgress(1).progress).toEqual(1);
+    });
+  });
 });
