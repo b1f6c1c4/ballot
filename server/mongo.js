@@ -2,14 +2,6 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const logger = require('./logger')('mongo');
 
-let shard;
-if (process.env.NODE_ENV !== 'test') {
-  // eslint-disable-next-line global-require
-  shard = require('./shard');
-} else {
-  shard = undefined;
-}
-
 if (process.env.BACKEND_LOG === 'trace'
   || process.env.MONGOOSE_DEBUG) {
   logger.info('Mongoose debugging enabled');
@@ -64,24 +56,6 @@ const connect = async () => {
     mongoose.set('bufferCommands', false);
     await connectLocal('ballot-test');
     return;
-  }
-
-  if (process.env.NO_SHARD) {
-    await connectLocal('ballot');
-    return;
-  }
-
-  try {
-    await shard();
-    mongoose.useDb('ballot');
-    return;
-  } catch (e) {
-    if (process.env.NODE_ENV === 'production') {
-      logger.error('Init shard', e);
-      throw e;
-    }
-
-    logger.warn('Init shard', e);
   }
 
   await connectLocal('ballot');

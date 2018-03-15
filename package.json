@@ -54,7 +54,6 @@
     "ioredis": "3.2.2",
     "json-stable-stringify": "1.0.1",
     "jsonwebtoken": "8.2.0",
-    "kubernetes-client": "5.0.0",
     "lodash": "4.17.5",
     "minimist": "1.2.0",
     "mongoose": "5.0.10",
