@@ -120,6 +120,19 @@ describe('editFieldsContainerReducer', () => {
     expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.reorder(param))).toEq(expectedResult);
   });
 
+  it('should handle reorder action same', () => {
+    const originalState = state
+      .set('fields', fromJS([
+        { key: 'f1' },
+        { key: 'f2' },
+        { key: 'f3' },
+      ]));
+    const param = { from: 0, to: 0 };
+    const expectedResult = originalState;
+
+    expect(editFieldsContainerReducer(originalState, editFieldsContainerActions.reorder(param))).toEq(expectedResult);
+  });
+
   it('should handle startEdit action', () => {
     const originalState = state;
     const param = { index: 123 };
