@@ -166,8 +166,7 @@ module.exports = ({
         lodash: 'lodash-es',
         'material-ui': 'material-ui/es',
         'material-ui-icons': 'material-ui-icons/es',
-        // [#369](https://github.com/atlassian/react-beautiful-dnd/pull/369)
-        // 'react-beautiful-dnd': 'react-beautiful-dnd/lib/es',
+        'react-beautiful-dnd': 'react-beautiful-dnd/esm',
         'react-redux': 'react-redux/es',
         'react-router': 'react-router/es',
         'react-router-dom': 'react-router-dom/es',

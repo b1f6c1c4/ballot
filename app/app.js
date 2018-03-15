@@ -10,7 +10,7 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import {
   createMuiTheme,
   MuiThemeProvider,
-  Reboot,
+  CssBaseline,
 } from 'material-ui';
 import { brown, teal } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';
@@ -89,7 +89,7 @@ export const render = () => {
         <LanguageProvider messages={messages}>
           <ConnectedRouter history={history}>
             <ErrorBoundary>
-              <Reboot />
+              <CssBaseline />
               <SubscriptionContainer />
               <ConnectedMuiThemeProvider>
                 <GlobalContainer>
