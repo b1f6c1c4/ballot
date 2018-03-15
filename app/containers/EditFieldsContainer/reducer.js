@@ -52,6 +52,9 @@ function editFieldsContainerReducer(state = initialState, action) {
         .set('isPristine', false)
         .set('fields', state.get('fields').delete(action.index));
     case EDIT_FIELDS_CONTAINER.REORDER_ACTION: {
+      if (action.from === action.to) {
+        return state;
+      }
       const field = state.getIn(['fields', action.from]);
       const fields = state.get('fields')
         .delete(action.from).insert(action.to, field);
