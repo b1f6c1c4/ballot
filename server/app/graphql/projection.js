@@ -1,9 +1,6 @@
-const _ = require('lodash');
-const { genProjection, genResolvers } = require('graphql-advanced-projection');
-const logger = require('../../logger')('graphql/projection');
+const gqlProjection = require('graphql-advanced-projection');
 
-const config = {
-  // Ballot
+module.exports = gqlProjection({
   Ballot: {
     proj: {
       bId: '_id',
@@ -20,16 +17,10 @@ const config = {
       },
     },
   },
-
-  // Ballot
   BallotField: {
-    prefix: 'fields.',
     typeProj: 'type',
   },
-
-  // Ballot
   StringField: {
-    prefix: 'fields.',
     proj: {
       default: {
         query: 'data',
@@ -37,42 +28,20 @@ const config = {
       },
     },
   },
-
-  // Ballot
   EnumField: {
-    prefix: 'fields.',
     proj: {
       items: 'data',
     },
   },
-
-  // Ballot
   BallotVoter: {
-    prefix: 'voters.',
     proj: {
       iCode: '_id',
     },
   },
-
-  // SignedTicket
   BallotTicket: {
     proj: {
       t: '_id',
+      payload: true,
     },
   },
-
-  // SignedTicket
-  TicketPayload: {
-    prefix: 'payload.',
-  },
-};
-
-const project = genProjection(config);
-
-const resolvers = genResolvers(config);
-logger.trace('Proj resolvers', _.mapValues(resolvers, Object.keys));
-
-module.exports = {
-  project,
-  resolvers,
-};
+});
