@@ -81,6 +81,9 @@ const BallotSchema = new Schema({
   timestamps: { },
 });
 
+BallotSchema.index({ owner: 1, _id: 1 });
+BallotSchema.index({ 'voters._id': 1 });
+
 BallotSchema.plugin(fixUpdate);
 
 module.exports = {

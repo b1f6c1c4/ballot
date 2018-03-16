@@ -33,10 +33,13 @@ const SignedTicketSchema = new Schema({
 }, {
   id: false,
   shardKey: {
+    'payload.bId': 1,
     _id: 1,
   },
   timestamps: { },
 });
+
+SignedTicketSchema.index({ 'payload.bId': 1, _id: 1 });
 
 SignedTicketSchema.plugin(fixUpdate);
 
