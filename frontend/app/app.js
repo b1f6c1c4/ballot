@@ -9,8 +9,8 @@ import { createStructuredSelector, createSelector } from 'reselect';
 
 import {
   createMuiTheme,
-  MuiThemeProvider,
   CssBaseline,
+  MuiThemeProvider,
 } from 'material-ui';
 import { brown, teal } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';

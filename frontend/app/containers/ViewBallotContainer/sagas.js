@@ -51,6 +51,7 @@ export function* handleFinalizeRequest({ bId }) {
   try {
     const result = yield call(api.mutate, mutation, { bId }, cred);
     yield put(viewBallotContainerActions.finalizeSuccess(result));
+    yield put(viewBallotContainerActions.ballotRequest({ bId }));
   } catch (err) {
     yield put(viewBallotContainerActions.finalizeFailure(err));
   }

@@ -44,7 +44,15 @@ class EditVotersPage extends React.PureComponent {
 
   handleExport = () => {
     downloadCsv(
-      this.props.voters.map((v) => _.omit(v, '__typename')),
+      this.props.voters.map((v) => {
+        const obj = _.omit(v, '__typename');
+        if (v.publicKey) {
+          obj.link = undefined;
+        } else {
+          obj.link = `${window.location.protocol}//${window.location.host}/app/vreg/${this.props.bId}/${v.iCode}`;
+        }
+        return obj;
+      }),
       null,
       'voters.csv',
     );
