@@ -1,21 +1,14 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'animate.css/animate.min.css';
-import 'typeface-roboto/index.css';
-import 'paper-css/paper.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'animate.css/animate.min.css';
+// import 'typeface-roboto/index.css';
+// import 'paper-css/paper.min.css';
 
-import jQuery from 'jquery';
-import { WOW } from 'wowjs';
-import 'jquery.easing';
-import 'superfish';
-import 'superfish/dist/js/hoverIntent';
-import svgMenu from '../resource/icons/ic_menu_black_36px.svg';
-import svgClose from '../resource/icons/ic_close_black_36px.svg';
-import svgUp from '../resource/icons/ic_arrow_drop_up_black_36px.svg';
-import svgDown from '../resource/icons/ic_arrow_drop_down_black_36px.svg';
-import './typeface-noto-sans.css';
-import './style.css';
-
-/* eslint-disable func-names */
+// import jQuery from 'jquery';
+// import 'jquery.easing';
+import svgMenu from './resource/icons/ic_menu_black_36px.svg';
+import svgClose from './resource/icons/ic_close_black_36px.svg';
+import svgUp from './resource/icons/ic_arrow_drop_up_black_36px.svg';
+import svgDown from './resource/icons/ic_arrow_drop_down_black_36px.svg';
 
 jQuery(document).ready(($) => {
   // Header fixed and Back to top button

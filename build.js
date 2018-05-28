@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');
+const babel = require('@babel/core');
 
 const compileFile = async (tmpl, file, data) => {
   const res = tmpl(data);
@@ -18,13 +19,20 @@ const run = async () => {
     },
   });
   await fs.emptyDir(path.join(__dirname, './dist/'));
-  await fs.copy(
+  await fs.mkdir(path.join(__dirname, './dist/assets/'));
+  const { code } = await babel.transformFileAsync(
     path.join(__dirname, './src/style.js'),
-    path.join(__dirname, './dist/style.js'),
+    {
+      ast: false,
+      comments: false,
+      compact: true,
+      filename: './src/style.js',
+    },
   );
+  await fs.writeFile(path.join(__dirname, './dist/assets/style.js'), code, 'utf-8');
   await fs.copy(
-    path.join(__dirname, './src/style.css'),
-    path.join(__dirname, './dist/style.css'),
+    path.join(__dirname, './src/public/'),
+    path.join(__dirname, './dist/assets/'),
   );
 
   await compileFile(tmpl, 'xxx', {

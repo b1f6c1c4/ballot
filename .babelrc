@@ -1,0 +1,25 @@
+{
+  plugins: [
+    [
+      'babel-plugin-inline-import',
+      {
+        extensions: [
+          '.svg',
+        ],
+      },
+    ],
+  ],
+  presets: [
+    [
+      '@babel/env',
+      {
+        targets: {
+          browsers: [
+            'last 2 versions',
+          ],
+        },
+        modules: false,
+      },
+    ],
+  ],
+}
