@@ -30,3 +30,4 @@ if (st) {
 
 shelljs.mkdir('-p', 'docs/');
 shelljs.cp('../docs/public.graphql', 'docs/');
+shelljs.cp('../cryptor/build/Release/cryptor.node', 'server/');

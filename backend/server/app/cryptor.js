@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const finalizeNewRing = require('./newRing');
 const finalizeVerify = require('./verify');
+const cryptor = require('../cryptor.node');
 const logger = require('../logger')('cryptor');
 
 const idGen = (len) => () => new Promise((resolve, reject) => {
@@ -33,14 +34,13 @@ module.exports = {
 
   async newRing(ballot) {
     const { _id } = ballot;
-    // TODO
-    finalizeNewRing({ q: undefined, g: undefined }, { _id });
+    finalizeNewRing(cryptor.newRing(), { _id });
   },
 
   async genH(ballot) {
     const { q, g } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
-    // TODO
+    return cryptor.genH({ q, g, publicKeys });
   },
 
   async verify(ballot, submittedTicket) {
@@ -49,7 +49,7 @@ module.exports = {
     const { _id, ticket: { _id: t } } = submittedTicket;
     const { s, c } = ticket;
     const payload = stringify(ticket.payload);
-    // TODO
-    finalizeVerify({ valid: undefined }, { _id, bId });
+    const valid = cryptor.verify({ q, g, h, publicKeys, t, payload, s, c });
+    finalizeVerify({ valid }, { _id, bId });
   },
 };

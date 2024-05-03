@@ -1,5 +1,6 @@
 # Artifact
 build
+build-test
 *.gcda
 *.gcno
 *.gcov

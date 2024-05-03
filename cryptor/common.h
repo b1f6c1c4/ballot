@@ -1,8 +1,10 @@
 #pragma once
+#define SPDLOG_NO_EXCEPTIONS
 #include <string>
 #include <boost/core/noncopyable.hpp>
 #include <spdlog/spdlog.h>
-#include <json.hpp>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 

@@ -5,6 +5,7 @@ node_modules
 stats.json
 VERSION.json
 /docs
+server/*.node
 
 # Cruft
 *~
