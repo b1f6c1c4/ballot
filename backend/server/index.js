@@ -78,20 +78,6 @@ function runApp() {
 const inits = [];
 inits.push(mongo.connect());
 
-if (!process.env.NO_RABBIT) {
-  inits.push(rpc.connect()
-    .then(() => {
-      rpc.call('status')
-        .then((res) => {
-          logger.info('Rpc status', res);
-        }).catch((err) => {
-          logger.error('Rpc status', err);
-        });
-    }));
-} else {
-  logger.warn('Rabbitmq omitted.');
-}
-
 if (!process.env.NO_REDIS) {
   inits.push(redis.connect());
 } else {

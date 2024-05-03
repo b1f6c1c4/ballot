@@ -104,21 +104,6 @@ services:
     networks:
       - prod
 
-  rabbit:
-    image: rabbitmq:management-alpine
-    restart: always
-    ports:
-      - "15672:15672"
-    volumes:
-      - /data/ballot/rabbit:/var/lib/rabbitmq/mnesia
-    healthcheck:
-      test: ["CMD", "wget", "-O-", "http://localhost:15672"]
-      interval: 15s
-      timeout: 10s
-      retries: 8
-    networks:
-      - prod
-
 networks:
   prod:
     driver: bridge

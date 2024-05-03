@@ -37,7 +37,6 @@
     "testRegex": "tests/.*\\.test\\.js$"
   },
   "dependencies": {
-    "amqp": "0.2.6",
     "apollo-server-express": "1.3.2",
     "bcrypt": "^5.1.1",
     "body-parser": "1.18.2",
