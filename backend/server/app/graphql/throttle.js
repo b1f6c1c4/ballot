@@ -10,7 +10,7 @@ module.exports = (log, max, duration) => async (obj) => {
     id = obj;
   }
   try {
-    await customTh(log, { max, duration }, id);
+    await customTh(log, { points, duration }, id);
   } catch (e) {
     if (_.isNumber(e)) {
       throw new errors.TooManyRequestsError(e);

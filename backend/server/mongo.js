@@ -8,13 +8,14 @@ if (process.env.BACKEND_LOG === 'trace'
   mongoose.set('debug', true);
 }
 
-const connectLocal = (dbName) => new Promise((resolve, reject) => {
+let connection;
+
+const connectLocal = async (dbName) => {
   const host = process.env.MONGO_HOST || 'localhost';
   logger.debug('Mongo host', host);
 
   mongoose.connection.on('connected', () => {
     logger.info('Mongoose connection open');
-    resolve();
   });
   mongoose.connection.on('error', (err) => {
     logger.error('Mongoose connection error', err);
@@ -31,12 +32,12 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
 
   try {
     logger.info('Connecting mongo db...', dbName);
-    mongoose.connect(`mongodb://${host}:27017/${dbName}`).then(resolve, reject);
+    connection = (await mongoose.connect(`mongodb://${host}:27017/${dbName}`)).connection;
   } catch (e) {
     logger.error('Calling mongoose.connect', e);
-    reject(e);
+    throw e;
   }
-});
+};
 
 let isConnected = false;
 
@@ -76,5 +77,6 @@ const fixUpdate = (schema) => {
 
 module.exports = {
   connect,
+  getConnection: () => connection,
   fixUpdate,
 };

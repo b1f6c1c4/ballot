@@ -1,86 +1,56 @@
-const Limiter = require('ratelimiter');
-const { getDb } = require('../redis');
+const { RateLimiterMongo, RateLimiterMemory } = require("rate-limiter-flexible");
+const { getConnection } = require('../mongo');
 const logger = require('../logger')('throttle');
 
-module.exports.customTh = (log, par, id) => new Promise((resolve, reject) => {
-  if (process.env.NO_REDIS) {
-    resolve();
+const masterLimiter = new RateLimiterMemory({
+  points: 30,
+  duration: 5,
+  blockDuration: 3600,
+});
+const limiters = {};
+
+module.exports.ban = (log, id) => {
+  if (!id || !(log in limiters))
     return;
+
+  limiters[log].block(id, 2 * 3600); // 2 hours
+  masterLimiter.block(id, 600); // 10 minutes
+};
+
+module.exports.customTh = async (log, par, id) => {
+  await masterLimiter.consume(id, 1);
+
+  let limiter;
+  if (!(log in limiters)) {
+    logger.info(`New limiter ${log} incorporated`, par);
+    limiter = limiters[log] = new RateLimiterMongo({
+      storeClient: getConnection(),
+      keyPrefix: `ratelimiter.${log}`,
+      blockDuration: 60,
+      insuranceLimiter: new RateLimiterMemory({
+        ...par,
+      }),
+      ...par,
+    });
+  } else {
+    limiter = limiters[log];
   }
 
-  const limiter = new Limiter({
-    id: `${log}:${id}`,
-    db: getDb(),
-    ...par,
-  });
-
-  limiter.get((err, { total, remaining, reset }) => {
-    if (err) {
-      reject(err);
-      return;
-    }
-
-    const now = +Date.now();
-
-    logger.trace(`Throttle ${log}`, {
-      id,
-      remaining,
-      total,
-      reset,
-      now,
-    });
-
-    if (remaining > 0) {
-      resolve();
-      return;
-    }
-
-    const after = (reset + 1) - (now / 1000);
-    reject(after);
-  });
-});
+  await limiter.consume(id, 1);
+};
 
 module.exports.expressTh = (log, par, idGetter) => (req, res, next) => {
-  if (process.env.NO_REDIS) {
-    next();
-    return;
-  }
-
   const id = idGetter(req);
 
-  const limiter = new Limiter({
-    id: `${log}:${id}`,
-    db: getDb(),
-    ...par,
-  });
-
-  limiter.get((err, { total, remaining, reset }) => {
-    if (err) {
-      next(err);
-      return;
-    }
-
-    res.set('X-RateLimit-Limit', total);
-    res.set('X-RateLimit-Remaining', remaining - 1);
-    res.set('X-RateLimit-Reset', reset);
-
-    const now = +Date.now();
-
-    logger.trace(`Throttle ${log}`, {
-      id,
-      remaining,
-      total,
-      reset,
-      now,
+  module.exports.customTh(log, par, id)
+    .then(() => next())
+    .catch((e) => {
+      if (e.msBeforeNext) {
+        const after = Math.round(e.msBeforeNext / 1000) || 1;
+        res.set('Retry-After', after);
+        res.status(429).send(`Too Many Requests: ${log}`);
+      } else {
+        res.status(429).send('Too Many Requests');
+      }
     });
-
-    if (remaining > 0) {
-      next();
-      return;
-    }
-
-    const after = (reset + 1) - (now / 1000);
-    res.set('Retry-After', after);
-    res.status(429).send(`Rate limit exceeded, retry after ${after.toFixed(0)}s`);
-  });
 };

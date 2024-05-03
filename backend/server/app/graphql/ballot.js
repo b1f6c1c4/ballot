@@ -26,8 +26,8 @@ module.exports = {
         }
 
         try {
-          await throttle('createBallot-1', 1, 30000)(context);
-          await throttle('createBallot-2', 1, 60000)(context);
+          await throttle('createBallot-1', 1, 30)(context);
+          await throttle('createBallot-2', 1, 60)(context);
 
           const ballot = new Ballot();
           ballot._id = await bIdGen();
@@ -140,7 +140,7 @@ module.exports = {
         }
 
         try {
-          await throttle('createVoter', 3, 1000)(bId);
+          await throttle('createVoter', 3, 1)(bId);
 
           const doc = await Ballot.findById(bId);
           if (!doc) {

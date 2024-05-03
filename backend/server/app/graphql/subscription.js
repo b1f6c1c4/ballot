@@ -162,7 +162,7 @@ module.exports = {
           const { bId } = args.input;
 
           try {
-            await throttle('ballotStatus', 2, 1000)(context);
+            await throttle('ballotStatus', 2, 1)(context);
 
             const doc = await Ballot.findById(bId, { _id: 1 });
             if (!doc) {
@@ -193,7 +193,7 @@ module.exports = {
           const { username } = context.auth;
 
           try {
-            await throttle('ballotsStatus', 1, 2000)(context);
+            await throttle('ballotsStatus', 1, 2)(context);
 
             const cb = await subscribeBallotsStatus(username);
             context.registry.set(context.opId, cb);
@@ -223,7 +223,7 @@ module.exports = {
           const { bId } = args.input;
 
           try {
-            await throttle('voterRegistered', 2, 1000)(context);
+            await throttle('voterRegistered', 2, 1)(context);
 
             const doc = await Ballot.findById(bId, { _id: 1, status: 1, owner: 1 });
             if (!doc) {

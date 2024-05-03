@@ -93,17 +93,6 @@ services:
     networks:
       - prod
 
-  redis:
-    image: redis
-    restart: always
-    healthcheck:
-      test: ["CMD", "redis-cli", "INFO"]
-      interval: 15s
-      timeout: 10s
-      retries: 2
-    networks:
-      - prod
-
 networks:
   prod:
     driver: bridge

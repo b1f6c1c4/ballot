@@ -24,7 +24,7 @@ module.exports = {
         }
 
         try {
-          await throttle('registerVoter', 3, 1000)(context);
+          await throttle('registerVoter', 3, 1)(context);
 
           const doc = await Ballot.findById(bId);
           if (!doc) {

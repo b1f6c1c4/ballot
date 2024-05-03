@@ -15,7 +15,7 @@ module.exports = {
         const { bId } = args.input;
 
         try {
-          await throttle('countTickets', 1, 1000)(bId);
+          await throttle('countTickets', 1, 1)(bId);
 
           const res = await SignedTicket.count({ 'payload.bId': bId });
           return res;
@@ -34,7 +34,7 @@ module.exports = {
         const { bId } = args.input;
 
         try {
-          await throttle('tickets', 1, 10000)(bId);
+          await throttle('tickets', 1, 10)(bId);
 
           const proj = project(info);
           logger.debug('Project', proj);
@@ -57,7 +57,7 @@ module.exports = {
         const { bId, index } = args.input;
 
         try {
-          await throttle('fieldStat', 1, 1000)(`${bId}:${index}`);
+          await throttle('fieldStat', 1, 1)(`${bId}:${index}`);
 
           const ress = await SignedTicket.aggregate([
             { $match: { 'payload.bId': bId } },

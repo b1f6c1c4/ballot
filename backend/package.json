@@ -48,7 +48,6 @@
     "graphql-advanced-projection": "^2.0.0",
     "graphql-subscriptions": "0.5.8",
     "graphql-tools": "2.23.1",
-    "ioredis": "3.2.2",
     "json-stable-stringify": "1.0.1",
     "jsonwebtoken": "8.2.0",
     "lodash": "4.17.5",
@@ -57,7 +56,7 @@
     "nocache": "2.0.0",
     "passport": "0.4.0",
     "passport-strategy": "1.0.0",
-    "ratelimiter": "3.0.3",
+    "rate-limiter-flexible": "^5.0.3",
     "subscriptions-transport-ws": "0.9.7",
     "tor-test": "0.2.1",
     "winston": "3.0.0-rc2"

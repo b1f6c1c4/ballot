@@ -38,7 +38,7 @@ router.get('/', (req, res) => {
 
 router.use(
   '/graphql',
-  expressTh('graphql', { max: 10, duration: 5000 }, (req) => req.ip),
+  expressTh('graphql', { points: 10, duration: 5 }, (req) => req.ip),
   nocache(),
   bodyParser.json(),
   passport.initialize(),
@@ -123,7 +123,7 @@ router.post(
         res.status(406).send();
     }
   },
-  expressTh('GET tickets', { max: 1, duration: 60000 }, (req) => req.targetObj.t),
+  expressTh('GET tickets', { points: 1, duration: 60 }, (req) => req.targetObj.t),
   async (req, res) => {
     logger.debug('Call submitTicket', req.responseEnc);
     const rst = await submitTicket(req.targetObj);
@@ -149,7 +149,7 @@ router.post(
 
 router.get(
   '/secret/tickets/',
-  expressTh('GET tickets', { max: 1, duration: 5000 }, (req) => req.query.tId),
+  expressTh('GET tickets', { points: 1, duration: 5 }, (req) => req.query.tId),
   anony(),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false }),

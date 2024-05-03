@@ -16,7 +16,7 @@ module.exports = {
         const { bId } = args.input;
 
         try {
-          await throttle('ballot', 5, 2000)(bId);
+          await throttle('ballot', 5, 2)(bId);
 
           const proj = project(info);
           logger.debug('Project', proj);
@@ -46,7 +46,7 @@ module.exports = {
         const { username } = context.auth;
 
         try {
-          await throttle('ballots', 1, 5000)(username);
+          await throttle('ballots', 1, 5)(username);
 
           const proj = project(info);
           logger.debug('Project', proj);

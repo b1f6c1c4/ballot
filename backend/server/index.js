@@ -6,18 +6,19 @@ const api = require('./app');
 const { makeServer } = require('./app/graphql');
 const cryptor = require('./cryptor.node');
 const mongo = require('./mongo');
-const redis = require('./redis');
 const logger = require('./logger')('index');
 
 logger.info('Versions', process.versions);
 
 process.on('unhandledRejection', (e) => {
   logger.fatal('Unhandled rejection', e);
+  console.error(e);
   throw e;
 });
 
 process.on('uncaughtException', (e) => {
   logger.fatalDie('Uncaught exception', e);
+  console.error(e);
 });
 
 process.on('warning', (e) => {
@@ -79,12 +80,6 @@ logger.info('cryptor status:', cryptor.status());
 
 const inits = [];
 inits.push(mongo.connect());
-
-if (!process.env.NO_REDIS) {
-  inits.push(redis.connect());
-} else {
-  logger.warn('Redis omitted.');
-}
 
 Promise.all(inits)
   .then(runApp)

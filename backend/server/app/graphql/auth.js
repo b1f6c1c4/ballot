@@ -24,10 +24,10 @@ module.exports = {
         }
 
         try {
-          await throttle('register-1', 1, 5000)(context);
+          await throttle('register-1', 1, 5)(context);
           const doc = await Organizer.findById(username, { _id: 1 });
           if (doc) return new errors.UsernameExistsError();
-          await throttle('register-2', 1, 60000)(context);
+          await throttle('register-2', 1, 60)(context);
           const { hash } = await hashPassword(password);
           const user = new Organizer();
           user._id = username;
@@ -62,8 +62,8 @@ module.exports = {
         }
 
         try {
-          await throttle('login-1', 3, 5000)(context);
-          await throttle('login-2', 3, 5000)(username);
+          await throttle('login-1', 3, 5)(context);
+          await throttle('login-2', 3, 5)(username);
 
           const tryFind = await Organizer.findById(username, { });
           logger.trace('tryFind', !!tryFind);
@@ -106,8 +106,8 @@ module.exports = {
         }
 
         try {
-          await throttle('password-1', 1, 60000)(context);
-          await throttle('password-2', 1, 5000)(username);
+          await throttle('password-1', 1, 60)(context);
+          await throttle('password-2', 1, 5)(username);
 
           const user = await Organizer.findById(username, {});
           if (!user) {
