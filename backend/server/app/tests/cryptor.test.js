@@ -11,19 +11,24 @@ jest.doMock('crypto', () => ({
 }));
 jest.mock('../newRing', () => (res, con) => {
   expect(res).toEqual({ key: 'val3' });
-  expect(con).toEqual({ method: 'newRing', key: 'val4' });
+  expect(con).toEqual({ _id: 'bId' });
 });
 jest.mock('../verify', () => (res, con) => {
-  expect(res).toEqual({ key: 'val1' });
-  expect(con).toEqual({ method: 'verify', key: 'val2' });
+  expect(res).toEqual({ valid: 114 });
+  expect(con).toEqual({ _id: '3456', bId: 'bId' });
 });
 
-const rpcMock = {
-  onPMessage() {},
-  publish: jest.fn(),
-  call: jest.fn(),
+const bcryptMock = {
+  hash: jest.fn(),
+  compare: jest.fn(),
 };
-jest.doMock('../../rpc', () => rpcMock);
+jest.doMock('bcrypt', () => bcryptMock);
+const cryptorMock = {
+  newRing: jest.fn(),
+  genH: jest.fn(),
+  verify: jest.fn(),
+};
+jest.doMock('../../cryptor.node', () => cryptorMock);
 
 describe('idGen', () => {
   // eslint-disable-next-line global-require
@@ -46,13 +51,13 @@ describe('idGen', () => {
 
 describe('hashPassword', () => {
   beforeEach(() => {
-    rpcMock.call.mockReset();
+    bcryptMock.hash.mockReset();
   });
 
   it('should resolve', () => {
-    rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('hashPassword');
-      expect(o.password).toEqual('pwd');
+    bcryptMock.hash.mockImplementationOnce((p, n) => {
+      expect(p).toEqual('pwd');
+      expect(n).toEqual(14);
       return {
         hash: 'hah',
       };
@@ -68,17 +73,14 @@ describe('hashPassword', () => {
 
 describe('verifyPassword', () => {
   beforeEach(() => {
-    rpcMock.call.mockReset();
+    bcryptMock.compare.mockReset();
   });
 
   it('should resolve', () => {
-    rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('verifyPassword');
-      expect(o.password).toEqual('pwd');
-      expect(o.hash).toEqual('hah');
-      return {
-        valid: 123,
-      };
+    bcryptMock.compare.mockImplementationOnce((p, h) => {
+      expect(p).toEqual('pwd');
+      expect(h).toEqual('hah');
+      return 123;
     });
 
     // eslint-disable-next-line global-require
@@ -91,36 +93,28 @@ describe('verifyPassword', () => {
 
 describe('newRing', () => {
   beforeEach(() => {
-    rpcMock.publish.mockReset();
+    cryptorMock.newRing.mockReset();
   });
 
-  it('should call publish', () => {
+  it('should call newRing.js', () => {
+    cryptorMock.newRing.mockImplementationOnce(() => ({
+      key: 'val3',
+    }));
+
     // eslint-disable-next-line global-require
     const { newRing } = require('../cryptor');
-    newRing({
-      _id: 'bId',
-      key: 'value',
-    });
-    expect(rpcMock.publish.mock.calls.length).toEqual(1);
-    expect(rpcMock.publish.mock.calls[0][0]).toEqual('newRing');
-    expect(rpcMock.publish.mock.calls[0][1]).toBeUndefined();
-    expect(rpcMock.publish.mock.calls[0][2]).toEqual({
-      reply: {
-        method: 'newRing',
-        _id: 'bId',
-      },
-    });
+    expect.hasAssertions();
+    newRing({ _id: 'bId', key: 'value' });
   });
 });
 
 describe('genH', () => {
   beforeEach(() => {
-    rpcMock.call.mockReset();
+    cryptorMock.genH.mockReset();
   });
 
   it('should resolve', () => {
-    rpcMock.call.mockImplementationOnce((n, o) => {
-      expect(n).toEqual('genH');
+    cryptorMock.genH.mockImplementationOnce((o) => {
       expect(o.q).toEqual('valq');
       expect(o.g).toEqual('valg');
       expect(o.publicKeys).toEqual(['p1', 'p2']);
@@ -150,10 +144,25 @@ describe('genH', () => {
 
 describe('verify', () => {
   beforeEach(() => {
-    rpcMock.publish.mockReset();
+    cryptorMock.verify.mockReset();
   });
 
   it('should call publish', () => {
+    cryptorMock.verify.mockImplementationOnce((o) => {
+      expect(o).toEqual({
+        q: 'valq',
+        g: 'valg',
+        h: 'valh',
+        publicKeys: ['p1', 'p2'],
+        t: 'valt',
+        payload: '{"a":1,"b":2}',
+        s: ['s1', 's2'],
+        c: ['c1', 'c2'],
+      });
+      expect.hasAssertions();
+      return 114;
+    });
+
     // eslint-disable-next-line global-require
     const { verify } = require('../cryptor');
     verify({
@@ -179,25 +188,6 @@ describe('verify', () => {
         },
         s: ['s1', 's2'],
         c: ['c1', 'c2'],
-      },
-    });
-    expect(rpcMock.publish.mock.calls.length).toEqual(1);
-    expect(rpcMock.publish.mock.calls[0][0]).toEqual('verify');
-    expect(rpcMock.publish.mock.calls[0][1]).toEqual({
-      q: 'valq',
-      g: 'valg',
-      h: 'valh',
-      publicKeys: ['p1', 'p2'],
-      t: 'valt',
-      payload: '{"a":1,"b":2}',
-      s: ['s1', 's2'],
-      c: ['c1', 'c2'],
-    });
-    expect(rpcMock.publish.mock.calls[0][2]).toEqual({
-      reply: {
-        method: 'verify',
-        _id: '3456',
-        bId: 'bId',
       },
     });
   });
