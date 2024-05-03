@@ -3,7 +3,6 @@
 #include <string>
 #include <boost/core/noncopyable.hpp>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -24,7 +23,7 @@ using json = nlohmann::json;
 class Logger : private boost::noncopyable
 {
 public:
-    inline explicit Logger(std::string &&name) : logger(spdlog::stdout_color_mt(name)) {}
+    explicit Logger(std::string &&name);
 
     std::shared_ptr<spdlog::logger> logger;
 };

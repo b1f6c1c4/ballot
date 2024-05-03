@@ -1,5 +1,5 @@
 CXX=g++
-TARGETS=ring ringImpl
+TARGETS=common ring ringImpl
 DEPS=common.h $(addsuffix .h, $(TARGETS))
 LIBS=-lcryptopp
 LIBSP=$(LIBS)
@@ -16,9 +16,9 @@ build-test/%.o: %.cpp
 
 -include $(patsubst %, build-test/tests/%.d, $(TARGETS))
 
-build-test/tests/%: tests/%.test.cpp %.cpp tests/common.test.h
+build-test/tests/%: tests/%.test.cpp common.cpp %.cpp tests/common.test.h
 	mkdir -p build-test/tests
-	$(CXX) -o $@ $< $*.cpp $(CFLAGST) -MMD -MT $@ -MF $@.d $(LIBST) -lboost_unit_test_framework
+	$(CXX) -o $@ $< common.cpp $*.cpp $(CFLAGST) -MMD -MT $@ -MF $@.d $(LIBST) -lboost_unit_test_framework
 
 .PRECIOUS: $(addprefix build-test/tests/, $(TARGETS))
 
