@@ -47,7 +47,7 @@ module.exports = {
   tIdGen: idGen(32),
 
   async hashPassword(password) {
-    return bcrypt.hash(password, 14)
+    return bcrypt.hash(password, 14);
   },
 
   async verifyPassword(password, hash) {

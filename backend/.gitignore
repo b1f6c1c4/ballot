@@ -4,6 +4,7 @@ build
 node_modules
 stats.json
 VERSION.json
+/docs
 
 # Cruft
 *~

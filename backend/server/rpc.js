@@ -169,7 +169,7 @@ const connect = () => new Promise((resolve, reject) => {
   });
 });
 
-const resolveQueue = (method) => 'cryptor';
+const resolveQueue = () => 'cryptor';
 
 const publish = (method, param, options) => new Promise((resolve) => {
   const opt = Object.assign({

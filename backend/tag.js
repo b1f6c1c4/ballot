@@ -27,3 +27,6 @@ if (st) {
     }
   });
 }
+
+shelljs.mkdir('-p', 'docs/');
+shelljs.cp('../docs/public.graphql', 'docs/');

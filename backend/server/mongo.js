@@ -31,12 +31,7 @@ const connectLocal = (dbName) => new Promise((resolve, reject) => {
 
   try {
     logger.info('Connecting mongo db...', dbName);
-    mongoose.connect(`mongodb://${host}:27017/${dbName}`, {
-      autoIndex: process.env.NODE_ENV !== 'production',
-      autoReconnect: true,
-      reconnectTries: 0,
-      reconnectInterval: 100,
-    }).then(resolve, reject);
+    mongoose.connect(`mongodb://${host}:27017/${dbName}`).then(resolve, reject);
   } catch (e) {
     logger.error('Calling mongoose.connect', e);
     reject(e);
