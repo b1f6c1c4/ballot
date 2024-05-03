@@ -45,11 +45,6 @@ services:
       JWT_SECRET: "${JWT_SECRET}"
       NO_SHARD: 'true'
       ANONY_NO_STRICT: 'true'
-      MONGO_HOST: mongo
-      REDIS_HOST: redis
-      RABBIT_HOST: rabbit
-      RABBIT_USER: guest
-      RABBIT_PASS: guest
     depends_on:
       mongo:
         condition: service_healthy

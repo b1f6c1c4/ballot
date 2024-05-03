@@ -11,8 +11,8 @@ if (process.env.BACKEND_LOG === 'trace'
 let connection;
 
 const connectLocal = async (dbName) => {
-  const host = process.env.MONGO_HOST || 'localhost';
-  logger.debug('Mongo host', host);
+  const uri = process.env.MONGO_URI || `mongodb://localhost/${dbName}`;
+  logger.info('Mongo uri', uri.replace(/:.*@/, ':********@'));
 
   mongoose.connection.on('connected', () => {
     logger.info('Mongoose connection open');
@@ -31,8 +31,13 @@ const connectLocal = async (dbName) => {
   });
 
   try {
-    logger.info('Connecting mongo db...', dbName);
-    connection = (await mongoose.connect(`mongodb://${host}:27017/${dbName}`)).connection;
+    if (process.env.MONGO_URI) {
+      logger.info('Connecting mongo db...');
+    } else {
+      logger.info('Connecting mongo db...', dbName);
+    }
+    const client = await mongoose.connect(uri);
+    connection = client.connection;
   } catch (e) {
     logger.error('Calling mongoose.connect', e);
     throw e;
