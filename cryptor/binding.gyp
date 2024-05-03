@@ -8,6 +8,9 @@
         "ring.cpp",
         "ringImpl.cpp",
       ],
+      "libraries": [
+        "/usr/lib/libcryptopp.so",
+      ],
     }
   ]
 }

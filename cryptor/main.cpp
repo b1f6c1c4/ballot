@@ -5,9 +5,22 @@
 #include <node/v8-typed-array.h>
 #include "ring.h"
 
+#ifndef VERSION
+#define VERSION "UNKNOWN"
+#endif
+
+#ifndef COMMITHASH
+#define COMMITHASH "UNKNOWN"
+#endif
+
 #ifndef IS_TEST
 extern size_t g_WIDTH_BIT;
 #endif
+
+void Status(const v8::FunctionCallbackInfo<v8::Value> &args) {
+    v8::Isolate *isolate = args.GetIsolate();
+    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, "Ok").ToLocalChecked());
+}
 
 void NewRing(const v8::FunctionCallbackInfo<v8::Value> &args) {
     v8::Isolate *isolate = args.GetIsolate();
@@ -38,6 +51,15 @@ void Verify(const v8::FunctionCallbackInfo<v8::Value> &args) {
 }
 
 void Initialize(v8::Local<v8::Object> exports) {
+    const auto &&logger = Logger{"Main"}.logger;
+    logger->info("Version {}", VERSION);
+    logger->info("CommitHash {}", COMMITHASH);
+
+#ifndef IS_TEST
+    logger->info("Crypto width bit {}", g_WIDTH_BIT = 32);
+#endif
+
+    NODE_SET_METHOD(exports, "status", Status);
     NODE_SET_METHOD(exports, "newRing", NewRing);
     NODE_SET_METHOD(exports, "genH", GenH);
     NODE_SET_METHOD(exports, "verify", Verify);
@@ -116,16 +138,6 @@ void Main::Setup(const po::variables_map &vm)
         logger->warn("vm.verbose unknown {}", verbose);
         spdlog::set_level(spdlog::level::info);
     }
-
-    logger->info("Version {}", VERSION);
-    logger->info("CommitHash {}", COMMITHASH);
-
-#ifndef IS_TEST
-    g_WIDTH_BIT = vm["width"].as<size_t>();
-
-    logger->info("Crypto width bit {}", g_WIDTH_BIT);
-#endif
-
     auto &&sub = vm["subscribe"].as<std::string>();
     logger->debug("Will subscribe {}", sub);
     Rpc::Inst().setupRpc(sub);

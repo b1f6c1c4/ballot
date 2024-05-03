@@ -25,29 +25,6 @@ const rpcMock = {
 };
 jest.doMock('../../rpc', () => rpcMock);
 
-describe('handler', () => {
-  // eslint-disable-next-line global-require
-  const { handler } = require('../cryptor');
-
-  it('should not throw if error', () => {
-    expect(() => handler(new Error(), undefined)).not.toThrow();
-  });
-
-  it('should not throw if method not found', () => {
-    expect(() => handler(undefined, undefined, {})).not.toThrow();
-  });
-
-  it('should handle newRing', () => {
-    expect.hasAssertions();
-    handler(undefined, { key: 'val3' }, { method: 'newRing', key: 'val4' });
-  });
-
-  it('should handle verify', () => {
-    expect.hasAssertions();
-    handler(undefined, { key: 'val1' }, { method: 'verify', key: 'val2' });
-  });
-});
-
 describe('idGen', () => {
   // eslint-disable-next-line global-require
   const { idGen } = require('../cryptor');

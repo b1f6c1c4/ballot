@@ -73,26 +73,23 @@ describe('Query', () => {
     ];
     const targ = 3;
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.SignedTicket.throwErrOn('count');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should count if good', async (done) => {
+    it('should count if good', async () => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...dArgs);
       expect(res).toEqual(targ);
-      done();
     });
   });
 
@@ -111,26 +108,23 @@ describe('Query', () => {
       },
     ];
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.SignedTicket.throwErrOn('find');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should query if good', async (done) => {
+    it('should query if good', async () => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...dArgs);
       expect(res).toEqual(targ);
-      done();
     });
   });
 
@@ -142,48 +136,43 @@ describe('Query', () => {
       undefined,
     ];
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.SignedTicket.throwErrOn('aggregate');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should query if good 0', async (done) => {
+    it('should query if good 0', async () => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...mer(dArgs, '[1].input.index', 0));
       expect(res).toEqual([
         { _id: 'r1', count: 3 },
       ]);
-      done();
     });
 
-    it('should query if good 1', async (done) => {
+    it('should query if good 1', async () => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...mer(dArgs, '[1].input.index', 1));
       expect(res).toEqual([
         { _id: 'R2', count: 2 },
         { _id: 'r2', count: 1 },
       ]);
-      done();
     });
 
-    it('should query if good 2', async (done) => {
+    it('should query if good 2', async () => {
       await Promise.all(dTickets.map((t) => make.SignedTicket(t)));
       const res = await func(...mer(dArgs, '[1].input.index', 2));
       expect(res).toEqual([
         { _id: '', count: 2 },
         { _id: 'r3', count: 1 },
       ]);
-      done();
     });
   });
 });

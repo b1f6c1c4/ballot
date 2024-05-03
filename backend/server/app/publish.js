@@ -8,7 +8,7 @@ module.exports = {
     const k = `status.${owner}.${_id}`;
     logger.debug('Publish status change', status);
     logger.debug('To', k);
-    await sPublish(k, status);
+    sPublish(k, status);
   },
 
   async updateVoterRegistered(bId, voter) {
@@ -21,6 +21,6 @@ module.exports = {
     });
     logger.debug('Publish voter registered', data);
     logger.debug('To', k);
-    await sPublish(k, data);
+    sPublish(k, data);
   },
 };

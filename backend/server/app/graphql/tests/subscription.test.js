@@ -43,16 +43,15 @@ describe('lock', () => {
     subsLib.clear();
   });
 
-  it('should handle hit', async (done) => {
+  it('should handle hit', async () => {
     subsLib.set('k', { num: 123 });
     await lock('k', () => {
       expect(undefined).toBeDefined();
     });
     expect(subsLib.get('k')).toEqual({ num: 124 });
-    done();
   });
 
-  it('should handle miss', async (done) => {
+  it('should handle miss', async () => {
     rpcMock.subscribe.mockImplementationOnce(async (k, cb) => {
       expect(k).toEqual('k');
       expect(cb()).toEqual(666);
@@ -60,7 +59,6 @@ describe('lock', () => {
     });
     await lock('k', () => 666);
     expect(subsLib.get('k')).toEqual({ num: 1, diss: 233 });
-    done();
   });
 });
 
@@ -146,7 +144,7 @@ describe('subscribeBallotStatus', () => {
     subscribeBallotStatus('234');
   });
 
-  it('should return unlock', async (done) => {
+  it('should return unlock', async () => {
     expect.assertions(2);
     rpcMock.subscribe.mockImplementationOnce(async () => () => {
       expect(undefined).toBeUndefined();
@@ -154,7 +152,6 @@ describe('subscribeBallotStatus', () => {
     const res = await subscribeBallotStatus('234');
     res();
     expect(subsLib.size).toEqual(0);
-    done();
   });
 });
 
@@ -182,7 +179,7 @@ describe('subscribeBallotsStatus', () => {
     subscribeBallotsStatus('ow');
   });
 
-  it('should return unlock', async (done) => {
+  it('should return unlock', async () => {
     expect.assertions(2);
     rpcMock.subscribe.mockImplementationOnce(async () => () => {
       expect(undefined).toBeUndefined();
@@ -190,7 +187,6 @@ describe('subscribeBallotsStatus', () => {
     const res = await subscribeBallotsStatus('ow');
     res();
     expect(subsLib.size).toEqual(0);
-    done();
   });
 });
 
@@ -217,7 +213,7 @@ describe('subscribeVoterRegistered', () => {
     subscribeVoterRegistered('234');
   });
 
-  it('should return unlock', async (done) => {
+  it('should return unlock', async () => {
     expect.assertions(2);
     rpcMock.subscribe.mockImplementationOnce(async () => () => {
       expect(undefined).toBeUndefined();
@@ -225,7 +221,6 @@ describe('subscribeVoterRegistered', () => {
     const res = await subscribeVoterRegistered('234');
     res();
     expect(subsLib.size).toEqual(0);
-    done();
   });
 });
 
@@ -298,42 +293,37 @@ describe('Subscription', () => {
       { registry: new Map(), opId: 'a' },
     ];
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should return async iterator', async (done) => {
+    it('should return async iterator', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res.next).toBeDefined();
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should use pubsub', async (done) => {
+    it('should use pubsub', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       pubsub.publish('ballotStatus.1234', { evil: true });
       pubsub.publish('ballotStatus.123', { evil: false });
       const rx = await res.next();
       expect(rx.value).toEqual({ evil: false });
-      done();
     });
   });
 
@@ -349,32 +339,28 @@ describe('Subscription', () => {
       },
     ];
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should return async iterator', async (done) => {
+    it('should return async iterator', async () => {
       const res = await func(...dArgs);
       expect(res.next).toBeDefined();
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should use pubsub', async (done) => {
+    it('should use pubsub', async () => {
       const res = await func(...dArgs);
       pubsub.publish('ballotsStatus.uw', { evil: true });
       pubsub.publish('ballotsStatus.un', { evil: false });
       const rx = await res.next();
       expect(rx.value).toEqual({ evil: false });
-      done();
     });
   });
 
@@ -390,62 +376,54 @@ describe('Subscription', () => {
       },
     ];
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should handle not owner', async (done) => {
+    it('should handle not owner', async () => {
       await make.Ballot(dBallot, 'owner', 'ow');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should handle status not allowed', async (done) => {
+    it('should handle status not allowed', async () => {
       await make.Ballot(dBallot, 'status', 'nk');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
-      done();
     });
 
-    it('should return async iterator', async (done) => {
+    it('should return async iterator', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res.next).toBeDefined();
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should use pubsub', async (done) => {
+    it('should use pubsub', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       pubsub.publish('voterRegistered.1234', { evil: true });
       pubsub.publish('voterRegistered.123', { evil: false });
       const rx = await res.next();
       expect(rx.value).toEqual({ evil: false });
-      done();
     });
   });
 });

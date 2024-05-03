@@ -1,5 +1,5 @@
-const logger = require('./logger')('status');
 const fs = require('fs');
+const logger = require('./logger')('status');
 
 let status;
 try {

@@ -4,7 +4,7 @@ const argv = require('minimist')(process.argv.slice(2));
 const { graphiqlExpress } = require('apollo-server-express');
 const api = require('./app');
 const { makeServer } = require('./app/graphql');
-const rpc = require('./rpc');
+const cryptor = require('./cryptor.node');
 const mongo = require('./mongo');
 const redis = require('./redis');
 const logger = require('./logger')('index');
@@ -74,6 +74,8 @@ function runApp() {
     return ws;
   });
 }
+
+logger.info('cryptor status:', cryptor.status());
 
 const inits = [];
 inits.push(mongo.connect());

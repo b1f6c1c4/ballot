@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 class TooManyRequestsError extends Error {
   constructor(after) {
     super(`Rate limit exceeded, retry after ${after.toFixed(0)}s`);

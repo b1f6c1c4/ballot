@@ -49,49 +49,43 @@ describe('Mutation', () => {
     ];
     const dBallot = mer(dBallotRoot, 'status', 'invited');
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throw unauthorized if not owner', async (done) => {
+    it('should throw unauthorized if not owner', async () => {
       await make.Ballot(dBallot, 'owner', 'own');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       await check.Ballot(dBallot, 'owner', 'own');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should handle status incorrect', async (done) => {
+    it('should handle status incorrect', async () => {
       await make.Ballot(dBallot, 'status', 'unknown');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
-      done();
     });
 
-    it('should save if good', async (done) => {
+    it('should save if good', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
       expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'preVoting');
-      done();
     });
   });
 
@@ -104,49 +98,43 @@ describe('Mutation', () => {
     ];
     const dBallot = mer(dBallotRoot, 'status', 'inviting');
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throw unauthorized if not owner', async (done) => {
+    it('should throw unauthorized if not owner', async () => {
       await make.Ballot(dBallot, 'owner', 'own');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       await check.Ballot(dBallot, 'owner', 'own');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should handle status incorrect', async (done) => {
+    it('should handle status incorrect', async () => {
       await make.Ballot(dBallot, 'status', 'unknown');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
-      done();
     });
 
-    it('should save if good', async (done) => {
+    it('should save if good', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
       expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'invited', 'crypto.h', 'hhh');
-      done();
     });
   });
 
@@ -159,49 +147,43 @@ describe('Mutation', () => {
     ];
     const dBallot = mer(dBallotRoot, 'status', 'preVoting');
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throw unauthorized if not owner', async (done) => {
+    it('should throw unauthorized if not owner', async () => {
       await make.Ballot(dBallot, 'owner', 'own');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       await check.Ballot(dBallot, 'owner', 'own');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should handle status incorrect', async (done) => {
+    it('should handle status incorrect', async () => {
       await make.Ballot(dBallot, 'status', 'unknown');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
-      done();
     });
 
-    it('should save if good', async (done) => {
+    it('should save if good', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
       expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'voting');
-      done();
     });
   });
 
@@ -214,49 +196,43 @@ describe('Mutation', () => {
     ];
     const dBallot = mer(dBallotRoot, 'status', 'voting');
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should throw unauthorized if not owner', async (done) => {
+    it('should throw unauthorized if not owner', async () => {
       await make.Ballot(dBallot, 'owner', 'own');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
       await check.Ballot(dBallot, 'owner', 'own');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should handle status incorrect', async (done) => {
+    it('should handle status incorrect', async () => {
       await make.Ballot(dBallot, 'status', 'unknown');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.StatusNotAllowedError);
       await check.Ballot(dBallot, 'status', 'unknown');
-      done();
     });
 
-    it('should save if good', async (done) => {
+    it('should save if good', async () => {
       await make.Ballot(dBallot);
       const res = await func(...dArgs);
       expect(res).toEqual(true);
       expect(updateBallotStatusCalled).toEqual(true);
       await check.Ballot(dBallot, 'status', 'finished');
-      done();
     });
   });
 });

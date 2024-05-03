@@ -48,32 +48,28 @@ describe('Query', () => {
       { key: 'info', projs: [] },
     ];
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('findOne');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.NotFoundError);
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should query if good', async (done) => {
+    it('should query if good', async () => {
       await make.Ballot(dBallot);
       const res = await func(...mer(dArgs, '[3].projs', ['name', 'owner']));
       expect(res).toEqual({ name: 'nm', owner: 'asdfqwer' });
-      done();
     });
   });
 
@@ -86,34 +82,30 @@ describe('Query', () => {
       { key: 'info', projs: [] },
     ];
 
-    it('should throw unauthorized', async (done) => {
+    it('should throw unauthorized', async () => {
       const res = await func(...mer(dArgs, '[2]', {}));
       expect(res).toBeInstanceOf(errors.UnauthorizedError);
-      done();
     });
 
-    it('should not throw if error', async (done) => {
+    it('should not throw if error', async () => {
       models.Ballot.throwErrOn('find');
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(Error);
       expect(res.message).toEqual('jest-mongoose Error');
-      done();
     });
 
-    it('should handle not found', async (done) => {
+    it('should handle not found', async () => {
       const res = await func(...dArgs);
       expect(res).toEqual([]);
-      done();
     });
 
-    it('should throttle', async (done) => {
+    it('should throttle', async () => {
       throttleThrow = true;
       const res = await func(...dArgs);
       expect(res).toBeInstanceOf(errors.TooManyRequestsError);
-      done();
     });
 
-    it('should query if good', async (done) => {
+    it('should query if good', async () => {
       await make.Ballot(dBallot, '_id', '1');
       await make.Ballot(dBallot, '_id', '2', 'name', 'nm2');
       await make.Ballot(dBallot, '_id', '3', 'owner', 'own');
@@ -122,7 +114,6 @@ describe('Query', () => {
         { _id: '1', name: 'nm', owner: 'asdfqwer' },
         { _id: '2', name: 'nm2', owner: 'asdfqwer' },
       ]);
-      done();
     });
   });
 });
