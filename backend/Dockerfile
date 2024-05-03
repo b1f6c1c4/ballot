@@ -2,14 +2,17 @@ FROM archlinux:base-devel
 
 RUN pacman -Syu --noconfirm nodejs crypto++
 
+WORKDIR /workdir
+
 COPY docs docs/
 COPY node_modules node_modules/
-COPY package.json VERSION.json ./
 COPY server server/
+COPY entrypoint.sh package.json VERSION.json ./
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV NODE_ENV=production
 
-CMD ["/usr/bin/node", "server/index.js"]
+ENTRYPOINT ["/workdir/entrypoint.sh"]
+CMD ["server/index.js"]
 
 EXPOSE 3000
