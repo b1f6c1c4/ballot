@@ -58,9 +58,7 @@ describe('hashPassword', () => {
     bcryptMock.hash.mockImplementationOnce((p, n) => {
       expect(p).toEqual('pwd');
       expect(n).toEqual(14);
-      return {
-        hash: 'hah',
-      };
+      return 'hah';
     });
 
     // eslint-disable-next-line global-require

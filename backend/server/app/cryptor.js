@@ -24,7 +24,7 @@ module.exports = {
 
   async hashPassword(password) {
     logger.info('Method hashPassword called');
-    return bcrypt.hash(password, 14);
+    return { hash: await bcrypt.hash(password, 14) };
   },
 
   async verifyPassword(password, hash) {

@@ -36,7 +36,11 @@ module.exports.customTh = async (log, par, id) => {
     limiter = limiters[log];
   }
 
-  await limiter.consume(id, 1);
+  try {
+    await limiter.consume(id, 1);
+  } catch (e) {
+    throw e.msBeforeNext;
+  }
 };
 
 module.exports.expressTh = (log, par, idGetter) => (req, res, next) => {

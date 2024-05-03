@@ -2,7 +2,7 @@ const _ = require('lodash');
 const errors = require('./error');
 const { customTh } = require('../throttle');
 
-module.exports = (log, max, duration) => async (obj) => {
+module.exports = (log, points, duration) => async (obj) => {
   let id;
   if (_.isObject(obj)) {
     id = obj.ip;
