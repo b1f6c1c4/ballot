@@ -28,6 +28,7 @@ if (st) {
   });
 }
 
-shelljs.mkdir('-p', 'docs/');
+shelljs.mkdir('-p', 'docs/', 'lib/');
 shelljs.cp('../docs/public.graphql', 'docs/');
 shelljs.cp('../cryptor/build/Release/cryptor.node', 'server/');
+shelljs.exec('../cryptor/cpld.bash server/cryptor.node lib/');

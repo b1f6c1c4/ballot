@@ -1,9 +1,15 @@
-FROM node:21-alpine
+FROM archlinux:base-devel
 
-RUN apk --no-cache add yarn
+RUN pacman -Syu --noconfirm nodejs crypto++
 
-COPY . .
+COPY docs docs/
+COPY node_modules node_modules/
+COPY package.json VERSION.json ./
+COPY server server/
 
-CMD ["yarn", "start:prod"]
+ENV LD_LIBRARY_PATH=/usr/local/lib
+ENV NODE_ENV=production
+
+CMD ["/usr/bin/node", "server/index.js"]
 
 EXPOSE 3000
