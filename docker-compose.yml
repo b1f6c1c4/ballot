@@ -50,11 +50,6 @@ services:
       RABBIT_HOST: rabbit
       RABBIT_USER: guest
       RABBIT_PASS: guest
-      CRYPTOR_QUEUE: |
-        {
-          "hashPassword": "auth",
-          "verifyPassword": "auth"
-        }
     depends_on:
       mongo:
         condition: service_healthy
@@ -67,22 +62,6 @@ services:
     links:
       - mongo
       - redis
-      - rabbit
-
-  auth:
-    image: b1f6c1c4/ballot-auth
-    restart: always
-    entrypoint: ["./auth", "auth", "${DEBUG_LEVEL}"]
-    environment:
-      RABBIT_HOST: rabbit
-      RABBIT_USER: guest
-      RABBIT_PASS: guest
-    depends_on:
-      rabbit:
-        condition: service_healthy
-    networks:
-      - prod
-    links:
       - rabbit
 
   cryptor:

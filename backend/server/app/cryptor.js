@@ -1,4 +1,5 @@
 const stringify = require('json-stable-stringify');
+const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const rpc = require('../rpc');
 const finalizeNewRing = require('./newRing');
@@ -46,16 +47,11 @@ module.exports = {
   tIdGen: idGen(32),
 
   async hashPassword(password) {
-    return rpc.call('hashPassword', {
-      password,
-    });
+    return bcrypt.hash(password, 14)
   },
 
   async verifyPassword(password, hash) {
-    return rpc.call('verifyPassword', {
-      password,
-      hash,
-    });
+    return { valid: await bcrypt.compare(password, hash) };
   },
 
   async newRing(ballot) {

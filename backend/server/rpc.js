@@ -169,26 +169,7 @@ const connect = () => new Promise((resolve, reject) => {
   });
 });
 
-let queues = {};
-try {
-  const cfg = process.env.CRYPTOR_QUEUE;
-  logger.debug('CRYPTOR_QUEUE', cfg);
-  if (!cfg) {
-    logger.warn('No queue env found, use default', 'cryptor');
-  } else {
-    queues = JSON.parse(cfg);
-    logger.info('Cryptor queues', queues);
-  }
-} catch (e) {
-  logger.error('Parsing CRYPTOR_QUEUE', e);
-}
-
-const resolveQueue = (method) => {
-  if (!queues || !queues[method]) {
-    return 'cryptor';
-  }
-  return queues[method];
-};
+const resolveQueue = (method) => 'cryptor';
 
 const publish = (method, param, options) => new Promise((resolve) => {
   const opt = Object.assign({

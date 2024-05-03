@@ -27,7 +27,9 @@ const logger = winston.createLogger({
   levels: lvls.levels,
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.colorize({ all: true }),
+    if (!process.env.DISABLE_COLOR) {
+      winston.format.colorize({ all: true }),
+    }
     winston.format.printf((info) => {
       const msg = chalk`{gray ${info.timestamp}} [${info.label}] ${info.level}: ${info.message}`;
       if (info.data === undefined) {
