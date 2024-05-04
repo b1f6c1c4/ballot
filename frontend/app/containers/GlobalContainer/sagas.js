@@ -19,6 +19,10 @@ export function* handleBallotsRequest() {
   }
 }
 
+export function* verifyCredentialValidity() {
+  const exp = yield select((state) => state.getIn(['globalContainer', 'credential', 'exp']));
+}
+
 // Watcher
 /* eslint-disable func-names */
 export default function* watcher() {

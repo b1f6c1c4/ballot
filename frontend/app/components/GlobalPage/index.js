@@ -5,9 +5,13 @@ import { compose } from 'redux';
 import {
   withStyles,
 } from 'material-ui';
+import Countdown from 'react-countdown';
+import ConfirmDialog from 'components/ConfirmDialog';
 import DocumentTitle from 'components/DocumentTitle';
 import GlobalBar from 'components/GlobalBar';
 import GlobalDrawer from 'components/GlobalDrawer';
+
+import messages from './messages';
 
 // eslint-disable-next-line no-unused-vars
 const styles = (theme) => ({
@@ -20,6 +24,9 @@ const styles = (theme) => ({
     marginRight: 'auto',
     maxWidth: 1024,
   },
+  deadline: {
+    color: 'red',
+  },
 });
 
 class GlobalPage extends React.PureComponent {
@@ -28,15 +35,18 @@ class GlobalPage extends React.PureComponent {
       classes, // eslint-disable-line no-unused-vars
       onPush,
       onLanguage,
+      extendDeadline,
       username,
       listBallots,
       isAccountOpen,
       isDrawerOpen,
+      isOpenExtend,
       onOpenDrawerAction,
       onCloseDrawerAction,
       onOpenAccountAction,
       onCloseAccountAction,
       onLogoutAction,
+      onExtendAction,
     } = this.props;
 
     return (
@@ -68,6 +78,25 @@ class GlobalPage extends React.PureComponent {
         <div className={classes.wrapper}>
           {this.props.children}
         </div>
+        <ConfirmDialog
+          title={messages.extendTitle}
+          description={messages.extendDescription}
+          cancel={messages.extendNo}
+          confirm={messages.extendYes}
+          isOpen={isOpenExtend}
+          onCancel={onLogoutAction}
+          onAction={onExtendAction}
+        >
+          <span className={classes.deadline}>
+            <Countdown
+              date={new Date(extendDeadline * 1000)}
+              precision={100}
+              intervalDelay={100}
+              daysInHours
+              onComplete={onLogoutAction}
+            />
+          </span>
+        </ConfirmDialog>
       </div>
     );
   }
@@ -78,6 +107,7 @@ GlobalPage.propTypes = {
   children: PropTypes.any,
   onPush: PropTypes.func.isRequired,
   onLanguage: PropTypes.func.isRequired,
+  extendDeadline: PropTypes.number.isRequired,
   username: PropTypes.string,
   listBallots: PropTypes.array,
   isDrawerOpen: PropTypes.bool.isRequired,
@@ -87,6 +117,7 @@ GlobalPage.propTypes = {
   onOpenAccountAction: PropTypes.func.isRequired,
   onCloseAccountAction: PropTypes.func.isRequired,
   onLogoutAction: PropTypes.func.isRequired,
+  onExtendAction: PropTypes.func.isRequired,
 };
 
 export default compose(

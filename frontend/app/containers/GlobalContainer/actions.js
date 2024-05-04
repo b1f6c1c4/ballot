@@ -38,6 +38,12 @@ export function logout() {
   };
 }
 
+export function extend() {
+  return {
+    type: GLOBAL_CONTAINER.EXTEND_ACTION,
+  };
+}
+
 // Sagas
 export function ballotsRequest() {
   return {

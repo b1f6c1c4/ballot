@@ -25,7 +25,7 @@ export class GlobalContainer extends React.PureComponent {
 
   render() {
     return (
-      <GlobalPage {...this.props}>
+      <GlobalPage {...this.props} isOpenExtend>
         {this.props.children}
       </GlobalPage>
     );
@@ -38,6 +38,7 @@ GlobalContainer.propTypes = {
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,
   onLanguage: PropTypes.func.isRequired,
+  extendDeadline: PropTypes.number.isRequired,
   username: PropTypes.string,
   listBallots: PropTypes.array,
   onOpenDrawerAction: PropTypes.func.isRequired,
@@ -46,6 +47,7 @@ GlobalContainer.propTypes = {
   onCloseAccountAction: PropTypes.func.isRequired,
   onLoginAction: PropTypes.func.isRequired,
   onLogoutAction: PropTypes.func.isRequired,
+  onExtendAction: PropTypes.func.isRequired,
   onStatusesRequestAction: PropTypes.func.isRequired,
   onStatusesStopAction: PropTypes.func.isRequired,
 };
@@ -60,6 +62,7 @@ function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
+    onExtendAction: () => dispatch(globalContainerActions.extend()),
     onStatusesRequestAction: () => dispatch(subscriptionContainerActions.statusesRequest()),
     onStatusesStopAction: () => dispatch(subscriptionContainerActions.statusesStop()),
   };
@@ -68,6 +71,7 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = createStructuredSelector({
   isDrawerOpen: (state) => state.getIn(['globalContainer', 'isDrawerOpen']),
   isAccountOpen: (state) => state.getIn(['globalContainer', 'isAccountOpen']),
+  extendDeadline: (state) => state.getIn(['globalContainer', 'credential', 'exp']),
   username: (state) => state.getIn(['globalContainer', 'credential', 'username']),
   listBallots: globalContainerSelectors.ListBallots(),
 });

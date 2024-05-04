@@ -38,6 +38,7 @@ class ConfirmDialog extends React.PureComponent {
         <DialogContent>
           <DialogContentText>
             <FormattedMessage {...this.props.description} />
+            { this.props.children }
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -45,13 +46,13 @@ class ConfirmDialog extends React.PureComponent {
             onClick={this.props.onCancel}
             color="secondary"
           >
-            <FormattedMessage {...messages.cancel} />
+            <FormattedMessage {...(this.props.cancel || messages.cancel)} />
           </Button>
           <Button
             onClick={this.props.onAction}
             color="primary"
           >
-            <FormattedMessage {...messages.confirm} />
+            <FormattedMessage {...(this.props.confirm || messages.confirm)} />
           </Button>
         </DialogActions>
       </Dialog>

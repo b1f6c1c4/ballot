@@ -166,6 +166,7 @@ module.exports = ({
         lodash: 'lodash-es',
         'material-ui': 'material-ui/es',
         'material-ui-icons': 'material-ui-icons/es',
+        moment: 'moment/src',
         'react-beautiful-dnd': 'react-beautiful-dnd/esm',
         'react-redux': 'react-redux/es',
         'react-router': 'react-router/es',
