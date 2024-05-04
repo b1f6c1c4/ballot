@@ -5,17 +5,22 @@ const ev = new EventEmitter();
 
 module.exports = {
   sPublish(ex, body) {
-    logger.trace('Publish (S) to', ex);
     logger.trace('Body', body);
-    ev.emit(ex, body);
+    logger.trace('Publish (S) to', ex);
+    ev.emit(ex, ex, body);
+    const k = ex.replace(/\.[^.]*$/, '.*');
+    if (k !== ex) {
+      logger.trace('Publish (S) to', k);
+      ev.emit(k, ex, body);
+    }
   },
   subscribe(key, cb) {
-    logger.debug('S q.subscribe...');
-    const listener = (body) => {
-      logger.debug('Message from S', key);
+    logger.debug('S q.subscribe...', key);
+    const listener = (ex, body) => {
+      logger.debug('Message from S', ex);
       logger.trace('Body', body);
       try {
-        cb(key, body);
+        cb(ex, body);
       } catch (e) {
         logger.error(`Error from S handler ${key}:`, e);
       }
