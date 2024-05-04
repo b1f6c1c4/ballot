@@ -32,27 +32,42 @@ module.exports = {
     return { valid: await bcrypt.compare(password, hash) };
   },
 
-  async newRing(ballot) {
+  newRing(ballot) {
     logger.info('Method newRing called');
     const { _id } = ballot;
-    finalizeNewRing(cryptor.newRing(), { _id });
+    const dt = new Date();
+    cryptor.newRing((res) => {
+      logger.info('Method newRing finished: duration is', new Date() - dt);
+      finalizeNewRing(JSON.parse(res), { _id });
+    });
   },
 
-  async genH(ballot) {
+  genH: (ballot) => new Promise((resolve, reject) => {
     logger.info('Method genH called');
     const { q, g } = ballot.crypto;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
-    return cryptor.genH({ q, g, publicKeys });
-  },
+    const dt = new Date();
+    JSON.parse(cryptor.genH(JSON.stringify({ q, g, publicKeys }), (res) => {
+      logger.info('Method genH finished: duration is', new Date() - dt);
+      if (res) {
+        resolve(JSON.parse(res));
+      } else {
+        reject(new Error('genH'));
+      }
+    }));
+  }),
 
-  async verify(ballot, submittedTicket) {
+  verify(ballot, submittedTicket) {
     logger.info('Method verify called');
     const { _id: bId, crypto: { q, g, h } } = ballot;
     const publicKeys = ballot.voters.map((v) => v.publicKey);
     const { _id, ticket } = submittedTicket;
     const { _id: t, s, c } = ticket;
     const payload = stringify(ticket.payload);
-    const valid = cryptor.verify({ q, g, h, publicKeys, t, payload, s, c });
-    finalizeVerify({ valid }, { _id, bId });
+    const dt = new Date();
+    cryptor.verify(JSON.stringify({ q, g, h, publicKeys, t, payload, s, c }), (valid) => {
+      logger.info('Method verify finished: duration is', new Date() - dt);
+      finalizeVerify({ valid }, { _id, bId });
+    });
   },
 };

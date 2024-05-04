@@ -95,9 +95,7 @@ describe('newRing', () => {
   });
 
   it('should call newRing.js', () => {
-    cryptorMock.newRing.mockImplementationOnce(() => ({
-      key: 'val3',
-    }));
+    cryptorMock.newRing.mockImplementationOnce((cb) => cb('{ "key": "val3" }'));
 
     // eslint-disable-next-line global-require
     const { newRing } = require('../cryptor');
@@ -111,32 +109,41 @@ describe('genH', () => {
     cryptorMock.genH.mockReset();
   });
 
+  const data = {
+    crypto: {
+      q: 'valq',
+      g: 'valg',
+    },
+    voters: [{
+      publicKey: 'p1',
+    }, {
+      publicKey: 'p2',
+    }],
+    key: 'value',
+  };
+
   it('should resolve', () => {
-    cryptorMock.genH.mockImplementationOnce((o) => {
+    cryptorMock.genH.mockImplementationOnce((x, cb) => {
+      const o = JSON.parse(x);
       expect(o.q).toEqual('valq');
       expect(o.g).toEqual('valg');
       expect(o.publicKeys).toEqual(['p1', 'p2']);
-      return {
-        h: 'valh',
-      };
+      cb('{ "h": "valh" }');
     });
 
     // eslint-disable-next-line global-require
     const { genH } = require('../cryptor');
-    return expect(genH({
-      crypto: {
-        q: 'valq',
-        g: 'valg',
-      },
-      voters: [{
-        publicKey: 'p1',
-      }, {
-        publicKey: 'p2',
-      }],
-      key: 'value',
-    })).resolves.toEqual({
+    return expect(genH(data)).resolves.toEqual({
       h: 'valh',
     });
+  });
+
+  it('should reject', () => {
+    cryptorMock.genH.mockImplementationOnce((x, cb) => { cb(); });
+
+    // eslint-disable-next-line global-require
+    const { genH } = require('../cryptor');
+    return expect(genH(data)).rejects.toThrow();
   });
 });
 
@@ -146,8 +153,8 @@ describe('verify', () => {
   });
 
   it('should call publish', () => {
-    cryptorMock.verify.mockImplementationOnce((o) => {
-      expect(o).toEqual({
+    cryptorMock.verify.mockImplementationOnce((x, cb) => {
+      expect(JSON.parse(x)).toEqual({
         q: 'valq',
         g: 'valg',
         h: 'valh',
@@ -158,7 +165,7 @@ describe('verify', () => {
         c: ['c1', 'c2'],
       });
       expect.hasAssertions();
-      return 114;
+      cb(114);
     });
 
     // eslint-disable-next-line global-require

@@ -1,4 +1,4 @@
-const { RateLimiterMongo, RateLimiterMemory } = require("rate-limiter-flexible");
+const { RateLimiterMongo, RateLimiterMemory } = require('rate-limiter-flexible');
 const { getConnection } = require('../mongo');
 const logger = require('../logger')('throttle');
 
@@ -10,8 +10,9 @@ const masterLimiter = new RateLimiterMemory({
 const limiters = {};
 
 module.exports.ban = (log, id) => {
-  if (!id || !(log in limiters))
+  if (!id || !(log in limiters)) {
     return;
+  }
 
   limiters[log].block(id, 2 * 3600); // 2 hours
   masterLimiter.block(id, 600); // 10 minutes

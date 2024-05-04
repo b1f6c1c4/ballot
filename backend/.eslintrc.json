@@ -73,6 +73,7 @@
         "ignoreChainWithDepth": 3
       }
     ],
+    "no-multi-assign": "off",
     "no-confusing-arrow": "off",
     "no-console": "warn",
     "no-underscore-dangle": "off",

@@ -1,9 +1,8 @@
 #include "common.h"
-#include <node/node.h>
-#include <node/v8-object.h>
-#include <node/v8-primitive.h>
-#include <node/v8-typed-array.h>
+#include "node_modules/node-addon-api/napi.h"
 #include "ring.h"
+
+using namespace Napi;
 
 #ifndef VERSION
 #define VERSION "UNKNOWN"
@@ -13,56 +12,165 @@
 #define COMMITHASH "UNKNOWN"
 #endif
 
-#ifndef IS_TEST
 extern size_t g_WIDTH_BIT;
-#endif
 
-void Status(const v8::FunctionCallbackInfo<v8::Value> &args) {
-    v8::Isolate *isolate = args.GetIsolate();
-    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, "Ok").ToLocalChecked());
-}
+Value Status(const CallbackInfo &info)
+{
+    return String::New(info.Env(), "Ok");
+};
 
-void NewRing(const v8::FunctionCallbackInfo<v8::Value> &args) {
-    v8::Isolate *isolate = args.GetIsolate();
-    auto res = Ring::Inst().newRing().dump();
-    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res.c_str()).ToLocalChecked());
-}
+class NewRingWorker : public AsyncWorker, public Logger
+{
+public:
+    NewRingWorker(Function &cb)
+        : Napi::AsyncWorker(cb), Logger("NewRing")
+    {
+        logger->debug("NewRingWorker(Function &)");
+    };
+    virtual ~NewRingWorker()
+    {
+        logger->debug("~NewRingWorker");
+    };
 
-void GenH(const v8::FunctionCallbackInfo<v8::Value> &args) {
-    v8::Isolate *isolate = args.GetIsolate();
-    if (args.Length() != 1) {
-        args.GetReturnValue().SetUndefined();
-        return;
+    void Execute() override
+    {
+        res = Ring::Inst().newRing().dump();
+        logger->debug("Result size: {}", res.size());
     }
-    const v8::String::Utf8Value str(isolate, args[0]);
-    auto res = Ring::Inst().genH(json::parse(*str)).dump();
-    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, res.c_str()).ToLocalChecked());
-}
 
-void Verify(const v8::FunctionCallbackInfo<v8::Value> &args) {
-    v8::Isolate *isolate = args.GetIsolate();
-    if (args.Length() != 1) {
-        args.GetReturnValue().SetUndefined();
-        return;
+protected:
+    void OnOK() override
+    {
+        logger->debug("OnOk size: {}", res.size());
+        Callback().Call({String::New(Env(), res)});
     }
-    const v8::String::Utf8Value str(isolate, args[0]);
-    auto res = Ring::Inst().verify(json::parse(*str));
-    args.GetReturnValue().Set(v8::Boolean::New(isolate, res));
-}
 
-void Initialize(v8::Local<v8::Object> exports) {
+    void OnError(const Napi::Error &e) override
+    {
+        logger->debug("OnError: {}", e.Message());
+        Callback().Call({});
+    }
+
+private:
+    std::string res;
+};
+
+Value NewRing(const CallbackInfo &info)
+{
+    auto callback = info[0].As<Function>();
+    auto asyncWorker = new NewRingWorker(callback);
+    asyncWorker->Queue();
+    return {};
+};
+
+class GenHWorker : public AsyncWorker, public Logger
+{
+public:
+    GenHWorker(Function &cb, String &par)
+        : Napi::AsyncWorker(cb), Logger("GenH"), str(par.Utf8Value())
+    {
+        logger->debug("GenHWorker(Function &)");
+    };
+    virtual ~GenHWorker()
+    {
+        logger->debug("~GenHWorker");
+    };
+
+    void Execute() override
+    {
+        auto j = json::parse(str);
+        res = Ring::Inst().genH(j).dump();
+        logger->debug("Result size: {}", res.size());
+    }
+
+protected:
+    void OnOK() override
+    {
+        logger->debug("OnOk size: {}", res.size());
+        Callback().Call({String::New(Env(), res)});
+    }
+
+    void OnError(const Napi::Error &e) override
+    {
+        logger->debug("OnError: {}", e.Message());
+        Callback().Call({});
+    }
+
+private:
+    std::string str, res;
+};
+
+Value GenH(const CallbackInfo &info)
+{
+    auto callback = info[1].As<Function>();
+    auto param = info[0].As<String>();
+    auto asyncWorker = new GenHWorker(callback, param);
+    asyncWorker->Queue();
+    return {};
+};
+
+class VerifyWorker : public AsyncWorker, public Logger
+{
+public:
+    VerifyWorker(Function &cb, String &par)
+        : Napi::AsyncWorker(cb), Logger("Verify"), str(par.Utf8Value())
+    {
+        logger->debug("VerifyWorker(Function &)");
+    };
+    virtual ~VerifyWorker()
+    {
+        logger->debug("~VerifyWorker");
+    };
+
+    void Execute() override
+    {
+        auto j = json::parse(str);
+        res = Ring::Inst().verify(j);
+        logger->debug("Result: {}", res);
+    }
+
+protected:
+    void OnOK() override
+    {
+        logger->debug("OnOk: {}", res);
+        Callback().Call({Boolean::New(Env(), res)});
+    }
+
+    void OnError(const Napi::Error &e) override
+    {
+        logger->debug("OnError: {}", e.Message());
+        Callback().Call({});
+    }
+
+private:
+    std::string str;
+    bool res;
+};
+
+Value Verify(const CallbackInfo &info)
+{
+    auto callback = info[1].As<Function>();
+    auto param = info[0].As<String>();
+    auto asyncWorker = new VerifyWorker(callback, param);
+    asyncWorker->Queue();
+    return {};
+};
+
+Object Initialize(Env env, Object exports) {
     const auto &&logger = Logger{"Main"}.logger;
     logger->info("Version {}", VERSION);
     logger->info("CommitHash {}", COMMITHASH);
 
-#ifndef IS_TEST
+    auto b = getenv("WIDTH_BIT");
+    if (b && *b && (g_WIDTH_BIT = atoi(b)));
+    else g_WIDTH_BIT = 2048;
     logger->info("Crypto width bit {}", g_WIDTH_BIT);
-#endif
 
-    NODE_SET_METHOD(exports, "status", Status);
-    NODE_SET_METHOD(exports, "newRing", NewRing);
-    NODE_SET_METHOD(exports, "genH", GenH);
-    NODE_SET_METHOD(exports, "verify", Verify);
+    exports["status"] = Function::New(env, Status, std::string("status"));
+    exports["newRing"] = Function::New(env, NewRing, std::string("newRing"));
+    exports["genH"] = Function::New(env, GenH, std::string("genH"));
+    exports["verify"] = Function::New(env, Verify, std::string("verify"));
+    return exports;
 }
 
-NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
+NODE_API_MODULE(NODE_GYP_MODULE_NAME, Initialize)

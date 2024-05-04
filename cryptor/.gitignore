@@ -1,4 +1,5 @@
 # Artifact
+node_modules
 build
 build-test
 *.gcda

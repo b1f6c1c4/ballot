@@ -12,12 +12,14 @@ logger.info('Versions', process.versions);
 
 process.on('unhandledRejection', (e) => {
   logger.fatal('Unhandled rejection', e);
+  // eslint-disable-next-line no-console
   console.error(e);
   throw e;
 });
 
 process.on('uncaughtException', (e) => {
   logger.fatalDie('Uncaught exception', e);
+  // eslint-disable-next-line no-console
   console.error(e);
 });
 
