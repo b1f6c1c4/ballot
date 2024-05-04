@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import makeApi from './request-core';
 
 const apiUrl = (raw) => raw || '/api';
 
-export const makeApi = (url, isWs, g = window) => {
+export const makeEndpoint = (url, isWs, g = window) => {
   const api = apiUrl(process.env.API_URL);
   if (!isWs) {
     return api + url;
@@ -56,23 +57,23 @@ export const postProcess = (raw) => {
   throw make();
 };
 
-// eslint-disable-next-line import/no-mutable-exports
 let client;
-/* istanbul ignore next */
-if (process.env.NODE_ENV !== 'test') {
-  /* istanbul ignore next */
-  // eslint-disable-next-line global-require
-  client = require('./request-core').default(makeApi);
-}
 
-export const getClient = /* istanbul ignore next */ (c) => {
-  /* istanbul ignore next */
+export const getClient = (c) => {
   if (process.env.NODE_ENV === 'test' && c) {
-    /* istanbul ignore next */
     client = c;
+  } else if (!client) {
+    client = makeApi(makeEndpoint);
   }
-  /* istanbul ignore next */
   return client;
+};
+
+export const stopClient = () => {
+  if (client) {
+    console.dir(client);
+    client.stop();
+    client = undefined;
+  }
 };
 
 export const makeContext = (cred) => !cred ? undefined : {
@@ -83,7 +84,7 @@ export const makeContext = (cred) => !cred ? undefined : {
 
 export const query = async (gql, vars, cred) => {
   try {
-    const response = await client.query({
+    const response = await getClient().query({
       query: gql,
       variables: vars,
       context: makeContext(cred),
@@ -97,7 +98,7 @@ export const query = async (gql, vars, cred) => {
 
 export const mutate = async (gql, vars, cred) => {
   try {
-    const response = await client.mutate({
+    const response = await getClient().mutate({
       mutation: gql,
       variables: vars,
       context: makeContext(cred),
@@ -111,7 +112,7 @@ export const mutate = async (gql, vars, cred) => {
 
 export const subscribe = async (gql, vars, cred) => {
   try {
-    const response = await client.subscribe({
+    const response = await getClient().subscribe({
       query: gql,
       variables: {
         ...vars,

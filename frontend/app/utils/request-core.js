@@ -12,13 +12,13 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: fragmentTypes,
 });
 
-export default (makeApi) => {
+export default (makeEndpoint) => {
   const httpLink = new HttpLink({
-    uri: makeApi('/graphql'),
+    uri: makeEndpoint('/graphql'),
   });
 
   const wsLink = new WebSocketLink({
-    uri: makeApi('/subscriptions', true),
+    uri: makeEndpoint('/subscriptions', true),
     options: {
       timeout: 50000,
       reconnect: true,

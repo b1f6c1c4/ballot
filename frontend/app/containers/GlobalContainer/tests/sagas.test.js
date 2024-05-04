@@ -12,6 +12,7 @@ import gql from '../api.graphql';
 
 import watcher, {
   handleBallotsRequest,
+  handleExtendRequest,
 } from '../sagas';
 
 // Sagas
@@ -53,6 +54,55 @@ describe('handleBallotsRequest Saga', () => {
         [matchers.call(...dArgs), throwError(error)],
       ])
       .put(globalContainerActions.ballotsFailure(error))
+      .run();
+  });
+});
+
+describe('handleExtendRequest Saga', () => {
+  const state = fromJS({
+    globalContainer: { credential: { token: 'cre' } },
+  });
+  const func = handleExtendRequest;
+  const dArgs = [api.mutate, gql.Extend, undefined, 'cre'];
+
+  // eslint-disable-next-line arrow-body-style
+  it('should listen EXTEND_REQUEST in the watcher', () => {
+    return expectSaga(watcher)
+      .take(GLOBAL_CONTAINER.EXTEND_REQUEST)
+      .silentRun();
+  });
+
+  it('should dispatch extendSuccess', () => {
+    const extend = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTM4NjAxNzUsImV4cCI6MTUxMzg2NzM3NSwiYXVkIjoidHJ5LXJlYWN0IiwiaXNzIjoidHJ5LXJlYWN0In0.Y6li_4xDg4dQALJKFqUp0NxXjUH1skPEIg41Z0aN9LE';
+    const response = { extend };
+    const credential = {
+      iat: 1513860175,
+      exp: 1513867375,
+      aud: 'try-react',
+      iss: 'try-react',
+      token: extend,
+    };
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), response],
+      ])
+      .put(globalContainerActions.extendSuccess(credential))
+      .run();
+  });
+
+  it('should dispatch logout', () => {
+    const error = new Error('value');
+
+    return expectSaga(func)
+      .withState(state)
+      .call(...dArgs)
+      .provide([
+        [matchers.call(...dArgs), throwError(error)],
+      ])
+      .put(globalContainerActions.logout())
       .run();
   });
 });

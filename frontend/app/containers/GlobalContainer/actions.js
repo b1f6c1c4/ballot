@@ -38,12 +38,6 @@ export function logout() {
   };
 }
 
-export function extend() {
-  return {
-    type: GLOBAL_CONTAINER.EXTEND_ACTION,
-  };
-}
-
 // Sagas
 export function ballotsRequest() {
   return {
@@ -62,5 +56,18 @@ export function ballotsFailure(error) {
   return {
     type: GLOBAL_CONTAINER.BALLOTS_FAILURE,
     error,
+  };
+}
+
+export function extendRequest() {
+  return {
+    type: GLOBAL_CONTAINER.EXTEND_REQUEST,
+  };
+}
+
+export function extendSuccess(credential) {
+  return {
+    type: GLOBAL_CONTAINER.EXTEND_SUCCESS,
+    credential,
   };
 }

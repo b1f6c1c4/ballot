@@ -90,8 +90,6 @@ class GlobalPage extends React.PureComponent {
           <span className={classes.deadline}>
             <Countdown
               date={new Date(extendDeadline * 1000)}
-              precision={100}
-              intervalDelay={100}
               daysInHours
               onComplete={onLogoutAction}
             />
@@ -112,6 +110,7 @@ GlobalPage.propTypes = {
   listBallots: PropTypes.array,
   isDrawerOpen: PropTypes.bool.isRequired,
   isAccountOpen: PropTypes.bool.isRequired,
+  isOpenExtend: PropTypes.bool.isRequired,
   onOpenDrawerAction: PropTypes.func.isRequired,
   onCloseDrawerAction: PropTypes.func.isRequired,
   onOpenAccountAction: PropTypes.func.isRequired,

@@ -121,4 +121,12 @@ describe('globalContainerReducer', () => {
 
     expect(globalContainerReducer(originalState, globalContainerActions.ballotsFailure(error))).toEq(expectedResult);
   });
+
+  it('should handle extend success', () => {
+    const credential = { key: 'val' };
+    const originalState = state;
+    const expectedResult = state.set('credential', fromJS(credential));
+
+    expect(globalContainerReducer(originalState, globalContainerActions.extendSuccess(credential))).toEq(expectedResult);
+  });
 });

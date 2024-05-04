@@ -5,3 +5,7 @@ query Ballots {
     status
   }
 }
+
+mutation Extend {
+  extend
+}

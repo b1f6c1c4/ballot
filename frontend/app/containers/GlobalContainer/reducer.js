@@ -45,6 +45,8 @@ function globalContainerReducer(state = initialState, action) {
     case GLOBAL_CONTAINER.BALLOTS_FAILURE:
       return state.set('isLoading', false)
         .set('error', fromJS(_.toPlainObject(action.error)));
+    case GLOBAL_CONTAINER.EXTEND_SUCCESS:
+      return state.set('credential', fromJS(action.credential));
     // Default
     default:
       return state;

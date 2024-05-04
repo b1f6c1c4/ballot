@@ -62,7 +62,7 @@ function mapDispatchToProps(dispatch) {
     onCloseAccountAction: () => dispatch(globalContainerActions.closeAccount()),
     onLoginAction: () => dispatch(globalContainerActions.login()),
     onLogoutAction: () => dispatch(globalContainerActions.logout()),
-    onExtendAction: () => dispatch(globalContainerActions.extend()),
+    onExtendAction: () => dispatch(globalContainerActions.extendRequest()),
     onStatusesRequestAction: () => dispatch(subscriptionContainerActions.statusesRequest()),
     onStatusesStopAction: () => dispatch(subscriptionContainerActions.statusesStop()),
   };
