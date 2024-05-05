@@ -3,7 +3,7 @@ import { expectSaga } from 'redux-saga-test-plan';
 import { throwError } from 'redux-saga-test-plan/providers';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as api from 'utils/request';
-import { push } from 'react-router-redux';
+import refresh from 'utils/refresh';
 
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
 import * as GLOBAL_CONTAINER from '../constants';
@@ -126,11 +126,9 @@ describe('watcher', () => {
   it('should forward logout to push /app/login', () => {
     return expectSaga(watcher)
       .provide([
-        [matchers.put(push('/app/login'))],
-        [matchers.put(subscriptionContainerActions.statusesStop())],
+        [matchers.call(refresh, '/app/login')],
       ])
-      .put(push('/app/login'))
-      .put(subscriptionContainerActions.statusesStop())
+      .call(refresh, '/app/login')
       .dispatch(globalContainerActions.logout())
       .silentRun();
   });

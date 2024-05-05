@@ -1,6 +1,6 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import * as api from 'utils/request';
-import { push } from 'react-router-redux';
+import refresh from 'utils/refresh';
 import jwtDecode from 'jwt-decode';
 
 import * as subscriptionContainerActions from 'containers/SubscriptionContainer/actions';
@@ -46,8 +46,6 @@ export default function* watcher() {
   });
 
   yield takeEvery(GLOBAL_CONTAINER.LOGOUT_ACTION, function* () {
-    yield put(push('/app/login'));
-    yield put(subscriptionContainerActions.statusesStop());
-    yield call(api.stopClient);
+    yield call(refresh, '/app/login');
   });
 }

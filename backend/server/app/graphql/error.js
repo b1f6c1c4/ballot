@@ -48,6 +48,14 @@ class UsernameExistsError extends Error {
   }
 }
 
+class TooManyExtendsError extends Error {
+  constructor() {
+    super('Too many extends');
+    this.statusCode = 401;
+    this.errorCode = 'tmex';
+  }
+}
+
 class NameMalformedError extends Error {
   constructor() {
     super('Name malformed');
@@ -94,6 +102,7 @@ module.exports = {
   NotFoundError,
   UsernameMalformedError,
   PasswordMalformedError,
+  TooManyExtendsError,
   UsernameExistsError,
   NameMalformedError,
   FieldMalformedError,

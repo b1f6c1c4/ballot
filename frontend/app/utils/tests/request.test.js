@@ -2,7 +2,6 @@ import {
   makeEndpoint,
   postProcess,
   getClient,
-  stopClient,
   makeContext,
   query,
   mutate,
@@ -158,13 +157,11 @@ describe('makeContext', () => {
   });
 });
 
-describe('stopClient', () => {
-  it('should stop', () => {
-    expect.assertions(2);
-    const obj = { stop(...a) { expect(a).toEqual([]); } };
+describe('getClient', () => {
+  it('should get', () => {
+    expect.assertions(1);
+    const obj = {};
     expect(getClient(obj)).toBe(obj);
-    stopClient();
-    stopClient();
   });
 });
 

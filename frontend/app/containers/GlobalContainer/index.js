@@ -25,7 +25,7 @@ export class GlobalContainer extends React.PureComponent {
 
   render() {
     return (
-      <GlobalPage {...this.props} isOpenExtend>
+      <GlobalPage {...this.props}>
         {this.props.children}
       </GlobalPage>
     );
@@ -38,7 +38,8 @@ GlobalContainer.propTypes = {
   isAccountOpen: PropTypes.bool.isRequired,
   onPush: PropTypes.func.isRequired,
   onLanguage: PropTypes.func.isRequired,
-  extendDeadline: PropTypes.number.isRequired,
+  extendCount: PropTypes.number,
+  extendDeadline: PropTypes.number,
   username: PropTypes.string,
   listBallots: PropTypes.array,
   onOpenDrawerAction: PropTypes.func.isRequired,
@@ -71,6 +72,7 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = createStructuredSelector({
   isDrawerOpen: (state) => state.getIn(['globalContainer', 'isDrawerOpen']),
   isAccountOpen: (state) => state.getIn(['globalContainer', 'isAccountOpen']),
+  extendCount: (state) => state.getIn(['globalContainer', 'credential', 'ext']),
   extendDeadline: (state) => state.getIn(['globalContainer', 'credential', 'exp']),
   username: (state) => state.getIn(['globalContainer', 'credential', 'username']),
   listBallots: globalContainerSelectors.ListBallots(),

@@ -68,14 +68,6 @@ export const getClient = (c) => {
   return client;
 };
 
-export const stopClient = () => {
-  if (client) {
-    console.dir(client);
-    client.stop();
-    client = undefined;
-  }
-};
-
 export const makeContext = (cred) => !cred ? undefined : {
   headers: {
     authorization: `Bearer ${cred}`,

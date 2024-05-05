@@ -46,6 +46,15 @@ type Mutation {
   # | `400`   | `pwmf`   | Password malformed                          |
   login(input: LoginInput!): JWT
 
+  # Update credential
+  #
+  # **Error codes**
+  #
+  # | Status  | Code     | Description                                 |
+  # | ------- | -------- | ------------------------------------------- |
+  # | `401`   | `tmex`   | Too many extensions                         |
+  extend: JWT
+
   # Change password
   #
   # Authentication is required

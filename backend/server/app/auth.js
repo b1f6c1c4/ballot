@@ -6,14 +6,14 @@ const logger = require('../logger')('auth');
 const signOptions = {
   issuer: 'ballot',
   audience: 'ballot',
-  expiresIn: '2h',
+  expiresIn: '5m',
 };
 
 const verifyOptions = {
   issuer: 'ballot',
   audience: 'ballot',
   ignoreExpiration: false,
-  maxAge: '2h',
+  maxAge: '5m',
 };
 
 const secret = process.env.JWT_SECRET || 's3cReT';

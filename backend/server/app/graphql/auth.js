@@ -76,12 +76,37 @@ module.exports = {
             logger.info('Login failed', username);
             return null;
           }
-          const jwt = issue({ username });
+          const jwt = issue({ username, ext: 10 });
           logger.info('Login success', username);
           return jwt;
         } catch (e) {
           if (e instanceof errors.TooManyRequestsError) return e;
           logger.error('Login', e);
+          return e;
+        }
+      },
+
+      async extend(parent, args, context) {
+        logger.debug('Mutation.extend', args);
+
+        if (!_.get(context, 'auth.username')) {
+          return new errors.UnauthorizedError();
+        }
+
+        const { username, ext } = context.auth;
+        if (!(ext > 0)) {
+          return new errors.TooManyExtendsError();
+        }
+
+        try {
+          await throttle('login-1', 3, 5)(context);
+          await throttle('login-2', 3, 5)(username);
+          const jwt = issue({ username, ext: ext - 1 });
+          logger.info(`Extend success ${ext} -> ${ext - 1}`, username);
+          return jwt;
+        } catch (e) {
+          if (e instanceof errors.TooManyRequestsError) return e;
+          logger.error('Extend', e);
           return e;
         }
       },

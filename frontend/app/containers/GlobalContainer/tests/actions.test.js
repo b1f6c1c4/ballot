@@ -47,7 +47,7 @@ describe('GlobalContainer actions', () => {
 
   describe('extend request', () => {
     it('has a type of EXTEND_REQUEST', () => {
-      expect(globalContainerActions.logout().type).toEqual(GLOBAL_CONTAINER.EXTEND_REQUEST);
+      expect(globalContainerActions.extendRequest().type).toEqual(GLOBAL_CONTAINER.EXTEND_REQUEST);
     });
   });
 });

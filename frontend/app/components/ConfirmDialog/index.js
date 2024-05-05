@@ -51,6 +51,7 @@ class ConfirmDialog extends React.PureComponent {
           <Button
             onClick={this.props.onAction}
             color="primary"
+            disabled={this.props.disabled}
           >
             <FormattedMessage {...(this.props.confirm || messages.confirm)} />
           </Button>
@@ -68,6 +69,7 @@ ConfirmDialog.propTypes = {
   cancel: PropTypes.object,
   confirm: PropTypes.object,
   isOpen: PropTypes.bool,
+  disabled: PropTypes.bool,
   onCancel: PropTypes.func,
   onAction: PropTypes.func,
 };
